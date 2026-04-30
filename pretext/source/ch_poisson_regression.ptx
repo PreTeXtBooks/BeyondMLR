@@ -720,7 +720,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
   <exercises xml:id="exer-ch4">
     <title>Exercises</title>
 
-    <subexercises xml:id="exer-ch4-conceptual">
+    <exercisegroup xml:id="exgroup-conceptual-ch4">
       <title>Conceptual Exercises</title>
 
       <introduction>
@@ -893,9 +893,9 @@ ggplot(res.df, aes(x = fit, y = resid)) +
           </ul></p>
         </statement>
       </exercise>
-    </subexercises>
+    </exercisegroup>
 
-    <subexercises xml:id="exer-ch4-guided">
+    <exercisegroup xml:id="exgroup-guided-ch4">
       <title>Guided Exercises</title>
 
       <exercise xml:id="exer-ch4-g1">
@@ -1101,9 +1101,9 @@ fit3 &lt;- glm(burg09 ~ act.comp + tuition.thous +
           </ol></p>
         </statement>
       </exercise>
-    </subexercises>
+    </exercisegroup>
 
-    <subexercises xml:id="exer-ch4-openended">
+    <exercisegroup xml:id="exgroup-open-ch4">
       <title>Open-Ended Exercises</title>
 
       <exercise xml:id="exer-ch4-oe1">
@@ -1158,7 +1158,7 @@ fit3 &lt;- glm(burg09 ~ act.comp + tuition.thous +
           <p>The number of fish caught (<c>count</c>), persons in the party (<c>persons</c>), the number of children in the party (<c>child</c>), whether or not they brought a camper into the park (<c>camper</c>), and the length of stay (<c>LOS</c>) were recorded for 250 camping parties. The data can be found in <c>fish2.csv</c>. Create and assess a model for the number of fish caught.</p>
         </statement>
       </exercise>
-    </subexercises>
+    </exercisegroup>
   </exercises>
 
 </chapter>
