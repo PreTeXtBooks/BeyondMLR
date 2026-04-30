@@ -35,7 +35,7 @@ library(pscl)
   <section xml:id="sec-intro-poisson">
     <title>Introduction to Poisson Regression</title>
 
-    <p>Recall from <xref ref="ch-distthry"/> that if <m>Y \sim \textrm{Poisson}(\lambda)</m>, then both the mean and variance of <m>Y</m> equal <m>\lambda</m>. The <term>Poisson regression</term> <idx>Poisson regression</idx> model links one or more explanatory variables to a Poisson response variable.  Given explanatory variables <m>X_1, X_2, \ldots, X_p</m>, we model the mean count <m>\lambda</m> via
+    <p>Recall from <xref ref="ch-distthry"/> that if <m>Y \sim \textrm{Poisson}(\lambda)</m>, then both the mean and variance of <m>Y</m> equal <m>\lambda</m>. The <term>Poisson regression</term> <idx>Poisson regression</idx> model links one or more explanatory variables to a Poisson response variable. Given explanatory variables <m>X_1, X_2, \ldots, X_p</m>, we model the mean count <m>\lambda</m> via
     <me>
       \log(\lambda) = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p,
     </me>
@@ -753,7 +753,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
 
       <exercise xml:id="exer-ch4-c5">
         <statement>
-          <p>Models of the form <m>Y_i = \beta_0 + \beta_1 X_i + \epsilon_i</m>, <m>\epsilon_i \overset{\text{i.i.d.}}{\sim} N(0,\sigma)</m> are fit using the method of least squares. What method is used to fit Poisson regression models?</p>
+          <p>Models of the form <m>Y_i = \beta_0 + \beta_1 X_i + \epsilon_i</m>, <m>\epsilon_i \overset{\text{i.i.d.}}{\sim} N(0,\sigma^2)</m> are fit using the method of least squares. What method is used to fit Poisson regression models?</p>
         </statement>
       </exercise>
 
