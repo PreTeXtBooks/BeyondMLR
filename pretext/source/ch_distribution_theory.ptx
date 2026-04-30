@@ -2,10 +2,1515 @@
 <chapter xml:id="ch-distthry" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>Distribution Theory</title>
 
-  <introduction>
+  <objectives xml:id="obj-ch-distthry">
+    <introduction>
+      <p>After finishing this chapter, you should be able to:</p>
+    </introduction>
+    <ul>
+      <li><p>Write definitions of non-normal random variables in the context of an application.</p></li>
+      <li><p>Identify possible values for each random variable.</p></li>
+      <li><p>Identify how changing values for a parameter affects the characteristics of the distribution.</p></li>
+      <li><p>Recognize a form of the probability density function for each distribution.</p></li>
+      <li><p>Identify the mean and variance for each distribution.</p></li>
+      <li><p>Match the response for a study to a plausible random variable and provide reasons for ruling out other random variables.</p></li>
+      <li><p>Match a histogram of sample data to plausible distributions.</p></li>
+      <li><p>Create a mixture of distributions and evaluate the shape, mean, and variance.</p></li>
+    </ul>
+  </objectives>
+
+  <introduction xml:id="intro-ch-distthry">
+    <program language="r" xml:id="code-load-packages-ch3">
+      <input>
+# Packages required for Chapter 3
+library(gridExtra)
+library(knitr)
+library(kableExtra)
+library(tidyverse)
+      </input>
+    </program>
+
     <p>
-      This chapter is a skeleton placeholder for Chapter 3 content.
+      What if it is not plausible that a response is normally distributed? You may want to construct
+      a model to predict whether a prospective student will enroll at a school or model the lifetimes
+      of patients following a particular surgery. In the first case you have a binary response (enrolls
+      (1) or does not enroll (0)), and in the second case you are likely to have very skewed data with
+      many similar values and a few hardy souls with extremely long survival. These responses are not
+      expected to be normally distributed; other distributions will be needed to describe and model
+      binary or lifetime data. Non-normal responses are encountered in a large number of situations.
+      Luckily, there are quite a few possibilities for models. In this chapter we begin with some
+      general definitions, terms, and notation for different types of distributions with some examples
+      of applications. We then create new random variables using combinations of random variables
+      (see Guided Exercises).
     </p>
   </introduction>
+
+  <section xml:id="sec-discrete-rv">
+    <title>Discrete Random Variables</title>
+
+    <p>
+      A discrete random variable has a countable number of possible values; for example, we may
+      want to measure the number of people in a household or the number of crimes committed on a
+      college campus. With discrete random variables, the associated probabilities can be calculated
+      for each possible value using a <term>probability mass function</term>
+      (pmf).<idx><h>probability mass function (pmf)</h></idx> A pmf is a function that calculates
+      <m>P(Y=y)</m>, given each variable's parameters.
+    </p>
+
+    <subsection xml:id="sec-binary">
+      <title>Binary Random Variable</title>
+
+      <p>
+        Consider the event of flipping a (possibly unfair) coin. If the coin lands heads, let's
+        consider this a success and record <m>Y = 1</m>. A series of these events is a
+        <term>Bernoulli process</term>,<idx><h>Bernoulli process</h></idx> independent trials that
+        take on one of two values (e.g., 0 or 1). These values are often referred to as a failure and
+        a success, and the probability of success is identical for each trial. Suppose we only flip
+        the coin once, so we only have one parameter, the probability of flipping heads, <m>p</m>.
+        If we know this value, we can express <m>P(Y=1) = p</m> and <m>P(Y=0) = 1-p</m>. In
+        general, if we have a Bernoulli process with only one trial, we have a
+        <term>binary distribution</term> (also called a
+        <term>Bernoulli distribution</term>)<idx><h>Bernoulli distribution</h></idx> where
+      </p>
+
+      <men xml:id="eq-binaryRV">
+        P(Y = y) = p^y(1-p)^{1-y} \quad \text{for} \quad y = 0, 1.
+      </men>
+
+      <p>
+        If <m>Y \sim \text{Binary}(p)</m>, then <m>Y</m> has mean <m>\E(Y) = p</m> and standard
+        deviation <m>\SD(Y) = \sqrt{p(1-p)}</m>.
+      </p>
+
+      <p>
+        <alert>Example 1:</alert> Your playlist of 200 songs has 5 which you cannot stand. What is
+        the probability that when you hit shuffle, a song you tolerate comes on?
+      </p>
+
+      <p>
+        Assuming all songs have equal odds of playing, we can calculate
+        <m>p = \frac{200-5}{200} = 0.975</m>, so there is a 97.5% chance of a song you tolerate
+        playing, since <m>P(Y=1)=.975^1*(1-.975)^0</m>.
+      </p>
+    </subsection>
+
+    <subsection xml:id="sec-binomial">
+      <title>Binomial Random Variable</title>
+
+      <p>
+        We can extend our knowledge of binary random variables. Suppose we flipped an unfair coin
+        <m>n</m> times and recorded <m>Y</m>, the number of heads after <m>n</m> flips. If we
+        consider a case where <m>p = 0.25</m> and <m>n = 4</m>, then here <m>P(Y=0)</m> represents
+        the probability of no successes in 4 trials, i.e., 4 consecutive failures. The probability
+        of 4 consecutive failures is <m>P(Y = 0) = P(TTTT) = (1-p)^4 = 0.75^4</m>. When we
+        consider <m>P(Y = 1)</m>, we are interested in the probability of exactly 1 success
+        <em>anywhere</em> among the 4 trials. There are <m>\binom{4}{1} = 4</m> ways to have
+        exactly 1 success in 4 trials, so
+        <m>P(Y = 1) = \binom{4}{1}p^1(1-p)^{4-1} = (4)(0.25)(0.75)^3</m>. In general, if we
+        carry out a sequence of <m>n</m> Bernoulli trials (with probability of success <m>p</m>)
+        and record <m>Y</m>, the total number of successes, then <m>Y</m> follows a
+        <term>binomial distribution</term>,<idx><h>binomial distribution</h></idx> where
+      </p>
+
+      <men xml:id="eq-binomRV">
+        P(Y=y) = \binom{n}{y} p^y (1-p)^{n-y} \quad \text{for} \quad y = 0, 1, \ldots, n.
+      </men>
+
+      <p>
+        If <m>Y \sim \text{Binomial}(n,p)</m>, then <m>\E(Y) = np</m> and
+        <m>\SD(Y) = \sqrt{np(1-p)}</m>. Typical shapes of a binomial distribution are found in
+        <xref ref="fig-multBin"/>. On the left side <m>n</m> remains constant. We see that as
+        <m>p</m> increases, the center of the distribution (<m>\E(Y) = np</m>) shifts right. On
+        the right, <m>p</m> is held constant. As <m>n</m> increases, the distribution becomes
+        less skewed.
+      </p>
+
+      <program language="r" xml:id="code-multBin-fig">
+        <input>
+#binomialPlots
+plotBinomial=function(n,p){
+  y1 &lt;- 0:n  # possible values
+  prob &lt;- dbinom(y1,n,p)  # P(Y=y)
+  BBGdf &lt;- data.frame(y1,prob)
+  ggplot(data = BBGdf, aes(x = y1, xend = y1, y = 0, yend = prob)) +
+    geom_segment() +
+    xlab("number of successes") + ylab("probability") + labs(title=paste("n = ", n, " p = ", p))
+}
+Binom1 &lt;- plotBinomial(10,.25) + xlim(0, 10) + scale_y_continuous(breaks = c(0.00, 0.05, 0.10, 0.15, 0.20, 0.25))
+Binom2 &lt;- plotBinomial(20,.2) + xlim(0, 15)
+Binom3 &lt;- plotBinomial(10,.5) + xlim(0, 10)
+Binom4 &lt;- plotBinomial(50,.2) + xlim(0, 25)
+
+grid.arrange(Binom1,Binom2,Binom3,Binom4,ncol=2)
+        </input>
+      </program>
+
+      <figure xml:id="fig-multBin">
+        <caption>Binomial distributions with different values of <m>n</m> and <m>p</m>.</caption>
+        <image source="generated-assets/fig-multBin.png" width="90%">
+          <description>A 2x2 panel of binomial distribution plots showing probability mass functions
+          for different combinations of n and p. The left column holds n constant and varies p,
+          showing the center shift right as p increases. The right column holds p constant and
+          varies n, showing the distribution becomes less skewed as n increases.</description>
+        </image>
+      </figure>
+
+      <p>
+        Note that if <m>n=1</m>,
+      </p>
+
+      <md>
+        <mrow>P(Y=y) \amp= \binom{1}{y} p^y(1-p)^{1-y}</mrow>
+        <mrow>\amp= p^y(1-p)^{1-y}\quad \text{for}\quad y = 0, 1,</mrow>
+      </md>
+
+      <p>
+        a Bernoulli distribution! In fact, Bernoulli random variables are a special case of binomial
+        random variables where <m>n=1</m>.
+      </p>
+
+      <p>
+        In R we can use the function <c>dbinom(y, n, p)</c>, which outputs the probability of
+        <m>y</m> successes given <m>n</m> trials with probability <m>p</m>, i.e., <m>P(Y=y)</m>
+        for <m>Y \sim \text{Binomial}(n,p)</m>.
+      </p>
+
+      <p>
+        <alert>Example 2:</alert> While taking a multiple choice test, a student encountered 10
+        problems where she ended up completely guessing, randomly selecting one of the four options.
+        What is the chance that she got exactly 2 of the 10 correct?
+      </p>
+
+      <p>
+        Knowing that the student randomly selected her answers, we assume she has a 25% chance of
+        a correct response. Thus,
+        <m>P(Y=2) = \binom{10}{2}(.25)^2(.75)^8 = 0.282</m>. We can use R to verify this:
+      </p>
+
+      <program language="r" xml:id="code-binomEx">
+        <input>
+dbinom(2, size = 10, prob = .25)
+        </input>
+      </program>
+
+      <p>
+        Therefore, there is a 28% chance of exactly 2 correct answers out of 10.
+      </p>
+    </subsection>
+
+    <subsection xml:id="subsec-geometric">
+      <title>Geometric Random Variable</title>
+
+      <p>
+        Suppose we are to perform independent, identical Bernoulli trials until the first success.
+        If we wish to model <m>Y</m>, the number of failures before the first success, we can
+        consider the following pmf:
+      </p>
+
+      <men xml:id="eq-geomRV">
+        P(Y=y) = (1-p)^yp \quad \text{for}\quad y = 0, 1, \ldots, \infty.
+      </men>
+
+      <p>
+        We can think about this function as modeling the probability of <m>y</m> failures, then
+        1 success. In this case, <m>Y</m> follows a
+        <term>geometric distribution</term><idx><h>geometric distribution</h></idx> with
+        <m>\E(Y) = \frac{1-p}{p}</m> and <m>\SD(Y) = \sqrt{\frac{1-p}{p^2}}</m>.
+      </p>
+
+      <program language="r" xml:id="code-multGeo-fig">
+        <input>
+#geometricPlots
+plotGeo &lt;- function(p){
+yg = 0:10000 # possible values
+gd &lt;- data.frame(x=rgeom(yg, p))  # generate random deviates
+ggplot(gd, aes(x = x)) + geom_histogram(aes(y=..count../sum(..count..)), binwidth = .25) +
+  xlab("number of failures") + ylab("probability") + labs(title=paste("Geometric p = ", p)) + xlim(-1,16)
+}
+
+Geo1 &lt;- plotGeo(0.3)
+Geo2 &lt;- plotGeo(0.5)
+Geo3 &lt;- plotGeo(0.7)
+grid.arrange(Geo1,Geo2, Geo3, ncol=1)
+        </input>
+      </program>
+
+      <figure xml:id="fig-multGeo">
+        <caption>Geometric distributions with <m>p = 0.3,\ 0.5</m> and <m>0.7</m>.</caption>
+        <image source="generated-assets/fig-multGeo.png" width="90%">
+          <description>A panel of three geometric distribution histograms with p = 0.3, 0.5, and
+          0.7. As p increases, the range of plausible values decreases and the means shift
+          toward 0.</description>
+        </image>
+      </figure>
+
+      <p>
+        Typical shapes of geometric distributions are shown in <xref ref="fig-multGeo"/>. Notice
+        that as <m>p</m> increases, the range of plausible values decreases and means shift
+        towards 0.
+      </p>
+
+      <p>
+        Once again, we can use R to aid our calculations. The function <c>dgeom(y, p)</c> will
+        output the probability of <m>y</m> failures before the first success where
+        <m>Y \sim \text{Geometric}(p)</m>.
+      </p>
+
+      <p>
+        <alert>Example 3:</alert> Consider rolling a fair, six-sided die until a five appears.
+        What is the probability of rolling the first five on the third roll?
+      </p>
+
+      <p>
+        First note that <m>p = 1/6</m>. We are then interested in <m>P(Y=2)</m>, as we would want
+        2 failures before our success. We know that <m>P(Y=2) = (5/6)^2(1/6) = 0.116</m>.
+        Verifying through R:
+      </p>
+
+      <program language="r" xml:id="code-geomEx">
+        <input>
+dgeom(2, prob = 1/6)
+        </input>
+      </program>
+
+      <p>
+        Thus, there is a 12% chance of rolling the first five on the third roll.
+      </p>
+    </subsection>
+
+    <subsection xml:id="subsec-neg-binomial">
+      <title>Negative Binomial Random Variable</title>
+
+      <p>
+        What if we were to carry out multiple independent and identical Bernoulli trials until the
+        <m>r</m>th success occurs? If we model <m>Y</m>, the number of failures before the
+        <m>r</m>th success, then <m>Y</m> follows a
+        <term>negative binomial distribution</term><idx><h>negative binomial distribution</h></idx>
+        where
+      </p>
+
+      <men xml:id="eq-nBinomRV">
+        P(Y=y) = \binom{y + r - 1}{r-1} (1-p)^{y}(p)^r \quad \text{for}\quad y = 0, 1, \ldots, \infty.
+      </men>
+
+      <p>
+        If <m>Y \sim \text{Negative Binomial}(r, p)</m> then
+        <m>\E(Y) = \frac{r(1-p)}{p}</m> and
+        <m>\SD(Y) = \sqrt{\frac{r(1-p)}{p^2}}</m>.
+        <xref ref="fig-multNBinom"/> displays three negative binomial distributions. Notice how
+        centers shift right as <m>r</m> increases, and left as <m>p</m> increases.
+      </p>
+
+      <program language="r" xml:id="code-multNBinom-fig">
+        <input>
+#negativeBinomialPlots
+plotNBinom &lt;- function(p, r){
+  ynb &lt;- 0:10000
+  nbd &lt;- tibble(x = rnbinom(ynb, r, p))
+  ggplot(nbd, aes(x = x)) +
+    geom_histogram(aes(y=..count../sum(..count..)), binwidth = .25) +
+    labs(title = paste("p = ", p, ", r = ", r),
+         x = "number of failures",
+         y = "probability") +
+    xlim(-1,30)
+}
+
+NBin1 &lt;- plotNBinom(0.35, 3)
+NBin2 &lt;- plotNBinom(0.35, 5)
+NBin3 &lt;- plotNBinom(0.70, 5)
+grid.arrange(NBin1, NBin2, NBin3, ncol = 1)
+        </input>
+      </program>
+
+      <figure xml:id="fig-multNBinom">
+        <caption>Negative binomial distributions with different values of <m>p</m> and <m>r</m>.</caption>
+        <image source="generated-assets/fig-multNBinom.png" width="90%">
+          <description>A panel of three negative binomial distribution histograms showing how the
+          distribution shifts right as r increases (for fixed p) and shifts left as p increases
+          (for fixed r).</description>
+        </image>
+      </figure>
+
+      <p>
+        Note that if we set <m>r=1</m>, then
+      </p>
+
+      <md>
+        <mrow>P(Y=y) \amp= \binom{y}{0} (1-p)^yp</mrow>
+        <mrow>\amp= (1-p)^yp \quad \text{for} \quad y = 0, 1, \ldots, \infty,</mrow>
+      </md>
+
+      <p>
+        which is the probability mass function of a geometric random variable! Thus, a geometric
+        random variable is, in fact, a special case of a negative binomial random variable.
+      </p>
+
+      <p>
+        While negative binomial random variables typically are expressed as above using binomial
+        coefficients (expressions such as <m>\binom{x}{y}</m>), we can generalize our definition
+        to allow non-integer values of <m>r</m>. This will come in handy later when modeling. To
+        do this, we need to first introduce the
+        <term>gamma function</term>.<idx><h>gamma function</h></idx> The gamma function is defined
+        as such
+      </p>
+
+      <men xml:id="eq-gammaFun">
+        \Gamma(x) = \int_0^\infty t^{x-1} e^{-t}dt.
+      </men>
+
+      <p>
+        One important property of the gamma function is that for any integer <m>n</m>,
+        <m>\Gamma(n) = (n-1)!</m>. Applying this, we can generalize the pmf of a negative
+        binomial variable such that
+      </p>
+
+      <md>
+        <mrow>P(Y=y) \amp= \binom{y + r - 1}{r-1}(1-p)^{y}(p)^r</mrow>
+        <mrow>\amp= \frac{(y+r-1)!}{(r-1)!y!}(1-p)^{y}(p)^r</mrow>
+        <mrow>\amp= \frac{\Gamma(y+r)}{\Gamma(r) y!}(1-p)^{y}(p)^r \quad \text{for} \quad y = 0, 1, \ldots, \infty.</mrow>
+      </md>
+
+      <p>
+        With this formulation, <m>r</m> is no longer restricted to non-negative integers; rather
+        <m>r</m> can be any non-negative real number.
+      </p>
+
+      <p>
+        In R we can use the function <c>dnbinom(y, r, p)</c> for the probability of <m>y</m>
+        failures before the <m>r</m>th success given probability <m>p</m>.
+      </p>
+
+      <p>
+        <alert>Example 4:</alert> A contestant on a game show needs to answer 10 questions
+        correctly to win the jackpot. However, if they get 3 incorrect answers, they are kicked
+        off the show. Suppose one contestant consistently has a 90% chance of correctly responding
+        to any question. What is the probability that she will correctly answer 10 questions before
+        3 incorrect responses?
+      </p>
+
+      <p>
+        Letting <m>Y</m> represent the number of incorrect responses, and setting <m>r = 10</m>,
+        we want
+      </p>
+
+      <md>
+        <mrow>P(Y \lt 3) \amp= P(Y=0) + P(Y=1) + P(Y=2)</mrow>
+        <mrow>\amp= \binom{9}{9}(1-0.9)^0 (0.9)^{10} + \binom{10}{9}(1-0.9)^1 (0.9)^{10}</mrow>
+        <mrow>\amp\quad + \binom{11}{9}(1-0.9)^2 (0.9)^{10}</mrow>
+        <mrow>\amp= 0.89</mrow>
+      </md>
+
+      <p>
+        Using R:
+      </p>
+
+      <program language="r" xml:id="code-nbinomEx">
+        <input>
+# could also use pnbinom(2, 10, .9)
+sum(dnbinom(0:2, size = 10, prob = .9))
+        </input>
+      </program>
+
+      <p>
+        Thus, there is a 89% chance that she gets 10 correct responses before missing 3.
+      </p>
+    </subsection>
+
+    <subsection xml:id="subsec-hypergeometric">
+      <title>Hypergeometric Random Variable</title>
+
+      <p>
+        In all previous random variables, we considered a Bernoulli process, where the probability
+        of a success remained constant across all trials. What if this probability is dynamic? The
+        <term>hypergeometric random variable</term> helps us address some of these situations.
+        Specifically, what if we wanted to select <m>n</m> items <em>without replacement</em> from
+        a collection of <m>N</m> objects, <m>m</m> of which are considered successes? In that case,
+        the probability of selecting a <q>success</q> depends on the previous selections. If we
+        model <m>Y</m>, the number of successes after <m>n</m> selections, <m>Y</m> follows a
+        <term>hypergeometric distribution</term><idx><h>hypergeometric distribution</h></idx> where
+      </p>
+
+      <men xml:id="eq-hyperGeoRV">
+        P(Y=y) = \frac{\binom{m}{y} \binom{N-m}{n-y}}{\binom{N}{n}} \quad \text{for} \quad y = 0, 1, \ldots, \min(m,n).
+      </men>
+
+      <p>
+        If <m>Y</m> follows a hypergeometric distribution and we define <m>p = m/N</m>, then
+        <m>\E(Y) = np</m> and <m>\SD(Y) = \sqrt{np(1-p)\frac{N-n}{N-1}}</m>.
+        <xref ref="fig-multHyper"/> displays several hypergeometric distributions. On the left,
+        <m>N</m> and <m>n</m> are held constant. As <m>m \rightarrow N/2</m>, the distribution
+        becomes more and more symmetric. On the right, <m>m</m> and <m>N</m> are held constant.
+        Both distributions are displayed on the same scale. We can see that as <m>n \rightarrow N</m>
+        (or <m>n \rightarrow 0</m>), the distribution becomes less variable.
+      </p>
+
+      <program language="r" xml:id="code-multHyper-fig">
+        <input>
+#hyperGeometric Plots
+plotHyper &lt;- function(m, N, k){
+  yp &lt;- 0:10000
+  hd &lt;- data.frame(x = rhyper(yp, m, N-m, k))
+  ggplot(hd, aes(x = x)) + geom_histogram(aes(y=..count../sum(..count..)), binwidth = .25) +
+  xlab("number of successes") + ylab("probability") + labs(title=paste("m = ", m, ",", "N = ", N, ",", "n = ", k))
+}
+
+Hyp1 &lt;- plotHyper(25,1000,100) + xlim(-1,25) + scale_y_continuous(breaks = c(0.00, 0.05, 0.10, 0.15, 0.20, 0.25))
+Hyp2 &lt;- plotHyper(200,1000,500) + xlim(80,120)
+Hyp3 &lt;- plotHyper(100,1000,100) + xlim(-1,25)
+Hyp4 &lt;- plotHyper(200,1000,950) + xlim(160,200)
+grid.arrange(Hyp1, Hyp2, Hyp3, Hyp4, ncol=2)
+        </input>
+      </program>
+
+      <figure xml:id="fig-multHyper">
+        <caption>Hypergeometric distributions with different values of <m>m</m>, <m>N</m>, and <m>n</m>.</caption>
+        <image source="generated-assets/fig-multHyper.png" width="90%">
+          <description>A 2x2 panel of hypergeometric distribution histograms. The left column holds
+          N and n constant while varying m, showing the distribution becoming more symmetric as m
+          approaches N/2. The right column holds m and N constant while varying n.</description>
+        </image>
+      </figure>
+
+      <p>
+        If we wish to calculate probabilities through R, <c>dhyper(y, m, N-m, n)</c> gives
+        <m>P(Y=y)</m> given <m>n</m> draws without replacement from <m>m</m> successes and
+        <m>N-m</m> failures.
+      </p>
+
+      <p>
+        <alert>Example 5:</alert> Suppose a deck of cards is randomly shuffled. What is the
+        probability that all 4 queens are located within the first 10 cards?
+      </p>
+
+      <p>
+        We can model <m>Y</m>, the number of queens in the first 10 cards as a hypergeometric
+        random variable where <m>n = 10</m>, <m>m = 4</m>, and <m>N = 52</m>. Then,
+        <m>P(Y=4) = \displaystyle \frac{\binom{4}{4}\binom{48}{6}}{\binom{52}{10}} = 0.0008</m>.
+        We can avoid this calculation through R, of course:
+      </p>
+
+      <program language="r" xml:id="code-hyperEx">
+        <input>
+dhyper(4, m = 4, n = 48, k = 10)
+        </input>
+      </program>
+
+      <p>
+        So, there is a 0.08% chance of all 4 queens being within the first 10 cards of a randomly
+        shuffled deck of cards.
+      </p>
+    </subsection>
+
+    <subsection xml:id="subsec-poisson">
+      <title>Poisson Random Variable</title>
+
+      <p>
+        Sometimes, random variables are based on a
+        <term>Poisson process</term>.<idx><h>Poisson process</h></idx> In a Poisson process, we
+        are counting the number of events per unit of time or space and the number of events depends
+        only on the length or size of the interval. We can then model <m>Y</m>, the number of events
+        in one of these sections with the
+        <term>Poisson distribution</term>,<idx><h>Poisson distribution</h></idx> where
+      </p>
+
+      <men xml:id="eq-poissRV">
+        P(Y=y) = \frac{e^{-\lambda}\lambda^y}{y!} \quad \text{for} \quad y = 0, 1, \ldots, \infty,
+      </men>
+
+      <p>
+        where <m>\lambda</m> is the mean or expected count in the unit of time or space of interest.
+        This probability mass function has <m>\E(Y) = \lambda</m> and
+        <m>\SD(Y) = \sqrt{\lambda}</m>. Three Poisson distributions are displayed in
+        <xref ref="fig-multPois"/>. Notice how distributions become more symmetric as <m>\lambda</m>
+        increases.
+      </p>
+
+      <program language="r" xml:id="code-multPois-fig">
+        <input>
+#poissonPlots
+plotPois &lt;- function(lam){
+yp = 0:10000 # possible values
+pd &lt;- data.frame(x=rpois(yp, lam))  # generate random deviates
+breaks &lt;- pretty(range(pd$x), n = nclass.FD(pd$x), min.n = 1)  # pretty binning
+ggplot(pd, aes(x = x)) + geom_histogram(aes(y=..count../sum(..count..)), binwidth = .25) +
+  xlab("number of events") + ylab("probability") +
+  labs(title=paste("Poisson lambda = ", lam)) + xlim(-1,13)
+}
+
+Pois1 &lt;- plotPois(0.5)
+Pois2 &lt;- plotPois(1)
+Pois3 &lt;- plotPois(5) + scale_y_continuous(breaks = c(0, 0.1))
+grid.arrange(Pois1,Pois2,Pois3,ncol=1)
+        </input>
+      </program>
+
+      <figure xml:id="fig-multPois">
+        <caption>Poisson distributions with <m>\lambda = 0.5,\ 1</m>, and <m>5</m>.</caption>
+        <image source="generated-assets/fig-multPois.png" width="90%">
+          <description>A panel of three Poisson distribution histograms with lambda = 0.5, 1,
+          and 5. Distributions become more symmetric as lambda increases.</description>
+        </image>
+      </figure>
+
+      <p>
+        If we wish to use R, <c>dpois(y, lambda)</c> outputs the probability of <m>y</m> events
+        given <m>\lambda</m>.
+      </p>
+
+      <p>
+        <alert>Example 6:</alert> A small town's police department issues 5 speeding tickets per
+        month on average. Using a Poisson random variable, what is the likelihood that the police
+        department issues 3 or fewer tickets in one month?
+      </p>
+
+      <p>
+        First, we note that here
+        <m>P(Y \le 3) = P(Y=0) + P(Y=1) + \cdots + P(Y=3)</m>. Applying the probability mass
+        function for a Poisson distribution with <m>\lambda = 5</m>, we find that
+      </p>
+
+      <md>
+        <mrow>P(Y \le 3) \amp= P(Y=0) + P(Y=1) + P(Y=2) + P(Y=3)</mrow>
+        <mrow>\amp= \frac{e^{-5}5^0}{0!} + \frac{e^{-5}5^1}{1!} + \frac{e^{-5}5^2}{2!} + \frac{e^{-5}5^3}{3!}</mrow>
+        <mrow>\amp= 0.27.</mrow>
+      </md>
+
+      <p>
+        We can verify through R:
+      </p>
+
+      <program language="r" xml:id="code-poisEx">
+        <input>
+sum(dpois(0:3, lambda = 5))   # or use ppois(3, 5)
+        </input>
+      </program>
+
+      <p>
+        Therefore, there is a 27% chance of 3 or fewer tickets being issued within one month.
+      </p>
+    </subsection>
+  </section>
+
+  <section xml:id="sec-continuous-rv">
+    <title>Continuous Random Variables</title>
+
+    <p>
+      A continuous random variable can take on an uncountably infinite number of values. With
+      continuous random variables, we define probabilities using
+      <term>probability density functions</term>
+      (pdfs).<idx><h>probability density function (pdf)</h></idx> Probabilities are calculated by
+      computing the area under the density curve over the interval of interest. So, given a pdf,
+      <m>f(y)</m>, we can compute
+    </p>
+
+    <me>
+      P(a \le Y \le b) = \int_a^b f(y)dy.
+    </me>
+
+    <p>
+      This hints at a few properties of continuous random variables:
+    </p>
+
+    <ul>
+      <li><p><m>\int_{-\infty}^{\infty} f(y)dy = 1</m>.</p></li>
+      <li><p>For any value <m>y</m>, <m>P(Y = y) = \int_y^y f(y)dy = 0</m>.</p></li>
+      <li><p>Because of the above property, <m>P(y \lt Y) = P(y \le Y)</m>. We will typically use
+      the first notation rather than the second, but both are equally valid.</p></li>
+    </ul>
+
+    <subsection xml:id="subsec-exponential">
+      <title>Exponential Random Variable</title>
+
+      <p>
+        Suppose we have a Poisson process with rate <m>\lambda</m>, and we wish to model the wait
+        time <m>Y</m> until the first event. We could model <m>Y</m> using an
+        <term>exponential distribution</term>,<idx><h>exponential distribution</h></idx> where
+      </p>
+
+      <men xml:id="eq-expRV">
+        f(y) = \lambda e^{-\lambda y} \quad \text{for} \quad y > 0,
+      </men>
+
+      <p>
+        where <m>\E(Y) = 1/\lambda</m> and <m>\SD(Y) = 1/\lambda</m>.
+        <xref ref="fig-multExp"/> displays three exponential distributions with different
+        <m>\lambda</m> values. As <m>\lambda</m> increases, <m>\E(Y)</m> tends towards 0, and
+        distributions <q>die off</q> quicker.
+      </p>
+
+      <program language="r" xml:id="code-multExp-fig">
+        <input>
+#exponentialPlots
+x=seq(0,4,by=0.01)  # possible values
+probex1 &lt;- dexp(x,.5)  # P(Y=y)
+probex2 &lt;- dexp(x,1)
+probex3 &lt;- dexp(x,5)
+Expdf &lt;- tibble(x,probex1, probex2, probex3) %&gt;%
+  rename(x = x,
+         `0.5` = probex1,
+         `1` = probex2,
+         `5` = probex3) %&gt;%
+  gather(2:4, key = "Lambda", value = "value") %&gt;%
+  mutate(Lambda = factor(Lambda, levels = c("0.5", "1", "5")))
+ggplot(data = Expdf, aes(x = x, y = value, color = Lambda)) +
+  geom_line(aes(linetype = Lambda)) +
+  xlab("values") + ylab("density") +
+  labs(title = "Exponential Distributions") +
+  xlim(0,4) + ylim(0,3)
+        </input>
+      </program>
+
+      <figure xml:id="fig-multExp">
+        <caption>Exponential distributions with <m>\lambda = 0.5, 1,</m> and <m>5</m>.</caption>
+        <image source="generated-assets/fig-multExp.png" width="90%">
+          <description>Three exponential distribution density curves with lambda = 0.5, 1, and 5.
+          As lambda increases, the mean shifts toward 0 and the distribution decays more
+          quickly.</description>
+        </image>
+      </figure>
+
+      <p>
+        If we wish to use R, <c>pexp(y, lambda)</c> outputs the probability <m>P(Y \lt y)</m>
+        given <m>\lambda</m>.
+      </p>
+
+      <p>
+        <alert>Example 7:</alert> Refer to Example 6. What is the probability that 10 days or
+        fewer elapse between two tickets being issued?
+      </p>
+
+      <p>
+        We know the town's police issue 5 tickets per month. For simplicity's sake, assume each
+        month has 30 days. Then, the town issues <m>\frac{1}{6}</m> tickets per day. That is
+        <m>\lambda = \frac{1}{6}</m>, and the average wait time between tickets is
+        <m>\frac{1}{1/6} = 6</m> days. Therefore,
+      </p>
+
+      <me>
+        P(Y \lt 10) = \int_{0}^{10} \textstyle \frac{1}{6} e^{-\frac{1}{6}y} dy = 0.81.
+      </me>
+
+      <p>
+        We can also use R:
+      </p>
+
+      <program language="r" xml:id="code-expEx">
+        <input>
+pexp(10, rate = 1/6)
+        </input>
+      </program>
+
+      <p>
+        Hence, there is a 81% chance of waiting fewer than 10 days between tickets.
+      </p>
+    </subsection>
+
+    <subsection xml:id="subsec-gamma">
+      <title>Gamma Random Variable</title>
+
+      <p>
+        Once again consider a Poisson process. When discussing exponential random variables, we
+        modeled the wait time before one event occurred. If <m>Y</m> represents the wait time
+        before <m>r</m> events occur in a Poisson process with rate <m>\lambda</m>, <m>Y</m>
+        follows a <term>gamma distribution</term><idx><h>gamma distribution</h></idx> where
+      </p>
+
+      <men xml:id="eq-gammaRV">
+        f(y) = \frac{\lambda^r}{\Gamma(r)} y^{r-1} e^{-\lambda y}\quad \text{for} \quad y >0.
+      </men>
+
+      <p>
+        If <m>Y \sim \text{Gamma}(r, \lambda)</m> then <m>\E(Y) = r/\lambda</m> and
+        <m>\SD(Y) = \sqrt{r/\lambda^2}</m>. A few gamma distributions are displayed in
+        <xref ref="fig-multGamma"/>. Observe that means increase as <m>r</m> increases, but
+        decrease as <m>\lambda</m> increases.
+      </p>
+
+      <program language="r" xml:id="code-multGamma-fig">
+        <input>
+x &lt;- seq(0, 7, by = 0.01)
+`r = 1, lambda = 1` &lt;- dgamma(x, 1, rate = 1)
+`r = 2, lambda = 1` &lt;- dgamma(x, 2, rate = 1)
+`r = 5, lambda = 5` &lt;- dgamma(x, 5, rate = 5)
+`r = 5, lambda = 7` &lt;- dgamma(x, 5, rate = 7)
+
+gammaDf &lt;- tibble(x, `r = 1, lambda = 1`, `r = 2, lambda = 1`, `r = 5, lambda = 5`, `r = 5, lambda = 7`) %&gt;%
+  gather(2:5, key = "Distribution", value = "value") %&gt;%
+  mutate(Distribution = factor(Distribution,
+                               levels = c("r = 2, lambda = 1",
+                                          "r = 1, lambda = 1",
+                                          "r = 5, lambda = 5",
+                                          "r = 5, lambda = 7")))
+
+ggplot(data = gammaDf, aes(x = x, y = value,
+                           color = Distribution)) +
+  geom_line(aes(linetype = Distribution)) +
+  xlab("values") + ylab("density") +
+  labs(title = "Gamma Distributions") +
+  theme(legend.title = element_blank())
+        </input>
+      </program>
+
+      <figure xml:id="fig-multGamma">
+        <caption>Gamma distributions with different values of <m>r</m> and <m>\lambda</m>.</caption>
+        <image source="generated-assets/fig-multGamma.png" width="90%">
+          <description>Four gamma distribution density curves with different combinations of r and
+          lambda. Means increase as r increases and decrease as lambda increases.</description>
+        </image>
+      </figure>
+
+      <p>
+        Note that if we let <m>r = 1</m>, we have the following pdf,
+      </p>
+
+      <md>
+        <mrow>f(y) \amp= \frac{\lambda}{\Gamma(1)} y^{1-1} e^{-\lambda y}</mrow>
+        <mrow>\amp= \lambda e^{-\lambda y} \quad \text{for} \quad y > 0,</mrow>
+      </md>
+
+      <p>
+        an exponential distribution. Just as how the geometric distribution was a special case of
+        the negative binomial, exponential distributions are in fact a special case of gamma
+        distributions!
+      </p>
+
+      <p>
+        Just like negative binomial, the pdf of a gamma distribution is defined for all real,
+        non-negative <m>r</m>.
+      </p>
+
+      <p>
+        In R, <c>pgamma(y, r, lambda)</c> outputs the probability <m>P(Y \lt y)</m> given
+        <m>r</m> and <m>\lambda</m>.
+      </p>
+
+      <p>
+        <alert>Example 8:</alert> Two friends are out fishing. On average they catch two fish per
+        hour, and their goal is to catch 5 fish. What is the probability that they take less than
+        3 hours to reach their goal?
+      </p>
+
+      <p>
+        Using a gamma random variable, we set <m>r = 5</m> and <m>\lambda = 2</m>. So,
+      </p>
+
+      <me>
+        P(Y \lt 3) = \int_0^3 \frac{2^4}{\Gamma(5)} y^{4} e^{-2y}dy = 0.715.
+      </me>
+
+      <p>
+        Using R:
+      </p>
+
+      <program language="r" xml:id="code-gammaEx">
+        <input>
+pgamma(3, shape = 5, rate = 2)
+        </input>
+      </program>
+
+      <p>
+        There is a 71.5% chance of catching 5 fish within the first 3 hours.
+      </p>
+    </subsection>
+
+    <subsection xml:id="subsec-normal">
+      <title>Normal (Gaussian) Random Variable</title>
+
+      <p>
+        You have already at least informally seen normal random variables when evaluating LLSR
+        assumptions. To recall, we required responses to be normally distributed at each level of
+        <m>X</m>. Like any continuous random variable, normal (also called Gaussian) random
+        variables have their own pdf, dependent on <m>\mu</m>, the population mean of the variable
+        of interest, and <m>\sigma</m>, the population standard deviation. We find that
+      </p>
+
+      <men xml:id="eq-normalRV">
+        f(y) = \frac{e^{-(y-\mu)^2/ (2 \sigma^2)}}{\sqrt{2\pi\sigma^2}} \quad \text{for} \quad -\infty \lt y \lt \infty.
+      </men>
+
+      <p>
+        As the parameter names suggest, <m>\E(Y) = \mu</m> and <m>\SD(Y) = \sigma</m>. Often,
+        normal distributions are referred to as <m>\text{N}(\mu, \sigma)</m>, implying a normal
+        distribution<idx><h>normal distribution</h></idx> with mean <m>\mu</m> and standard
+        deviation <m>\sigma</m>. The distribution <m>\text{N}(0,1)</m> is often referred to as the
+        <term>standard normal distribution</term>. A few normal distributions are displayed in
+        <xref ref="fig-multNorm"/>.
+      </p>
+
+      <program language="r" xml:id="code-multNorm-fig">
+        <input>
+#normalPlots
+x &lt;- seq(-10, 20, by = 0.01)
+norm1 &lt;- dnorm(x, -5, 2)
+norm2 &lt;- dnorm(x, 0 , 1)
+norm3 &lt;- dnorm(x, 5, 5)
+norm4 &lt;- dnorm(x, 0, 3)
+
+normDf &lt;- tibble(x, norm1, norm2, norm3, norm4) %&gt;%
+  rename(`N(-5, 2)` = norm1,
+         `N(0, 1)` = norm2,
+         `N(10, 5)` = norm3,
+         `N(0, 3)` = norm4) %&gt;%
+  gather(2:5, key = "Distribution", value = "value") %&gt;%
+  mutate(Distribution = factor(Distribution,
+    levels = c("N(10, 5)","N(0, 3)", "N(0, 1)", "N(-5, 2)")))
+
+ggplot(data = normDf,
+       aes(x = x, y = value, color = Distribution)) +
+  geom_line(aes(linetype = Distribution)) +
+  xlab("values") + ylab("density") +
+  labs(title = "Normal Distributions")
+        </input>
+      </program>
+
+      <figure xml:id="fig-multNorm">
+        <caption>Normal distributions with different values of <m>\mu</m> and <m>\sigma</m>.</caption>
+        <image source="generated-assets/fig-multNorm.png" width="90%">
+          <description>Four normal distribution density curves with different mean and standard
+          deviation values, illustrating how the center and spread of the distribution change with
+          mu and sigma.</description>
+        </image>
+      </figure>
+
+      <p>
+        In R, <c>pnorm(y, mean, sd)</c> outputs the probability <m>P(Y \lt y)</m> given a mean
+        and standard deviation.
+      </p>
+
+      <p>
+        <alert>Example 9:</alert> The weight of a box of Fruity Tootie cereal is approximately
+        normally distributed with an average weight of 15 ounces and a standard deviation of 0.5
+        ounces. What is the probability that the weight of a randomly selected box is more than
+        15.5 ounces?
+      </p>
+
+      <p>
+        Using a normal distribution,
+      </p>
+
+      <me>
+        P(Y > 15.5) = \int_{15.5}^{\infty} \frac{e^{-(y-15)^2/ (2\cdot 0.5^2)}}{\sqrt{2\pi\cdot 0.5^2}}dy = 0.159.
+      </me>
+
+      <p>
+        We can use R as well:
+      </p>
+
+      <program language="r" xml:id="code-normalEx">
+        <input>
+pnorm(15.5, mean = 15, sd = 0.5, lower.tail = FALSE)
+        </input>
+      </program>
+
+      <p>
+        There is a 16% chance of a randomly selected box weighing more than 15.5 ounces.
+      </p>
+    </subsection>
+
+    <subsection xml:id="subsec-beta">
+      <title>Beta Random Variable</title>
+
+      <p>
+        So far, all of our continuous variables have had no upper bound. If we want to limit our
+        possible values to a smaller interval, we may turn to a
+        <term>beta random variable</term>. In fact, we often use beta random variables to model
+        distributions of probabilities---bounded below by 0 and above by 1. The pdf is
+        parameterized by two values, <m>\alpha</m> and <m>\beta</m>
+        (<m>\alpha, \beta > 0</m>). We can describe a beta random variable by the following pdf:
+      </p>
+
+      <men xml:id="eq-betaRV">
+        f(y) = \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha)\Gamma(\beta)} y^{\alpha-1} (1-y)^{\beta-1} \quad \text{for} \quad 0 \lt y \lt 1.
+      </men>
+
+      <p>
+        If <m>Y \sim \text{Beta}(\alpha, \beta)</m>, then
+        <m>\E(Y) = \alpha/(\alpha + \beta)</m> and
+        <m>\SD(Y) = \displaystyle \sqrt{\frac{\alpha \beta}{(\alpha + \beta)^2 (\alpha+\beta+1)}}</m>.
+        <xref ref="fig-multBeta"/> displays several beta distributions.<idx><h>beta distribution</h></idx>
+        Note that when <m>\alpha = \beta</m>, distributions are symmetric. The distribution is
+        left-skewed when <m>\alpha > \beta</m> and right-skewed when <m>\beta > \alpha</m>.
+      </p>
+
+      <program language="r" xml:id="code-multBeta-fig">
+        <input>
+#betaPlots
+x=seq(0,1,by=0.01)  # possible values
+prob1 &lt;- dbeta(x, 2, 5)
+prob2 &lt;- dbeta(x, .5, .5)
+prob3 &lt;- dbeta(x, 2, 2)
+prob4 &lt;- dbeta(x, 4, 1)
+betaDf &lt;- tibble(x,prob1, prob2, prob3, prob4) %&gt;%
+  rename(x = x,
+         `Beta(2, 5)` = prob1,
+         `Beta(0.5, 0.5)` = prob2,
+         `Beta(2, 2)` = prob3,
+         `Beta(4, 1)` = prob4) %&gt;%
+  gather(2:5, key = "Distribution", value = "value") %&gt;%
+  mutate(Distribution = factor(Distribution,
+    levels = c("Beta(0.5, 0.5)", "Beta(4, 1)", "Beta(2, 2)",
+               "Beta(2, 5)"))) #manual reorder
+
+ggplot(data = betaDf,
+       aes(x = x, y = value, color = Distribution)) +
+  geom_line(aes(linetype = Distribution)) +
+  xlab("values") + ylab("density") +
+  labs(title="Beta Distributions") +
+  xlim(0,1) + ylim(0,4)
+        </input>
+      </program>
+
+      <figure xml:id="fig-multBeta">
+        <caption>Beta distributions with different values of <m>\alpha</m> and <m>\beta</m>.</caption>
+        <image source="generated-assets/fig-multBeta.png" width="90%">
+          <description>Four beta distribution density curves with different alpha and beta values.
+          Distributions are symmetric when alpha equals beta, left-skewed when alpha is greater
+          than beta, and right-skewed when beta is greater than alpha.</description>
+        </image>
+      </figure>
+
+      <p>
+        If <m>\alpha = \beta = 1</m>, then
+      </p>
+
+      <md>
+        <mrow>f(y) \amp= \frac{\Gamma(1)}{\Gamma(1)\Gamma(1)}y^0(1-y)^0</mrow>
+        <mrow>\amp= 1 \quad \text{for} \quad 0 \lt y \lt 1.</mrow>
+      </md>
+
+      <p>
+        This distribution is referred to as a <term>uniform distribution</term>.
+      </p>
+
+      <p>
+        In R, <c>pbeta(y, alpha, beta)</c> yields <m>P(Y \lt y)</m> assuming
+        <m>Y \sim \text{Beta}(\alpha, \beta)</m>.
+      </p>
+
+      <p>
+        <alert>Example 10:</alert> A private college in the Midwest models the probabilities of
+        prospective students accepting an admission decision through a beta distribution with
+        <m>\alpha = \frac{4}{3}</m> and <m>\beta = 2</m>. What is the probability that a randomly
+        selected student has probability of accepting greater than 80%?
+      </p>
+
+      <p>
+        Letting <m>Y \sim \text{Beta}(4/3,2)</m>, we can calculate
+      </p>
+
+      <me>
+        P(Y > 0.8) = \int_{0.8}^1 \frac{\Gamma(4/3 + 2)}{\Gamma(4/3)\Gamma(2)} y^{4/3-1} (1-y)^{2-1}dy = 0.06.
+      </me>
+
+      <p>
+        Alternatively, in R:
+      </p>
+
+      <program language="r" xml:id="code-betaEx">
+        <input>
+pbeta(0.8, shape1 = 4/3, shape2 = 2, lower.tail = FALSE)
+        </input>
+      </program>
+
+      <p>
+        Hence, there is a 6% chance that a randomly selected student has a probability of accepting
+        an admission decision above 80%.
+      </p>
+    </subsection>
+  </section>
+
+  <section xml:id="sec-dist-testing">
+    <title>Distributions Used in Testing</title>
+
+    <p>
+      We have spent most of this chapter discussing probability distributions that may come in handy
+      when modeling. The following distributions, while rarely used in modeling, prove useful in
+      hypothesis testing as certain commonly used test statistics follow these distributions.
+    </p>
+
+    <subsection xml:id="subsec-chisq">
+      <title><m>\chi^2</m> Distribution</title>
+
+      <p>
+        You have probably already encountered <m>\chi^2</m> tests before. For example,
+        <m>\chi^2</m> tests are used with two-way contingency tables to investigate the association
+        between row and column variables. <m>\chi^2</m> tests are also used in goodness-of-fit
+        testing such as comparing counts expected according to Mendelian ratios to observed data.
+        In those situations, <m>\chi^2</m> tests compare observed counts to what would be expected
+        under the null hypotheses and reject the null when these observed discrepancies are too large.
+      </p>
+
+      <p>
+        In this course, we encounter <m>\chi^2</m>
+        distributions<idx><h>chi-square distribution</h></idx> in several testing situations. In
+        <xref provisional="sec-lrtest"/> we performed likelihood ratio tests (LRTs) to compare
+        nested models. When a larger model provides no significant improvement over a reduced model,
+        the LRT statistic (which is twice the difference in the log-likelihoods) follows a
+        <m>\chi^2</m> distribution with the degrees of freedom equal to the difference in the
+        number of parameters.
+      </p>
+
+      <p>
+        In general, <m>\chi^2</m> distributions with <m>k</m> degrees of freedom are right skewed
+        with a mean <m>k</m> and standard deviation <m>\sqrt{2k}</m>.
+        <xref ref="fig-multChisq"/> displays chi-square distributions with different values of
+        <m>k</m>.
+      </p>
+
+      <p>
+        The <m>\chi^2</m> distribution is a special case of a gamma distribution. Specifically,
+        a <m>\chi^2</m> distribution with <m>k</m> degrees of freedom can be expressed as a gamma
+        distribution with <m>\lambda = 1/2</m> and <m>r = k/2</m>.
+      </p>
+
+      <program language="r" xml:id="code-multChisq-fig">
+        <input>
+#chisquarePlots
+x=seq(0,15,by=0.01)  # possible values
+prob1 &lt;- dchisq(x,1)  # P(Y=y)
+prob2 &lt;- dchisq(x,3)
+prob3 &lt;- dchisq(x,7)
+
+chiDf &lt;- tibble(x,prob1, prob2, prob3) %&gt;%
+  rename(x = x,
+         `1` = prob1,
+         `3` = prob2,
+         `7` = prob3) %&gt;%
+  gather(2:4, key = "Degrees of Freedom", value = "value") %&gt;%
+  mutate(`Degrees of Freedom` = factor(`Degrees of Freedom`, levels = c("7", "3", "1")))
+
+ggplot(data = chiDf,
+       aes(x = x, y = value, color = `Degrees of Freedom`)) +
+  geom_line(aes(linetype = `Degrees of Freedom`)) +
+  xlab("values") + ylab("density") +
+  labs(title="Chi-squared Distributions") +
+  xlim(-1,15) + ylim(0,.5)
+        </input>
+      </program>
+
+      <figure xml:id="fig-multChisq">
+        <caption><m>\chi^2</m> distributions with 1, 3, and 7 degrees of freedom.</caption>
+        <image source="generated-assets/fig-multChisq.png" width="90%">
+          <description>Three chi-squared distribution density curves with 1, 3, and 7 degrees of
+          freedom. All are right-skewed with means equal to their degrees of freedom.</description>
+        </image>
+      </figure>
+
+      <p>
+        In R, <c>pchisq(y, df)</c> outputs <m>P(Y \lt y)</m> given <m>k</m> degrees of freedom.
+      </p>
+    </subsection>
+
+    <subsection xml:id="subsec-tdist">
+      <title>Student's <m>t</m>-Distribution</title>
+
+      <p>
+        You likely have seen Student's
+        <m>t</m>-distribution<idx><h>t-distribution</h></idx> (developed by William Sealy Gosset
+        under the penname <em>Student</em>) in a previous statistics course. You may have used it
+        when drawing inferences about the means of normally distributed populations with unknown
+        population standard deviations. <m>t</m>-distributions are parameterized by their degrees
+        of freedom, <m>k</m>.
+      </p>
+
+      <p>
+        A <m>t</m>-distribution with <m>k</m> degrees of freedom has mean <m>0</m> and standard
+        deviation <m>k/(k-2)</m> (standard deviation is only defined for <m>k > 2</m>). As
+        <m>k \rightarrow \infty</m> the <m>t</m>-distribution approaches the standard normal
+        distribution.
+      </p>
+
+      <program language="r" xml:id="code-multT-fig">
+        <input>
+x &lt;- seq(-5,5, by = 0.01)
+probT1 &lt;- dt(x, 1)
+probT2 &lt;- dt(x, 2)
+probT3 &lt;- dt(x, 10)
+probT4 &lt;- dnorm(x, 0, 1)
+
+tDf &lt;- tibble(x, probT1, probT2, probT3, probT4) %&gt;%
+  rename(x = x,
+         `1` = probT1,
+         `2` = probT2,
+         `10` = probT3,
+         `Inf` = probT4) %&gt;%
+  gather(2:5, key = "Degrees of Freedom", value = "value") %&gt;%
+  mutate(`Degrees of Freedom` = factor(`Degrees of Freedom`, levels = c("1","2","10", "Inf")))
+
+ggplot(data = tDf, aes(x = x, y = value,
+                       color = `Degrees of Freedom`)) +
+  geom_line(aes(linetype = `Degrees of Freedom`)) +
+  xlab("values") + ylab("density") +
+  labs(title="t-Distributions")
+        </input>
+      </program>
+
+      <figure xml:id="fig-multT">
+        <caption><m>t</m>-distributions with 1, 2, 10, and Infinite degrees of freedom.</caption>
+        <image source="generated-assets/fig-multT.png" width="90%">
+          <description>Four t-distribution density curves with 1, 2, 10, and infinite (standard
+          normal) degrees of freedom. As degrees of freedom increase, the distribution approaches
+          the standard normal.</description>
+        </image>
+      </figure>
+
+      <p>
+        <xref ref="fig-multT"/> displays some <m>t</m>-distributions, where a
+        <m>t</m>-distribution with infinite degrees of freedom is equivalent to a standard normal
+        distribution (with mean 0 and standard deviation 1). In R, <c>pt(y, df)</c> outputs
+        <m>P(Y \lt y)</m> given <m>k</m> degrees of freedom.
+      </p>
+    </subsection>
+
+    <subsection xml:id="subsec-fdist">
+      <title><m>F</m>-Distribution</title>
+
+      <p>
+        <m>F</m>-distributions<idx><h>F-distribution</h></idx> are also used when performing
+        statistical tests. Like the <m>\chi^2</m> distribution, the values from an
+        <m>F</m>-distribution are non-negative and the distribution is right skewed; in fact, an
+        <m>F</m>-distribution can be derived as the ratio of two <m>\chi^2</m> random variables.
+        R.A. Fisher (for whom the test is named) devised this test statistic to compare two
+        different estimates of the same variance parameter, and it has a prominent role in Analysis
+        of Variance (ANOVA). Model comparisons are often based on the comparison of variance
+        estimates, e.g., the extra sums-of-squares <m>F</m> test. <m>F</m>-distributions are
+        indexed by two degrees-of-freedom values, one for the numerator (<m>k_1</m>) and one for
+        the denominator (<m>k_2</m>). The expected value for an <m>F</m>-distribution with
+        <m>k_1, k_2</m> degrees of freedom under the null hypothesis is
+        <m>\frac{k_2}{k_2 - 2}</m>, which approaches <m>1</m> as <m>k_2 \rightarrow \infty</m>.
+        The standard deviation decreases as <m>k_1</m> increases for fixed <m>k_2</m>, as seen in
+        <xref ref="fig-multF"/>, which illustrates several F-distributions.
+      </p>
+
+      <program language="r" xml:id="code-multF-fig">
+        <input>
+#fPlots
+x=seq(0,7,by=0.01)  # possible values
+probF1 &lt;- df(x,1,1)  # P(Y=y)
+probF2 &lt;- df(x,4,2)
+probF3 &lt;- df(x,5,10)
+
+fDf &lt;- tibble(x, probF1, probF2, probF3) %&gt;%
+  rename(x = x,
+         `F(1, 1)` = probF1,
+         `F(4, 2)` = probF2,
+         `F(5, 10)` = probF3) %&gt;%
+  gather(2:4, key = "Distribution", value = "value")
+
+ggplot(data = fDf, aes(x = x, y = value, color = Distribution)) +
+  geom_line(aes(linetype = Distribution)) +
+  xlab("values") + ylab("density") +
+  labs(title="F Distributions") +
+  xlim(0,3) + ylim(0,1)
+        </input>
+      </program>
+
+      <figure xml:id="fig-multF">
+        <caption><m>F</m>-distributions with different degrees of freedom.</caption>
+        <image source="generated-assets/fig-multF.png" width="90%">
+          <description>Three F-distribution density curves with different numerator and denominator
+          degrees of freedom. All are right-skewed; the standard deviation decreases as k1
+          increases for fixed k2.</description>
+        </image>
+      </figure>
+    </subsection>
+  </section>
+
+  <section xml:id="sec-distthry-resources">
+    <title>Additional Resources</title>
+
+    <p>
+      <xref ref="tab-distTable"/> briefly details most of the random variables discussed in
+      this chapter.
+    </p>
+
+    <table xml:id="tab-distTable">
+      <title>Review of mentioned random variables.</title>
+      <tabular halign="center">
+        <row header="yes">
+          <cell>Distribution Name</cell>
+          <cell>pmf / pdf</cell>
+          <cell>Parameters</cell>
+          <cell>Possible Y Values</cell>
+          <cell>Description</cell>
+        </row>
+        <row>
+          <cell>Binomial</cell>
+          <cell><m>\binom{n}{y} p^y (1-p)^{n-y}</m></cell>
+          <cell><m>p,\ n</m></cell>
+          <cell><m>0, 1, \ldots , n</m></cell>
+          <cell>Number of successes after <m>n</m> trials</cell>
+        </row>
+        <row>
+          <cell>Geometric</cell>
+          <cell><m>(1-p)^yp</m></cell>
+          <cell><m>p</m></cell>
+          <cell><m>0, 1, \ldots, \infty</m></cell>
+          <cell>Number of failures until the first success</cell>
+        </row>
+        <row>
+          <cell>Negative Binomial</cell>
+          <cell><m>\binom{y + r - 1}{r-1} (1-p)^{y}(p)^r</m></cell>
+          <cell><m>p,\ r</m></cell>
+          <cell><m>0, 1, \ldots, \infty</m></cell>
+          <cell>Number of failures before <m>r</m> successes</cell>
+        </row>
+        <row>
+          <cell>Hypergeometric</cell>
+          <cell><m>\binom{m}{y}\binom{N-m}{n-y}\big/\binom{N}{n}</m></cell>
+          <cell><m>n,\ m,\ N</m></cell>
+          <cell><m>0, 1, \ldots , \min(m,n)</m></cell>
+          <cell>Number of successes after <m>n</m> trials without replacement</cell>
+        </row>
+        <row>
+          <cell>Poisson</cell>
+          <cell><m>e^{-\lambda}\lambda^y\big/y!</m></cell>
+          <cell><m>\lambda</m></cell>
+          <cell><m>0, 1, \ldots, \infty</m></cell>
+          <cell>Number of events in a fixed interval</cell>
+        </row>
+        <row>
+          <cell>Exponential</cell>
+          <cell><m>\lambda e^{-\lambda y}</m></cell>
+          <cell><m>\lambda</m></cell>
+          <cell><m>(0, \infty)</m></cell>
+          <cell>Wait time for one event in a Poisson process</cell>
+        </row>
+        <row>
+          <cell>Gamma</cell>
+          <cell><m>\displaystyle\frac{\lambda^r}{\Gamma(r)} y^{r-1} e^{-\lambda y}</m></cell>
+          <cell><m>\lambda,\ r</m></cell>
+          <cell><m>(0, \infty)</m></cell>
+          <cell>Wait time for <m>r</m> events in a Poisson process</cell>
+        </row>
+        <row>
+          <cell>Normal</cell>
+          <cell><m>\displaystyle\frac{e^{-(y-\mu)^2/ (2 \sigma^2)}}{\sqrt{2\pi\sigma^2}}</m></cell>
+          <cell><m>\mu,\ \sigma</m></cell>
+          <cell><m>(-\infty,\ \infty)</m></cell>
+          <cell>Used to model many naturally occurring phenomena</cell>
+        </row>
+        <row>
+          <cell>Beta</cell>
+          <cell><m>\frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha)\Gamma(\beta)} y^{\alpha-1} (1-y)^{\beta-1}</m></cell>
+          <cell><m>\alpha,\ \beta</m></cell>
+          <cell><m>(0,\ 1)</m></cell>
+          <cell>Useful for modeling probabilities</cell>
+        </row>
+      </tabular>
+    </table>
+  </section>
+
+  <exercises xml:id="exercises-ch-distthry">
+    <title>Exercises</title>
+
+    <exercisegroup xml:id="conceptual-exercises-ch3">
+      <title>Conceptual Exercises</title>
+
+      <exercise xml:id="exercise-ch3-1">
+        <statement>
+          <p>
+            At what value of <m>p</m> is the standard deviation of a binary random variable
+            smallest? When is standard deviation largest?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch3-2">
+        <statement>
+          <p>
+            How are hypergeometric and binomial random variables different? How are they similar?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch3-3">
+        <statement>
+          <p>
+            How are exponential and Poisson random variables related?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch3-4">
+        <statement>
+          <p>
+            How are geometric and exponential random variables similar? How are they different?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch3-5">
+        <statement>
+          <p>
+            A university's college of sciences is electing a new board of 5 members. There are
+            35 applicants, 10 of which come from the math department. What distribution could be
+            helpful to model the probability of electing <m>X</m> board members from the math
+            department?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch3-6">
+        <statement>
+          <p>
+            Chapter 1 asked you to consider a scenario where <q>The Minnesota Pollution Control
+            Agency is interested in using traffic volume data to generate predictions of particulate
+            distributions as measured in counts per cubic feet.</q> What distribution might be
+            useful to model this count per cubic foot? Why?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch3-7">
+        <statement>
+          <p>
+            Chapter 1 also asked you to consider a scenario where <q>Researchers are attempting to
+            see if socioeconomic status and parental stability are predictive of low birthweight.
+            They classify a low birthweight as below 2500 g, hence our response is binary: 1 for
+            low birthweight, and 0 when the birthweight is not low.</q> What distribution might be
+            useful to model if a newborn has low birthweight?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch3-8">
+        <statement>
+          <p>
+            Chapter 1 also asked you to consider a scenario where <q>Researchers are interested in
+            how elephant age affects mating patterns among males. In particular, do older elephants
+            have greater mating success, and is there an optimal age for mating among males? Data
+            collected includes, for each elephant, age and number of matings in a given year.</q>
+            Which distribution would be useful to model the number of matings in a given year for
+            these elephants? Why?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch3-9">
+        <statement>
+          <p>
+            Describe a scenario which could be modeled using a gamma distribution.
+          </p>
+        </statement>
+      </exercise>
+    </exercisegroup>
+
+    <exercisegroup xml:id="guided-exercises-ch3">
+      <title>Guided Exercises</title>
+
+      <exercise xml:id="exercise-ch3-betabinom">
+        <statement>
+          <p>
+            <alert>Beta-binomial distribution.</alert> We can generate more distributions by mixing
+            two random variables.<idx><h>mixture model</h></idx> Beta-binomial random variables are
+            binomial random variables with fixed <m>n</m> whose parameter <m>p</m> follows a beta
+            distribution with fixed parameters <m>\alpha, \beta</m>. In more detail, we would first
+            draw <m>p_1</m> from our beta distribution, and then generate our first observation
+            <m>y_1</m>, a random number of successes from a binomial (<m>n, p_1</m>) distribution.
+            Then, we would generate a new <m>p_2</m> from our beta distribution, and use a binomial
+            distribution with parameters <m>n, p_2</m> to generate our second observation
+            <m>y_2</m>. We would continue this process until desired.
+          </p>
+
+          <p>
+            Note that all of the observations <m>y_i</m> will be integer values from
+            <m>0, 1, \ldots, n</m>. With this in mind, use <c>rbinom()</c> to simulate 1,000
+            observations from a plain old vanilla binomial random variable with <m>n=10</m> and
+            <m>p=0.8</m>. Plot a histogram of these binomial observations. Then, do the following
+            to generate a beta-binomial distribution:
+          </p>
+
+          <ol label="a">
+            <li><p>Draw <m>p_i</m> from the beta distribution with <m>\alpha=4</m> and <m>\beta=1</m>.</p></li>
+            <li><p>Generate an observation <m>y_i</m> from a binomial distribution with <m>n=10</m> and <m>p = p_i</m>.</p></li>
+            <li><p>Repeat (a) and (b) 1,000 times (<m>i=1,\ldots,1000</m>).</p></li>
+            <li><p>Plot a histogram of these beta-binomial observations.</p></li>
+          </ol>
+
+          <p>
+            Compare the histograms of the <q>plain old</q> binomial and beta-binomial
+            distributions. How do their shapes, standard deviations, means, possible values,
+            etc. compare?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch3-gamma-poisson1">
+        <statement>
+          <p>
+            <alert>Gamma-Poisson mixture I.</alert> Use the R function <c>rpois()</c> to generate
+            10,000 <m>x_i</m> from a plain old vanilla Poisson random variable,
+            <m>X \sim \text{Poisson}(\lambda=1.5)</m>. Plot a histogram of this distribution and
+            note its mean and standard deviation. Next, let
+            <m>Y \sim \text{Gamma}(r = 3, \lambda = 2)</m> and use <c>rgamma()</c> to generate
+            10,000 random <m>y_i</m> from this distribution. Now, consider 10,000 different
+            Poisson distributions where <m>\lambda_i = y_i</m>. Randomly generate one <m>z_i</m>
+            from each Poisson distribution. Plot a histogram of these <m>z_i</m> and compare it
+            to your original histogram of <m>X</m> (where
+            <m>X \sim \text{Poisson}(1.5)</m>). How do the means and standard deviations compare?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch3-gamma-poisson2">
+        <statement>
+          <p>
+            <alert>Gamma-Poisson mixture II.</alert> A negative binomial distribution can actually
+            be expressed as a gamma-Poisson mixture. In the previous problem's gamma-Poisson
+            mixture <m>Z \sim \text{Poisson}(\lambda)</m> where
+            <m>\lambda \sim \text{Gamma}(r = 3, \lambda' = 2)</m>. Find the parameters of a
+            negative binomial distribution <m>X \sim \text{Negative Binomial}(r, p)</m> such that
+            <m>X</m> is equivalent to <m>Z</m>. As a hint, the means of both distributions must
+            be the same, so <m>r(1-p)/p = 3/2</m>. Show through histograms and summary statistics
+            that your negative binomial distribution is equivalent to your gamma-Poisson mixture
+            from Problem 2. Argue that if you want a NB(<m>r</m>, <m>p</m>) random variable, you
+            can instead sample from a Poisson distribution, where the <m>\lambda</m> values are
+            themselves sampled from a gamma distribution with parameters <m>r</m> and
+            <m>\lambda' = \frac{p}{1-p}</m>.
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch3-mixture-normal">
+        <statement>
+          <p>
+            <alert>Mixture of two normal distributions.</alert> Sometimes, a value may be best
+            modeled by a mixture of two normal distributions. We would have 5 parameters in this
+            case: <m>\mu_1, \sigma_1, \mu_2, \sigma_2, \alpha</m>, where <m>0 \lt \alpha \lt 1</m>
+            is a mixing parameter determining the probability that an observation comes from the
+            first distribution. We would then have
+            <m>f(y) = \alpha\ f_1(y) + (1-\alpha)\ f_2(y)</m> (where <m>f_i(y)</m> is the pdf
+            of the normal distribution with <m>\mu_i, \sigma_i</m>). One phenomenon which could
+            be modeled this way would be the waiting times between eruptions of Old Faithful geyser
+            in Yellowstone National Park. The data can be accessed in R through <c>faithful</c>,
+            and a histogram of wait times can be found in <xref ref="fig-faithful"/>. The MLEs of
+            our 5 parameters would be the combination of values that produces the maximum
+            probability of our observed data. We will try to approximate MLEs by hand. Find a
+            combination of <m>\mu_1, \sigma_1, \mu_2, \sigma_2, \alpha</m> for this distribution
+            such that the logged likelihood is above <m>-1050</m>. (The command
+            <c>dnorm(x, mean, sd)</c>, which outputs <m>f(y)</m> assuming
+            <m>Y \sim \text{N}(\mu, \sigma)</m>, will be helpful in calculating likelihoods.)
+          </p>
+
+          <program language="r" xml:id="code-faithful-fig">
+            <input>
+ggplot(data = faithful, aes(x = waiting, y = ..density..)) +
+  geom_histogram(binwidth = 5, color = "black",
+                 fill = "white") +
+  labs(x = "Wait time in minutes", y = "Frequency")
+            </input>
+          </program>
+
+          <figure xml:id="fig-faithful">
+            <caption>Waiting time between eruptions of Old Faithful.</caption>
+            <image source="generated-assets/fig-faithful.png" width="90%">
+              <description>A histogram of waiting times between eruptions of Old Faithful geyser,
+              showing a bimodal distribution with peaks around 55 and 80 minutes.</description>
+            </image>
+          </figure>
+        </statement>
+      </exercise>
+    </exercisegroup>
+  </exercises>
 
 </chapter>
