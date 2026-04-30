@@ -753,7 +753,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
 
       <exercise xml:id="exer-ch4-c5">
         <statement>
-          <p>Models of the form <m>Y_i = \beta_0 + \beta_1 X_i + \epsilon_i</m>, <m>\epsilon_i \sim \text{iid}\,N(0,\sigma)</m> are fit using the method of least squares. What method is used to fit Poisson regression models?</p>
+          <p>Models of the form <m>Y_i = \beta_0 + \beta_1 X_i + \epsilon_i</m>, <m>\epsilon_i \overset{\text{i.i.d.}}{\sim} N(0,\sigma)</m> are fit using the method of least squares. What method is used to fit Poisson regression models?</p>
         </statement>
       </exercise>
 
@@ -821,7 +821,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
       <exercise xml:id="exer-ch4-c14">
         <title>Credit card use</title>
         <statement>
-          <p>A survey of 1,000 consumers asked respondents how many credit cards they use. Interest centers on the relationship between credit card use and income, in \$10,000. The estimated coefficient for income is 2.1.</p>
+          <p>A survey of 1,000 consumers asked respondents how many credit cards they use. Interest centers on the relationship between credit card use and income, in $10,000. The estimated coefficient for income is 2.1.</p>
           <p><ul>
             <li><p>Identify the predictor and interpret the estimated coefficient for the predictor in this context.</p></li>
             <li><p>Describe how the assumption of linearity can be assessed in this example.</p></li>
