@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <backmatter xmlns:xi="http://www.w3.org/2001/XInclude" xml:id="meta-back">
+  <references xml:id="references">
+    <title>References</title>
+    <biblio type="raw" xml:id="R-base">
+      R Core Team. <em>R: A Language and Environment for Statistical Computing</em>.
+      R Foundation for Statistical Computing, Vienna, Austria, 2021.
+      <url href="https://www.R-project.org/" visual="R-project.org"/>.
+    </biblio>
+    <biblio type="raw" xml:id="Cannon2019">
+      Cannon, Ann, et al. <em>Stat2: Modeling with Regression and ANOVA</em>, 2nd ed.
+      W.H. Freeman, 2019.
+    </biblio>
+  </references>
+
   <index>
     <title>Index</title>
     <index-list/>

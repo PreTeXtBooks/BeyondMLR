@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter xml:id="ch-intro" xmlns:xi="http://www.w3.org/2001/XInclude">
-  <title>Introduction</title>
+<chapter xml:id="ch-MLRreview" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>Review of Multiple Linear Regression</title>
 
-  <p>
-    This book is a PreTeXt version. This is the skeleton to be filled in.
-  </p>
-  
+  <introduction>
+    <p>
+      This chapter is a skeleton placeholder for Chapter 1 content.
+    </p>
+  </introduction>
+
 </chapter>
-  
