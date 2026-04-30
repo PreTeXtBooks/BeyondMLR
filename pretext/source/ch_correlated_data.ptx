@@ -2,10 +2,1013 @@
 <chapter xml:id="ch-corrdata" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>Correlated Data</title>
 
-  <introduction>
-    <p>
-      This chapter is a skeleton placeholder for Chapter 7 content.
-    </p>
+  <objectives xml:id="obj-ch-corrdata">
+    <introduction>
+      <p>After finishing this chapter, you should be able to:</p>
+    </introduction>
+    <ul>
+      <li><p>Given a data structure, recognize when there is potential for correlation.</p></li>
+      <li><p>Identify observational units at varying levels.</p></li>
+      <li><p>Provide reasons why correlated observations may cause problems when modeling if they
+      are not addressed.</p></li>
+      <li><p>Describe overdispersion and why it might occur.</p></li>
+      <li><p>Understand how correlation in data can be taken into account using random effects
+      models.</p></li>
+      <li><p>Describe differences in the kind of inferences that can be made using fixed versus
+      random effects models.</p></li>
+      <li><p>Use software to fit a model taking correlation into account.</p></li>
+    </ul>
+  </objectives>
+
+  <introduction xml:id="intro-ch-corrdata">
+    <program language="r" xml:id="code-load-packages-ch7">
+      <input>
+# Packages required for Chapter 7
+library(gridExtra)
+library(knitr)
+library(kableExtra)
+library(lme4)
+library(ICC)
+library(tidyverse)
+      </input>
+    </program>
   </introduction>
+
+  <section xml:id="sec-corrdata-intro">
+    <title>Introduction</title>
+
+    <p>
+      Introductory statistics courses typically require responses which are approximately normal
+      and independent of one another. We saw from the first chapters in this book that there are
+      models for non-normal responses, so we have already broadened the types of applications we
+      can handle. In this chapter, we relax an additional assumption from introductory statistics,
+      that of independence. Here we introduce methods that allow correlation to be taken into
+      account. When modeling, correlation can be considered for normal and non-normal responses.
+      Taken together, we can handle many more applications than the average introductory student.
+    </p>
+
+    <p>
+      In this chapter, we first focus on recognizing data structures that may imply correlation,
+      introducing new terminology for discussing correlated data and its effects. Next, we consider
+      potential problems correlated outcomes may cause and why we need to take correlation into
+      account when modeling. Models which take correlation into account are then described and fit
+      with the help of R.
+    </p>
+
+    <p>
+      This chapter will feel different than other chapters in this book. In order to understand
+      correlated data and contrast it with independent observations, we will be exploring several
+      simulations and associated thought questions. In that way, you should develop a feel for
+      correlated data which will carry through into the remaining chapters of this book. In
+      addition, as you proceed through the simulations, fill out
+      <xref ref="tab-simulationTableCh7"/>; this will help you see patterns as you compare
+      analyses which account for correlation with those that do not.
+    </p>
+
+    <table xml:id="tab-simulationTableCh7">
+      <title>Summary of simulations for Dams and Pups case study.</title>
+      <tabular halign="center">
+        <row header="yes">
+          <cell>Scenario</cell>
+          <cell>Model</cell>
+          <cell>Model Name</cell>
+          <cell><m>\hat{\beta}_0</m></cell>
+          <cell>SE <m>\hat{\beta}_0</m></cell>
+          <cell><m>t</m></cell>
+          <cell>p value</cell>
+          <cell><m>\phi</m></cell>
+          <cell>Est prob</cell>
+          <cell>CI prob</cell>
+          <cell>Mean count</cell>
+          <cell>SD count</cell>
+          <cell>GOF p value</cell>
+        </row>
+        <row>
+          <cell>1a</cell>
+          <cell>Binomial</cell>
+          <cell>fit_1a_binom</cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+        </row>
+        <row>
+          <cell></cell>
+          <cell>Quasibinomial</cell>
+          <cell>fit_1a_quasi</cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell>X</cell>
+          <cell>X</cell>
+          <cell>X</cell>
+        </row>
+        <row>
+          <cell>1b</cell>
+          <cell>Binomial</cell>
+          <cell>fit_1b_binom</cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+        </row>
+        <row>
+          <cell></cell>
+          <cell>Quasibinomial</cell>
+          <cell>fit_1b_quasi</cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell>X</cell>
+          <cell>X</cell>
+          <cell>X</cell>
+        </row>
+        <row>
+          <cell>2a</cell>
+          <cell>Binomial</cell>
+          <cell>fit_2a_binom</cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+        </row>
+        <row>
+          <cell></cell>
+          <cell>Quasibinomial</cell>
+          <cell>fit_2a_quasi</cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell>X</cell>
+          <cell>X</cell>
+          <cell>X</cell>
+        </row>
+        <row>
+          <cell>2b</cell>
+          <cell>Binomial</cell>
+          <cell>fit_2b_binom</cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+        </row>
+        <row>
+          <cell></cell>
+          <cell>Quasibinomial</cell>
+          <cell>fit_2b_quasi</cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell></cell>
+          <cell>X</cell>
+          <cell>X</cell>
+          <cell>X</cell>
+        </row>
+      </tabular>
+    </table>
+  </section>
+
+  <section xml:id="sec-recognizing-correlation">
+    <title>Recognizing Correlation</title>
+
+    <p>
+      Correlated data is encountered in nearly every field. In education, student scores from a
+      particular teacher are typically more similar than scores of other students who have had a
+      different teacher. During a study measuring depression indices weekly over the course of a
+      month, we usually find that four measures for the same patient tend to be more similar than
+      depression indices from other patients. In political polling, opinions from members of the
+      same household are usually more similar than opinions of members from other randomly selected
+      households. The structure of these data sets suggest inherent patterns of similarities or
+      correlation among outcomes. This kind of correlation specifically concerns correlation of
+      observations <em>within the same teacher or patient or household</em> and is referred to as
+      <term>intraclass correlation</term>.<idx><h>intraclass correlation</h></idx>
+    </p>
+
+    <p>
+      Correlated data often takes on a multilevel structure. That is, population elements are
+      grouped into aggregates, and we often have information on both the individual elements and
+      the aggregated groups. For instance, students are grouped by teacher, weekly depression
+      measures are grouped by patient, and survey respondents are grouped by household. In these
+      cases, we refer to <term>levels</term><idx><h>levels</h></idx> of measurement and
+      observational units at each level. For example, students might represent
+      <term>level-one observational units</term>, while teachers represent
+      <term>level-two observational units</term>, where <term>level one</term> is the most basic
+      level of observation, and level-one observations are aggregated to form
+      <term>level-two</term> observations. Then, if we are modeling a response such as test score,
+      we may want to examine the effects of student characteristics such as sex and ethnicity, and
+      teacher characteristics such as years of experience. Student characteristics would be
+      considered <term>level-one covariates</term>, while teacher characteristics would be
+      <term>level-two covariates</term>.
+    </p>
+  </section>
+
+  <section xml:id="sec-dams-pups">
+    <title>Case Study: Dams and Pups</title>
+
+    <p>
+      A <term>teratogen</term> is a substance or exposure that can result in harm to a developing
+      fetus. An experiment can be conducted to determine whether increasing levels of a potential
+      teratogen results in increasing probability of defects in rat pups. We will simulate the
+      results of an experiment in which 24 dams (mother rats) are randomized to four groups: 3
+      groups of 6 dams each are administered a potential teratogen in high (3 mg), medium (2 mg),
+      or low (1 mg) doses, and the fourth group serves as the control. Each of the 24 dams
+      produces 10 rat pups, and each pup is examined for the presence of an anomaly or deformity.
+    </p>
+
+    <subsection xml:id="sec-dams-variability">
+      <title>Sources of Variability</title>
+
+      <p>
+        Before we analyze data from our simulated experiment, let's step back and look at the big
+        picture. Statistics is all about analyzing and explaining variability, so let's consider
+        what sources of variability we have in the dams and pups example. There are several
+        reasons why the counts of the number of defective pups might differ from dam to dam, and
+        it is helpful to explicitly identify these reasons in order to determine how the dose
+        levels affect the pups while also accommodating correlation.
+      </p>
+
+      <p>
+        <alert>Dose effect</alert> The dams and pups experiment is being carried out to determine
+        whether different dose levels affect the development of defects differently. Of particular
+        interest is determining whether a
+        <term>dose-response</term><idx><h>dose response</h></idx> effect is present. A
+        dose-response effect is evident when dams receiving higher dose levels produce higher
+        proportions of pups with defects. Knowing defect rates at specific dose levels is
+        typically of interest within this experiment and beyond. Publishing the defect rates for
+        each dose level in a journal paper, for example, would be of interest to other
+        teratologists. For that reason, we refer to dose level effects as
+        <term>fixed effects</term>.<idx><h>fixed effects</h></idx>
+      </p>
+
+      <p>
+        <alert>Dams (litter) effect</alert> In many settings like this, there is a litter effect
+        as well. For example, some dams may exhibit a propensity to produce pups with defects,
+        while others rarely produce litters with defective pups. That is, observations on pups
+        within the same litter are likely to be similar or correlated. Unlike the dose effect,
+        teratologists reading experiment results are not interested in the estimated probability
+        of defect for each dam in the study, and we would not report these estimated probabilities
+        in a paper. However, there may be interest in the <em>variability</em> in litter-specific
+        defect probabilities; accounting for dam-to-dam variability reduces the amount of
+        unexplained variability and leads to more precise estimates of fixed effects like dose.
+        Often this kind of effect is modeled using the idea that randomly selected dams produce
+        <term>random effects</term>.<idx><h>random effects</h></idx> This provides one way in
+        which to model correlated data, in this case the correlation between pups from the same
+        dam. We elaborate on this idea throughout the remainder of the text.
+      </p>
+
+      <p>
+        <alert>Pup-to-pup variability</alert> The within litter pup-to-pup differences reflect
+        random, unexplained variation in the model.
+      </p>
+    </subsection>
+
+    <subsection xml:id="sec-scenario1">
+      <title>Scenario 1: No Covariates</title>
+
+      <p>
+        In Scenario 1, we will ignore dose and assume that dose has no effect on the probability
+        of a deformed pup. You can follow along with the simulation (and modify it as desired)
+        in the Rmd file for this chapter, and fill out <xref ref="tab-simulationTableCh7"/>.
+      </p>
+
+      <p>
+        First, we will consider Scenario 1a where each dam's probability of producing a deformed
+        pup is <m>p = 0.5</m>; thus, each dam's log odds are 0. We then will compare this to
+        Scenario 1b, where dams' probabilities of producing a deformed pup follow a beta
+        distribution where <m>\alpha = \beta = 0.5</m> (which has expected value <m>0.5</m>). So,
+        in Scenario 1b, each dam has a different probability of producing a deformed pup, but the
+        probabilities average out to 0.5, whereas in Scenario 1a each dam has an identical
+        probability of producing a deformed pup (0.5).
+        <xref ref="fig-scenario1ProbabilityPlot"/> illustrates these two scenarios; every dam in
+        Scenario 1a has a probability of 0.5 (the thick vertical line), while probabilities in
+        Scenario 1b are selected from the black dashed distribution, so that probabilities near 0
+        and 1 are more likely than probabilities near 0.5. The histogram shows 24 randomly
+        generated probabilities under one run of Scenario 1b.
+      </p>
+
+      <p>
+        The R code below produces a simulated number of deformed pups for each of the 24 dams
+        under Scenario 1a and Scenario 1b, and <xref ref="fig-scenario1Plot"/> displays
+        distributions of counts of deformed pups per dam for the two simulations. In Scenario 1a,
+        the mean number of deformed pups is 5.17 with standard deviation 1.49. In Scenario 1b,
+        the mean number of deformed pups is 5.67 with standard deviation 4.10.
+      </p>
+
+      <program language="r" xml:id="code-dam-scenario1">
+        <input>
+pi_1a &lt;- rep(0.5, 24)
+count_1a &lt;- rbinom(24, 10, pi_1a)
+
+pi_1b &lt;- rbeta(24, .5, .5)
+count_1b &lt;- rbinom(24, 10, pi_1b)
+        </input>
+      </program>
+
+      <figure xml:id="fig-scenario1ProbabilityPlot">
+        <caption>Dam probabilities in Scenario 1.</caption>
+        <image source="generated-assets/fig-scenario1ProbabilityPlot.png" width="60%">
+          <description>A histogram of dam probabilities in Scenario 1b (beta(0.5,0.5)) overlaid
+          with a dashed theoretical density and a thick vertical line at 0.5 for Scenario 1a.
+          </description>
+        </image>
+      </figure>
+
+      <figure xml:id="fig-scenario1Plot">
+        <caption>Counts of deformed pups per dam under Scenarios 1a and 1b.</caption>
+        <image source="generated-assets/fig-scenario1Plot.png" width="60%">
+          <description>Two histograms of counts of deformed pups per dam: Scenario 1a (Binomial,
+          p=0.5) with counts concentrated near 5, and Scenario 1b (Binomial, p~Beta(0.5,0.5))
+          with counts spread across the full range 0–10.</description>
+        </image>
+      </figure>
+
+      <p>
+        <alert>Thought Questions</alert>
+      </p>
+
+      <ol>
+        <li><p>Will the counts of deformed pups for dams in Scenario 1a behave like a binomial
+        distribution with <m>n=10</m> and <m>p=0.5</m> (that is, like counting heads in 10 flips
+        of a fair coin)? Why or why not?</p></li>
+
+        <li><p>Will the counts of deformed pups for dams in Scenario 1b behave like a binomial
+        distribution with <m>n=10</m> and <m>p=0.5</m> (that is, like counting heads in 10 flips
+        of a fair coin)? If not, extend the coin flipping analogy to Scenario 1b.</p></li>
+
+        <li><p>Is Scenario 1b realistic? Why might some dams have higher probabilities than
+        others?</p></li>
+      </ol>
+
+      <p>
+        If we were to model the number of deformed pups per dam in Scenario 1a, we could ignore
+        the potential of a dam effect (since all dams behave the same) and proceed with regular
+        binomial regression. Since we have no predictors, we would start with the model:
+      </p>
+
+      <me>
+        \log \left( \frac{\hat{p}}{1-\hat{p}} \right) = \hat{\beta}_0, \quad \text{where} \quad \hat{\beta}_0 = 0.067
+      </me>
+
+      <p>
+        which produces an estimated odds of deformity
+        <m>\hat{p}/(1-\hat{p}) = e^{0.067} = 1.069</m> and estimated probability
+        <m>\hat{p} = 0.517</m>. Creating 95% confidence intervals using a profile likelihood
+        approach, we get:
+      </p>
+
+      <md>
+        <mrow>95\% \text{ CI for } p/(1-p) \amp= (0.830, 1.378)</mrow>
+        <mrow>95\% \text{ CI for } p \amp= (0.454, 0.579)</mrow>
+      </md>
+
+      <p>
+        However, we can account for potential
+        overdispersion<idx><h>overdispersion</h></idx> with a
+        <term>quasibinomial model</term>,<idx><h>quasibinomial</h></idx> in case the observed
+        variance is larger than the variance under a binomial model. Quasibinomial regression
+        yields the same estimate for <m>\beta_0</m> as the binomial regression model
+        (<m>\hat{\beta}_0 = 0.067</m>), but we now have overdispersion parameter
+        <m>\hat{\phi} = 0.894</m>. This gives us the following 95% profile likelihood-based
+        confidence intervals:
+      </p>
+
+      <md>
+        <mrow>95\% \text{ CI for } p/(1-p) \amp= (0.841, 1.359)</mrow>
+        <mrow>95\% \text{ CI for } p \amp= (0.457, 0.576)</mrow>
+      </md>
+
+      <p>
+        Turning to Scenario 1b, where each dam has a unique probability of producing a pup with a
+        deformity based on a beta distribution, we can fit binomial and quasibinomial models as
+        well. A binomial model gives regression equation
+      </p>
+
+      <me>
+        \log\left(\frac{\hat{p}}{1-\hat{p}}\right) = 0.268,
+      </me>
+
+      <p>
+        with associated profile likelihood 95% confidence intervals:
+      </p>
+
+      <md>
+        <mrow>95\% \text{ CI for } p/(1-p) \amp= (1.014, 1.691)</mrow>
+        <mrow>95\% \text{ CI for } p \amp= (0.504, 0.628)</mrow>
+      </md>
+
+      <p>
+        We could compare this to a quasibinomial model. With overdispersion parameter
+        <m>\hat{\phi} = 6.858</m>, we now have profile likelihood-based intervals:
+      </p>
+
+      <md>
+        <mrow>95\% \text{ CI for } p/(1-p) \amp= (0.673, 2.594)</mrow>
+        <mrow>95\% \text{ CI for } p \amp= (0.402, 0.722)</mrow>
+      </md>
+
+      <p>
+        <alert>Thought Questions</alert>
+      </p>
+
+      <ol start="4">
+        <li><p>Describe how the quasibinomial analysis of Scenario 1b differs from the binomial
+        analysis of the same simulated data. Refer to <xref ref="tab-simulationTableCh7"/> when
+        answering this question; you will need to run the R code in the R markdown file for this
+        chapter to completely fill out the table. Do confidence intervals contain the true model
+        parameters?</p></li>
+
+        <li><p>Why are differences between quasibinomial and binomial models of Scenario 1a less
+        noticeable than the differences in Scenario 1b?</p></li>
+      </ol>
+    </subsection>
+
+    <subsection xml:id="sec-scenario2">
+      <title>Scenario 2: Dose Effect</title>
+
+      <p>
+        In Scenario 1, each dam's probability of producing a deformed pup was independent of
+        their dosage of the teratogen. In Scenario 2 we allow for a dose effect. To recall, in
+        this hypothetical experiment we have 24 total dams evenly split into 4 groups receiving
+        either no dose (coded as <c>dose = 0</c> mg), a low dose (<c>dose = 1</c>), a medium dose
+        (<c>dose = 2</c>), or a high dose (<c>dose = 3</c>) of the teratogen.
+      </p>
+
+      <p>
+        We will suppose that true probability that a dam's pup has a deformity is related to the
+        dose the dam received through this model:
+      </p>
+
+      <me>
+        \log \left(\frac{p}{1-p} \right) = -2 + 1.33\; \text{dose}
+      </me>
+
+      <p>
+        That is, we assume that the log odds of a deformity is linearly related to dose through
+        the equation above, and the odds of a deformity are 3.79 times greater (<m>e^{1.33}</m>)
+        for each 1-mg increase in dose.
+      </p>
+
+      <p>
+        In Scenario 2a, a dam who received a dose of <m>x</m> would have probability
+      </p>
+
+      <me>
+        p = P(\text{deformity}\mid \text{dose} = x) = e^{-2+1.33x}/(1+e^{-2+1.33x}).
+      </me>
+
+      <p>
+        Thus, dams who received doses of 0, 1, 2, and 3 mg would have probabilities 0.12, 0.34,
+        0.66, and 0.88, respectively, under Scenario 2a.
+      </p>
+
+      <p>
+        In Scenario 2b, each dam who received a dose of <m>x</m> has probability of deformity
+        randomly chosen from a beta distribution where <m>\alpha = 2p/(1-p)</m> and
+        <m>\beta = 2</m>. These beta distribution parameters ensure that, on average, dams with
+        a dose <m>x</m> in Scenario 2b have the same probability of a deformed pup as dams with
+        dose <m>x</m> in Scenario 2a. For example, dams receiving the 1-mg dosage under Scenario
+        2b would have probabilities following a beta distribution with
+        <m>\alpha = 2(0.34)/(1-0.34) = 1.03</m> and <m>\beta = 2</m>, which has mean
+        <m>\frac{\alpha}{\alpha + \beta}=0.34</m>. The big difference is that <em>all</em> dams
+        receiving the 1-mg dosage in Scenario 2a have probability 0.34 of a deformed pup, whereas
+        dams receiving the 1-mg dosage in Scenario 2b each have a unique probability of a deformed
+        pup, but those probabilities average out to 0.34.
+      </p>
+
+      <p>
+        <xref ref="fig-scenario2bPlot"/> displays histograms for each dosage group of each dam's
+        probability of producing deformed pups under Scenario 2b as well as theoretical
+        distributions of probabilities. A vertical line is displayed at each hypothetical
+        distribution's mean; the vertical line represents the fixed probability of a deformed pup
+        for all dams under Scenario 2a.
+      </p>
+
+      <program language="r" xml:id="code-dam-scenario2">
+        <input>
+set.seed(1)
+
+dose &lt;- c(rep(0,6), rep(1,6), rep(2,6), rep(3,6))
+
+pi_2a &lt;- exp(-2 + 4/3*dose) / (1 + exp(-2 + 4/3*dose))
+count_2a &lt;- rbinom(24, 10, pi_2a)
+
+b &lt;- 2
+a &lt;- b * pi_2a / (1 - pi_2a)
+pi_2b &lt;- rbeta(24, a, b)
+count_2b &lt;- rbinom(24, 10, pi_2b)
+        </input>
+      </program>
+
+      <figure xml:id="fig-scenario2bPlot">
+        <caption>Observed (histograms) and theoretical (density curves) distributions of dams'
+        probabilities of producing deformed pups by dose group in Scenario 2b. The thick vertical
+        lines represent the fixed probabilities of a deformed pup by dose group in Scenario 2a.
+        </caption>
+        <image source="generated-assets/fig-scenario2bPlot.png" width="60%">
+          <description>Four histograms (one per dosage group 0–3 mg) showing observed
+          probabilities for Scenario 2b, overlaid with theoretical beta density curves and a
+          thick vertical line at the Scenario 2a fixed probability for each group.</description>
+        </image>
+      </figure>
+
+      <p>
+        <alert>Thought Questions</alert>
+      </p>
+
+      <ol start="6">
+        <li><p>Compare and contrast the probabilities associated with the 24 dams under Scenarios
+        1a and 1b to the probabilities under Scenarios 2a and 2b.</p></li>
+
+        <li><p>In Scenario 2a, dams produced 4.79 deformed pups on average, with standard
+        deviation 3.20. Scenario 2b saw an average of 4.67 with standard deviation 3.58. Explain
+        why comparisons by dose are more meaningful than these overall comparisons. You might
+        refer to the results in the Scenario 2 summary table.</p></li>
+
+        <li><p>In <xref ref="tab-simulationTableCh7"/>, predict what you'll see in the column
+        headed <q>CI_odds_ratio</q>. Among the 4 entries: What can you say about the center and
+        the width of the confidence intervals? Which will be similar and why? Which will be
+        different and how?</p></li>
+      </ol>
+
+      <p>
+        We first model Scenario 2a without adjusting for potential overdispersion. Binomial
+        regression gives us the model:
+      </p>
+
+      <men xml:id="eq-mod2aBinom">
+        \log\left( \frac{\hat{p}}{1-\hat{p}} \right) = -2.02 + 1.26\;\text{dose}
+      </men>
+
+      <p>
+        <xref ref="eq-mod2aBinom"/> has associated odds ratio corresponding to a 1-mg dose
+        increase of <m>e^{\beta_1} = 3.54</m> with 95% profile likelihood confidence interval
+        <m>(2.61, 4.96)</m>. We can be 95% confident that odds of deformity are between 2.61 and
+        4.96 times higher for each 1-mg increase in dose.
+      </p>
+
+      <p>
+        Alternatively, we can use a quasibinomial model to account for any overdispersion in the
+        binomial model. With <m>\hat{\phi} = 1.27</m>, we have the 95% profile likelihood
+        confidence interval for <m>e^{\beta_1}</m>: <m>(2.51, 5.19)</m>.
+      </p>
+
+      <p>
+        Turning to Scenario 2b, where probabilities were different between dams receiving the
+        same dosage, we have the binomial model
+      </p>
+
+      <me>
+        \log\left( \frac{\hat{p}}{1-\hat{p}} \right) = -2.41 + 1.46\;\text{dose}
+      </me>
+
+      <p>
+        Generating a 95% confidence interval for <m>e^{\beta_1}</m>, we have:
+        <m>(3.09, 6.27)</m>.
+      </p>
+
+      <p>
+        If we use a quasibinomial model, we find overdispersion parameter
+        <m>\hat{\phi} = 1.93</m>, yielding 95% confidence interval for <m>e^{\beta_1}</m>:
+        <m>(2.74, 7.35)</m>.
+      </p>
+
+      <p>
+        <alert>Thought Questions</alert>
+      </p>
+
+      <ol start="9">
+        <li><p>Describe how the quasibinomial analysis of Scenario 2b differs from the binomial
+        analysis of the same simulated data. Refer to <xref ref="tab-simulationTableCh7"/> when
+        answering this question; you will need to run the R code in the R markdown file for this
+        chapter to completely fill out the table. Do confidence intervals contain the true model
+        parameters?</p></li>
+
+        <li><p>Why are differences between quasibinomial and binomial models of Scenario 2a less
+        noticeable than the differences in Scenario 2b?</p></li>
+
+        <li><p>Why does Scenario 2b contain correlated data that we must account for, while
+        Scenario 2a does not?</p></li>
+      </ol>
+    </subsection>
+  </section>
+
+  <section xml:id="sec-tree-growth">
+    <title>Case Study: Tree Growth</title>
+
+    <p>
+      A student research team at St. Olaf College contributed to the efforts of biologist Kathy
+      Shea to investigate a rich data set concerning forestation in the surrounding land. Here is
+      a paragraph from the introduction to their project report:
+    </p>
+
+    <blockquote>
+      <p>
+        Much of south-central Minnesota was comprised of maple-basswood forest prior to
+        agricultural development and settlement. Currently, the forests that remain are highly
+        fragmented and disturbed by human activities. Original land surveys describe the forest,
+        also known as the Big Woods ecosystem, as dominated by elm, maple, oak, and basswood. In
+        order to recover the loss of ecosystem services that forests provide, many new forested
+        areas have been established through restoration.
+      </p>
+    </blockquote>
+
+    <p>
+      Tubes were placed on trees in some locations or <em>transects</em> but not in others. One
+      research question is whether tree growth in the first year is affected by the presence of
+      tubes. This analysis has a structure similar to the dams and pups; the two study designs
+      are depicted in <xref ref="fig-DamsTreesStructure"/>.
+    </p>
+
+    <figure xml:id="fig-DamsTreesStructure">
+      <caption>Data structures in the Dams and Pups (left) and Tree Growth (right) case studies.
+      </caption>
+      <image source="generated-assets/fig-DamsTreesStructure.png" width="80%">
+        <description>Side-by-side diagram comparing the data structure of the Dams and Pups
+        study (dams grouped into dose groups, each with multiple pups) to the Tree Growth study
+        (transects assigned to tube/no-tube treatment, each with multiple trees).
+        </description>
+      </image>
+    </figure>
+
+    <p>
+      Some transects were assigned to have tubes on all of their trees, and other transects had
+      no tubes on all of their trees, just as every dam assigned to a certain group received the
+      same dose. Within a transect, each tree's first year of growth was measured, much like the
+      presence or absence of a defect was noted for every pup within a dam. Although the response
+      in the tree tube study is continuous (and somewhat normally distributed) rather than binary
+      as in the dams and pups study, we can use methods to account for correlation of trees within
+      a transect, just as we accounted for correlation of pups within dams.
+    </p>
+
+    <subsection xml:id="sec-tree-data-format">
+      <title>Format of the Data Set</title>
+
+      <p>
+        We will consider a subset of the full data set in <c>treetube.csv</c> for illustration
+        purposes here: the 382 trees with heights recorded in both 1990 and 1991. Thus, we will
+        consider the following variables:
+      </p>
+
+      <ul>
+        <li><p><c>id</c> = a unique identifier for each tree</p></li>
+        <li><p><c>transect</c> = a unique identifier for each transect containing several
+        trees</p></li>
+        <li><p><c>species</c> = tree species</p></li>
+        <li><p><c>tubes</c> = an indicator variable for the presence or absence of tubes for a
+        given transect</p></li>
+        <li><p><c>height91</c> = first year height for each tree in meters</p></li>
+        <li><p><c>height90</c> = baseline height for each tree in meters</p></li>
+        <li><p><c>growth_yr1</c> = height91 - height90, in meters</p></li>
+      </ul>
+
+      <p>
+        This portion of the data indicates that the four trees in transect 18 have tubes, while
+        the other 6 trees listed do not. The concern with this kind of data structure is that
+        trees from the same transect may be more similar or correlated with one another, in
+        contrast to trees from other transects. This could be true for a variety of reasons: some
+        transects may receive less sun than others, or irrigation of the soil may differ from
+        transect to transect. These unmeasured but possibly influential factors may imply a
+        correlation among trees within transects. In that case, we would not have independent
+        pieces of information, so that the number of trees within a transect would overstate the
+        amount of independent information. To prepare for an analysis of this potentially
+        correlated data, we examine the sources of variability in first-year tree growth.
+      </p>
+    </subsection>
+
+    <subsection xml:id="sec-tree-variability">
+      <title>Sources of Variability</title>
+
+      <p>First year tree growth may vary because of:</p>
+
+      <p>
+        <alert>Tube effects</alert> A purpose of this analysis is to determine whether tubes
+        affect first-year tube growth. Differences in mean growth based on the presence or
+        absence of tubes would be of interest to researchers, and they would be included in a
+        publication for this analysis. For this reason, tube effects are referred to as
+        <term>fixed effects</term>. This is analogous to the dose effect in the dams and pups
+        example.
+      </p>
+
+      <p>
+        <alert>Transect effects</alert> For some of the factors previously mentioned such as
+        sun exposure or water availability, first-year growth may vary by transect. Knowing which
+        specific transects produce greater growth is not of interest and would not appear in a
+        publication of this study. These <term>random effects</term> are analogous to dam effects
+        which were not of inherent interest, but which we nevertheless wished to account for.
+      </p>
+
+      <p>
+        <alert>Tree-to-tree variability within transects</alert> There is inherent variability in
+        tree growth even when they are subject to the same transect and treatment effects. This
+        variability remains unexplained in our model, although we will attempt to explain some of
+        it with covariates such as species.
+      </p>
+
+      <p>
+        Data sets with this kind of structure are often referred to as
+        <term>multilevel data</term>,<idx><h>multilevel data</h></idx> and the remaining chapters
+        delve into models for multilevel data in gory detail. With a continuous response variable,
+        we will actually add random effects for transects to a more traditional linear least
+        squares regression model rather than estimate an overdispersion parameter as with a binary
+        response. Either way, if observations are really correlated, proper accounting will lead
+        to larger standard errors for model coefficients and larger (but more appropriate)
+        p-values for testing the significance of those coefficients.
+      </p>
+    </subsection>
+
+    <subsection xml:id="sec-tree-analysis-preview">
+      <title>Analysis Preview: Accounting for Correlation</title>
+
+      <p>
+        Attempting to model the effects of tubes on tree growth, we could use LLSR which yields
+        the model:
+      </p>
+
+      <me>
+        \hat{\text{Growth}} = 0.106 - 0.040\; \text{Tube}
+      </me>
+
+      <program language="r" xml:id="code-tree-linear">
+        <input>
+tube_linear &lt;- lm(growth_yr1 ~ tubes, data = treetubes_yr1)
+        </input>
+      </program>
+
+      <p>
+        However, the LLSR model assumes that all observations are independent, including trees in
+        the same transect. One way to account for potential correlation is to estimate an
+        additional parameter for the transect-to-transect variance. In other words, we are
+        allowing for a random effect that each transect contributes to the overall variability.
+        The multilevel model below does just that.
+      </p>
+
+      <program language="r" xml:id="code-tree-multilevel">
+        <input>
+tube_multi1 &lt;- lmer(growth_yr1 ~ tubes + (1|transect),
+                     data = treetubes_yr1)
+        </input>
+      </program>
+
+      <p>
+        As we saw in the case of the binary outcomes, the standard error for the coefficients is
+        larger when we take correlation into account. The t-statistic for tubes is smaller,
+        reducing our enthusiasm for the tubes effect. This conservative approach occurs because
+        the observations within a transect are correlated and therefore not independent as assumed
+        in the naive model. We will study these models in depth in the remaining chapters.
+      </p>
+    </subsection>
+  </section>
+
+  <section xml:id="sec-corrdata-summary">
+    <title>Summary</title>
+
+    <p>
+      The most important idea from this chapter is that structures of data sets may imply that
+      outcomes are correlated. Correlated outcomes provide less information than independent
+      outcomes, resulting in effective sample sizes that are less than the total number of
+      observations. Neglecting to take into account correlation may lead to underestimating
+      standard errors of coefficients, overstating significance and precision. Correlation is
+      likely and should be accounted for if basic observational units (e.g., pups, trees) are
+      aggregated in ways that would lead us to expect units within groups to be similar.
+    </p>
+
+    <p>
+      We have mentioned two ways to account for correlation: incorporate a dispersion parameter
+      or include random effects. In the following chapters, we will primarily focus on models with
+      random effects. In fact, there are even more ways to account for correlation, including
+      inflating the variance using Huber-White estimators (aka Sandwich estimators), and producing
+      corrected variances using bootstrapping. These are beyond the scope of this text.
+    </p>
+  </section>
+
+  <exercises xml:id="exercises-ch-corrdata">
+    <title>Exercises</title>
+
+    <subexercises xml:id="conceptual-exercises-ch-corrdata">
+      <title>Conceptual Exercises</title>
+
+      <exercise xml:id="exercise-ch7-1">
+        <title>Examples with correlated data</title>
+        <statement>
+          <p>For each of the following studies:</p>
+          <ul>
+            <li><p>Identify the most basic observational units</p></li>
+            <li><p>Identify the grouping units (could be multiple levels of grouping)</p></li>
+            <li><p>State the response(s) measured and variable type (normal, binary, Poisson,
+            etc.)</p></li>
+            <li><p>Write a sentence describing the within-group correlation.</p></li>
+            <li><p>Identify fixed and random effects</p></li>
+          </ul>
+
+          <ol label="a">
+            <li>
+              <p><alert>Nurse stress study.</alert> Four wards were randomly selected at each of
+              25 hospitals and randomly assigned to offer a stress reduction program for nurses on
+              the ward or to serve as a control. At the conclusion of the study period, a random
+              sample of 10 nurses from each ward completed a test to measure job-related stress.
+              Factors assumed to be related include nurse experience, age, hospital size and type
+              of ward.</p>
+            </li>
+            <li>
+              <p><alert>Epilepsy study.</alert> Researchers conducted a randomized controlled
+              study where patients were randomly assigned to either an anti-epileptic drug or a
+              placebo. For each patient, the number of seizures at baseline was measured over a
+              2-week period. For four consecutive visits the number of seizures were determined
+              over the past 2-week period. Patient age and sex along with visit number were
+              recorded.</p>
+            </li>
+            <li>
+              <p><alert>Cockroaches!</alert> For a study of cockroach infestation, traps were set
+              up in the kitchen, bathroom, and bedroom in a random sample of 100 New York City
+              apartments. The goal is to estimate cockroach infestation levels given tenant income
+              and age of the building.</p>
+            </li>
+            <li>
+              <p><alert>Prairie restoration.</alert> Researchers at a small Midwestern college
+              decided to experimentally explore the underlying causes of variation in soil
+              reconstruction projects in order to make future projects more effective. Introductory
+              ecology classes were organized to collect weekly data on plants in pots containing
+              soil samples. Data will be examined to compare:</p>
+              <ul>
+                <li><p>germination and growth of two species of prairie plants — leadplants
+                (<em>Amorpha canescens</em>) and coneflowers
+                (<em>Ratibida pinnata</em>).</p></li>
+                <li><p>soil from a cultivated (agricultural) field, a natural prairie, and a
+                restored (reconstructed) prairie.</p></li>
+                <li><p>the effect of sterilization, since half of the sampled soil was sterilized
+                to determine if rhizosphere differences were responsible for the observed
+                variation.</p></li>
+              </ul>
+            </li>
+            <li>
+              <p><alert>Radon in Minnesota.</alert> Radon is a carcinogen — a naturally occurring
+              radioactive gas whose decay products are also radioactive — known to cause lung
+              cancer in high concentrations. The EPA sampled more than 80,000 homes across the
+              U.S. Each house came from a randomly selected county and measurements were made on
+              each level of each home. Uranium measurements at the county level were included to
+              improve the radon estimates.</p>
+            </li>
+            <li>
+              <p><alert>Teen alcohol use.</alert> Curran et al. collected data on 82 adolescents
+              at three time points starting at age 14 to assess factors that affect teen drinking
+              behavior. Key variables in the data set <c>alcohol.csv</c> are as follows:</p>
+              <ul>
+                <li><p><c>id</c> = numerical identifier for subject</p></li>
+                <li><p><c>age</c> = 14, 15, or 16</p></li>
+                <li><p><c>coa</c> = 1 if the teen is a child of an alcoholic parent; 0
+                otherwise</p></li>
+                <li><p><c>male</c> = 1 if male; 0 if female</p></li>
+                <li><p><c>peer</c> = a measure of peer alcohol use, taken when each subject was
+                14. This is the square root of the sum of two 6-point items about the proportion
+                of friends who drink occasionally or regularly.</p></li>
+                <li><p><c>alcuse</c> = the primary response. Four items — (a) drank beer or wine,
+                (b) drank hard liquor, (c) 5 or more drinks in a row, and (d) got drunk — were
+                each scored on an 8-point scale, from 0 = "not at all" to 7 = "every day". Then
+                <c>alcuse</c> is the square root of the sum of these four items.</p></li>
+              </ul>
+              <p>Primary research questions included:</p>
+              <ul>
+                <li><p>do trajectories of alcohol use differ by parental alcoholism?</p></li>
+                <li><p>do trajectories of alcohol use differ by peer alcohol use?</p></li>
+              </ul>
+            </li>
+          </ol>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch7-2">
+        <title>More dams and pups</title>
+        <statement>
+          <p>
+            Describe how to generalize the pup and dam example by allowing for different size
+            litters.
+          </p>
+        </statement>
+      </exercise>
+    </subexercises>
+
+    <subexercises xml:id="guided-exercises-ch-corrdata">
+      <title>Guided Exercises</title>
+
+      <exercise xml:id="exercise-ch7-g1">
+        <title>Exploring Beta distributions</title>
+        <statement>
+          <p>
+            In the Dams and Pups Case Study, we use the beta distribution to randomly select the
+            probability that a dam produces a defective pup. While the beta distribution is
+            described in an earlier chapter, it can be valuable to play with the parameters
+            <m>\alpha</m> and <m>\beta</m> to see what distribution ranges and shapes are
+            possible. Some basic R code for plotting a beta density curve can be found at the end
+            of this problem.
+          </p>
+
+          <ol label="a">
+            <li><p>What values do beta random variables take on?</p></li>
+            <li><p>What do these values represent for the dams and pups simulation?</p></li>
+            <li><p>Do the possible values depend on <m>\alpha</m> or <m>\beta</m>?</p></li>
+            <li><p>What is a feature of the beta density when <m>\alpha=\beta</m>?</p></li>
+            <li><p>What happens to the density when <m>\alpha \neq \beta</m>?</p></li>
+            <li><p>How does the magnitude of <m>\alpha</m> or <m>\beta</m> affect the
+            density?</p></li>
+            <li><p>How does the difference between <m>\alpha</m> and <m>\beta</m> affect the
+            density?</p></li>
+            <li><p>If you wanted to simulate dams with mostly low probabilities of defects and a
+            few with very high probabilities, how would you do it?</p></li>
+            <li><p>If you wanted to simulate dams with mostly high probabilities of defects and a
+            few with very low probabilities, how would you do it?</p></li>
+            <li><p>If you wanted to simulate a population of dams where half of the probabilities
+            of defects are very high and half are very low, how would you do it?</p></li>
+            <li><p>How might you decide on values for <m>\alpha</m> and <m>\beta</m> if you have
+            run a preliminary experiment and gathered data on the number of dams with deformed
+            pups?</p></li>
+          </ol>
+
+          <program language="r" xml:id="code-beta-plot">
+            <input>
+# inputs for the beta distribution must be between 0 and 1
+p &lt;- seq(0, 1, by = .05)
+
+# To plot a beta density use dbeta; here I selected a=5, b=1
+density &lt;- dbeta(p, 5, 1)
+plot(p, density, type = "l")
+            </input>
+          </program>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch7-g2">
+        <title>Dams and pups (continued)</title>
+        <statement>
+          <p>
+            Modify the dams and pups simulation in the following ways. In each case, produce plots
+            and describe the results of your modified simulation.
+          </p>
+          <ol label="a">
+            <li><p>Pick a different beta distribution for Scenario 1b.</p></li>
+            <li><p>Center the beta distributions in Scenarios 1a and 1b somewhere other than
+            0.5.</p></li>
+            <li><p>Repeat Scenario 2a with 3 doses and an underlying logistic model of your own
+            choosing. Then create beta distributions as in Scenario 2b to match your 3
+            doses.</p></li>
+          </ol>
+        </statement>
+      </exercise>
+    </subexercises>
+
+    <subexercises xml:id="note-correlated-binary">
+      <title>Note on Correlated Binary Outcomes</title>
+
+      <p>
+        The correlated binomial counts simulated in the Dams and Pups Case Study are in fact
+        beta-binomial random variables like those simulated in the Guided Exercises from the
+        distribution theory chapter. In fact, we could use the form of a beta-binomial pdf to
+        model overdispersed binomial variables. Unlike the more generic form of accounting for
+        correlation using dispersion parameter estimates, beta-binomial models are more specific
+        and highly parameterized. This approach involves more assumptions but may also yield more
+        information than the quasi-likelihood approach. If the beta-binomial model is incorrect,
+        however, our results may be misleading. That said, the beta-binomial structure is quite
+        flexible and conforms to many situations.
+      </p>
+    </subexercises>
+  </exercises>
 
 </chapter>
