@@ -2,32 +2,35 @@
 <chapter xml:id="ch-poissonreg" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>Poisson Regression</title>
 
-  <introduction>
-    <p>Chapter goals:</p>
-    <objectives>
-      <ul>
-        <li><p>Explain situations in which Poisson regression is preferred to ordinary least squares regression.</p></li>
-        <li><p>Describe key assumptions of Poisson regression models.</p></li>
-        <li><p>Interpret coefficients from Poisson regression models, including rate ratios.</p></li>
-        <li><p>Use deviance and likelihood-based tests for model comparison and goodness-of-fit.</p></li>
-        <li><p>Address overdispersion using quasi-Poisson or negative binomial regression.</p></li>
-        <li><p>Use offsets to model rates and account for differences in exposure.</p></li>
-        <li><p>Describe and fit zero-inflated Poisson (ZIP) models for data with excess zeros.</p></li>
-      </ul>
-    </objectives>
+  <objectives xml:id="obj-ch-poissonreg">
+    <introduction>
+      <p>After finishing this chapter, you should be able to:</p>
+    </introduction>
+    <ul>
+      <li><p>Describe why simple linear regression is not ideal for Poisson data.</p></li>
+      <li><p>Write out a Poisson regression model and identify the assumptions for inference.</p></li>
+      <li><p>Write out the likelihood for a Poisson regression and describe how it could be used to estimate coefficients for a model.</p></li>
+      <li><p>Interpret estimated coefficients from a Poisson regression and construct confidence intervals for them.</p></li>
+      <li><p>Use deviances for Poisson regression models to compare and assess models.</p></li>
+      <li><p>Use an offset to account for varying effort in data collection.</p></li>
+      <li><p>Fit and use a zero-inflated Poisson (ZIP) model.</p></li>
+    </ul>
+  </objectives>
 
-    <p>In this chapter, we consider data sets in which the responses are <term>counts</term>: non-negative integers that represent the number of occurrences of some event.  Examples include the number of calls received by a call center per hour, the number of flaws found in a roll of fabric, or the number of children in a household. Rather than using ordinary least squares regression for counts, we turn to <term>Poisson regression</term>, which respects the discrete, non-negative nature of the response and links the mean count to predictor variables through a log link function.</p>
-
-    <p>R packages needed for this chapter:</p>
-    <program language="r" xml:id="code-ch4-packages">
+  <introduction xml:id="intro-ch-poissonreg">
+    <program language="r" xml:id="code-load-packages-ch4">
       <input>
-library(tidyverse)
-library(knitr)
+# Packages required for Chapter 4
 library(gridExtra)
+library(knitr)
 library(kableExtra)
-library(multcomp)
-library(MASS)
+library(mosaic)
+library(xtable)
 library(pscl)
+library(multcomp)
+library(pander)
+library(MASS)
+library(tidyverse)
       </input>
     </program>
   </introduction>
@@ -81,7 +84,14 @@ library(pscl)
     <subsection xml:id="organizedata4">
       <title>Data Organization</title>
 
-      <p>The data set <c>Philippines.csv</c> contains variables from 1,500 households sampled from the 2015 FIES. The response variable is <c>total</c>, the total number of people in the household, which is a count. Potential explanatory variables include <c>age</c> (age of the household head in years), <c>location</c> (Urban or Rural), <c>numLT5</c> (number of household members under age 5), and <c>region</c> (geographic region of the Philippines).  Figure <xref ref="fig-philippinesmap"/> shows the regions of the Philippines.</p>
+      <p>The Philippine Statistics Authority (PSA) conducts the Family Income and Expenditure Survey (FIES) nationwide every three years to provide data on family income and expenditure. Our data, from the 2015 FIES, is a subset of 1,500 of the 40,000 observations. Our data set focuses on five regions: Central Luzon, Metro Manila, Ilocos, Davao, and Visayas (see <xref ref="fig-philippinesmap"/>). Each line of the data file <c>fHH1.csv</c> refers to a household at the time of the survey:</p>
+      <ul>
+        <li><p><c>location</c> = where the house is located (Central Luzon, Davao Region, Ilocos Region, Metro Manila, or Visayas)</p></li>
+        <li><p><c>age</c> = the age of the head of household</p></li>
+        <li><p><c>total</c> = the number of people in the household <em>other than</em> the head</p></li>
+        <li><p><c>numLT5</c> = the number in the household under 5 years of age</p></li>
+        <li><p><c>roof</c> = the type of roof in the household (either Predominantly Light/Salvaged Material, or Predominantly Strong Material, where stronger material can sometimes be used as a proxy for greater wealth)</p></li>
+      </ul>
 
       <figure xml:id="fig-philippinesmap">
         <caption>Map of the Philippines showing its three main island groups (Luzon, Visayas, and Mindanao) and major regions.</caption>
@@ -92,7 +102,7 @@ library(pscl)
 
       <program language="r" xml:id="code-ch4-philippines-load">
         <input>
-phil &lt;- read.csv("data/Philippines.csv")
+fHH1 &lt;- read_csv("data/fHH1.csv")
         </input>
       </program>
     </subsection>
@@ -144,9 +154,9 @@ phil &lt;- read.csv("data/Philippines.csv")
 
       <program language="r" xml:id="code-ch4-pois-fit1">
         <input>
-pois.fit1 &lt;- glm(total ~ age, 
-                  family = poisson, data = phil)
-summary(pois.fit1)
+modela &lt;- glm(total ~ age, 
+                  family = poisson, data = fHH1)
+summary(modela)
         </input>
       </program>
 
@@ -184,9 +194,9 @@ summary(pois.fit1)
 
       <program language="r" xml:id="code-ch4-deviance-test">
         <input>
-pois.fit2 &lt;- glm(total ~ age + I(age^2), 
-                  family = poisson, data = phil)
-anova(pois.fit1, pois.fit2, test = "Chisq")
+modela2 &lt;- glm(total ~ age + I(age^2), 
+                  family = poisson, data = fHH1)
+anova(modela, modela2, test = "Chisq")
         </input>
       </program>
 
@@ -215,9 +225,9 @@ anova(pois.fit1, pois.fit2, test = "Chisq")
 
       <program language="r" xml:id="code-ch4-quad-model">
         <input>
-pois.fit2 &lt;- glm(total ~ age + I(age^2), 
-                  family = poisson, data = phil)
-summary(pois.fit2)
+modela2 &lt;- glm(total ~ age + I(age^2), 
+                  family = poisson, data = fHH1)
+summary(modela2)
         </input>
       </program>
 
@@ -231,9 +241,9 @@ summary(pois.fit2)
 
       <program language="r" xml:id="code-ch4-region-model">
         <input>
-pois.fit3 &lt;- glm(total ~ age + I(age^2) + region, 
-                  family = poisson, data = phil)
-summary(pois.fit3)
+modela2L &lt;- glm(total ~ age + I(age^2) + region, 
+                  family = poisson, data = fHH1)
+summary(modela2L)
         </input>
       </program>
 
@@ -337,11 +347,11 @@ summary(pois.fit3)
     <subsection xml:id="sec-crime-dataorg">
       <title>Data Organization</title>
 
-      <p>The data set <c>campuscrime10.csv</c> is loaded and new variables are created for the enrollment in thousands and the violent crime rate per 1,000 students:</p>
+      <p>The data set <c>c_data.csv</c> is loaded and new variables are created for the enrollment in thousands and the violent crime rate per 1,000 students:</p>
 
       <program language="r" xml:id="code-ch4-crime-load">
         <input>
-c.data &lt;- read.csv("data/campuscrime10.csv")
+c.data &lt;- read_csv("data/c_data.csv")
 c.data &lt;- c.data %&gt;%
   mutate(enroll1000 = enrollment / 1000,
          nvrate = nv / enroll1000)
