@@ -358,7 +358,7 @@ model.HaleBD &lt;- glm(cbind(YesVotes, NumVotes - YesVotes) ~
     <subsection xml:id="sec-logisticInf">
       <title>Tests for Significance of Model Coefficients</title>
 
-      <p>Do we have statistically significant evidence that support for the railroad referendum decreases with higher proportions of Black residents in a community, after accounting for the distance a community is from the railroad line? As discussed in <xref ref="cs-philippines"/> with Poisson regression, there are two primary approaches to testing significance of model coefficients: <term>Drop-in-deviance test to compare models</term> <idx>drop-in-deviance test</idx> and <term>Wald test for a single coefficient</term>. <idx>Wald-type test</idx></p>
+      <p>Do we have statistically significant evidence that support for the railroad referendum decreases with higher proportions of Black residents in a community, after accounting for the distance a community is from the railroad line? As discussed in <xref ref="sec-cs-philippines"/> with Poisson regression, there are two primary approaches to testing significance of model coefficients: <term>Drop-in-deviance test to compare models</term> <idx>drop-in-deviance test</idx> and <term>Wald test for a single coefficient</term>. <idx>Wald-type test</idx></p>
 
       <p>With our larger model given by <m>\log\!\left(\frac{p_i}{1-p_i}\right) = \beta_0+\beta_1\textrm{distance}_i+\beta_2\textrm{pctBlack}_i</m>, the Wald test produces a highly significant p-value (<m>Z=\frac{-0.0132}{0.0039}= -3.394</m>, <m>p=.00069</m>) indicating significant evidence that support for the railroad referendum decreases with higher proportions of Black residents in a community, after adjusting for the distance a community is from the railroad line.</p>
 
@@ -397,7 +397,7 @@ drop_in_dev &lt;- anova(model.HaleD, model.HaleBD, test = "Chisq")
 
       <p>Thus, we can be 95% confident that a 10% increase in the proportion of Black residents is associated with a 5.4% to 18.8% decrease in the odds of a Yes vote for the railroad referendum after controlling for distance. This same relationship could be expressed as (a) between a 0.6% and a 2.1% decrease in odds for each 1% increase in the Black population, or (b) between a 5.7% (<m>1/e^{-.056}</m>) and a 23.1% (<m>1/e^{-.208}</m>) increase in odds for each 10% decrease in the Black population, after adjusting for distance. Of course, with <m>n=11</m>, we should be cautious about relying on a Wald-type interval in this example.</p>
 
-      <p>Another approach available in R is the <term>profile likelihood method</term>, <idx>profile likelihood</idx> similar to <xref ref="cs-philippines"/>.</p>
+      <p>Another approach available in R is the <term>profile likelihood method</term>, <idx>profile likelihood</idx> similar to <xref ref="sec-cs-philippines"/>.</p>
 
       <program language="r" xml:id="code-ch6-confint">
         <code>
@@ -1000,7 +1000,7 @@ cdplot(as.factor(rtemp1)~dtemp1)
             <li><p><c>model5</c> = the complete second order version of <c>model4</c> (add squared terms and an interaction)</p></li>
             <li><p><c>model6</c> = <c>yrsmoke</c>, <c>bird</c>, <c>yrsmoke:bird</c></p></li>
           </ul></p>
-          <p><ol marker="f">
+          <p><ol marker="a" start="6">
             <li><p>Is there evidence that we can remove <c>age</c> and <c>female</c> from our model? Perform an appropriate test comparing <c>model1</c> to <c>model2</c>; give a test statistic and p-value, and state a conclusion in context.</p></li>
             <li><p>Is there evidence that the complete second order version of <c>model4</c> improves its performance? Perform an appropriate test comparing <c>model4</c> to <c>model5</c>; give a test statistic and p-value, and state a conclusion in context.</p></li>
             <li><p>Carefully interpret each of the four model coefficients in <c>model6</c> in context.</p></li>
@@ -1052,7 +1052,7 @@ birds &lt;- read_csv("data/birdkeeping.csv") %&gt;%
             <li><p>Create a plot with one observation per state showing the relationship between a state's median income and the log odds of a resident of that state voting for Trump. What can you conclude from this plot?</p></li>
           </ol></p>
           <p>Answer (d)&#8211;(f) based on <c>model1a</c> below:</p>
-          <p><ol marker="d">
+          <p><ol marker="a" start="4">
             <li><p>Interpret the coefficient for <c>zmedinc</c> in context.</p></li>
             <li><p>Interpret the coefficient for <c>republican</c> in context.</p></li>
             <li><p>Interpret the coefficient for <c>EconWorse:republican</c> in context. What does this allow us to conclude about Theory 1?</p></li>
