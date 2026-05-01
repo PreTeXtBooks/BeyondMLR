@@ -622,7 +622,7 @@ anova(modelcl0, modelcl, test = "Chisq")
     <title>Parametric Bootstrap Testing</title>
 
     <p>
-      As in <xref ref="sec-longitudinal-paraboot"/>, when testing variance components at the
+      As in <xref ref="sec-lon-paraboot"/>, when testing variance components at the
       boundary (such as <m>\sigma_{\tilde{v}}^{2} = 0</m>), a method like the
       <term>parametric bootstrap</term> should be used, since using a chi-square distribution to
       conduct a likelihood ratio test produces p-values that tend to be too large.

@@ -839,7 +839,7 @@ tube_multi1 &lt;- lmer(growth_yr1 ~ tubes + (1|transect),
             <li><p>Identify fixed and random effects</p></li>
           </ul>
 
-          <ol label="a">
+          <ol marker="a">
             <li>
               <p><alert>Nurse stress study.</alert> Four wards were randomly selected at each of
               25 hospitals and randomly assigned to offer a stress reduction program for nurses on
@@ -941,7 +941,7 @@ tube_multi1 &lt;- lmer(growth_yr1 ~ tubes + (1|transect),
             of this problem.
           </p>
 
-          <ol label="a">
+          <ol marker="a">
             <li><p>What values do beta random variables take on?</p></li>
             <li><p>What do these values represent for the dams and pups simulation?</p></li>
             <li><p>Do the possible values depend on <m>\alpha</m> or <m>\beta</m>?</p></li>
@@ -982,7 +982,7 @@ plot(p, density, type = "l")
             Modify the dams and pups simulation in the following ways. In each case, produce plots
             and describe the results of your modified simulation.
           </p>
-          <ol label="a">
+          <ol marker="a">
             <li><p>Pick a different beta distribution for Scenario 1b.</p></li>
             <li><p>Center the beta distributions in Scenarios 1a and 1b somewhere other than
             0.5.</p></li>

@@ -1420,7 +1420,7 @@ ggplot(data = fDf, aes(x = x, y = value, color = Distribution)) +
             to generate a beta-binomial distribution:
           </p>
 
-          <ol label="a">
+          <ol marker="a">
             <li><p>Draw <m>p_i</m> from the beta distribution with <m>\alpha=4</m> and <m>\beta=1</m>.</p></li>
             <li><p>Generate an observation <m>y_i</m> from a binomial distribution with <m>n=10</m> and <m>p = p_i</m>.</p></li>
             <li><p>Repeat (a) and (b) 1,000 times (<m>i=1,\ldots,1000</m>).</p></li>

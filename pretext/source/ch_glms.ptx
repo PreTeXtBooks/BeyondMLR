@@ -314,7 +314,7 @@ library(knitr)
           and compare with known <m>\E(Y)</m> and <m>\var(Y)</m>.</p></li>
         </ul>
 
-        <ol label="a">
+        <ol marker="a">
           <li>
             <p>Binary: <m>Y = 1</m> for a success, 0 for a failure</p>
             <me>P(Y=y;p)=p^{y}(1-p)^{(1-y)}</me>

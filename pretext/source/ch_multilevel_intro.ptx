@@ -135,7 +135,7 @@
       </figure>
 
       <p>
-        To avoid the issue of dependent observations, we can generate separate plots for each subject and examine trends within and across subjects. These <term>lattice plots</term> are illustrated in <xref ref="fig-mli-lattice1"/>, <xref ref="fig-mli-lattice2"/>, and <xref ref="fig-mli-lattice3"/>; we discuss such plots more thoroughly in <xref ref="ch-longitudinal"/>. While general trends are difficult to discern from these lattice plots, we can see the variety in subjects in sample size distributions and overall level of performance anxiety.
+        To avoid the issue of dependent observations, we can generate separate plots for each subject and examine trends within and across subjects. These <term>lattice plots</term> are illustrated in <xref ref="fig-mli-lattice1"/>, <xref ref="fig-mli-lattice2"/>, and <xref ref="fig-mli-lattice3"/>; we discuss such plots more thoroughly in <xref ref="ch-lon"/>. While general trends are difficult to discern from these lattice plots, we can see the variety in subjects in sample size distributions and overall level of performance anxiety.
       </p>
 
       <figure xml:id="fig-mli-lattice1">

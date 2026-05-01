@@ -107,6 +107,64 @@ library(tidyverse)
         data set.
       </p>
 
+      <table xml:id="tab-table1chp11">
+        <title>Key variables from the first 10 rows of data from the College Basketball Referees
+        case study. Each row represents a different foul called; rows 1–8 are fouls from Game 1
+        and rows 9–10 are from Game 2.</title>
+        <tabular halign="center">
+          <row header="yes">
+            <cell>game</cell>
+            <cell>foul.home</cell>
+            <cell>foul.diff</cell>
+            <cell>score.diff</cell>
+            <cell>time</cell>
+            <cell>visitor</cell>
+            <cell>hometeam</cell>
+            <cell>foul.type</cell>
+          </row>
+          <row>
+            <cell>1</cell><cell>0</cell><cell>0</cell><cell>0</cell>
+            <cell>19.08</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+          </row>
+          <row>
+            <cell>1</cell><cell>1</cell><cell>-1</cell><cell>0</cell>
+            <cell>18.78</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+          </row>
+          <row>
+            <cell>1</cell><cell>0</cell><cell>1</cell><cell>2</cell>
+            <cell>16.25</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+          </row>
+          <row>
+            <cell>1</cell><cell>0</cell><cell>0</cell><cell>2</cell>
+            <cell>15.10</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+          </row>
+          <row>
+            <cell>1</cell><cell>1</cell><cell>-1</cell><cell>2</cell>
+            <cell>14.00</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+          </row>
+          <row>
+            <cell>1</cell><cell>1</cell><cell>0</cell><cell>2</cell>
+            <cell>13.12</cell><cell>Indiana</cell><cell>Duke</cell><cell>shooting</cell>
+          </row>
+          <row>
+            <cell>1</cell><cell>0</cell><cell>1</cell><cell>0</cell>
+            <cell>12.33</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+          </row>
+          <row>
+            <cell>1</cell><cell>1</cell><cell>0</cell><cell>0</cell>
+            <cell>11.83</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+          </row>
+          <row>
+            <cell>2</cell><cell>0</cell><cell>0</cell><cell>0</cell>
+            <cell>19.58</cell><cell>Maryland</cell><cell>Virginia</cell><cell>personal</cell>
+          </row>
+          <row>
+            <cell>2</cell><cell>1</cell><cell>-1</cell><cell>0</cell>
+            <cell>18.90</cell><cell>Maryland</cell><cell>Virginia</cell><cell>personal</cell>
+          </row>
+        </tabular>
+      </table>
+
       <p>
         For our initial analysis, our primary response variable is <c>foul.home</c>, and our
         primary hypothesis concerns evening out foul calls. We hypothesize that the probability
@@ -169,6 +227,47 @@ library(tidyverse)
         at the top (20.0). This suggests that accounting for the effect of home and visiting
         team will be an important part of our model.
       </p>
+
+      <table xml:id="tab-table2chp11">
+        <title>Average total number of fouls in the first half over all games in which a
+        particular team is home or visitor. Shown are the top 3 and bottom 3 teams by total fouls
+        in home games (left columns) and the top 3 and bottom 3 by total fouls in away games
+        (right columns).</title>
+        <tabular halign="center">
+          <row header="yes">
+            <cell>Home Rank</cell>
+            <cell>Home Team</cell>
+            <cell>Avg Fouls (Home)</cell>
+            <cell>Visitor Rank</cell>
+            <cell>Visitor Team</cell>
+            <cell>Avg Fouls (Away)</cell>
+          </row>
+          <row>
+            <cell>1 (highest)</cell><cell>Duke</cell><cell>20.0</cell>
+            <cell>1 (highest)</cell><cell>Maryland</cell><cell>21.2</cell>
+          </row>
+          <row>
+            <cell>2</cell><cell>Ohio State</cell><cell>19.5</cell>
+            <cell>2</cell><cell>Duke</cell><cell>20.3</cell>
+          </row>
+          <row>
+            <cell>3</cell><cell>Maryland</cell><cell>18.9</cell>
+            <cell>3</cell><cell>Ohio State</cell><cell>19.8</cell>
+          </row>
+          <row>
+            <cell>37 (lowest)</cell><cell>Minnesota</cell><cell>12.1</cell>
+            <cell>37 (lowest)</cell><cell>Minnesota</cell><cell>13.4</cell>
+          </row>
+          <row>
+            <cell>38</cell><cell>Virginia</cell><cell>11.8</cell>
+            <cell>38</cell><cell>Wisconsin</cell><cell>13.1</cell>
+          </row>
+          <row>
+            <cell>39</cell><cell>Wisconsin</cell><cell>11.4</cell>
+            <cell>39</cell><cell>Virginia</cell><cell>12.9</cell>
+          </row>
+        </tabular>
+      </table>
 
       <p>
         The conditional density plots in the first row of <xref ref="fig-gmu-cdelogitmat1"/>

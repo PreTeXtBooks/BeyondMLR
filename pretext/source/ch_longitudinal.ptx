@@ -1104,7 +1104,7 @@ model.f2a &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
             their parents, and their ethnic and cultural heritage. Then, information about their
             gang activity was collected at 7 additional occasions during the school year.
           </p>
-          <ol label="a">
+          <ol marker="a">
             <li><p>Give the observational units at Level One and Level Two.</p></li>
             <li><p>List potential explanatory variables at both Level One and Level Two.</p></li>
           </ol>
@@ -1146,7 +1146,7 @@ model.f2a &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
             four separate multilevel models. Based on their description, write out a sample model
             from each of the three steps in the series. For each model:
           </p>
-          <ol label="a">
+          <ol marker="a">
             <li><p>Write out the two-level model for predicting gang activity.</p></li>
             <li><p>Write out the corresponding composite model.</p></li>
             <li><p>Determine how many model parameters (fixed effects and variance components)
@@ -1333,7 +1333,7 @@ model.f2a &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
             Primary research questions: Do trajectories of alcohol use differ by parental
             alcoholism? Do trajectories of alcohol use differ by peer alcohol use?
           </p>
-          <ol label="a">
+          <ol marker="a">
             <li><p>Identify Level One and Level Two predictors.</p></li>
             <li><p>Perform a quick EDA. What can you say about the shape of <c>alcuse</c>, and
             the relationship between <c>alcuse</c> and <c>coa</c>, <c>male</c>, and
@@ -1390,7 +1390,7 @@ model.f2a &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
             <li><p><c>stations</c> = number of emergency department stations available for
             patients (fixed over 3 years)</p></li>
           </ul>
-          <ol label="a">
+          <ol marker="a">
             <li><p>State the observational units at Level One and Level Two in this study, then
             state the explanatory variables at each level from the list above.</p></li>
             <li><p>Create latticed spaghetti plots that illustrate the relationship between
