@@ -19,7 +19,7 @@
 
   <introduction xml:id="intro-ch-poissonreg">
     <program language="r" xml:id="code-load-packages-ch4">
-      <input>
+      <code>
 # Packages required for Chapter 4
 library(gridExtra)
 library(knitr)
@@ -31,24 +31,26 @@ library(multcomp)
 library(pander)
 library(MASS)
 library(tidyverse)
-      </input>
+      </code>
     </program>
   </introduction>
 
   <section xml:id="sec-intro-poisson">
     <title>Introduction to Poisson Regression</title>
 
-    <p>Recall from <xref ref="ch-distthry"/> that if <m>Y \sim \textrm{Poisson}(\lambda)</m>, then both the mean and variance of <m>Y</m> equal <m>\lambda</m>. The <term>Poisson regression</term> <idx>Poisson regression</idx> model links one or more explanatory variables to a Poisson response variable. Given explanatory variables <m>X_1, X_2, \ldots, X_p</m>, we model the mean count <m>\lambda</m> via
-    <me>
-      \log(\lambda) = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p,
-    </me>
-    or equivalently,
-    <me>
-      \lambda = e^{\beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p}.
-    </me>
-    </p>
+    <introduction>
+      <p>Recall from <xref ref="ch-distthry"/> that if <m>Y \sim \textrm{Poisson}(\lambda)</m>, then both the mean and variance of <m>Y</m> equal <m>\lambda</m>. The <term>Poisson regression</term> <idx>Poisson regression</idx> model links one or more explanatory variables to a Poisson response variable. Given explanatory variables <m>X_1, X_2, \ldots, X_p</m>, we model the mean count <m>\lambda</m> via
+      <me>
+        \log(\lambda) = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p,
+      </me>
+      or equivalently,
+      <me>
+        \lambda = e^{\beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p}.
+      </me>
+      </p>
 
-    <p>Because counts are necessarily non-negative and the exponential function always produces positive values, the Poisson regression model respects this constraint automatically. Compare this to ordinary least squares (OLS) regression, where a fitted linear model could produce negative predicted values when the response can only be zero or positive.</p>
+      <p>Because counts are necessarily non-negative and the exponential function always produces positive values, the Poisson regression model respects this constraint automatically. Compare this to ordinary least squares (OLS) regression, where a fitted linear model could produce negative predicted values when the response can only be zero or positive.</p>
+    </introduction>
 
     <subsection xml:id="sec-pois-assumptions">
       <title>Poisson Regression Assumptions</title>
@@ -101,9 +103,9 @@ library(tidyverse)
       </figure>
 
       <program language="r" xml:id="code-ch4-philippines-load">
-        <input>
+        <code>
 fHH1 &lt;- read_csv("data/fHH1.csv")
-        </input>
+        </code>
       </program>
     </subsection>
 
@@ -153,11 +155,11 @@ fHH1 &lt;- read_csv("data/fHH1.csv")
       <p>We first fit a simple Poisson regression model using only age of the household head as a predictor:</p>
 
       <program language="r" xml:id="code-ch4-pois-fit1">
-        <input>
+        <code>
 modela &lt;- glm(total ~ age, 
                   family = poisson, data = fHH1)
 summary(modela)
-        </input>
+        </code>
       </program>
 
       <p>With only age as a predictor, the fitted model is:
@@ -193,11 +195,11 @@ summary(modela)
       where <m>D</m> denotes residual deviance. Under the null hypothesis that the reduced model is adequate, <m>G^2</m> follows an approximate chi-squared distribution with degrees of freedom equal to the difference in the number of parameters between the two models.</p>
 
       <program language="r" xml:id="code-ch4-deviance-test">
-        <input>
+        <code>
 modela2 &lt;- glm(total ~ age + I(age^2), 
                   family = poisson, data = fHH1)
 anova(modela, modela2, test = "Chisq")
-        </input>
+        </code>
       </program>
 
       <p>The drop-in-deviance test strongly favors the model with the quadratic term (<m>G^2 = 120.6</m>, df = 1, p &lt; .001), consistent with the inverted-U pattern observed in the EDA.</p>
@@ -224,11 +226,11 @@ anova(modela, modela2, test = "Chisq")
       <p>The quadratic model for the Philippines data includes both a linear and squared age term:</p>
 
       <program language="r" xml:id="code-ch4-quad-model">
-        <input>
+        <code>
 modela2 &lt;- glm(total ~ age + I(age^2), 
                   family = poisson, data = fHH1)
 summary(modela2)
-        </input>
+        </code>
       </program>
 
       <p>Both the linear and quadratic terms are highly significant. The positive linear coefficient and negative quadratic coefficient capture the inverted-U shape: mean household size increases with age up to a peak and then decreases. This is consistent with the life-cycle pattern of household formation, childbearing, and children leaving home.</p>
@@ -240,11 +242,11 @@ summary(modela2)
       <p>We next add region as a covariate, since the EDA showed notable regional variation in household size:</p>
 
       <program language="r" xml:id="code-ch4-region-model">
-        <input>
+        <code>
 modela2L &lt;- glm(total ~ age + I(age^2) + region, 
                   family = poisson, data = fHH1)
 summary(modela2L)
-        </input>
+        </code>
       </program>
 
       <p>A drop-in-deviance test comparing the model with and without region strongly favors including region as a covariate. After accounting for region, the quadratic pattern with age remains significant.</p>
@@ -350,12 +352,12 @@ summary(modela2L)
       <p>The data set <c>c_data.csv</c> is loaded and new variables are created for the enrollment in thousands and the violent crime rate per 1,000 students:</p>
 
       <program language="r" xml:id="code-ch4-crime-load">
-        <input>
+        <code>
 c.data &lt;- read_csv("data/c_data.csv")
 c.data &lt;- c.data %&gt;%
   mutate(enroll1000 = enrollment / 1000,
          nvrate = nv / enroll1000)
-        </input>
+        </code>
       </program>
     </subsection>
 
@@ -411,20 +413,22 @@ c.data &lt;- c.data %&gt;%
   <section xml:id="sec-initial-models">
     <title>Initial Models</title>
 
-    <p>We are interested primarily in differences in violent crime between institutional types controlling for region, so we fit a model with region, institutional type, and the enrollment offset:</p>
+    <introduction>
+      <p>We are interested primarily in differences in violent crime between institutional types controlling for region, so we fit a model with region, institutional type, and the enrollment offset:</p>
 
-    <program language="r" xml:id="code-ch4-main-model">
-      <input>
+      <program language="r" xml:id="code-ch4-main-model">
+        <code>
 modeltr &lt;- glm(nv ~ type + region, family = poisson,
                offset = log(enroll1000), data = c.data)
 coef(summary(modeltr))
 cat(" Residual deviance = ", summary(modeltr)$deviance, " on ",
     summary(modeltr)$df.residual, "df", "\n",
     "Dispersion parameter = ", summary(modeltr)$dispersion)
-      </input>
-    </program>
+        </code>
+      </program>
 
-    <p>From our model, the Northeast and the South differ significantly from the Central region (p = 0.00000037 and p = 0.0000924, respectively). The estimated coefficient of 0.778 means that the violent crime rate per 1,000 in the Northeast is nearly 2.2 (<m>e^{0.778}</m>) times that of the Central region, controlling for the type of school. A Wald-type confidence interval for this factor can be constructed by first calculating a CI for the coefficient (<m>0.778 \pm 1.96 \cdot 0.153</m>) and then exponentiating (1.61 to 2.94).</p>
+      <p>From our model, the Northeast and the South differ significantly from the Central region (p = 0.00000037 and p = 0.0000924, respectively). The estimated coefficient of 0.778 means that the violent crime rate per 1,000 in the Northeast is nearly 2.2 (<m>e^{0.778}</m>) times that of the Central region, controlling for the type of school. A Wald-type confidence interval for this factor can be constructed by first calculating a CI for the coefficient (<m>0.778 \pm 1.96 \cdot 0.153</m>) and then exponentiating (1.61 to 2.94).</p>
+    </introduction>
 
     <subsection xml:id="sec-tukey-hsd">
       <title>Tukey's Honestly Significant Differences</title>
@@ -432,14 +436,14 @@ cat(" Residual deviance = ", summary(modeltr)$deviance, " on ",
       <p>Comparisons to regions other than the Central region can be accomplished by changing the reference region. If many comparisons are made, it would be best to adjust for multiple comparisons using a method such as <term>Tukey's Honestly Significant Differences</term>, <idx>Tukey's honestly significant differences</idx> which considers all pairwise comparisons among regions. This method helps control the large number of false positives that would arise from running many independent tests.</p>
 
       <program language="r" xml:id="code-ch4-tukey">
-        <input>
+        <code>
 mult_comp &lt;- summary(glht(modeltr, mcp(region = "Tukey")))
 tibble(comparison = rownames(mult_comp$linfct),
        estimate   = mult_comp$test$coefficients,
        SE         = mult_comp$test$sigma,
        z_value    = mult_comp$test$tstat,
        p_value    = mult_comp$test$pvalues)
-        </input>
+        </code>
       </program>
 
       <p>We find that the Northeast has significantly higher rates of violent crimes than the Central, Midwest, and Western regions, while the South has significantly higher rates than the Central and Midwest, controlling for the type of institution. The university indicator is significant; after exponentiating the coefficient, we estimate an approximately 32% (<m>e^{0.280}</m>) increase in violent crime rate over colleges after controlling for region.</p>
@@ -447,13 +451,13 @@ tibble(comparison = rownames(mult_comp$linfct),
       <p>These results suggest significant differences in regions and type of institution. However, the EDA findings suggest the effect of the type of institution may vary by region, so we consider a model with an interaction between region and type:</p>
 
       <program language="r" xml:id="code-ch4-interaction-model">
-        <input>
+        <code>
 modeli &lt;- glm(nv ~ type + region + region:type,
               family = poisson,
               offset = log(enroll1000), data = c.data)
 drop_in_dev &lt;- anova(modeltr, modeli, test = "Chisq")
 drop_in_dev
-        </input>
+        </code>
       </program>
 
       <p>The drop-in-deviance test provides convincing evidence of an interaction between region and type of institution (<m>\chi^2 = 71.98</m>, df = 4, p &lt; .001). Our model estimates that violent crime rates are 13.6 (<m>e^{.196+2.411}</m>) times higher in universities in the West compared to colleges, while in the Northeast we estimate that violent crime rates are 2.4 (<m>\frac{1}{e^{.196-1.070}}</m>) times higher in colleges.</p>
@@ -477,7 +481,7 @@ drop_in_dev
       where <m>r_i</m> are the Pearson residuals. If there is no overdispersion, this estimate should be close to 1. Values greater than 1 indicate overdispersion. We can inflate standard errors by multiplying the variance by <m>\hat{\phi}</m>, giving <term>quasi-Poisson</term> <idx>quasi-Poisson</idx> standard errors: <m>SE_Q(\hat{\beta}) = \sqrt{\hat{\phi}} \cdot SE(\hat{\beta})</m>. This approach is called <term>quasilikelihood</term>. <idx>quasilikelihood</idx></p>
 
       <program language="r" xml:id="code-ch4-quasipoisson">
-        <input>
+        <code>
 modeliq &lt;- glm(nv ~ type + region + region:type,
                family = quasipoisson,
                offset = log(enroll1000), data = c.data)
@@ -485,7 +489,7 @@ coef(summary(modeliq))
 cat(" Residual deviance = ", summary(modeliq)$deviance, " on ",
     summary(modeliq)$df.residual, "df", "\n",
     "Dispersion parameter = ", summary(modeliq)$dispersion)
-        </input>
+        </code>
       </program>
 
       <p>The estimated dispersion parameter is 4.447, much larger than 1.0, confirming overdispersion. The larger estimated standard errors in the quasi-Poisson model reflect this adjustment. For example, the standard error for the West region term from the likelihood approach is 0.7906, whereas the quasilikelihood standard error is <m>\sqrt{4.47} \cdot 0.7906 = 1.6671</m>. This term is no longer significant under the quasi-Poisson model. After adjusting for overdispersion, none of the model coefficients are significant at the 0.05 level, because standard errors were all increased by a factor of 2.1 (<m>\sqrt{\hat{\phi}} = \sqrt{4.447} = 2.1</m>).</p>
@@ -493,12 +497,12 @@ cat(" Residual deviance = ", summary(modeliq)$deviance, " on ",
       <p>Note that tests for individual parameters are now based on the t-distribution rather than a standard Normal, with test statistic <m>t = \hat{\beta} / SE_Q(\hat{\beta})</m>. Drop-in-deviance tests can similarly be adjusted by dividing the test statistic (per degree of freedom) by the estimated dispersion parameter and comparing the result to an F-distribution: <m>F = \frac{\textrm{drop in deviance} / \textrm{difference in df}}{\hat{\phi}}</m>.</p>
 
       <program language="r" xml:id="code-ch4-quasi-drop">
-        <input>
+        <code>
 modeltrq &lt;- glm(nv ~ type + region, family = quasipoisson,
                offset = log(enroll1000), data = c.data)
 drop_in_dev &lt;- anova(modeltrq, modeliq, test = "F")
 drop_in_dev
-        </input>
+        </code>
       </program>
 
       <p>Even after adjusting for overdispersion, there is still statistically significant evidence (<m>F = 4.05</m>, p = .0052) that the difference between colleges and universities in violent crime rate differs by region.</p>
@@ -557,14 +561,14 @@ drop_in_dev
       <p>Mathematically, the negative binomial model can be thought of as a Poisson model where <m>\lambda</m> is itself random, following a gamma distribution. Specifically, if <m>Y|\lambda \sim \textrm{Poisson}(\lambda)</m> and <m>\lambda \sim \textrm{gamma}(r, \frac{1-p}{p})</m>, then <m>Y \sim \textrm{NegBinom}(r, p)</m> where <m>E(Y) = \mu</m> and <m>\textrm{Var}(Y) = \mu + \mu^2/r</m>. Smaller values of <m>r</m> indicate greater overdispersion.</p>
 
       <program language="r" xml:id="code-ch4-negbinom">
-        <input>
+        <code>
 modelinb &lt;- glm.nb(nv ~ type + region + region:type,
                offset(log(enroll1000)), data = c.data)
 coef(summary(modelinb))
 cat(" Residual deviance = ", summary(modelinb)$deviance, " on ",
     summary(modelinb)$df.residual, "df", "\n",
     "Dispersion parameter (theta) = ", summary(modelinb)$theta)
-        </input>
+        </code>
       </program>
 
       <p>These results differ from the quasi-Poisson model. Several effects are now statistically significant at the 0.05 level: the effect of type of institution for the Central region (<m>Z = 2.64</m>, p = .008), the difference between Northeast and Central regions for colleges (<m>Z = 2.76</m>, p = .006), and the West/Central difference in type effect (<m>Z = 2.71</m>, p = .007). Compared to the quasi-Poisson model, negative binomial coefficient estimates are generally similar in direction and magnitude, but the negative binomial standard errors are somewhat smaller.</p>
@@ -592,14 +596,14 @@ cat(" Residual deviance = ", summary(modelinb)$deviance, " on ",
       <p>Each line of <c>weekendDrinks.csv</c> contains data from a student in an introductory statistics course. The response is <c>drinks</c>, the number of alcoholic drinks consumed the previous weekend. Predictors include whether the student lives <c>off.campus</c>, <c>sex</c>, and whether the student is likely a <c>firstYear</c> student based on dorm assignment:</p>
 
       <program language="r" xml:id="code-ch4-drinking-load">
-        <input>
+        <code>
 zip.data &lt;- read.csv("data/weekendDrinks.csv")
 zip.data &lt;- zip.data %&gt;%
   mutate(off.campus = ifelse(dorm == "off campus", 1, 0),
          firstYear  = ifelse(dorm %in% c("Smiley","Nyland","Olin",
                                          "Bohn","Mohn","New"), 1, 0))
 head(zip.data)
-        </input>
+        </code>
       </program>
     </subsection>
 
@@ -638,7 +642,7 @@ head(zip.data)
       <p>We first fit an ordinary Poisson model, then a ZIP model:</p>
 
       <program language="r" xml:id="code-ch4-zip-fit">
-        <input>
+        <code>
 # Ordinary Poisson model
 pois.m1 &lt;- glm(drinks ~ off.campus + sex, 
                family = poisson, data = zip.data)
@@ -647,15 +651,15 @@ pois.m1 &lt;- glm(drinks ~ off.campus + sex,
 zip.m2 &lt;- zeroinfl(drinks ~ off.campus + sex | firstYear,
                    data = zip.data)
 summary(zip.m2)
-        </input>
+        </code>
       </program>
 
       <p>The ZIP model output contains two sets of coefficients: count model coefficients (Poisson part) and zero-inflation model coefficients (binary part). We exponentiate coefficients for ease of interpretation:</p>
 
       <program language="r" xml:id="code-ch4-zip-coef">
-        <input>
+        <code>
 exp(coef(zip.m2))
-        </input>
+        </code>
       </program>
 
       <p>Considering the <q>Count model coefficients,</q> which provide information on how the sex and off-campus status of a drinker relate to the number of drinks: for those who drink, the average number of drinks for males is <m>e^{1.0209} = 2.76</m> times the number for females (<m>Z = 5.827</m>, p &lt; 0.001), given that both students live in comparable settings. Among drinkers, the mean number of drinks for students living off campus is <m>e^{0.4159} = 1.52</m> times that of students living on campus for those of the same sex (<m>Z = 2.021</m>, p = 0.0433).</p>
@@ -682,12 +686,12 @@ exp(coef(zip.m2))
     <subsection xml:id="sec-vuong-test">
       <title>The Vuong Test (optional)</title>
 
-      <p>Moving from ordinary Poisson to zero-inflated Poisson has helped us address additional research questions. While a ZIP model seems more faithful to the nature and structure of this data, can we quantitatively show that a ZIP is better than an ordinary Poisson model? We cannot use the drop-in-deviance test because these two models are not nested. <xref ref="Vuong1989"/> devised a test to compare predicted probabilities of <term>non-nested</term> models. Essentially, the <term>Vuong test</term> <idx>Vuong test</idx> can compare a zero-inflated model and an ordinary regression model.</p>
+      <p>Moving from ordinary Poisson to zero-inflated Poisson has helped us address additional research questions. While a ZIP model seems more faithful to the nature and structure of this data, can we quantitatively show that a ZIP is better than an ordinary Poisson model? We cannot use the drop-in-deviance test because these two models are not nested. <cite ref="Vuong1989"/> devised a test to compare predicted probabilities of <term>non-nested</term> models. Essentially, the <term>Vuong test</term> <idx>Vuong test</idx> can compare a zero-inflated model and an ordinary regression model.</p>
 
       <program language="r" xml:id="code-ch4-vuong">
-        <input>
+        <code>
 vuong(pois.m1, zip.m2)
-        </input>
+        </code>
       </program>
 
       <p>The Vuong test compares Model 1 (ordinary Poisson) to Model 2 (ZIP). If the two models do not differ, the test statistic is asymptotically standard Normal with a large p-value. Here the test indicates that the zero-inflation model is better (<m>Z = -2.69</m>, p = .0036). Note that the test depends on sufficiently large <m>n</m> for the Normal approximation, so since our sample size (n = 77) is somewhat small, we interpret this result with caution.</p>
@@ -706,7 +710,7 @@ vuong(pois.m1, zip.m2)
       </figure>
 
       <program language="r" xml:id="code-ch4-resid-zip">
-        <input>
+        <code>
 res.df &lt;- data.frame(resid = residuals(zip.m2), 
                      fit   = fitted(zip.m2))
 ggplot(res.df, aes(x = fit, y = resid)) +
@@ -714,7 +718,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
   ylab("Residuals from ZIP model") +
   xlab("Fitted values from ZIP model") +
   annotate("text", x = 4.2, y = 5.3, label = "Y=22")
-        </input>
+        </code>
       </program>
     </subsection>
 
@@ -799,7 +803,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
 
       <introduction>
         <p>Complete (a)&#8211;(d) in the context of the study for Exercises 11&#8211;13.</p>
-        <p><ol label="a">
+        <p><ol marker="a">
           <li><p>Define the response.</p></li>
           <li><p>What are the possible values for the response?</p></li>
           <li><p>What does <m>\lambda</m> represent?</p></li>
@@ -912,7 +916,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
         <title>College burglaries</title>
         <statement>
           <p>We wish to build a regression model to describe the number of burglaries on a college campus in a year. Our population of interest will be U.S. liberal arts colleges.</p>
-          <p><ol label="a">
+          <p><ol marker="a">
             <li><p>Describe why the response variable (<m>Y</m> = # burglaries on campus in a year) could be modeled by a Poisson distribution.</p></li>
             <li><p>Describe explanatory variables which might explain differences in <m>\lambda_i</m> = mean number of burglaries per year on campus <m>i</m>.</p></li>
             <li><p>Consider a campus with an average of 5 burglaries per year. Use <c>dpois()</c> to sketch a plot of the distribution of <m>Y</m> for this campus. Use <c>rpois()</c> to verify that both the mean and variance of <m>Y</m> are given by <m>\lambda = 5</m>.</p></li>
@@ -929,11 +933,11 @@ ggplot(res.df, aes(x = fit, y = resid)) +
             <li><p><c>MATINGS</c> = the number of matings in a given year</p></li>
             <li><p><c>AGE</c> = the age of the elephant in years.</p></li>
           </ul></p>
-          <p><ol label="a">
+          <p><ol marker="a">
             <li><p>Create a histogram of <c>MATINGS</c>. Is there preliminary evidence that number of matings could be modeled as a Poisson response? Explain.</p></li>
             <li><p>Plot <c>MATINGS</c> by <c>AGE</c>. Add a least squares line. Is there evidence that modeling matings using a linear regression with age might not be appropriate? Explain. (Hints: fit a smoother; check residual plots).</p></li>
             <li><p>For each age, calculate the mean number of matings. Take the log of each mean and plot it by <c>AGE</c>.
-              <ol label="i">
+              <ol marker="i">
                 <li><p>What assumption can be assessed with this plot?</p></li>
                 <li><p>Is there evidence of a quadratic trend on this plot?</p></li>
               </ol>
@@ -941,20 +945,20 @@ ggplot(res.df, aes(x = fit, y = resid)) +
             <li><p>Fit a Poisson regression model with a linear term for <c>AGE</c>. Exponentiate and then interpret the coefficient for <c>AGE</c>.</p></li>
             <li><p>Construct a 95% confidence interval for the slope and interpret in context (you may want to exponentiate the endpoints).</p></li>
             <li><p>Are the number of matings significantly related to age? Test with
-              <ol label="i">
+              <ol marker="i">
                 <li><p>a Wald test and</p></li>
                 <li><p>a drop-in-deviance test.</p></li>
               </ol>
             </p></li>
             <li><p>Add a quadratic term in <c>AGE</c> to determine whether there is a maximum age for the number of matings for elephants. Is a quadratic model preferred to a linear model? Use
-              <ol label="i">
+              <ol marker="i">
                 <li><p>a Wald test and</p></li>
                 <li><p>a drop-in-deviance test.</p></li>
               </ol>
             </p></li>
             <li><p>What can we say about the goodness-of-fit of the model with age as the sole predictor? Compare the residual deviance for the linear model to a <m>\chi^2</m> distribution with the residual model degrees of freedom.</p></li>
             <li><p>Fit the linear model using quasi-Poisson regression. (Why?)
-              <ol label="i">
+              <ol marker="i">
                 <li><p>How do the estimated coefficients change?</p></li>
                 <li><p>How do the standard errors change?</p></li>
                 <li><p>What is the estimated dispersion parameter?</p></li>
@@ -993,7 +997,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
             <li><p>Model 2: Assume that <m>Y \sim \textrm{Poisson}(\lambda_W)</m> when the smoker is at work, and <m>Y \sim \textrm{Poisson}(\lambda_H)</m> when the smoker is at home.</p></li>
             <li><p>Model 3: Assume that <m>Y \sim \textrm{Poisson}(\lambda)</m> and <m>\log(\lambda) = \beta_0 + \beta_1 X</m>.</p></li>
           </ul></p>
-          <p><ol label="a">
+          <p><ol marker="a">
             <li><p>Write out the likelihood <m>L(\lambda)</m> and the log-likelihood <m>\log L(\lambda)</m> in Model 1. Use the data values above, and simplify where possible.</p></li>
             <li><p>Intuitively, what would be a reasonable estimate for <m>\lambda</m> based on this data? Why?</p></li>
             <li><p>Find the maximum likelihood estimator for <m>\lambda</m> in Model 1 using an optimization routine in R (but not the <c>glm()</c> function). Use R to produce a plot of the likelihood function <m>L(\lambda)</m>.</p></li>
@@ -1008,13 +1012,11 @@ ggplot(res.df, aes(x = fit, y = resid)) +
         <title>Smoking at work and home (continued)</title>
         <statement>
           <p>We will use the same data set as in Exercise 3 (Table <xref ref="tab-ch4-smoking"/>).</p>
-          <p><ol label="a">
+          <p>For the remaining questions (d)&#8211;(l), we will focus exclusively on Model 3.</p>
+          <p><ol marker="a">
             <li><p>Write out the log-likelihood function <m>\log L(\beta_0, \beta_1)</m> in Model 3. Again, use the data values above, and simplify where possible.</p></li>
             <li><p>Find the maximum likelihood estimators for <m>\beta_0</m> and <m>\beta_1</m> in Model 3 using an optimization routine in R (but not the <c>glm()</c> function). Use R to produce a 3D plot of the log-likelihood function.</p></li>
             <li><p>Confirm your estimates for Model 1 and Model 3 using <c>glm()</c>. Then show that the MLEs for Model 3 agree with the MLEs for Model 2.</p></li>
-          </ol></p>
-          <p>For the remaining questions, we will focus exclusively on Model 3.</p>
-          <p><ol label="d">
             <li><p>State a (one-sided) hypothesis for <m>\beta_1</m> in the context of the problem. Note: we will nevertheless use two-sided tests and intervals in the following questions.</p></li>
             <li><p>Do we need to include an offset in our Poisson regression model? Why or why not?</p></li>
             <li><p>Give estimates of <m>\beta_0</m> and <m>\beta_1</m>, and provide interpretations for both in the context of the problem.</p></li>
@@ -1032,9 +1034,9 @@ ggplot(res.df, aes(x = fit, y = resid)) +
         <title>Campus crime</title>
         <statement>
           <p>The data set <c>campuscrime09.csv</c> contains the number of burglaries reported at a collection of 47 U.S. public universities with over 10,000 students in the year 2009. In addition, covariates are included which may explain differences in crime rates, including total number of students, percentage of men, average SAT and ACT test scores, and tuition.</p>
-          <p><ol label="a">
+          <p><ol marker="a">
             <li><p>Perform an exploratory data analysis. Support your analysis with plots and summary statistics.
-              <ol label="i">
+              <ol marker="i">
                 <li><p>Analyze whether number of burglaries could be reasonably modeled with a Poisson distribution.</p></li>
                 <li><p>Analyze which covariates you expect to be the best predictors of burglaries.</p></li>
               </ol>
@@ -1043,7 +1045,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
             <li><p>Run a Poisson regression model with the 4 predictors from (b). Interpret the coefficients for <c>tuition</c> and <c>pct.male</c>.</p></li>
             <li><p>Replace <c>tuition</c> with tuition in thousands in your model from (c). How does your new model compare to your model in (c)? Interpret the coefficient for <c>tuition.thous</c>.</p></li>
             <li><p>We will consider the possibility of including the total number of students at a university as an offset.
-              <ol label="i">
+              <ol marker="i">
                 <li><p>Explain why we might consider <c>total</c> as an offset.</p></li>
                 <li><p>Refit your model from (d) with <c>log(total)</c> as an offset rather than as a predictor. Does this new model appear to fit better or worse than the model from (d)?</p></li>
                 <li><p>Refit your model from (d) with <c>log(total)</c> rather than <c>total</c> as a predictor. If total were a good candidate for an offset, what would we expect the coefficient of <c>log(total)</c> to be? Does a 95% confidence interval for that coefficient contain the value you expected?</p></li>
@@ -1051,13 +1053,13 @@ ggplot(res.df, aes(x = fit, y = resid)) +
             </p></li>
             <li><p>Run the following model, then interpret the coefficients for <c>tuition.thous</c> and the interaction between <c>tuition.thous</c> and <c>act.comp</c>.</p>
             <program language="r" xml:id="code-ch4-g5-model">
-              <input>
+              <code>
 crime &lt;- mutate(crime, total.thous = total/1000)
 fit3 &lt;- glm(burg09 ~ act.comp + tuition.thous +
             total.thous + act.comp:tuition.thous +
             act.comp:total.thous, family = poisson,
             data = crime)
-              </input>
+              </code>
             </program>
             </li>
           </ol></p>
@@ -1068,7 +1070,7 @@ fit3 &lt;- glm(burg09 ~ act.comp + tuition.thous +
         <title>U.S. National Medical Expenditure Survey</title>
         <statement>
           <p>The data set <c>NMES1988</c> in the <c>AER</c> package contains a sample of individuals over 65 who are covered by Medicare, collected to assess the demand for health care through physician office visits, outpatient visits, ER visits, hospital stays, etc. The data can be accessed by installing and loading the <c>AER</c> package and then running <c>data(NMES1988)</c>.</p>
-          <p><ol label="a">
+          <p><ol marker="a">
             <li><p>Show through graphical means that there are more respondents with 0 <c>visits</c> than might be expected under a Poisson model.</p></li>
             <li><p>Fit a ZIP model for the number of physician office <c>visits</c> using <c>chronic</c>, <c>health</c>, and <c>insurance</c> as predictors for the Poisson count, and <c>chronic</c> and <c>insurance</c> as the predictors for the binary part of the model. Then, provide interpretations in context for the following model parameters:
               <ul>
@@ -1101,7 +1103,7 @@ fit3 &lt;- glm(burg09 ~ act.comp + tuition.thous +
             <li><p><c>distLean</c>: overall ideological lean in a district</p></li>
             <li><p><c>totalIssuePages</c>: number of issues candidates commented on (response)</p></li>
           </ul></p>
-          <p><ol label="a">
+          <p><ol marker="a">
             <li><p>Create a frequency plot of <c>totalIssuePages</c>. Why might we consider using a hurdle model compared to a Poisson model? Why can't we use a zero-inflated Poisson model?</p></li>
             <li><p>Create a plot of the empirical log odds of having at least one issue statement by ideology. You may want to group ideology values first. What can you conclude from this plot? (See <xref ref="ch-logreg"/> for more details.)</p></li>
             <li><p>Create a scatterplot showing the log of the mean number of issues vs. ideology group by party, among candidates with at least one issue statement. What can we conclude from this plot?</p></li>
