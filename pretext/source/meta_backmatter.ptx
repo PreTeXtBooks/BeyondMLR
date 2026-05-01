@@ -410,6 +410,7 @@
       Angell, Diane. "Effects of Soil Type and Sterilization on the Growth of Coneflowers
       and Leadplants." St. Olaf College, Class data for Biology 261, 2010.
     </biblio>
+<<<<<<< copilot/populate-ch3-pretext-book
 
     <biblio type="raw" xml:id="Awad2017">
       Awad, Annika, Evan Lebo, and Anna Linden. "Intercontinental Comparative Analysis of
@@ -555,6 +556,11 @@
       <url href="http://www.cdc.gov/HealthyYouth/yrbs/index.htm" visual="cdc.gov/HealthyYouth/yrbs"/>.
     </biblio>
 
+=======
+    <biblio type="raw" xml:id="Vuong1989">
+      Vuong, Q. H. (1989). Likelihood ratio tests for model selection and non-nested hypotheses. <em>Econometrica</em>, 57(2), 307&#8211;333.
+    </biblio>
+>>>>>>> master
   </references>
 
   <index>
