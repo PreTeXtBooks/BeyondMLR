@@ -52,9 +52,11 @@
       offered at St. Olaf every year since. Even though there is no mathematical prerequisite, we still introduce
       fairly sophisticated topics such as likelihood theory, zero-inflated Poisson, and parametric bootstrapping
       in an intuitive and applied manner. We believe strongly in case studies featuring real data and real research
-      questions; thus, most of the data in the textbook arises from collaborative research conducted by the authors
-      and their students, or from student projects. Our goal is that, after working through this material, students
-      will develop an expanded toolkit and a greater appreciation for the wider world of data and statistical modeling.
+      questions; thus, most of the data in the textbook (and available at our
+      <url href="https://github.com/proback/BeyondMLR" visual="GitHub repo">GitHub repo</url>)
+      arises from collaborative research conducted by the authors and their students, or from student projects.
+      Our goal is that, after working through this material, students will develop an expanded toolkit and a
+      greater appreciation for the wider world of data and statistical modeling.
     </p>
 
     <p>
@@ -62,8 +64,82 @@
       although in order to make time for a large, open-ended group project we sometimes cover some chapters in less
       depth (e.g., Chapters 3, 7, 10, or 11). How much you cover will certainly depend on the background of your
       students (ours have seen both multiple linear and logistic regression), their sophistication level (we have
-      statistical but no mathematical prerequisites), and time available (we have a 14-week semester).
+      statistical but no mathematical prerequisites), and time available (we have a 14-week semester). It will
+      also depend on your choice of topics; in our experience, we have found that generalized linear models (GLMs)
+      and multilevel models nicely build on students' previous regression knowledge and allow them to better model
+      data from many real contexts, but we also acknowledge that there are other good choices of topics for an
+      applied <q>Stat3</q> course. The short chapter guide below can help you thread together the material in this
+      book to create the perfect course for you:
     </p>
+
+    <ul>
+      <li><p>
+        <em>Chapter 1: Review of Multiple Linear Regression.</em> We've found that our students really benefit
+        from a review in the first week or so, plus in this initial chapter we introduce our approach to
+        exploratory data analysis (EDA) and model building while reminding students about concepts like
+        indicators, interactions, and bootstrapping.
+      </p></li>
+      <li><p>
+        <em>Chapter 2: Beyond Least Squares: Using Likelihoods.</em> This chapter builds intuition for
+        likelihoods and their usefulness in testing and estimation; any section involving calculus is optional.
+        Chapter 2 could be skipped at the risk that later references to likelihoods become more blurry and
+        understanding more shallow.
+      </p></li>
+      <li><p>
+        <em>Chapter 3: Distribution Theory.</em> A quick summary of key discrete and continuous probability
+        distributions, this chapter can be used as a reference as needed.
+      </p></li>
+      <li><p>
+        <em>Chapter 4: Poisson Regression.</em> This is the most important chapter for generalized linear
+        models, where each of the three case studies introduces new ideas such as coefficient interpretation,
+        Wald-type and drop-in-deviance tests, Wald-type and profile likelihood confidence intervals, offsets,
+        overdispersion, quasilikelihood, zero-inflation, and alternatives like negative binomial.
+      </p></li>
+      <li><p>
+        <em>Chapter 5: Generalized Linear Models: A Unifying Theory.</em> Chapter 5 is short, but it
+        importantly shows how linear, logistic, binomial, Poisson, and other regression methods are connected.
+        We believe it's important that students appreciate that GLMs aren't just a random collection of
+        modeling approaches.
+      </p></li>
+      <li><p>
+        <em>Chapter 6: Logistic Regression.</em> We begin with two case studies involving binomial regression,
+        drawing connections with Chapters 4 and 5, before a third case study involving binary logistic
+        regression.
+      </p></li>
+      <li><p>
+        <em>Chapter 7: Correlated Data.</em> This is the transition chapter, building intuition about
+        correlated data through an extended simulation and a real case study, although you can jump right to
+        Chapter 8 if you wish. Chapters 8<ndash/>11 contain the multilevel model material and, for the most
+        part, they do not depend on earlier chapters (except for generalized responses in Chapter 11 and
+        references to ideas such as likelihoods, inferential approaches, etc.). In fact, during one semester
+        we taught the multilevel material before the GLM material to facilitate academic civic engagement
+        projects that needed multilevel models (during that semester our order of chapters was: 1, 2, 7, 8,
+        9, 10, 3, 4, 5, 6, 11).
+      </p></li>
+      <li><p>
+        <em>Chapter 8: Introduction to Multilevel Models.</em> As we go through a comprehensive case study,
+        several important ideas are motivated, including EDA for multilevel data, the two-stage approach,
+        multivariate normal distributions, coefficient interpretations, fixed and random effects, random
+        slopes and intercepts, and more. Another simulation illustrates the effect of inappropriately using
+        regression methods that assume independence for correlated data.
+      </p></li>
+      <li><p>
+        <em>Chapter 9: Two-Level Longitudinal Data.</em> This chapter covers the special case of Chapter 8
+        models where there are multiple measurements over time for each subject. New topics include
+        longitudinal-specific EDA, missing data methods, parametric bootstrap inference, and covariance
+        structure.
+      </p></li>
+      <li><p>
+        <em>Chapter 10: Multilevel Data with More Than Two Levels.</em> The ideas from Chapters 8 and 9 are
+        extended to a three-level case study. New ideas include boundary constraints and exploding numbers of
+        variance components and fixed effects.
+      </p></li>
+      <li><p>
+        <em>Chapter 11: Multilevel Generalized Linear Models.</em> This chapter brings everything together,
+        combining multilevel data with non-normal responses. Crossed random effects and random effects
+        estimates are both introduced here.
+      </p></li>
+    </ul>
 
     <p>
       Three types of exercises are available for each chapter. <term>Conceptual Exercises</term> ask about key
@@ -71,7 +147,14 @@
       appear. <term>Guided Exercises</term> provide real data sets with background descriptions and lead students
       step-by-step through a set of questions to explore the data, build and interpret models, and address key
       research questions. Finally, <term>Open-Ended Exercises</term> provide real data sets with contextual
-      descriptions and ask students to explore key questions without prescribing specific steps.
+      descriptions and ask students to explore key questions without prescribing specific steps. A solutions
+      manual with solutions to all exercises will be available to qualified instructors at our
+      <url href="https://www.routledge.com/Beyond-Multiple-Linear-Regression-Applied-Generalized-Linear-Models-And/Roback-Legler/p/book/9781439885383" visual="book's website">book's website</url>.
+    </p>
+
+    <p>
+      This work is licensed under a
+      <url href="http://creativecommons.org/licenses/by-nc-sa/4.0/" visual="Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</url>.
     </p>
   </preface>
 
@@ -112,5 +195,32 @@
     <p>Karen, Samantha, Timothy, and Sophie</p>
     <p>Paul, Ali, Mark, Sean, Lila, and Eva</p>
   </dedication>
+
+  <preface xml:id="preface-ptx-version">
+    <title>Note on This PreTeXt Edition</title>
+
+    <p>
+      This is a <url href="https://pretextbook.org/" visual="PreTeXt">PreTeXt</url> conversion of
+      <em>Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R</em>,
+      originally written by Paul Roback and Julie Legler. The original work is available online at
+      <url href="https://bookdown.org/roback/bookdown-BeyondMLR/" visual="bookdown.org/roback/bookdown-BeyondMLR">bookdown.org/roback/bookdown-BeyondMLR</url>
+      and was published by CRC Press/Taylor &amp; Francis Group. The original GitHub repository for the book
+      source is at
+      <url href="https://github.com/proback/BeyondMLR" visual="github.com/proback/BeyondMLR">github.com/proback/BeyondMLR</url>.
+    </p>
+
+    <p>
+      This PreTeXt edition was prepared by
+      <url href="https://github.com/PreTeXtBooks/BeyondMLR" visual="the PreTeXtBooks project">the PreTeXtBooks project</url>
+      to make the content available in the PreTeXt format, enabling accessible and structured output in HTML,
+      PDF, and other formats. All prose, code examples, figures, and mathematical content are faithful
+      reproductions of the original work.
+    </p>
+
+    <p>
+      The original work by Paul Roback and Julie Legler is licensed under a
+      <url href="http://creativecommons.org/licenses/by-nc-sa/4.0/" visual="Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</url>.
+    </p>
+  </preface>
 
 </frontmatter>
