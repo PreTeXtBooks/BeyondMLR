@@ -47,6 +47,7 @@ library(tidyverse)
       <me>
         \lambda = e^{\beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p}.
       </me>
+      <fn>Note that throughout <em>Beyond Multiple Linear Regression</em> we use log to represent the natural logarithm.</fn>
       </p>
 
       <p>Because counts are necessarily non-negative and the exponential function always produces positive values, the Poisson regression model respects this constraint automatically. Compare this to ordinary least squares (OLS) regression, where a fitted linear model could produce negative predicted values when the response can only be zero or positive.</p>
@@ -74,6 +75,12 @@ library(tidyverse)
         </image>
       </figure>
     </subsection>
+  </section>
+
+  <section xml:id="sec-case-studies-overview">
+    <title>Case Studies Overview</title>
+
+    <p>We take a look at the Poisson regression model in the context of three case studies. Each case study is based on real data and real questions. Modeling household size in the Philippines introduces the idea of regression with a Poisson response along with its assumptions. A quadratic term is added to a model to determine an optimal size per household, and methods of model comparison are introduced. The campus crime case study introduces two big ideas in Poisson regression modeling: offsets, to account for sampling effort, and overdispersion, when actual variability exceeds what is expected by the model. Finally, the weekend drinking example uses a modification of a Poisson model to account for more zeros than would be expected for a Poisson random variable. These three case studies also provide context for some of the familiar concepts related to modeling such as exploratory data analysis (EDA), estimation, and residual plots.</p>
   </section>
 
   <section xml:id="sec-cs-philippines">
@@ -124,7 +131,7 @@ fHH1 &lt;- read_csv("data/fHH1.csv")
       <p>To assess the linearity assumption, we compute the mean household size for each age group and plot the log of the mean against age (Figure <xref ref="fig-totalPoisByAge"/>). The relationship between log mean household size and age appears reasonably linear, supporting the linearity assumption.</p>
 
       <figure xml:id="fig-totalPoisByAge">
-        <caption>Log of mean household size by age group of household head (Philippines data). The roughly linear trend supports the Poisson regression linearity assumption.</caption>
+        <caption>Distribution of household sizes by age group of the household head.</caption>
         <image source="generated-assets/fig-totalPoisByAge.png" width="60%">
           <description>Scatterplot of log mean household size vs. age group of household head with a roughly linear trend.</description>
         </image>
@@ -133,7 +140,7 @@ fHH1 &lt;- read_csv("data/fHH1.csv")
       <p>Figure <xref ref="fig-ageXnhouse"/> shows a scatterplot of household size against age of the household head. The mean count (blue line) shows an inverted-U shape: household size tends to increase in early adulthood, peak, and then decrease as children grow up and leave home. This suggests that a quadratic term in age might improve the model.</p>
 
       <figure xml:id="fig-ageXnhouse">
-        <caption>Household size versus age of the household head (Philippines data). The smoothed mean (blue curve) suggests a quadratic relationship.</caption>
+        <caption>The log of the mean household sizes, besides the head of household, by age of the head of household, with loess smoother.</caption>
         <image source="generated-assets/fig-ageXnhouse.png" width="60%">
           <description>Scatterplot of household size vs. age of household head with a smoothed line showing an inverted-U shape.</description>
         </image>
@@ -142,7 +149,7 @@ fHH1 &lt;- read_csv("data/fHH1.csv")
       <p>Figure <xref ref="fig-byregion"/> displays mean household size by region. The Central Visayas and ARMM (Autonomous Region in Muslim Mindanao) regions tend to have the largest households, while the National Capital Region tends to have the smallest. Regional variation motivates including region as a covariate.</p>
 
       <figure xml:id="fig-byregion">
-        <caption>Mean household size by region of the Philippines. Regions are ordered from smallest to largest mean.</caption>
+        <caption>Empirical log of the mean household sizes vs. age of the head of household, with loess smoother by region.</caption>
         <image source="generated-assets/fig-byregion.png" width="70%">
           <description>Bar chart of mean household size by Philippines region, showing notable variation across regions.</description>
         </image>
