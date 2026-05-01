@@ -2,15 +2,559 @@
 <backmatter xmlns:xi="http://www.w3.org/2001/XInclude" xml:id="meta-back">
   <references xml:id="references">
     <title>References</title>
-    <biblio type="raw" xml:id="R-base">
-      R Core Team. <em>R: A Language and Environment for Statistical Computing</em>.
-      R Foundation for Statistical Computing, Vienna, Austria, 2021.
-      <url href="https://www.R-project.org/" visual="R-project.org"/>.
+
+    <!-- ============================================================ -->
+    <!-- Articles                                                      -->
+    <!-- ============================================================ -->
+
+    <biblio type="raw" xml:id="Allison2005">
+      Allison, E. H., Adger, W. N., Badjeck, M. C., Brown, K., Conway, D., Dulvy, N. K.,
+      Halls, A., Perry, A., and Reynolds, J. D. "Effects of Climate Change on the
+      Sustainability of Capture and Enhancement Fisheries Important to the Poor."
+      <em>Fisheries Management Science Programme</em>, 2005.
     </biblio>
+
+    <biblio type="raw" xml:id="Anderson2009">
+      Anderson, Kyle J., and David A. Pierce. "Officiating Bias: The Effect of Foul
+      Differential on Foul Calls in NCAA Basketball." <em>Journal of Sports Sciences</em>
+      27, no. 7 (2009): 687–694.
+      <url href="https://doi.org/10.1080/02640410902729733" visual="doi:10.1080/02640410902729733"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Baer2002">
+      Baer, S. G., Kitchen, D. J., Blair, J. M., and Rice, C. W. "Changes in Ecosystem
+      Structure and Function Along a Chronosequence of Restored Grasslands."
+      <em>Ecological Applications</em> 12, no. 6 (2002): 1688–1701.
+      <url href="https://doi.org/10.1890/1051-0761(2002)012[1688:CIESAF]2.0.CO;2" visual="doi:10.1890/1051-0761(2002)012"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Bates2015">
+      Bates, Douglas, Martin Mächler, Ben Bolker, and Steve Walker. "Fitting Linear
+      Mixed-Effects Models Using lme4." <em>Journal of Statistical Software</em> 67,
+      no. 1 (2015): 1–48.
+      <url href="https://www.jstatsoft.org/v067/i01" visual="jstatsoft.org/v067/i01"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Bishop1972">
+      Bishop, J. A. "An Experimental Study of the Cline of Industrial Melanism in
+      Biston betularia (L.) (Lepidoptera) between Urban Liverpool and Rural North Wales."
+      <em>Journal of Animal Ecology</em> 41, no. 1 (1972): 209–243.
+      <url href="https://doi.org/10.2307/3513" visual="doi:10.2307/3513"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Brockmann1996">
+      Brockmann, H. Jane. "Satellite Male Groups in Horseshoe Crabs,
+      <em>Limulus polyphemus</em>." <em>Ethology</em> 102, no. 1 (1996): 1–21.
+      <url href="https://doi.org/10.1111/j.1439-0310.1996.tb01099.x" visual="doi:10.1111/j.1439-0310.1996.tb01099.x"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Brown2004">
+      Brown, Kenneth, and Bulent Uyar. "A Hierarchical Linear Model Approach for
+      Assessing the Effects of House and Neighborhood Characteristics on Housing Prices."
+      <em>Journal of Real Estate Practice and Education</em> 7, no. 1 (2004): 15–24.
+    </biblio>
+
+    <biblio type="raw" xml:id="Buddin2005">
+      Buddin, Richard, and Ron Zimmer. "Student Achievement in Charter Schools:
+      A Complex Picture." <em>Journal of Policy Analysis and Management</em> 24,
+      no. 2 (2005): 351–371.
+      <url href="https://doi.org/10.1002/pam.20093" visual="doi:10.1002/pam.20093"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Cameron1986">
+      Cameron, A. C., and P. K. Trivedi. "Econometric Models Based on Count Data:
+      Comparisons and Applications of Some Estimators and Tests."
+      <em>Journal of Applied Econometrics</em> 1 (1986): 29–53.
+    </biblio>
+
+    <biblio type="raw" xml:id="Camill2004">
+      Camill, Philip, Mark J. McKone, Sean T. Sturges, William J. Severud, Erin Ellis,
+      Jacob Limmer, Christopher B. Martin, Ryan T. Navratil, Amy J. Purdie, Brody S.
+      Sandel, Shano Talukder, and Andrew Trout. "Community- and Ecosystem-level Changes
+      in a Species-rich Tallgrass Prairie Restoration." <em>Ecological Applications</em>
+      14, no. 6 (2004): 1680–1694.
+      <url href="https://doi.org/10.1890/03-5273" visual="doi:10.1890/03-5273"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Chapp2018">
+      Chapp, Christopher, Paul Roback, Kendra Jo Johnson-Tesch, Adrian Rossing, and Jack
+      Werner. "Going Vague: Ambiguity and Avoidance in Online Political Messaging."
+      <em>Social Science Computer Review</em>, August 2018.
+      <url href="https://doi.org/10.1177/0894439318791168" visual="doi:10.1177/0894439318791168"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Curran1997">
+      Curran, Patrick J., Eric Stice, and Laurie Chassin. "The Relation Between
+      Adolescent Alcohol Use and Peer Alcohol Use: A Longitudinal Random Coefficients
+      Model." <em>Journal of Consulting and Clinical Psychology</em> 65, no. 1 (1997):
+      130–140.
+      <url href="https://doi.org/10.1037/0022-006X.65.1.130" visual="doi:10.1037/0022-006X.65.1.130"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Efron2012">
+      Efron, Bradley. "Bayesian Inference and the Parametric Bootstrap."
+      <em>Annals of Applied Statistics</em> 6, no. 4 (December 2012): 1971–1997.
+      <url href="https://doi.org/10.1214/12-AOAS571" visual="doi:10.1214/12-AOAS571"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Farrar2011">
+      Farrar, Anthony, and Thomas H. Bruggink. "A New Test of the Moneyball Hypothesis."
+      <em>The Sport Journal</em>, May 2011.
+      <url href="http://thesportjournal.org/article/a-new-test-of-the-moneyball-hypothesis/" visual="thesportjournal.org"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Friedman2018">
+      Friedman, Richard A. "Standing Up at Your Desk Could Make You Smarter."
+      <em>The New York Times</em>, April 20, 2018.
+    </biblio>
+
+    <biblio type="raw" xml:id="Gelman2007">
+      Gelman, Andrew, Jeffrey Fagan, and Alex Kiss. "An Analysis of the NYPD's
+      Stop-and-Frisk Policy in the Context of Claims of Racial Bias."
+      <em>Journal of the American Statistical Association</em> 102 (September 2007):
+      813–823.
+    </biblio>
+
+    <biblio type="raw" xml:id="Gilovich1985">
+      Gilovich, Thomas, Robert Vallone, and Amos Tversky. "The Hot Hand in Basketball:
+      On the Misperception of Random Sequences." <em>Cognitive Psychology</em> 17, no.
+      3 (1985): 295–314.
+      <url href="https://doi.org/10.1016/0010-0285(85)90010-6" visual="doi:10.1016/0010-0285(85)90010-6"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Goldstein2000">
+      Goldstein, I. B., and D. Shapiro. "Ambulatory Blood Pressure in Women: Family
+      History of Hypertension and Personality." <em>Psychology, Health &amp; Medicine</em>
+      5, no. 3 (2000): 227–240.
+      <url href="https://doi.org/10.1080/713690197" visual="doi:10.1080/713690197"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Grabe2008">
+      Grabe, Shelly, Janet Shibley Hyde, and L. Monique Ward. "The Role of the Media in
+      Body Image Concerns Among Women: A Meta-Analysis of Experimental and Correlational
+      Studies." <em>Psychological Bulletin</em> 134, no. 3 (2008): 460–476.
+      <url href="https://doi.org/10.1037/0033-2909.134.3.460" visual="doi:10.1037/0033-2909.134.3.460"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Green2003">
+      Green, Preston C., III, Bruce D. Baker, and Joseph O. Oluwole. "Having It Both
+      Ways: How Charter Schools Try to Obtain Funding of Public Schools and the Autonomy
+      of Private Schools." <em>Emory Law Journal</em> 63, no. 2 (2003): 303–337.
+    </biblio>
+
+    <biblio type="raw" xml:id="Hesterberg2015">
+      Hesterberg, Tim C. "What Teachers Should Know About the Bootstrap: Resampling in
+      the Undergraduate Statistics Curriculum." <em>The American Statistician</em> 69,
+      no. 4 (2015): 371–386.
+      <url href="https://doi.org/10.1080/00031305.2015.1089789" visual="doi:10.1080/00031305.2015.1089789"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Holst1988">
+      Holst, P. A., D. Kromhout, and R. Brand. "For Debate: Pet Birds as an Independent
+      Risk Factor for Lung Cancer." <em>British Medical Journal</em> 297, no. 6659
+      (November 1988): 1319–1321.
+      <url href="https://doi.org/10.1136/bmj.297.6659.1319" visual="doi:10.1136/bmj.297.6659.1319"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Jenkins2006">
+      Jenkins, Christine A. "Book Challenges, Challenging Books, and Young Readers:
+      The Research Picture." <em>Language Arts</em> 85, no. 3 (January 2008): 228–236.
+    </biblio>
+
+    <biblio type="raw" xml:id="Knops2000">
+      Knops, Johannes M. H., and David Tilman. "Dynamics of Soil Nitrogen and Carbon
+      Accumulation for 61 Years After Agricultural Abandonment." <em>Ecology</em> 81,
+      no. 1 (2000): 88–98.
+      <url href="https://doi.org/10.1890/0012-9658(2000)081[0088:DOSNAC]2.0.CO;2" visual="doi:10.1890/0012-9658"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Kolata2009">
+      Kolata, Gina. "Picture Emerging on Genetic Risks of IVF."
+      <em>The New York Times</em>, February 16, 2009.
+    </biblio>
+
+    <biblio type="raw" xml:id="Komdeur1997">
+      Komdeur, Jan, Serge Daan, Joost Tinbergen, and Christa Mateman. "Extreme Adaptive
+      Modification in Sex Ratio of the Seychelles Warbler's Eggs." <em>Nature</em> 385
+      (February 1997): 522–525.
+      <url href="https://doi.org/10.1038/385522a0" visual="doi:10.1038/385522a0"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Laird1988">
+      Laird, Nan M. "Missing Data in Longitudinal Studies." <em>Statistics in Medicine</em>
+      7, no. 1–2 (1988): 305–315.
+      <url href="https://doi.org/10.1002/sim.4780070131" visual="doi:10.1002/sim.4780070131"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Martinsen2009">
+      Martinsen, M., S. Bratland-Sanda, A. K. Eriksson, and J. Sundgot-Borgen. "Dieting
+      to Win or to Be Thin? A Study of Dieting and Disordered Eating Among Adolescent
+      Elite Athletes and Non-Athlete Controls." <em>British Journal of Sports Medicine</em>
+      44, no. 1 (2009): 70–76.
+      <url href="http://bjsm.bmj.com/content/44/1/70" visual="bjsm.bmj.com"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Mathews2005">
+      Mathews, T. J., and Brady E. Hamilton. "Trend Analysis of the Sex Ratio at Birth
+      in the United States." <em>National Vital Statistics Reports</em> 53, no. 20
+      (June 2005): 1–20.
+      <url href="https://www.cdc.gov/nchs/data/nvsr/nvsr53/nvsr53_20.pdf" visual="cdc.gov"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Miller2010">
+      Sadler, Michael E., and Christopher J. Miller. "Performance Anxiety: A Longitudinal
+      Study of the Roles of Personality and Experience in Musicians."
+      <em>Social Psychological and Personality Science</em> 1, no. 3 (2010): 280–287.
+      <url href="https://doi.org/10.1177/1948550610370492" visual="doi:10.1177/1948550610370492"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Nafstad1999">
+      Nafstad, Per, Jorgen A. Hagen, Leif Oie, Per Magnus, and Jouni J. K. Jaakkola.
+      "Day Care Centers and Respiratory Health." <em>Pediatrics</em> 103, no. 4 (1999):
+      753–758.
+      <url href="http://pediatrics.aappublications.org/content/103/4/753" visual="pediatrics.aappublications.org"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Nelder1972">
+      Nelder, John Ashworth, and Robert William Maclagan Wedderburn. "Generalized Linear
+      Models." <em>Journal of the Royal Statistical Society, Series A (General)</em> 135,
+      no. 3 (1972): 370–384.
+      <url href="http://www.jstor.org/stable/2344614" visual="jstor.org/stable/2344614"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Noecker2012">
+      Noecker, Cecilia A., and Paul Roback. "New Insights on the Tendency of NCAA
+      Basketball Officials to Even Out Foul Calls."
+      <em>Journal of Quantitative Analysis in Sports</em> 8, no. 3 (October 2012): 1–23.
+    </biblio>
+
+    <biblio type="raw" xml:id="Poole1989">
+      Poole, Joyce H. "Mate Guarding, Reproductive Success and Female Choice in African
+      Elephants." <em>Animal Behaviour</em> 37 (1989): 842–849.
+      <url href="http://www.sciencedirect.com/science/article/pii/0003347289900687" visual="sciencedirect.com"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Proudfoot2003">
+      Proudfoot, J., D. Goldberg, A. Mann, B. Everitt, I. Marks, and J. A. Gray.
+      "Computerized, Interactive, Multimedia Cognitive-Behavioural Program for Anxiety
+      and Depression in General Practice." <em>Psychological Medicine</em> 33, no. 2
+      (February 2003): 217–227.
+      <url href="https://doi.org/10.1017/s0033291702007225" visual="doi:10.1017/s0033291702007225"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Randall2014">
+      Randall, D. A., L. R. Jorm, S. Lujic, S. J. Eades, T. R. Churches,
+      A. J. O'Loughlin, and A. H. Leyland. "Exploring Disparities in Acute Myocardial
+      Infarction Events between Aboriginal and non-Aboriginal Australians: Roles of Age,
+      Gender, Geography and Area-Level Disadvantage." <em>Health &amp; Place</em> 28
+      (2014): 58–66.
+      <url href="https://doi.org/10.1016/j.healthplace.2014.03.009" visual="doi:10.1016/j.healthplace.2014.03.009"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Rodgers2001">
+      Rodgers, Joseph Lee, and Debby Doughty. "Does Having Boys or Girls Run in the
+      Family?" <em>CHANCE</em> 14, no. 4 (2001): 8–13.
+      <url href="https://doi.org/10.1080/09332480.2001.10542293" visual="doi:10.1080/09332480.2001.10542293"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Roskes2011">
+      Roskes, Marieke, Daniel Sligte, Shaul Shalvi, and Carsten K. W. De Dreu. "The
+      Right Side? Under Time Pressure, Approach Motivation Leads to Right-Oriented Bias."
+      <em>Psychological Science</em> 22, no. 11 (2011): 1403–1407.
+      <url href="https://doi.org/10.1177/0956797611418677" visual="doi:10.1177/0956797611418677"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Sampson1997">
+      Sampson, Robert J., Stephen W. Raudenbush, and Felton Earls. "Neighborhoods and
+      Violent Crime: A Multilevel Study of Collective Efficacy." <em>Science</em> 277,
+      no. 5328 (1997): 918–924.
+      <url href="https://doi.org/10.1126/science.277.5328.918" visual="doi:10.1126/science.277.5328.918"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Scotto1974">
+      Scotto, Joseph, Alfred W. Kopf, and Fredrick Urbach. "Non-Melanoma Skin Cancer
+      Among Caucasians in Four Areas of the United States." <em>Cancer</em> 34, no. 4
+      (October 1974): 1333–1338.
+      <url href="https://doi.org/10.1002/1097-0142(197410)34:4%3C1333::AID-CNCR2820340447%3E3.0.CO;2-A" visual="doi:10.1002/1097-0142"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Siddarth2018">
+      Siddarth, Prabha, Alison C. Burggren, Harris A. Eyre, Gary W. Small, and David A.
+      Merrill. "Sedentary Behavior Associated with Reduced Medial Temporal Lobe Thickness
+      in Middle-Aged and Older Adults." <em>PLOS ONE</em> 13, no. 4 (April 2018): 1–13.
+      <url href="https://doi.org/10.1371/journal.pone.0195549" visual="doi:10.1371/journal.pone.0195549"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Vuong1989">
+      Vuong, Q. H. "Likelihood Ratio Tests for Model Selection and Non-Nested
+      Hypotheses." <em>Econometrica</em> 57 (1989): 307–333.
+      <url href="https://doi.org/10.2307/1912557" visual="doi:10.2307/1912557"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Walker-Barnes2001">
+      Walker-Barnes, Chanequa J., and Craig A. Mason. "Ethnic Differences in the Effect
+      of Parenting on Gang Involvement and Gang Delinquency: A Longitudinal, Hierarchical
+      Linear Modeling Perspective." <em>Child Development</em> 72, no. 6 (2001):
+      1814–1831.
+      <url href="https://doi.org/10.1111/1467-8624.00380" visual="doi:10.1111/1467-8624.00380"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Witte2007">
+      Witte, John, David Weimer, Arnold Shober, and Paul Schlomer. "The Performance of
+      Charter Schools in Wisconsin." <em>Journal of Policy Analysis and Management</em>
+      26, no. 3 (2007): 557–573.
+      <url href="https://doi.org/10.1002/pam.20265" visual="doi:10.1002/pam.20265"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Zak2003">
+      Zak, Donald R., William E. Holmes, David C. White, Aaron D. Peacock, and David
+      Tilman. "Plant Diversity, Soil Microbial Communities, and Ecosystem Function:
+      Are There Any Links?" <em>Ecology</em> 84, no. 8 (2003): 2042–2050.
+      <url href="https://doi.org/10.1890/02-0433" visual="doi:10.1890/02-0433"/>.
+    </biblio>
+
+    <!-- ============================================================ -->
+    <!-- Books                                                         -->
+    <!-- ============================================================ -->
+
+    <biblio type="raw" xml:id="Bickel2007">
+      Bickel, Robert. <em>Multilevel Analysis for Applied Research: It's Just
+      Regression!</em> New York: Guilford Publications, 2007.
+    </biblio>
+
+    <biblio type="raw" xml:id="Bryk2002">
+      Raudenbush, Stephen W., and Anthony S. Bryk. <em>Hierarchical Linear Models:
+      Applications and Data Analysis Methods</em>, 2nd ed. Thousand Oaks, CA: SAGE
+      Publications, 2002.
+    </biblio>
+
     <biblio type="raw" xml:id="Cannon2019">
-      Cannon, Ann, et al. <em>Stat2: Modeling with Regression and ANOVA</em>, 2nd ed.
-      W.H. Freeman, 2019.
+      Cannon, Ann, George Cobb, Brad Hartlaub, Julie Legler, Robin Lock, Tom Moore,
+      Allan Rossman, and Jeff Witmer. <em>Stat2: Modeling with Regression and ANOVA</em>.
+      Macmillan, 2019.
     </biblio>
+
+    <biblio type="raw" xml:id="Davison1997">
+      Davison, A. C., and D. V. Hinkley. <em>Bootstrap Methods and Their Application</em>.
+      Cambridge University Press, 1997.
+    </biblio>
+
+    <biblio type="raw" xml:id="Diggle2002">
+      Diggle, P. J., P. Heagarty, K.-Y. Liang, and S. L. Zeger.
+      <em>Analysis of Longitudinal Data</em>. Oxford University Press, 2002.
+    </biblio>
+
+    <biblio type="raw" xml:id="Efron1993">
+      Efron, Bradley, and R. J. Tibshirani. <em>An Introduction to the Bootstrap</em>.
+      Boca Raton, FL: Chapman &amp; Hall/CRC, 1993.
+    </biblio>
+
+    <biblio type="raw" xml:id="Everitt2006">
+      Everitt, Brian S., and Torsten Hothorn. <em>A Handbook of Statistical Analyses
+      using R</em>. Boca Raton, FL: Chapman &amp; Hall/CRC, 2006.
+    </biblio>
+
+    <biblio type="raw" xml:id="Faraway2005">
+      Faraway, Julian. <em>Extending the Linear Model With R: Generalized Linear,
+      Mixed Effects and Nonparametric Regression Models</em>. Boca Raton, FL:
+      Chapman &amp; Hall/CRC, 2005.
+    </biblio>
+
+    <biblio type="raw" xml:id="Finnigan2004">
+      Finnigan, Kara, Nancy Adelman, Lee Anderson, Lynyonne Cotton, Mary Beth Donnelly,
+      and Tiffany Price. <em>Evaluation of Public Charter Schools Program: Final
+      Evaluation Report</em>. Washington, D.C.: U.S. Department of Education, 2004.
+    </biblio>
+
+    <biblio type="raw" xml:id="Lewis2003">
+      Lewis, Michael M. <em>Moneyball: The Art of Winning an Unfair Game</em>.
+      W. W. Norton &amp; Company, 2003.
+    </biblio>
+
+    <biblio type="raw" xml:id="McCullagh1989">
+      McCullagh, Peter, and John Ashworth Nelder. <em>Generalized Linear Models</em>,
+      2nd ed. Boca Raton, FL: Chapman &amp; Hall/CRC, 1989.
+    </biblio>
+
+    <biblio type="raw" xml:id="Moskowitz2011">
+      Moskowitz, Tobias J., and L. Jon Wertheim. <em>Scorecasting: The Hidden Influences
+      Behind How Sports Are Played and Games Are Won</em>. New York: Crown Archetype,
+      2011.
+    </biblio>
+
+    <biblio type="raw" xml:id="Ramsey2002">
+      Ramsey, Fred, and Daniel Schafer. <em>The Statistical Sleuth: A Course in Methods
+      of Data Analysis</em>, 2nd ed. Boston: Brooks/Cole Cengage, 2002.
+    </biblio>
+
+    <biblio type="raw" xml:id="Singer2003">
+      Singer, Judith D., and John B. Willett. <em>Applied Longitudinal Data Analysis:
+      Modeling Change and Event Occurrence</em>. New York: Oxford University Press, 2003.
+    </biblio>
+
+    <biblio type="raw" xml:id="Stigler2002">
+      Stigler, Stephen M. <em>Statistics on the Table: The History of Statistical
+      Concepts and Methods</em>. Cambridge, MA: Harvard University Press, 2002.
+    </biblio>
+
+    <biblio type="raw" xml:id="Weiss2005">
+      Weiss, Robert E. <em>Modeling Longitudinal Data</em>. New York: Springer-Verlag,
+      2005.
+    </biblio>
+
+    <!-- ============================================================ -->
+    <!-- Miscellaneous, Websites, and Unpublished Works               -->
+    <!-- ============================================================ -->
+
+    <biblio type="raw" xml:id="Angell2010">
+      Angell, Diane. "Effects of Soil Type and Sterilization on the Growth of Coneflowers
+      and Leadplants." St. Olaf College, Class data for Biology 261, 2010.
+    </biblio>
+
+    <biblio type="raw" xml:id="Awad2017">
+      Awad, Annika, Evan Lebo, and Anna Linden. "Intercontinental Comparative Analysis of
+      Airbnb Booking Factors." St. Olaf College, Statistics 316 Project, 2017.
+    </biblio>
+
+    <biblio type="raw" xml:id="Bayer2011">
+      Bayer, Ben, and Michael Fitzgerald. "Reconstructing Alabama: Reconstruction Era
+      Demographic and Statistical Research." St. Olaf College, Senior IR Project, 2011.
+    </biblio>
+
+    <biblio type="raw" xml:id="BBCNEWS1995">
+      BBC News. "Sisters 'Make People Happy'." April 2, 2009.
+      <url href="http://news.bbc.co.uk/2/hi/health/7977454.stm" visual="news.bbc.co.uk"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="CharterSchools">
+      U.S. Department of Education. "National Charter School Resource Center," 2018.
+      <url href="https://charterschoolcenter.ed.gov/faqs" visual="charterschoolcenter.ed.gov/faqs"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="CIA2013">
+      Central Intelligence Agency. <em>The World Factbook 2013</em>, 2013.
+      <url href="https://www.cia.gov/library/publications/download/download-2013/index.html" visual="cia.gov"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Dahlquist2011">
+      Dahlquist, Samantha, and Jin Dong. "The Effects of Credit Cards on Tipping."
+      St. Olaf College, Statistics 272 Project, 2011.
+    </biblio>
+
+    <biblio type="raw" xml:id="Duggan2013">
+      Smith, Aaron, and Maeve Duggan. "Online Dating and Relationships."
+      Pew Research Center, October 2013.
+      <url href="https://www.issuelab.org/resources/15934/15934.pdf" visual="issuelab.org"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Eisinger2011">
+      Eisinger, Robert, Amanda Elling, and J.R. Stamp. "Tree Growth Rates and Mortality."
+      In <em>Proceedings of the National Conference on Undergraduate Research (NCUR)</em>.
+      Ithaca College, New York, 2011.
+    </biblio>
+
+    <biblio type="raw" xml:id="Fast2011">
+      Fast, Shannon, and Thomas Hegland. "Book Challenges: A Statistical Examination."
+      St. Olaf College, Statistics 316 Project, 2011.
+    </biblio>
+
+    <biblio type="raw" xml:id="harlfoxem">
+      Kaggle. "House Sales in King County, USA," 2018.
+      <url href="https://www.kaggle.com/harlfoxem/housesalesprediction/home" visual="kaggle.com"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Hickey2014">
+      Hickey, Walt. "The Dollar-And-Cents Case Against Hollywood's Exclusion of Women."
+      <em>FiveThirtyEight</em>, April 2014.
+      <url href="https://fivethirtyeight.com/features/the-dollar-and-cents-case-against-hollywoods-exclusion-of-women/" visual="fivethirtyeight.com"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="idre2018">
+      UCLA Statistical Consulting Group. "Zero-Inflated Negative Binomial Regression:
+      R Data Analysis Examples," 2018.
+      <url href="https://stats.idre.ucla.edu/r/dae/zinb/" visual="stats.idre.ucla.edu"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="IPEDS">
+      National Center for Education Statistics. "The Integrated Postsecondary Education
+      Data System," 2018.
+      <url href="https://nces.ed.gov/ipeds/" visual="nces.ed.gov/ipeds/"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="KentuckyDerby">
+      Wikipedia contributors. "Kentucky Derby." In <em>Wikipedia</em>, 2018.
+      <url href="https://en.wikipedia.org/wiki/Kentucky_Derby" visual="en.wikipedia.org/wiki/Kentucky_Derby"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="KIPP">
+      KIPP. "KIPP North Star Academy," 2018.
+      <url href="http://www.kipp.org/school/kipp-north-star-academy/" visual="kipp.org"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="MNDepartmentOfEducation">
+      Minnesota Department of Education. "Minnesota Department of Education Data Center,"
+      2018.
+      <url href="https://education.mn.gov/MDE/Data/" visual="education.mn.gov/MDE/Data/"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Mohr2018">
+      Janusz, Brooke, and Michael Mohr. "Predicting User Yelp Star Ratings Based on
+      Restaurant Attributes." St. Olaf College, Statistics 316 Project, 2018.
+    </biblio>
+
+    <biblio type="raw" xml:id="NLSY1997">
+      Bureau of Labor Statistics. "National Longitudinal Surveys," 1997.
+      <url href="https://www.bls.gov/nls/nlsy97.htm" visual="bls.gov/nls/nlsy97.htm"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Pray2009">
+      Pray, Ian. "Effects of Rainfall and Sun Exposure on Leaf Characteristics."
+      St. Olaf College, Bio in South India Project, 2009.
+    </biblio>
+
+    <biblio type="raw" xml:id="PSA">
+      Philippine Statistics Authority. "Family Income and Expenditure Survey," 2015.
+      <url href="https://www.kaggle.com/grosvenpaul/family-income-and-expenditure" visual="kaggle.com"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Radtke2019">
+      Fisher, Lisa, Katie Murney, and Tyler Radtke. "Emergency Department Overcrowding
+      and Factors That Contribute to Ambulance Diversion." St. Olaf College, Statistics
+      316 Project, 2019.
+    </biblio>
+
+    <biblio type="raw" xml:id="Renier2018">
+      Blakeman, Margaret, Tim Renier, and Rami Shandaq. "Modeling Donald Trump's Voters
+      in the 2016 Election." St. Olaf College, Statistics 316 Project, 2018.
+    </biblio>
+
+    <biblio type="raw" xml:id="RProject">
+      R Core Team. <em>R: A Language and Environment for Statistical Computing</em>.
+      Vienna, Austria: R Foundation for Statistical Computing, 2020.
+      <url href="https://www.R-project.org" visual="R-project.org"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="rossotti">
+      Kaggle. "NBA Enhanced Box Scores and Standings," 2018.
+      <url href="https://www.kaggle.com/pablote/nba-enhanced-stats" visual="kaggle.com"/>.
+    </biblio>
+
+    <biblio type="raw" xml:id="Strutz2013">
+      Sturtz, Adam, Alex Lampert, and Trent Friedrich. "Project 5183." St. Olaf College,
+      Statistics 316 Project, 2013.
+    </biblio>
+
+    <biblio type="raw" xml:id="Trinh2018">
+      Trinh, Ly, and Pony Ameri. "Airbnb Price Determinants: A Multilevel Modeling
+      Approach." St. Olaf College, Statistics 316 Project, 2018.
+    </biblio>
+
+    <biblio type="raw" xml:id="YRBS2009">
+      Centers for Disease Control and Prevention. "Youth Risk Behavior Survey Data,"
+      2009.
+      <url href="http://www.cdc.gov/HealthyYouth/yrbs/index.htm" visual="cdc.gov/HealthyYouth/yrbs"/>.
+    </biblio>
+
   </references>
 
   <index>
