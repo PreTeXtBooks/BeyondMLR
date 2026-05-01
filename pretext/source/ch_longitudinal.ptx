@@ -2,10 +2,1522 @@
 <chapter xml:id="ch-lon" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>Two-Level Longitudinal Data</title>
 
-  <introduction>
-    <p>
-      This chapter is a skeleton placeholder for Chapter 9 content.
-    </p>
+  <objectives xml:id="obj-ch-lon">
+    <introduction>
+      <p>After finishing this chapter, you should be able to:</p>
+    </introduction>
+    <ul>
+      <li><p>Recognize longitudinal data as a special case of multilevel data, with time at Level One.</p></li>
+      <li><p>Consider patterns of missingness and implications of that missing data on multilevel analyses.</p></li>
+      <li><p>Apply exploratory data analysis techniques specific to longitudinal data.</p></li>
+      <li><p>Build and understand a taxonomy of models for longitudinal data.</p></li>
+      <li><p>Interpret model parameters in multilevel models with time at Level One.</p></li>
+      <li><p>Compare models, both nested and not, with appropriate statistical tests and summary statistics.</p></li>
+      <li><p>Consider different ways of modeling the variance-covariance structure in longitudinal data.</p></li>
+      <li><p>Understand how a parametric bootstrap test of significance works and when it might be useful.</p></li>
+    </ul>
+  </objectives>
+
+  <introduction xml:id="intro-ch-lon">
+    <program language="r" xml:id="code-load-packages-ch9">
+      <input>
+# Packages required for Chapter 9
+library(GGally)
+library(data.table)
+library(Hmisc)
+library(mice)
+library(lattice)
+library(nlme)
+library(reshape2)
+library(MASS)
+library(mnormt)
+library(lme4)
+library(gridExtra)
+library(knitr)
+library(kableExtra)
+library(broom)
+library(tidyverse)
+      </input>
+    </program>
   </introduction>
+
+  <section xml:id="cs-charter">
+    <title>Case Study: Charter Schools</title>
+
+    <p>
+      Charter schools were first introduced in the state of Minnesota in 1991. Since then, charter
+      schools have begun appearing all over the United States. While publicly funded, a unique
+      feature of charter schools is their independence from many of the regulations that are present
+      in the public school systems of their respective city or state. Thus, charters will often
+      extend the school days or year and tend to offer non-traditional techniques and styles of
+      instruction and learning.
+    </p>
+
+    <p>
+      We will examine data collected by the Minnesota Department of Education for all Minnesota
+      schools during the years 2008–2010. Specifically, we focus on the math portion of the
+      Minnesota Comprehensive Assessment (MCA-II) data for 6th grade students enrolled in 618
+      different Minnesota schools. We hope to answer the following research questions:
+    </p>
+
+    <ul>
+      <li><p>Which factors most influence a school's performance in MCA testing?</p></li>
+      <li><p>How do the average math MCA-II scores for 6th graders enrolled in charter schools
+      differ from scores for students who attend non-charter public schools? Do these differences
+      persist after accounting for differences in student populations?</p></li>
+      <li><p>Are there differences in yearly improvement between charter and non-charter public
+      schools?</p></li>
+    </ul>
+  </section>
+
+  <section xml:id="sec-lon-eda">
+    <title>Initial Exploratory Analyses</title>
+
+    <subsection xml:id="sec-lon-data">
+      <title>Data Organization</title>
+
+      <p>
+        Key variables in <c>chart_wide_condense.csv</c> which we will examine to address the
+        research questions above are:
+      </p>
+
+      <ul>
+        <li><p><c>schoolid</c> = includes district type, district number, and school number</p></li>
+        <li><p><c>schoolName</c> = name of school</p></li>
+        <li><p><c>urban</c> = is the school in an urban (1) or rural (0) location?</p></li>
+        <li><p><c>charter</c> = is the school a charter school (1) or a non-charter public school
+        (0)?</p></li>
+        <li><p><c>schPctnonw</c> = proportion of non-white students in a school (based on 2010
+        figures)</p></li>
+        <li><p><c>schPctsped</c> = proportion of special education students in a school (based on
+        2010 figures)</p></li>
+        <li><p><c>schPctfree</c> = proportion of students who receive free or reduced lunches in a
+        school (based on 2010 figures). This serves as a measure of poverty among school
+        families.</p></li>
+        <li><p><c>MathAvgScore.0</c> = average MCA-II math score for all sixth grade students in
+        a school in 2008</p></li>
+        <li><p><c>MathAvgScore.1</c> = average MCA-II math score for all sixth grade students in
+        a school in 2009</p></li>
+        <li><p><c>MathAvgScore.2</c> = average MCA-II math score for all sixth grade students in
+        a school in 2010</p></li>
+      </ul>
+
+      <p>
+        This data is stored in WIDE format, with one row per school. For most statistical analyses,
+        it will be advantageous to convert WIDE format to LONG format, with one row per year per
+        school. Under the LONG format, each school can have a different number of and
+        differently-spaced time points, and they can even have predictors which vary over time.
+        The resulting LONG data set uses a variable <c>year08</c> which measures the number of
+        years since 2008.
+      </p>
+    </subsection>
+
+    <subsection xml:id="sec-lon-missing">
+      <title>Missing Data</title>
+
+      <p>
+        Before converting to LONG form, we should address problems with missing data.
+        <term>Missing data</term><idx><h>missing data</h></idx> is a common phenomenon in
+        longitudinal studies. It could arise if a new school was started during the observation
+        period, a school was shut down, or no results were reported in a given year. Among our
+        618 schools, 540 had complete data, 25 were missing a math score for 2008, 35 were missing
+        math scores in both 2008 and 2009, etc.
+      </p>
+
+      <p>
+        Statisticians have devised different strategies for handling missing data:
+      </p>
+
+      <ul>
+        <li><p><em>Include only schools with complete data.</em> This is the cleanest approach
+        analytically; however, ignoring data from 12.6% of the study's schools means that a large
+        amount of potentially useful data is being thrown away. In addition, this approach creates
+        potential issues with informative missingness.</p></li>
+        <li><p><em>Last observation carried forward.</em> Each school's last math score is analyzed
+        as a univariate response. With this approach, data from all schools can be used, but
+        information about trajectories over time is thrown away.</p></li>
+        <li><p><em>Imputation of missing observations.</em> Many methods have been developed for
+        sensibly "filling in" missing observations using imputation models. Risks with the
+        imputation approach include misrepresenting missing observations and overstating precision
+        in final results.</p></li>
+        <li><p><em>Apply multilevel methods,</em> which use available data to estimate patterns
+        over time by school and then combine those school estimates in a way that recognizes that
+        time trends for schools with complete data are more precise than time trends for schools
+        with fewer measurements. This is the approach we will follow in the remainder of the
+        text.</p></li>
+      </ul>
+    </subsection>
+
+    <subsection xml:id="sec-lon-general-eda">
+      <title>Exploratory Analyses for General Multilevel Models</title>
+
+      <p>
+        Notice the <term>longitudinal</term><idx><h>longitudinal</h></idx> structure of our
+        data — we have up to three measurements of test scores at different time points for each
+        of our 618 schools. With this structure, we can address questions at two levels:
+      </p>
+
+      <ul>
+        <li><p>Within school — changes over time</p></li>
+        <li><p>Between schools — effects of school-specific covariates (charter or non-charter,
+        urban or rural, percent free and reduced lunch, percent special education, and percent
+        non-white) on 2008 math scores and rate of change between 2008 and 2010.</p></li>
+      </ul>
+
+      <p>
+        <xref ref="fig-lon-hist1"/> shows the distribution of MCA math test scores as somewhat
+        left-skewed. MCA test scores for sixth graders are scaled to fall between 600 and 700,
+        where scores above 650 for individual students indicate "meeting standards." In
+        <xref ref="fig-lon-box1"/>, we see that test scores are generally higher for both schools
+        in rural areas and for public non-charter schools (237 rural, 381 urban; 545 non-charter,
+        73 charter). In <xref ref="fig-lon-scat1"/>, schools tend to have lower math scores if
+        they have higher percentages of students with free and reduced lunch, with special
+        education needs, or who are non-white.
+      </p>
+
+      <figure xml:id="fig-lon-hist1">
+        <caption>Histogram of mean sixth grade MCA math test scores over the years 2008–2010
+        for 618 Minnesota schools.</caption>
+        <image source="generated-assets/fig-lon-hist1.png" width="60%">
+          <description>Histogram of mean three-year MCA math test scores for 618 Minnesota
+          schools, somewhat left-skewed.</description>
+        </image>
+      </figure>
+
+      <figure xml:id="fig-lon-box1">
+        <caption>Boxplots of categorical Level Two covariates vs. average MCA math scores.
+        Plot (a) shows charter vs. public non-charter schools, while plot (b) shows urban vs.
+        rural schools.</caption>
+        <image source="generated-assets/fig-lon-box1.png" width="60%">
+          <description>Two side-by-side horizontal boxplots: (a) charter vs. public non-charter
+          schools and (b) urban vs. rural schools, each plotted against average MCA math
+          scores.</description>
+        </image>
+      </figure>
+
+      <figure xml:id="fig-lon-scat1">
+        <caption>Scatterplots of average MCA math scores by (a) percent free and reduced lunch,
+        (b) percent special education, and (c) percent non-white in a school.</caption>
+        <image source="generated-assets/fig-lon-scat1.png" width="60%">
+          <description>Three scatterplots showing negative associations between average MCA
+          math score and (a) percent free/reduced lunch, (b) percent special ed, and (c) percent
+          non-white.</description>
+        </image>
+      </figure>
+    </subsection>
+
+    <subsection xml:id="sec-lon-longitudinal-eda">
+      <title>Exploratory Analyses for Longitudinal Data</title>
+
+      <p>
+        In addition to the initial exploratory analyses above, longitudinal data calls for further
+        plots and summaries that describe time trends within and across individuals.
+        <xref ref="fig-lon-lat1"/> provides a <term>lattice plot</term><idx><h>lattice plot</h></idx>
+        illustrating trends over time for the first 24 schools in the data set. These differences
+        among schools are nicely illustrated in <term>spaghetti plots</term><idx><h>spaghetti plot</h></idx>
+        such as <xref ref="fig-lon-spag1"/>, which overlays the individual schools' time trends on
+        a single set of axes with a non-parametric
+        <term>loess smoother</term><idx><h>loess smoother</h></idx> in bold. LOESS comes from
+        "locally estimated scatterplot smoother." In this case, the loess smoother follows very
+        closely to a linear trend, indicating that assuming a linear increase in test scores over
+        the three-year period is probably a reasonable simplifying assumption.
+        <xref ref="fig-lon-lat2"/> shows a lattice plot containing linear fits through ordinary
+        least squares to further examine linearity.
+      </p>
+
+      <figure xml:id="fig-lon-lat1">
+        <caption>Lattice plot by school of math scores over time for the first 24 schools in the
+        data set.</caption>
+        <image source="generated-assets/fig-lon-lat1.png" width="60%">
+          <description>A 4×6 grid of time-series plots of math score vs. years since 2008 for
+          the first 24 schools.</description>
+        </image>
+      </figure>
+
+      <figure xml:id="fig-lon-spag1">
+        <caption>Spaghetti plot of math scores over time by school, for all the charter schools
+        and a random sample of public non-charter schools, with overall fit using loess
+        (bold).</caption>
+        <image source="generated-assets/fig-lon-spag1.png" width="60%">
+          <description>Overlaid school-level time trends of math score vs. years since 2008
+          in gray, with a bold loess curve showing the overall trend.</description>
+        </image>
+      </figure>
+
+      <figure xml:id="fig-lon-lat2">
+        <caption>Lattice plot by school of math scores over time with linear fit for the first 24
+        schools in the data set.</caption>
+        <image source="generated-assets/fig-lon-lat2.png" width="60%">
+          <description>A 4×6 grid of school-level scatterplots with linear regression fits of
+          math score over time for the first 24 schools.</description>
+        </image>
+      </figure>
+
+      <p>
+        <xref ref="fig-lon-spag3"/> shows that charter schools had math scores that were lower on
+        average than public non-charter schools and more variable. This type of plot is sometimes
+        called a <term>trellis graph</term>.<idx><h>trellis graph</h></idx> Public non-charter
+        schools have higher scores across all years; both school types show little growth between
+        2008 and 2009, but greater growth between 2009 and 2010, especially charter schools.
+        The trellis plot in <xref ref="fig-lon-spagmat1"/> shows that schools with lower
+        percentages of free and reduced lunch students tend to have higher math scores and less
+        variability.
+      </p>
+
+      <figure xml:id="fig-lon-spag3">
+        <caption>Spaghetti plots showing time trends for each school by school type, for a random
+        sample of charter schools (left) and public non-charter schools (right), with overall fits
+        using loess (bold).</caption>
+        <image source="generated-assets/fig-lon-spag3.png" width="60%">
+          <description>Two side-by-side spaghetti plots — one for charter schools, one for public
+          non-charter schools — showing gray school-level lines and a bold loess trend.</description>
+        </image>
+      </figure>
+
+      <figure xml:id="fig-lon-spagmat1">
+        <caption>Spaghetti plots showing time trends for each school by quartiles of percent free
+        and reduced lunch, with loess fits.</caption>
+        <image source="generated-assets/fig-lon-spagmat1.png" width="60%">
+          <description>Four spaghetti plots (one per quartile of percent free/reduced lunch)
+          showing math score trends over time, each with a loess curve.</description>
+        </image>
+      </figure>
+    </subsection>
+  </section>
+
+  <section xml:id="sec-lon-twostage">
+    <title>Preliminary Two-Stage Modeling</title>
+
+    <subsection xml:id="sec-lon-linear-twostage">
+      <title>Linear Trends Within Schools</title>
+
+      <p>
+        A linear model for individual time trends is often a simple but reasonable way to model
+        data. Each school's data points can be summarized with two summary statistics — an
+        intercept and a slope. For instance, the <em>intercept</em> conveys the school's math
+        score in 2008, while the <em>slope</em> conveys the school's average yearly increase or
+        decrease in math scores over the three-year period.
+      </p>
+
+      <p>
+        <xref ref="fig-lon-cis1"/> shows that point estimates and uncertainty surrounding
+        individual estimates of intercepts and slopes vary considerably. For our 618 schools,
+        the mean math score for 2008 was 651.4 (SD = 7.28), and the mean yearly rate of change
+        was 1.30 (SD = 2.51). <xref ref="fig-lon-histmat1"/> shows histograms for intercepts,
+        slopes, and R-squared values. <xref ref="fig-lon-scat5"/> shows a general decreasing
+        trend between fitted intercepts and slopes (correlation <m>= -0.32</m>), suggesting that
+        schools with lower 2008 test scores tend to have greater growth.
+      </p>
+
+      <figure xml:id="fig-lon-cis1">
+        <caption>Point estimates and 95% confidence intervals for (a) intercepts and (b) slopes
+        by school, for the first 24 schools in the data set.</caption>
+        <image source="generated-assets/fig-lon-cis1.png" width="60%">
+          <description>Two panels of horizontal error bars: (a) fitted intercepts and (b) fitted
+          slopes with 95% CIs for the first 24 schools.</description>
+        </image>
+      </figure>
+
+      <figure xml:id="fig-lon-histmat1">
+        <caption>Histograms for (a) intercepts, (b) slopes, and (c) R-squared values from fitted
+        regression lines by school.</caption>
+        <image source="generated-assets/fig-lon-histmat1.png" width="60%">
+          <description>Three histograms showing distributions of (a) fitted intercepts, (b)
+          fitted slopes, and (c) R-squared values across all 618 schools.</description>
+        </image>
+      </figure>
+
+      <figure xml:id="fig-lon-scat5">
+        <caption>Scatterplot showing the relationship between intercepts and slopes from fitted
+        regression lines by school.</caption>
+        <image source="generated-assets/fig-lon-scat5.png" width="60%">
+          <description>Scatterplot of fitted slopes vs. fitted intercepts for all schools with a
+          linear smoother showing a negative trend.</description>
+        </image>
+      </figure>
+    </subsection>
+
+    <subsection xml:id="sec-lon-l2effects">
+      <title>Effects of Level Two Covariates on Linear Time Trends</title>
+
+      <p>
+        Most of the primary research questions involve comparisons among schools. By school-level
+        variables, we are referring to those covariates that differ by school but are not dependent
+        on time: school type (charter or public non-charter), urban or rural location, percent
+        non-white, percent special education, and percent free and reduced lunch.
+      </p>
+
+      <p>
+        <xref ref="fig-lon-box2"/> shows differences in average time trends by school type, using
+        estimated intercepts and slopes. Charter schools have lower math scores, on average, in
+        2008 than public non-charter schools. However, charter schools tend to improve their math
+        scores at a slightly faster rate. <xref ref="fig-lon-box3"/> confirms clearly lower math
+        scores for charter schools in 2008, with slightly smaller differences in 2010.
+      </p>
+
+      <figure xml:id="fig-lon-box2">
+        <caption>Boxplots of (a) intercepts and (b) slopes by school type (charter vs. public
+        non-charter).</caption>
+        <image source="generated-assets/fig-lon-box2.png" width="60%">
+          <description>Two stacked boxplots showing fitted intercept (a) and slope (b)
+          distributions for charter vs. public non-charter schools.</description>
+        </image>
+      </figure>
+
+      <figure xml:id="fig-lon-box3">
+        <caption>Boxplots of (a) 2008 and (b) 2010 math scores by school type (charter (1) vs.
+        public non-charter (0)).</caption>
+        <image source="generated-assets/fig-lon-box3.png" width="60%">
+          <description>Two boxplots of math scores by school type in 2008 (a) and 2010 (b).
+          </description>
+        </image>
+      </figure>
+
+      <p>
+        <xref ref="fig-lon-boxcatmat1"/> shows that charter schools tend to have greater
+        percentages of free and reduced lunch students. Schools with higher levels of free and
+        reduced lunch tend to have lower math scores in 2008 (correlation <m>r = -0.61</m>), but
+        there is little evidence of a relationship between levels of free and reduced lunch and
+        improvements in test scores (correlation <m>r = -0.06</m>).
+        <xref ref="fig-lon-boxmat1"/> suggests that the gap between charter and public non-charter
+        schools in 2008 was greater in schools with a high percentage of free and reduced lunch
+        students.
+      </p>
+
+      <figure xml:id="fig-lon-boxcatmat1">
+        <caption>(a) Boxplot of percent free and reduced lunch by school type (charter vs. public
+        non-charter), along with scatterplots of (b) intercepts and (c) slopes from fitted
+        regression lines by school vs. percent free and reduced lunch.</caption>
+        <image source="generated-assets/fig-lon-boxcatmat1.png" width="60%">
+          <description>Three plots: (a) boxplot of percent free/reduced lunch by school type,
+          (b) scatterplot of fitted intercepts vs. percent free/reduced lunch, and (c) scatterplot
+          of fitted slopes vs. percent free/reduced lunch.</description>
+        </image>
+      </figure>
+
+      <figure xml:id="fig-lon-boxmat1">
+        <caption>Boxplots of (a) intercepts and (b) slopes from fitted regression lines by school
+        vs. school type (charter vs. public non-charter), separated by high and low levels of
+        percent free and reduced lunch.</caption>
+        <image source="generated-assets/fig-lon-boxmat1.png" width="60%">
+          <description>Four boxplots arranged in a 2×2 grid: intercept (a) and slope (b) by
+          school type, separately for high and low percent free/reduced lunch schools.</description>
+        </image>
+      </figure>
+    </subsection>
+
+    <subsection xml:id="sec-lon-error-structure">
+      <title>Error Structure Within Schools</title>
+
+      <p>
+        With longitudinal data it is important to investigate the error
+        variance-covariance<idx><h>covariance structure</h></idx> structure of data collected
+        within a school. We begin by modeling MCA math score as a linear function of time using
+        all 1733 observations and ignoring the school variable, obtaining the population
+        (marginal) trend:
+      </p>
+
+      <me>
+        \hat{Y}_{ij} = 651.69 + 1.20\;\text{Time}_{ij},
+      </me>
+
+      <p>
+        where <m>\hat{Y}_{ij}</m> is the predicted math score of the <m>i^{th}</m> school at
+        time <m>j</m>, where time <m>j</m> is the number of years since 2008. Residuals
+        <m>Y_{ij}-\hat{Y}_{ij}</m> are then calculated. <xref ref="fig-lon-cor1"/> combines
+        three pieces of information: the upper right triangle contains correlation coefficients
+        for residuals between pairs of years, the diagonal contains histograms of residuals at
+        each time point, and the lower left triangle contains scatterplots of residuals from two
+        different years. We see that correlation between residuals from adjacent years is strongly
+        positive (0.81–0.83).
+      </p>
+
+      <figure xml:id="fig-lon-cor1">
+        <caption>Correlation structure within school. The upper right contains correlation
+        coefficients between residuals at pairs of time points, the lower left contains
+        scatterplots of the residuals at time point pairs, and the diagonal contains histograms
+        of residuals at each of the three time points.</caption>
+        <image source="generated-assets/fig-lon-cor1.png" width="60%">
+          <description>A GGally pairs plot showing correlations, scatterplots, and histograms
+          of residuals at year08 = 0, 1, and 2.</description>
+        </image>
+      </figure>
+    </subsection>
+  </section>
+
+  <section xml:id="sec-lon-initial-models">
+    <title>Initial Models</title>
+
+    <p>
+      As in the previous chapter, we will begin model fitting with some simple, preliminary models,
+      in part to establish a baseline for evaluating larger models.
+    </p>
+
+    <subsection xml:id="sec-lon-model-a">
+      <title>Unconditional Means Model</title>
+
+      <p>
+        In the multilevel context, we almost always begin with the
+        <term>unconditional means model</term>,<idx><h>unconditional means model</h></idx> in which
+        there are no predictors at any level. The purpose of the unconditional means model is to
+        assess the amount of variation at each level, and to compare variability within school to
+        variability between schools. Define <m>Y_{ij}</m> as the MCA-II math score from school
+        <m>i</m> and year <m>j</m>:
+      </p>
+
+      <me>
+        Y_{ij} = \alpha_0 + u_i + \epsilon_{ij} \quad \text{with} \quad u_i \sim N(0, \sigma^2_u) \quad \text{and} \quad \epsilon_{ij} \sim N(0, \sigma^2)
+      </me>
+
+      <program language="r" xml:id="code-model-a">
+        <input>
+#Model A (Unconditional means model)
+model.a &lt;- lmer(MathAvgScore ~ 1 + (1|schoolid),
+                REML = T, data = chart.long)
+        </input>
+      </program>
+
+      <p>
+        From this output, we obtain estimates of our three model parameters:
+      </p>
+
+      <ul>
+        <li><p><m>\hat{\alpha}_0 = 652.7</m> = the mean math score across all schools and all
+        years</p></li>
+        <li><p><m>\hat{\sigma}^2 = 10.6</m> = the variance in within-school deviations between
+        individual yearly scores and the school mean</p></li>
+        <li><p><m>\hat{\sigma}^2_u = 41.9</m> = the variance in between-school deviations between
+        school means and the overall mean</p></li>
+      </ul>
+
+      <p>
+        Based on the intraclass correlation coefficient:
+      </p>
+
+      <me>
+        \hat{\rho} = \frac{\hat{\sigma}^2_u}{\hat{\sigma}^2_u + \hat{\sigma}^2}
+                   = \frac{41.869}{41.869 + 10.571} = 0.798
+      </me>
+
+      <p>
+        79.8% of the total variation in math scores is attributable to differences among schools
+        rather than changes over time within schools. We can also say that the average correlation
+        for any pair of responses from the same school is 0.798.
+      </p>
+    </subsection>
+
+    <subsection xml:id="sec-lon-model-b">
+      <title>Unconditional Growth Model</title>
+
+      <p>
+        The second model introduces time as a predictor at Level One, but there are still no
+        predictors at Level Two. This model is called the
+        <term>unconditional growth model</term>.<idx><h>unconditional growth model</h></idx> Let
+        <m>Y_{ij}</m> be the math score of the <m>i^{th}</m> school in year <m>j</m>. Using
+        both-level and composite formulations:
+      </p>
+
+      <p><alert>Level One:</alert></p>
+      <me>
+        Y_{ij} = a_i + b_i\;\text{Year08}_{ij} + \epsilon_{ij}
+      </me>
+
+      <p><alert>Level Two:</alert></p>
+      <md>
+        <mrow>a_i \amp= \alpha_0 + u_i</mrow>
+        <mrow>b_i \amp= \beta_0 + v_i</mrow>
+      </md>
+
+      <p><alert>Composite model:</alert></p>
+      <me>
+        Y_{ij} = \alpha_0 + \beta_0\;\text{Year08}_{ij} + u_i + v_i\;\text{Year08}_{ij} + \epsilon_{ij}
+      </me>
+
+      <p>
+        where <m>\epsilon_{ij} \sim N(0, \sigma^2)</m> and
+      </p>
+
+      <me>
+        \begin{bmatrix} u_i \\ v_i \end{bmatrix}
+        \sim N\!\left(
+          \begin{bmatrix} 0 \\ 0 \end{bmatrix},
+          \begin{bmatrix} \sigma_u^2 \\ \sigma_{uv} \amp \sigma_v^2 \end{bmatrix}
+        \right).
+      </me>
+
+      <program language="r" xml:id="code-model-b">
+        <input>
+#Model B (Unconditional growth)
+model.b &lt;- lmer(MathAvgScore ~ year08 + (year08|schoolid),
+                REML = T, data = chart.long)
+        </input>
+      </program>
+
+      <p>
+        From this output, we obtain estimates of our six model parameters:
+      </p>
+
+      <ul>
+        <li><p><m>\hat{\alpha}_0 = 651.4</m> = the mean math score for the population of schools
+        in 2008.</p></li>
+        <li><p><m>\hat{\beta}_0 = 1.26</m> = the mean yearly change in math test scores during
+        the three-year observation period.</p></li>
+        <li><p><m>\hat{\sigma}^2 = 8.82</m> = the variance in within-school deviations.</p></li>
+        <li><p><m>\hat{\sigma}^2_u = 39.4</m> = the variance between schools in 2008 scores.
+        </p></li>
+        <li><p><m>\hat{\sigma}^2_v = 0.11</m> = the variance between schools in rates of change
+        in math test scores.</p></li>
+        <li><p><m>\hat{\rho}_{uv} = 0.72</m> = the correlation in schools' 2008 math score and
+        their rate of change in scores between 2008 and 2010.</p></li>
+      </ul>
+
+      <p>
+        The estimated within-school variance <m>\hat{\sigma}^2</m> decreased by about 17% from
+        the unconditional means model, implying that 17% of within-school variability in test
+        scores can be explained by a linear increase over time:
+      </p>
+
+      <me>
+        \text{Pseudo } R^2_{L1} = \frac{10.571 - 8.820}{10.571} = 0.17
+      </me>
+    </subsection>
+
+    <subsection xml:id="sec-lon-other-time">
+      <title>Modeling Other Trends over Time</title>
+
+      <p>
+        While modeling linear trends over time is often a good approximation, it is by no means
+        the only way to model the effect of time. One alternative is to model the quadratic effect
+        of time, adding terms for both time and the square of time. Modifying Model B to produce
+        an <term>unconditional quadratic growth model</term> would take the following Level One
+        form:
+      </p>
+
+      <me>
+        Y_{ij} = a_i + b_i\;\text{Year08}_{ij} + c_i\;\text{Year08}^2_{ij} + \epsilon_{ij}
+      </me>
+
+      <p>
+        With only a maximum of 3 observations per school, we lack the data for fitting 3 equations
+        with error terms at Level Two. Instead, we can model the quadratic time effect with fewer
+        variance components by only using an error term on the intercept at Level Two:
+      </p>
+
+      <program language="r" xml:id="code-model-b2">
+        <input>
+# Modeling quadratic time trend
+model.b2 &lt;- lmer(MathAvgScore ~ yearc + yearc2 + (1|schoolid),
+                  REML = T, data = chart.long)
+        </input>
+      </program>
+
+      <p>
+        The quadratic effect is positive and significant (<m>t = 7.1</m>), indicating that
+        increases in test scores are greater between 2009 and 2010 than between 2008 and 2009.
+        Based on AIC and BIC values, the quadratic growth model outperforms the linear growth
+        model with random intercepts only (AIC: 10308 vs. 10354; BIC: 10335 vs. 10375).
+      </p>
+
+      <p>
+        Another frequently used approach is the <term>piecewise linear model</term>, in which the
+        complete time span is divided into two or more segments with a separate slope in each
+        segment. With only 3 time points, the piecewise option fits separate slopes in 2008–09
+        and 2009–10. Despite the good performances of the quadratic growth and piecewise linear
+        models, we will continue to use linear growth assumptions in the remainder of this chapter
+        for ease of interpretation.
+      </p>
+    </subsection>
+  </section>
+
+  <section xml:id="sec-lon-building-final">
+    <title>Building to a Final Model</title>
+
+    <subsection xml:id="sec-lon-model-c">
+      <title>Uncontrolled Effects of School Type</title>
+
+      <p>
+        Initially, we can consider whether or not there are significant differences in individual
+        school growth parameters (intercepts and slopes) based on school type. From a modeling
+        perspective, we would build a system of two Level Two models:
+      </p>
+
+      <md>
+        <mrow>a_i \amp= \alpha_0 + \alpha_1\;\text{Charter}_i + u_i</mrow>
+        <mrow>b_i \amp= \beta_0 + \beta_1\;\text{Charter}_i + v_i</mrow>
+      </md>
+
+      <p>
+        where <m>\text{Charter}_i = 1</m> if School <m>i</m> is a charter school, and
+        <m>\text{Charter}_i = 0</m> if School <m>i</m> is a non-charter public school.
+        Using the composite model specification (Model C):
+      </p>
+
+      <mdn>
+        <mrow xml:id="eq-model-c">
+          Y_{ij} \amp= [\alpha_0 + \beta_0\;\text{Year08}_{ij} + \alpha_1\;\text{Charter}_i
+                        + \beta_1\;\text{Charter}_i\;\text{Year08}_{ij}]
+        </mrow>
+        <mrow>
+          \amp\quad + [u_i + v_i\;\text{Year08}_{ij} + \epsilon_{ij}]
+        </mrow>
+      </mdn>
+
+      <program language="r" xml:id="code-model-c">
+        <input>
+#Model C (uncontrolled effects of school type on intercept and slope)
+model.c &lt;- lmer(MathAvgScore ~ charter + year08 +
+                  charter:year08 + (year08|schoolid),
+                REML = T, data = chart.long)
+        </input>
+      </program>
+
+      <p>
+        Armed with our parameter estimates, we can offer concrete interpretations:
+      </p>
+
+      <p><alert>Fixed effects:</alert></p>
+      <ul>
+        <li><p><m>\hat{\alpha}_0 = 652.1.</m> The estimated mean test score for 2008 for
+        non-charter public schools is 652.1.</p></li>
+        <li><p><m>\hat{\alpha}_1 = -6.02.</m> Charter schools have an estimated test score in
+        2008 which is 6.02 points lower than public non-charter schools.</p></li>
+        <li><p><m>\hat{\beta}_0 = 1.20.</m> Public non-charter schools have an estimated mean
+        increase in test scores of 1.20 points per year.</p></li>
+        <li><p><m>\hat{\beta}_1 = 0.86.</m> Charter schools have an estimated mean increase in
+        test scores of 2.06 points per year, 0.86 points higher than the mean yearly increase
+        among public non-charter schools.</p></li>
+      </ul>
+
+      <p><alert>Variance components:</alert></p>
+      <ul>
+        <li><p><m>\hat{\sigma}_u = 5.99.</m> The estimated standard deviation of 2008 test scores
+        is 5.99 points, after controlling for school type.</p></li>
+        <li><p><m>\hat{\sigma}_v = 0.36.</m> The estimated standard deviation of yearly changes
+        in test scores is 0.36 points, after controlling for school type.</p></li>
+        <li><p><m>\hat{\rho}_{uv} = 0.88.</m> The estimated correlation between 2008 test scores
+        and yearly changes in test scores is 0.88, after controlling for school type.</p></li>
+        <li><p><m>\hat{\sigma} = 2.96.</m> The estimated standard deviation in residuals for the
+        individual growth curves is 2.96 points.</p></li>
+      </ul>
+
+      <figure xml:id="fig-lon-scat4">
+        <caption>Fitted growth curves for Models B and C.</caption>
+        <image source="generated-assets/fig-lon-scat4.png" width="60%">
+          <description>Two side-by-side plots: (left) fitted growth curve from the unconditional
+          growth model (Model B) and (right) fitted growth curves by school type from Model C,
+          showing charter schools starting lower but improving faster.</description>
+        </image>
+      </figure>
+    </subsection>
+
+    <subsection xml:id="sec-lon-model-d">
+      <title>Add Percent Free and Reduced Lunch as a Covariate</title>
+
+      <p>
+        Based on exploratory analyses, we add percent free and reduced lunch as a Level Two
+        predictor for both intercept and slope (Model D):
+      </p>
+
+      <p><alert>Level One:</alert></p>
+      <me>
+        Y_{ij} = a_i + b_i\;\text{Year08}_{ij} + \epsilon_{ij}
+      </me>
+
+      <p><alert>Level Two:</alert></p>
+      <md>
+        <mrow>a_i \amp= \alpha_0 + \alpha_1\;\text{Charter}_i + \alpha_2\;\text{schpctfree}_i + u_i</mrow>
+        <mrow>b_i \amp= \beta_0 + \beta_1\;\text{Charter}_i + \beta_2\;\text{schpctfree}_i + v_i</mrow>
+      </md>
+
+      <program language="r" xml:id="code-model-d2">
+        <input>
+#Model D2 (Introduce SchPctFree at level 2)
+model.d2 &lt;- lmer(MathAvgScore ~ charter + SchPctFree + year08 +
+                   charter:year08 + SchPctFree:year08 + (year08|schoolid),
+                 REML = T, data = chart.long)
+        </input>
+      </program>
+
+      <p>
+        A <term>likelihood ratio test</term> using maximum likelihood estimates illustrates that
+        adding free and reduced lunch as a Level Two covariate significantly improves our model
+        (<m>\chi^2 = 341.5, df = 2, p \lt .001</m>). Specific fixed effect parameter estimates:
+      </p>
+
+      <ul>
+        <li><p><m>\hat{\alpha}_0 = 659.3.</m> The estimated mean math test score for 2008 is
+        659.3 for non-charter public schools with no students receiving free and reduced
+        lunch.</p></li>
+        <li><p><m>\hat{\alpha}_1 = -3.44.</m> Charter schools have an estimated mean math test
+        score in 2008 which is 3.44 points lower than non-charter public schools, controlling for
+        effects of school-level poverty.</p></li>
+        <li><p><m>\hat{\alpha}_2 = -0.17.</m> Each 10% increase in the percentage of students at
+        a school receiving free and reduced lunch is associated with a 1.7 point decrease in mean
+        math test scores for 2008, after controlling for school type.</p></li>
+        <li><p><m>\hat{\beta}_0 = 1.64.</m> Public non-charter schools with no students receiving
+        free and reduced lunch have an estimated mean increase in math test score of 1.64 points
+        per year during the three years of observation.</p></li>
+        <li><p><m>\hat{\beta}_1 = 0.98.</m> Charter schools have an estimated mean yearly increase
+        in math test scores over the three-year observation period of 2.62, which is 0.98 points
+        higher than the annual increase for public non-charter schools, after controlling for
+        school-level poverty.</p></li>
+        <li><p><m>\hat{\beta}_2 = -0.010.</m> Each 10% increase in the percentage of students at
+        a school receiving free and reduced lunch is associated with a 0.10 point decrease in rate
+        of change over the three years of observation, after controlling for school type.</p></li>
+      </ul>
+    </subsection>
+
+    <subsection xml:id="sec-lon-model-f">
+      <title>A Final Model with Three Level Two Covariates</title>
+
+      <p>
+        We now iterate toward a "final model" — Model F:
+      </p>
+
+      <p><alert>Level One:</alert></p>
+      <me>
+        Y_{ij} = a_i + b_i\;\text{Year08}_{ij} + \epsilon_{ij}
+      </me>
+
+      <p><alert>Level Two:</alert></p>
+      <md>
+        <mrow>a_i \amp= \alpha_0 + \alpha_1\;\text{Charter}_i + \alpha_2\;\text{urban}_i
+               + \alpha_3\;\text{schpctsped}_i + \alpha_4\;\text{schpctfree}_i + u_i</mrow>
+        <mrow>b_i \amp= \beta_0 + \beta_1\;\text{Charter}_i + \beta_2\;\text{urban}_i
+               + \beta_3\;\text{schpctsped}_i + v_i</mrow>
+      </md>
+
+      <p>
+        By both AIC and BIC criteria, Model F is significantly better than Model D: AIC of 9885
+        vs. 9988, and BIC of 9956 vs. 10043.
+      </p>
+
+      <program language="r" xml:id="code-model-f2">
+        <input>
+model.f2 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
+                   SchPctSped + charter:year08 + urban:year08 +
+                   SchPctSped:year08 + year08 +
+                   (year08|schoolid), REML = T, data = chart.long)
+        </input>
+      </program>
+
+      <ul>
+        <li><p><m>\hat{\alpha}_0 = 661.0.</m> The estimated mean math test score for 2008 is
+        661.0 for public schools in rural areas with no students qualifying for special education
+        or free and reduced lunch.</p></li>
+        <li><p><m>\hat{\alpha}_1 = -3.22.</m> Charter schools have an estimated mean math test
+        score in 2008 which is 3.22 points lower than non-charter public schools, after
+        controlling for urban or rural location, percent special education, and percent free and
+        reduced lunch.</p></li>
+        <li><p><m>\hat{\alpha}_2 = -1.11.</m> Schools in urban areas have an estimated mean math
+        score in 2008 which is 1.11 points lower than schools in rural areas, after controlling
+        for school type, percent special education, and percent free and reduced lunch.</p></li>
+        <li><p><m>\hat{\alpha}_3 = -0.118.</m> A 10% increase in special education students at a
+        school is associated with a 1.18 point decrease in estimated mean math score for 2008,
+        after controlling for school type, urban or rural location, and percent free and reduced
+        lunch.</p></li>
+        <li><p><m>\hat{\alpha}_4 = -0.153.</m> A 10% increase in free and reduced lunch students
+        at a school is associated with a 1.53 point decrease in estimated mean math score for
+        2008, after controlling for school type, urban or rural location, and percent special
+        education.</p></li>
+        <li><p><m>\hat{\beta}_0 = 2.14.</m> Public non-charter schools in rural areas with no
+        students qualifying for special education have an estimated increase in mean math test
+        score of 2.14 points per year over the three-year observation period, after controlling
+        for percent of students receiving free and reduced lunch.</p></li>
+        <li><p><m>\hat{\beta}_1 = 1.03.</m> Charter schools have an estimated mean annual increase
+        in math score that is 1.03 points higher than public non-charter schools over the
+        three-year observation period, after controlling for urban or rural location, percent
+        special education, and percent free and reduced lunch.</p></li>
+        <li><p><m>\hat{\beta}_2 = -0.53.</m> Schools in urban areas have an estimated mean annual
+        increase in math score that is 0.53 points lower than schools from rural areas over the
+        three-year observation period, after controlling for school type, percent special
+        education, and percent free and reduced lunch.</p></li>
+        <li><p><m>\hat{\beta}_3 = -0.047.</m> A 10% increase in special education students at a
+        school is associated with an estimated mean annual increase in math score that is 0.47
+        points lower over the three-year observation period, after controlling for school type,
+        urban or rural location, and percent free and reduced lunch.</p></li>
+      </ul>
+    </subsection>
+
+    <subsection xml:id="sec-lon-paraboot">
+      <title>Parametric Bootstrap Testing</title>
+
+      <p>
+        We could further examine whether or not a simplified version of Model F, with fewer random
+        effects, might be preferable. Consider testing whether we could remove <m>v_i</m> in
+        Model F to create Model F0. Removing <m>v_i</m> is equivalent to setting
+        <m>\sigma_v^2 = 0</m> and <m>\rho_{uv} = 0</m>.
+      </p>
+
+      <program language="r" xml:id="code-model-f0">
+        <input>
+#Model F0 (remove 2 variance components from Model F)
+model.f0 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
+                   SchPctSped + charter:year08 + urban:year08 +
+                   SchPctSped:year08 + year08 +
+                   (1|schoolid), REML = T, data = chart.long)
+        </input>
+      </program>
+
+      <p>
+        When testing random effects at the boundary (such as <m>\sigma_v^2 = 0</m>) or those with
+        restricted ranges (such as <m>\rho_{uv} = 0</m>), using a chi-square distribution to
+        conduct a likelihood ratio test is not appropriate. Researchers often use methods like the
+        <term>parametric bootstrap</term><idx><h>parametric bootstrap</h></idx> to better
+        approximate the distribution of the likelihood test statistic. The basic steps are:
+      </p>
+
+      <ol>
+        <li><p>Fit Model F0 (the null model) to obtain estimated fixed effects and variance
+        components.</p></li>
+        <li><p>Use the estimated parameters from the null model to regenerate a new set of math
+        test scores with the same sample size and covariates as the original data.</p></li>
+        <li><p>Fit both Model F0 (the reduced model) and Model F (the full model) to the new
+        data.</p></li>
+        <li><p>Compute a likelihood ratio statistic comparing Models F0 and F.</p></li>
+        <li><p>Repeat the previous 3 steps many times (e.g., 1000).</p></li>
+        <li><p>Produce a histogram of likelihood ratio statistics to illustrate its behavior when
+        the null hypothesis is true.</p></li>
+        <li><p>Calculate a p-value by finding the proportion of times the bootstrapped test
+        statistic is greater than our observed test statistic.</p></li>
+      </ol>
+
+      <figure xml:id="fig-parabootdiagram">
+        <caption>The steps in conducting a parametric bootstrap test comparing Models F and
+        F0.</caption>
+        <image source="generated-assets/fig-parabootdiagram.png" width="90%">
+          <description>A diagram illustrating the seven steps of the parametric bootstrap
+          procedure for comparing nested multilevel models.</description>
+        </image>
+      </figure>
+
+      <program language="r" xml:id="code-paraboot">
+        <input>
+# Generate 1 set of bootstrapped data and run chi-square test
+set.seed(3333)
+d &lt;- drop(simulate(model.f0ml))
+m2 &lt;- refit(model.f2ml, newresp = d)
+m1 &lt;- refit(model.f0ml, newresp = d)
+drop_in_dev &lt;- anova(m2, m1, test = "Chisq")
+        </input>
+      </program>
+
+      <program language="r" xml:id="code-paraboot-full">
+        <input>
+bootstrapAnova(mA = model.f2ml, m0 = model.f0ml, B = 1000)
+        </input>
+      </program>
+
+      <p>
+        The parametric bootstrap provides a more reliable p-value in this case (0.578 from the
+        table); a chi-square distribution puts too much mass in the tail and not enough near 0,
+        leading to overestimation of the p-value. Based on this test, we would choose our simpler
+        Model F0. <xref ref="fig-paraboot9"/> illustrates the null distribution of the likelihood
+        ratio test statistic derived by the parametric bootstrap.
+      </p>
+
+      <figure xml:id="fig-paraboot9">
+        <caption>Null distribution of likelihood ratio test statistic derived using parametric
+        bootstrap (histogram) compared to a chi-square distribution with 2 degrees of freedom
+        (smooth curve). The vertical line represents the observed likelihood ratio test
+        statistic.</caption>
+        <image source="generated-assets/fig-paraboot9.png" width="60%">
+          <description>Histogram of 1000 bootstrapped likelihood ratio test statistics with a
+          chi-square(2) density curve overlaid. A vertical line marks the observed test
+          statistic (0.3376), showing most of the null distribution falls below 5.</description>
+        </image>
+      </figure>
+    </subsection>
+  </section>
+
+  <section xml:id="sec-lon-cov-structure">
+    <title>Covariance Structure among Observations</title>
+
+    <subsection xml:id="sec-lon-standard-cov">
+      <title>Standard Covariance Structure</title>
+
+      <p>
+        Our two-level model, through error terms on both Level One and Level Two variables,
+        actually implies a specific within-school covariance structure among observations. For
+        School <m>i</m>, the covariance structure for the three time points has general form:
+      </p>
+
+      <me>
+        \text{Cov}(\mathbf{Y}_i) =
+        \begin{bmatrix}
+          \text{Var}(Y_{i1}) \amp \text{Cov}(Y_{i1},Y_{i2}) \amp \text{Cov}(Y_{i1},Y_{i3}) \\
+          \text{Cov}(Y_{i1},Y_{i2}) \amp \text{Var}(Y_{i2}) \amp \text{Cov}(Y_{i2},Y_{i3}) \\
+          \text{Cov}(Y_{i1},Y_{i3}) \amp \text{Cov}(Y_{i2},Y_{i3}) \amp \text{Var}(Y_{i3})
+        \end{bmatrix}
+      </me>
+
+      <p>
+        Using results from probability theory, we can show that:
+      </p>
+
+      <md>
+        <mrow>\text{Var}(Y_{ij}) \amp= \sigma_u^2 + t_{ij}^2 \sigma_v^2 + \sigma^2 + 2t_{ij}\sigma_{uv}</mrow>
+        <mrow>\text{Cov}(Y_{ij}, Y_{ik}) \amp= \sigma_u^2 + t_{ij}t_{ik} \sigma_v^2 + (t_{ij} + t_{ik})\sigma_{uv}</mrow>
+      </md>
+
+      <p>
+        where our time variable (<c>year08</c>) has values <m>t_{i1} = 0</m>, <m>t_{i2} = 1</m>,
+        and <m>t_{i3} = 2</m> for every School <m>i</m>. Using estimated variance components from
+        Model C (<m>\hat{\sigma}^2 = 8.784</m>, <m>\hat{\sigma}^2_u = 35.832</m>,
+        <m>\hat{\sigma}^2_v = 0.131</m>, <m>\hat{\sigma}_{uv} = 1.907</m>), our two-level model
+        implicitly imposes this estimated covariance structure:
+      </p>
+
+      <me>
+        \hat{\text{Cov}}(\mathbf{Y}) =
+        \begin{bmatrix}
+          44.62 \amp \amp \\
+          37.74 \amp 48.56 \amp \\
+          39.65 \amp 41.81 \amp 52.77
+        \end{bmatrix}
+      </me>
+
+      <p>
+        This can be converted into an estimated within-school correlation matrix:
+      </p>
+
+      <me>
+        \hat{\text{Corr}}(\mathbf{Y}) =
+        \begin{bmatrix}
+          1 \amp \amp \\
+          .811 \amp 1 \amp \\
+          .817 \amp .826 \amp 1
+        \end{bmatrix}
+      </me>
+
+      <p>
+        Note that correlation between test scores separated by two years (0.817) is approximately
+        the same as the correlation between test scores separated by a single year (0.811 and
+        0.826), and the variability in 2010 (52.77) is about 18% greater than the variability
+        in 2008 (44.62).
+      </p>
+    </subsection>
+
+    <subsection xml:id="sec-lon-alt-cov">
+      <title>Alternative Covariance Structures</title>
+
+      <p>
+        Here is an outline of a few alternative error structures:
+      </p>
+
+      <ul>
+        <li><p><em>Unstructured</em> — Every variance and covariance term for observations within
+        a school is a separate parameter and is therefore estimated uniquely. This structure
+        offers maximum flexibility but is most costly in terms of parameters estimated.</p></li>
+        <li><p><em>Compound symmetry</em> — Assume variance is constant across all time points
+        and correlation is constant across all pairs of time points. This structure is highly
+        restrictive but least costly in terms of parameters estimated.</p></li>
+        <li><p><em>Autoregressive</em> — Assume variance is constant across all time points, but
+        correlation drops off in a systematic fashion as the gap in time increases.</p></li>
+        <li><p><em>Toeplitz</em> — Similar to the autoregressive model, except that it does not
+        impose any structure on the decline in correlation as time gaps increase. Thus, it
+        requires more parameters to be estimated than the autoregressive model.</p></li>
+        <li><p><em>Heterogeneous variances</em> — The assumption that variances are equal across
+        time points can be relaxed by introducing additional parameters to allow unequal
+        (heterogeneous) variances.</p></li>
+      </ul>
+
+      <p>
+        Models with the same fixed effects but different covariance structures can be compared with
+        AIC and BIC measures when models are not nested and with likelihood ratio tests when models
+        are nested. In the charter school example, the choice of covariance matrix does not greatly
+        affect estimates of fixed effects.
+      </p>
+    </subsection>
+
+    <subsection xml:id="sec-lon-opt-cov" xml:base="">
+      <title>Details of Covariance Structures (optional)</title>
+
+      <p>
+        Using Model C, we can derive the covariance terms by applying probability theory results.
+        If <m>Y_1 = a_1 X_1 + a_2 X_2 + a_3</m> and <m>Y_2 = b_1 X_1 + b_2 X_2 + b_3</m> where
+        <m>X_1</m> and <m>X_2</m> are random variables and <m>a_i</m> and <m>b_i</m> are
+        constants, then:
+      </p>
+
+      <md>
+        <mrow>\text{Var}(Y_1) \amp= a_1^2 \text{Var}(X_1) + a_2^2 \text{Var}(X_2) + 2a_1 a_2 \text{Cov}(X_1, X_2)</mrow>
+        <mrow>\text{Cov}(Y_1, Y_2) \amp= a_1 b_1 \text{Var}(X_1) + a_2 b_2 \text{Var}(X_2) + (a_1 b_2 + a_2 b_1) \text{Cov}(X_1, X_2)</mrow>
+      </md>
+
+      <p>
+        Applying these identities to Model C, we ignore all fixed effects since they do not
+        contribute to the variability:
+      </p>
+
+      <md>
+        <mrow>\text{Var}(Y_{ij}) \amp= \text{Var}(u_i + v_i\;\text{Year08}_{ij} + \epsilon_{ij})</mrow>
+        <mrow> \amp= \sigma_u^2 + t_j^2 \sigma_v^2 + \sigma^2 + 2t_j \sigma_{uv}</mrow>
+      </md>
+
+      <md>
+        <mrow>\text{Cov}(Y_{ij}, Y_{ik}) \amp= \text{Cov}(u_i + v_i\;\text{Year08}_{ij} + \epsilon_{ij},\; u_i + v_i\;\text{Year08}_{ik} + \epsilon_{ik})</mrow>
+        <mrow> \amp= \sigma_u^2 + t_j t_k \sigma_v^2 + (t_j + t_k) \sigma_{uv}</mrow>
+      </md>
+    </subsection>
+  </section>
+
+  <section xml:id="sec-lon-r-notes">
+    <title>Notes on Using R (optional)</title>
+
+    <p>
+      The model below is our final model with <m>\sigma_{uv}</m> set to 0 — i.e., we have added
+      the restriction that Level Two error terms are uncorrelated. Motivation for this restriction
+      came from repeated estimates of correlation in different versions of the final model near 1.
+      A likelihood ratio test using full maximum likelihood estimates confirms that the inclusion
+      of a correlation term does not lead to an improved model (LRT test statistic = 0.223 on 1
+      df, <m>p = .637</m>); a parametric bootstrap test provides a similar result. Estimates of
+      fixed effects and their standard errors are extremely consistent with the full model in the
+      previous section.
+    </p>
+
+    <program language="r" xml:id="code-model-f2a">
+      <input>
+# Modified final model
+model.f2a &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
+                    SchPctSped + charter:year08 + urban:year08 +
+                    SchPctSped:year08 + year08 +
+                    (1|schoolid) + (0 + year08|schoolid),
+                  REML = T, data = chart.long)
+      </input>
+    </program>
+  </section>
+
+  <exercises xml:id="exercises-ch-lon">
+    <title>Exercises</title>
+
+    <subexercises xml:id="conceptual-exercises-ch-lon">
+      <title>Conceptual Exercises</title>
+
+      <exercise xml:id="exercise-ch9-1">
+        <title>Parenting and gang activity</title>
+        <statement>
+          <p>
+            Walker-Barnes and Mason describe a longitudinal study in which 300 ninth graders from
+            one high school in an urban southeastern city were assessed at the beginning of the
+            school year about their gang activity, the gang activity of their peers, behavior of
+            their parents, and their ethnic and cultural heritage. Then, information about their
+            gang activity was collected at 7 additional occasions during the school year.
+          </p>
+          <ol marker="a">
+            <li><p>Give the observational units at Level One and Level Two.</p></li>
+            <li><p>List potential explanatory variables at both Level One and Level Two.</p></li>
+          </ol>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-2">
+        <statement>
+          <p>
+            Describe the difference between the wide and long formats for longitudinal data in
+            this study.
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-3">
+        <statement>
+          <p>
+            Describe scenarios or research questions in which a lattice plot would be more
+            informative than a spaghetti plot, and other scenarios or research questions in which
+            a spaghetti plot would be preferable to a lattice plot.
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-4">
+        <statement>
+          <p>
+            Walker-Barnes and Mason summarize their analytic approach as follows. The first series
+            of analyses tested whether there was overall change and/or significant individual
+            variability in gang activity over time. Second, analyses were conducted examining the
+            effect of peer gang activity on initial gang activity and changes in gang activity over
+            time. Finally, four pairs of analyses examined the role of each of the four parenting
+            variables.
+          </p>
+          <p>
+            Although the authors examined four parenting behaviors — behavioral control, lax
+            control, psychological control, and parental warmth — they did so one at a time, using
+            four separate multilevel models. Based on their description, write out a sample model
+            from each of the three steps in the series. For each model:
+          </p>
+          <ol marker="a">
+            <li><p>Write out the two-level model for predicting gang activity.</p></li>
+            <li><p>Write out the corresponding composite model.</p></li>
+            <li><p>Determine how many model parameters (fixed effects and variance components)
+            must be estimated.</p></li>
+          </ol>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-5">
+        <statement>
+          <p>
+            Provide interpretations of significant coefficients in context from the Walker-Barnes
+            and Mason Table 2 results of hierarchical linear modeling analyses modeling gang
+            involvement (psychological control parenting behavior).
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-6">
+        <title>Charter schools</title>
+        <statement>
+          <p>
+            Differences exist in both sets of boxplots in <xref ref="fig-lon-box2"/>. What do
+            these differences imply for multilevel modeling?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-7">
+        <statement>
+          <p>
+            What implications do the scatterplots in <xref ref="fig-lon-boxcatmat1"/> (b) and (c)
+            have for multilevel modeling? What implications does the boxplot in
+            <xref ref="fig-lon-boxcatmat1"/> (a) have?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-8">
+        <statement>
+          <p>
+            What are the implications of <xref ref="fig-lon-boxmat1"/> for multilevel modeling?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-9">
+        <statement>
+          <p>
+            Sketch a set of boxplots to indicate an obvious interaction between percent special
+            education and percent non-white in modeling 2008 math scores. Where would this
+            interaction appear in the multilevel model?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-10">
+        <statement>
+          <p>
+            In Model A, <m>\sigma^2</m> is defined as the variance in within-school deviations and
+            <m>\sigma^2_u</m> is defined as the variance in between-school deviations. Give
+            potential sources of within-school and between-school deviations.
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-11">
+        <statement>
+          <p>
+            In the previous chapter, Model B is called the "random slopes and intercepts model",
+            while in this chapter Model B is called the "unconditional growth model". Are these
+            models essentially the same or systematically different? Explain.
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-12">
+        <statement>
+          <p>
+            In <xref ref="sec-lon-model-b"/>, why don't we examine the pseudo R-squared value for
+            Level Two?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-13">
+        <statement>
+          <p>
+            If we have test score data from 2001–2010, explain how we'd create new variables to
+            fit a piecewise model.
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-14">
+        <statement>
+          <p>
+            In <xref ref="sec-lon-model-d"/>, could we have used percent free and reduced lunch
+            as a Level One covariate rather than 2010 percent free and reduced lunch as a Level
+            Two covariate? If so, explain how interpretations would have changed. What if we had
+            used average percent free and reduced lunch over all three years or 2008 percent free
+            and reduced lunch instead of 2010 percent free and reduced lunch?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-15">
+        <statement>
+          <p>
+            In <xref ref="sec-lon-model-d"/>, why do we look at a 10% increase in the percentage
+            of students receiving free and reduced lunch when interpreting
+            <m>\hat{\alpha}_2</m>?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-16">
+        <statement>
+          <p>
+            In <xref ref="sec-lon-model-f"/>, if the gap in 2008 math scores between charter and
+            non-charter schools differed for schools of different poverty levels (as measured by
+            percent free and reduced lunch), how would the final model have differed?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-17">
+        <statement>
+          <p>
+            Explain in your own words why "the error structure at Level Two is <em>not</em> the
+            same as the within-school covariance structure among observations."
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-18">
+        <statement>
+          <p>
+            Here is the estimated unstructured covariance matrix for Model C:
+          </p>
+          <me>
+            \text{Cov}(\mathbf{Y}_i) =
+            \begin{bmatrix}
+              41.87 \amp \amp \\
+              36.46 \amp 48.18 \amp \\
+              35.20 \amp 39.84 \amp 45.77
+            \end{bmatrix}
+          </me>
+          <p>
+            Explain why this matrix cannot represent an estimated covariance matrix with a compound
+            symmetry, autoregressive, or Toeplitz structure. Also explain why it cannot represent
+            our standard two-level model.
+          </p>
+        </statement>
+      </exercise>
+    </subexercises>
+
+    <subexercises xml:id="guided-exercises-ch-lon">
+      <title>Guided Exercises</title>
+
+      <exercise xml:id="exercise-ch9-g1">
+        <title>Teen alcohol use</title>
+        <statement>
+          <p>
+            Curran et al. collected data on 82 adolescents at three time points starting at age
+            14 to assess factors that affect teen drinking behavior. Key variables in
+            <c>alcohol.csv</c> are as follows:
+          </p>
+          <ul>
+            <li><p><c>id</c> = numerical identifier for subject</p></li>
+            <li><p><c>age</c> = 14, 15, or 16</p></li>
+            <li><p><c>coa</c> = 1 if the teen is a child of an alcoholic parent; 0
+            otherwise</p></li>
+            <li><p><c>male</c> = 1 if male; 0 if female</p></li>
+            <li><p><c>peer</c> = a measure of peer alcohol use, taken when each subject was 14.
+            This is the square root of the sum of two 6-point items about the proportion of
+            friends who drink occasionally or regularly.</p></li>
+            <li><p><c>alcuse</c> = the primary response. Four items — (a) drank beer or wine,
+            (b) drank hard liquor, (c) 5 or more drinks in a row, and (d) got drunk — were each
+            scored on an 8-point scale, from 0 = "not at all" to 7 = "every day". Then
+            <c>alcuse</c> is the square root of the sum of these four items.</p></li>
+          </ul>
+          <p>
+            Primary research questions: Do trajectories of alcohol use differ by parental
+            alcoholism? Do trajectories of alcohol use differ by peer alcohol use?
+          </p>
+          <ol marker="a">
+            <li><p>Identify Level One and Level Two predictors.</p></li>
+            <li><p>Perform a quick EDA. What can you say about the shape of <c>alcuse</c>, and
+            the relationship between <c>alcuse</c> and <c>coa</c>, <c>male</c>, and
+            <c>peer</c>?</p></li>
+            <li><p>Generate a lattice plot illustrating alcohol use over time for all 82 subjects.
+            Comment.</p></li>
+            <li><p>Generate three spaghetti plots with loess fits (one for <c>coa</c>, one for
+            <c>male</c>, and one after creating a binary variable from <c>peer</c>). Comment on
+            what you can conclude from each plot.</p></li>
+            <li><p>Fit a linear trend to the data from each of the 82 subjects using <c>age</c>
+            as the time variable. Generate histograms showing the results of these 82 linear
+            regression lines, and generate pairs of boxplots for <c>coa</c> and
+            <c>male</c>.</p></li>
+            <li><p>Repeat (e) using centered age (<c>age14 = age - 14</c>) as the time variable.
+            Also generate a pair of scatterplots for peer alcohol use. Comment on trends you
+            observe in these plots.</p></li>
+            <li><p>Discuss similarities and differences between (e) and (f). Why does using
+            <c>age14</c> as the time variable make more sense in this example?</p></li>
+            <li><p>(Model A) Run an unconditional means model. Report and interpret the
+            intraclass correlation coefficient.</p></li>
+            <li><p>(Model B) Run an unconditional growth model with <c>age14</c> as the time
+            variable at Level One. Report and interpret estimated fixed effects, using proper
+            notation. Also report and interpret a pseudo R-squared value.</p></li>
+            <li><p>(Model C) Build upon the unconditional growth model by adding the effects of
+            having an alcoholic parent and peer alcohol use in both Level Two equations. Report
+            and interpret all estimated fixed effects, using proper notation.</p></li>
+            <li><p>(Model D) Remove the child of an alcoholic indicator variable as a predictor
+            of slope in Model C. Write out Model D as both a two-level and a composite model
+            using proper notation (including error distributions); how many parameters must be
+            estimated? Compare Model D to Model C using an appropriate method and state a
+            conclusion.</p></li>
+          </ol>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-g2">
+        <title>Ambulance diversions</title>
+        <statement>
+          <p>
+            One response to emergency department overcrowding is "ambulance diversion" — closing
+            its doors and forcing ambulances to bring patients to alternative hospitals. A data
+            set (<c>ambulance3.csv</c>) contains the following variables from 184 California
+            hospitals over a 3-year period (2013–2015):
+          </p>
+          <ul>
+            <li><p><c>diverthours</c> = number of hours of diversion status over the year
+            (response)</p></li>
+            <li><p><c>year2013</c> = year (centered at 2013)</p></li>
+            <li><p><c>totalvisits1</c> = total number of patient visits to the emergency
+            department over the year (in 1000s)</p></li>
+            <li><p><c>ems_basic</c> = 1 if the emergency department can only handle a basic
+            level of severity; 0 if the emergency department can handle higher levels of
+            severity</p></li>
+            <li><p><c>stations</c> = number of emergency department stations available for
+            patients (fixed over 3 years)</p></li>
+          </ul>
+          <ol marker="a">
+            <li><p>State the observational units at Level One and Level Two in this study, then
+            state the explanatory variables at each level from the list above.</p></li>
+            <li><p>Create latticed spaghetti plots that illustrate the relationship between
+            diversion hours and (i) EMS level, and (ii) number of stations (divided into "high"
+            and "low"). Describe terms that might be worth testing in your final model based on
+            these plots.</p></li>
+            <li><p>Write out an unconditional growth model, where <m>Y_{ij}</m> is the number of
+            diversion hours for the <m>i^{th}</m> hospital in the <m>j^{th}</m> year. Interpret
+            both <m>a_i</m> and <m>v_i</m> in the context of this problem.</p></li>
+            <li><p>In Model E (see R code at the end of these problems), focus on the
+            <c>ems_basic:year2013</c> interaction term. Provide a careful interpretation in
+            context. Why are there no p-values for testing significance in the <c>lmer()</c>
+            output? What can we conclude about the significance of the interaction from the
+            CIs?</p></li>
+            <li><p>Write out Model G in terms of its Level 1 and Level 2 equations. Be sure to
+            use proper subscripts everywhere, and provide expressions for any assumptions made
+            about error terms. How many total parameters must be estimated?</p></li>
+            <li><p>In Model G, provide careful interpretations in context for the coefficient
+            estimates of <c>year2013</c> and <c>stations</c>.</p></li>
+            <li><p>We wish to compare Models D and D0. Write out null and alternative hypotheses
+            in terms of model parameters. State a conclusion based on a likelihood ratio test.
+            State a conclusion based on a parametric bootstrap. Generate a plot that compares the
+            null distributions and p-values for the likelihood ratio test and parametric
+            bootstrap. Why might we consider using a parametric bootstrap p-value rather than a
+            likelihood ratio test p-value? Show how you would produce a bootstrapped value for
+            <m>Y_{11}</m>, the first row of <c>ambulance3.csv</c>.</p></li>
+          </ol>
+
+          <program language="r" xml:id="code-ambulance-models">
+            <input>
+modelD &lt;- lmer(diverthours ~ year2013 + ems_basic +
+                (year2013 | id), data = ambulance3)
+
+modelD0 &lt;- lmer(diverthours ~ year2013 + ems_basic +
+                 (1 | id), data = ambulance3)
+
+modelE &lt;- lmer(diverthours ~ year2013 + ems_basic +
+                ems_basic:year2013 + (year2013 | id), data = ambulance3)
+
+modelG &lt;- lmer(diverthours ~ year2013 + totalvisits1 +
+                ems_basic + stations + ems_basic:year2013 +
+                stations:year2013 + (year2013 | id), data = ambulance3)
+            </input>
+          </program>
+        </statement>
+      </exercise>
+    </subexercises>
+
+    <subexercises xml:id="open-ended-exercises-ch-lon">
+      <title>Open-Ended Exercises</title>
+
+      <exercise xml:id="exercise-ch9-oe1">
+        <title>UCLA nurse blood pressure study</title>
+        <statement>
+          <p>
+            A study collected information from 203 registered nurses in the Los Angeles area
+            between 24 and 50 years of age on blood pressure (BP) and potential factors that
+            contribute to hypertension. Data from this study (in <c>nursebp.csv</c>) includes
+            observations (40–60 per nurse) repeatedly taken over the course of a single day. The
+            first BP measurement was taken half an hour before the subject's normal start of work,
+            and BP was then measured approximately every 20 minutes for the rest of the day.
+            Variables include: <c>SNUM</c> (subject ID), <c>SYS</c> (systolic BP), <c>DIA</c>
+            (diastolic BP), <c>HRT</c> (heart rate), <c>MNACT5</c> (activity level),
+            <c>PHASE</c> (menstrual phase), <c>DAY</c> (workday or non-workday), <c>POSTURE</c>
+            (sitting/standing/reclining), <c>STR</c>/<c>HAP</c>/<c>TIR</c> (self-ratings of
+            stress, happiness, tiredness), <c>AGE</c>, <c>FH123</c> (family history of
+            hypertension), <c>time</c>, <c>timept</c>, and <c>timepass</c>.
+          </p>
+          <p>
+            Using systolic blood pressure as the primary response, write a short report detailing
+            factors that are significantly associated with higher systolic blood pressure. In
+            particular, how are work conditions — activity level, mood, and work status — related
+            to trends in BP levels? Include appropriate exploratory plots and multilevel models,
+            and describe your modeling process as an appendix.
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-oe2">
+        <title>Completion rates at U.S. colleges</title>
+        <statement>
+          <p>
+            Education researchers wonder which factors most affect the completion rates at U.S.
+            colleges. Using the IPEDS database containing data from 1310 institutions over the
+            years 2002–2009 (in <c>colleges.csv</c>), the following variables were assembled.
+            Response: <c>rate</c> = completion rate (number of degrees awarded per 100 students
+            enrolled). Level 1 predictors: <c>year</c>, <c>instpct</c> = percentage of students
+            who receive an institutional grant, <c>instamt</c> = typical amount of an
+            institutional grant among recipients (in $1000s). Level 2 predictors: <c>faculty</c>
+            = mean number of full-time faculty per 100 students during 2002–2009, <c>tuition</c>
+            = mean yearly tuition during 2002–2009 (in $1000s).
+          </p>
+          <p>
+            Perform exploratory analyses and run multilevel models to determine significant
+            predictors of baseline (2002) completion rates and changes in completion rates between
+            2002 and 2009. In particular, is the percentage of grant recipients or the average
+            institutional grant awarded related to completion rate?
+          </p>
+        </statement>
+      </exercise>
+
+      <exercise xml:id="exercise-ch9-oe3">
+        <title>Beating the Blues</title>
+        <statement>
+          <p>
+            Proudfoot et al. developed and studied an interactive multimedia program of cognitive
+            behavioral therapy (CBT) called Beating the Blues (BtheB). In their study, 167
+            participants suffering from anxiety and/or depression were randomly allocated to
+            receive BtheB therapy or treatment as usual (TAU). The primary response was the Beck
+            Depression Inventory (BDI), measured prior to treatment, at the end of treatment (2
+            months later), and at 2, 4, and 6 months post-treatment follow-up.
+          </p>
+          <p>
+            Data from the BtheB study can be found in <c>BtheB.csv</c>. Variables include:
+            <c>drug</c> (prescribed concomitant drug therapy?), <c>length</c> (current episode
+            of depression longer or shorter than 6 months?), <c>treatment</c> (TAU or BtheB),
+            <c>bdi.pre</c> (baseline BDI), <c>bdi.2m</c>, <c>bdi.4m</c>, <c>bdi.6m</c>,
+            <c>bdi.8m</c> (BDI at 2, 4, 6, 8 months).
+          </p>
+          <p>
+            Things to consider: examine patterns of missing data; convert to LONG form; exploratory
+            data analyses including lattice, spaghetti, and correlation plots; set time 0 to be 2
+            months into the study; note that treatment is the variable of primary interest.
+          </p>
+        </statement>
+      </exercise>
+    </subexercises>
+  </exercises>
 
 </chapter>

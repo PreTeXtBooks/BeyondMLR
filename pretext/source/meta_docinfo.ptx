@@ -2,4 +2,9 @@
 <docinfo xmlns:xi="http://www.w3.org/2001/XInclude">
   <document-id>beyond-mlr</document-id>
   <math-package latex-name="cancel" mathjax-name="cancel"/>
+  <macros>
+    \newcommand{\E}{\operatorname{E}}
+    \newcommand{\SD}{\operatorname{SD}}
+    \newcommand{\var}{\operatorname{Var}}
+  </macros>
 </docinfo>
