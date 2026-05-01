@@ -612,7 +612,10 @@ coef(summary(model.b))
           \text{Pseudo }R^2_{L1} = \frac{\hat{\sigma}^{2}(\text{Model A})-\hat{\sigma}^{2}(\text{Model B})}{\hat{\sigma}^{2}(\text{Model A})} = \frac{22.5-21.8}{22.5} = 0.031
         </me>
         <p>
-          Pseudo R-squared values are not universally reliable as measures of model performance. Because of the complexity of estimating fixed effects and variance components at various levels of a multilevel model, it is not unusual to encounter situations in which pseudo R-squared values differ or are negative. For this reason, pseudo R-squared values in multilevel models should be interpreted cautiously.
+          Values of <m>\hat{\sigma}_{u}^{2}</m> and <m>\hat{\sigma}_{v}^{2}</m> from Model B cannot be compared to between-person variability from Model A, since the inclusion of performance type has changed the interpretation of these values, although they can provide important benchmarks for evaluating more complex Level Two predictions. Finally, <m>\hat{\rho}_{uv}=-0.76</m> indicates a strong negative relationship between a subject's performance anxiety before solos and small ensembles and their (typical) decrease in performance anxiety before large ensembles. As might be expected, subjects with higher levels of performance anxiety before solos and small ensembles tend to have smaller increases (or greater decreases) in performance anxiety before large ensembles; those with higher levels of performance anxiety before solos and small ensembles have more opportunity for decreases before large ensembles.
+        </p>
+        <p>
+          Pseudo R-squared values are not universally reliable as measures of model performance. Because of the complexity of estimating fixed effects and variance components at various levels of a multilevel model, it is not unusual to encounter situations in which covariates in a Level Two equation for, say, the intercept remain constant (while other aspects of the model change), yet the associated pseudo R-squared values differ or are negative. For this reason, pseudo R-squared values in multilevel models should be interpreted cautiously.
         </p>
       </subsubsection>
 
@@ -628,8 +631,18 @@ coef(summary(model.b))
           <mrow>a_{i} \amp = \alpha_{0}+\alpha_{1}\text{Orch}_{i}+u_{i}</mrow>
           <mrow>b_{i} \amp = \beta_{0}+\beta_{1}\text{Orch}_{i}+v_{i},</mrow>
         </md>
+        <p>where <m>\epsilon_{ij}\sim N(0,\sigma^2)</m> and</p>
+        <me>
+          \left[ \begin{array}{c} u_{i} \\ v_{i} \end{array} \right] \sim N \left( \left[
+          \begin{array}{c} 0 \\ 0 \end{array} \right], \left[
+          \begin{array}{cc} \sigma_{u}^{2} \amp \\
+          \rho\sigma_{u}\sigma_{v} \amp \sigma_{v}^{2} \end{array} \right] \right).
+        </me>
         <p>
-          We found that there are no highly significant fixed effects in Model C (other than the intercept). Since no terms were added at Level One when expanding from the random slopes and intercepts model (Model B), no discernible changes should occur in explained within-person variability. However, Model C expanded Model B by using the instrument which a subject plays to model both intercepts and slopes at Level Two. We can use pseudo R-squared values for both intercepts and slopes to evaluate the impact on between-person variability of adding instrument to Model B.
+          We found that there are no highly significant fixed effects in Model C (other than the intercept). In particular, we have no significant evidence that musicians playing orchestral instruments reported different performance anxiety scores, on average, for solos and small ensembles than keyboardists and vocalists, no evidence of a difference in performance anxiety by performance type for keyboard players and vocalists, and no evidence of an instrument effect in the difference between large ensembles and other types.
+        </p>
+        <p>
+          Since no terms were added at Level One when expanding from the random slopes and intercepts model (Model B), no discernible changes should occur in explained within-person variability. However, Model C expanded Model B by using the instrument which a subject plays to model both intercepts and slopes at Level Two. We can use pseudo R-squared values for both intercepts and slopes to evaluate the impact on between-person variability of adding instrument to Model B.
         </p>
         <me>
           \text{Pseudo }R^2_{L2_u} = \frac{\hat{\sigma}_{u}^{2}(\text{Model B})-\hat{\sigma}_{u}^{2}(\text{Model C})}{\hat{\sigma}_{u}^{2}(\text{Model B})} = \frac{6.33-5.66}{6.33} = 0.106
@@ -713,8 +726,35 @@ coef(summary(model.d))
         <li><p><m>\hat{\beta}_{2} = -0.03</m>. After accounting for instrument, a one-point increase in baseline negative emotionality is associated with an estimated 0.15 mean increase in anxiety levels before solos and small ensembles, but only an estimated 0.12 increase before large ensembles (a difference of .03 points).</p></li>
       </ul>
       <p>
-        The interpretation of <m>\hat{\alpha}_{1}</m> only holds for solos and small ensembles. For large ensembles, the difference between those playing orchestral instruments and others is actually given by <m>\hat{\alpha}_{1}+\hat{\beta}_{1}</m>, holding <c>MPQnem</c> constant.
+        Some of the detail in these parameter interpretations can be tricky <ndash/> describing interaction terms, deciding if a covariate must be fixed at 0 or merely held constant, etc. Often it helps to write out models for special cases to isolate the effects of specific fixed effects. We will consider a few parameter estimates from above and see why the interpretations are written as they are.
       </p>
+      <ul>
+        <li>
+          <p><m>\hat{\alpha}_{1}</m>. For solos and small ensembles (<c>LargeEns=0</c>), the following equations describe the fixed effects portion of the composite model for negative affect score for vocalists and keyboardists (<c>Orch=0</c>) and orchestral instrumentalists (<c>Orch=1</c>):</p>
+          <md>
+            <mrow>\text{Orch}=0\text{:} \amp</mrow>
+            <mrow>Y_{ij} \amp = \alpha_{0}+\alpha_{2}\text{MPQnem}_{i}</mrow>
+            <mrow>\text{Orch}=1\text{:} \amp</mrow>
+            <mrow>Y_{ij} \amp = (\alpha_{0}+\alpha_{1})+\alpha_{2}\text{MPQnem}_{i}</mrow>
+          </md>
+          <p>Regardless of the subjects' baseline negative emotionality (<c>MPQnem</c>), <m>\hat{\alpha}_{1}</m> represents the estimated difference in performance anxiety between those playing orchestral instruments and others. This interpretation, however, only holds for solos and small ensembles. For large ensembles, the difference between those playing orchestral instruments and others is actually given by <m>\hat{\alpha}_{1}+\hat{\beta}_{1}</m>, holding <c>MPQnem</c> constant.</p>
+        </li>
+        <li>
+          <p><m>\hat{\beta}_{0}</m>. Because <c>LargeEns</c> interacts with both <c>Orch</c> and <c>MPQnem</c> in Model D, <m>\hat{\beta}_{0}</m> only describes the estimated difference between large ensembles and other performance types when both <c>Orch=0</c> and <c>MPQnem=0</c>, thus removing the effects of the interaction terms. If, for instance, <c>Orch=1</c> and <c>MPQnem=20</c>, then the difference between large ensembles and other performance types is given by <m>\hat{\beta}_{0}+\hat{\beta}_{1}+20\hat{\beta}_{2}</m>.</p>
+        </li>
+        <li>
+          <p><m>\hat{\beta}_{1}</m>. As with <m>\hat{\alpha}_{1}</m>, we consider equations describing the fixed effects portion of the composite model for negative affect score for vocalists and keyboardists (<c>Orch=0</c>) and orchestral instrumentalists (<c>Orch=1</c>), except here we leave <em>LargeEns</em> as an unknown rather than restricting the model to solos and small ensembles:</p>
+          <md>
+            <mrow>\text{Orch}=0\text{:} \amp</mrow>
+            <mrow>Y_{ij} \amp = \alpha_{0}+\alpha_{2}\text{MPQnem}_{i}+\beta_{0}\text{LargeEns}_{ij}</mrow>
+            <mrow> \amp \quad +\beta_{2}\text{MPQnem}_{i}\text{LargeEns}_{ij}</mrow>
+            <mrow>\text{Orch}=1\text{:} \amp</mrow>
+            <mrow>Y_{ij} \amp = (\alpha_{0}+\alpha_{1})+\alpha_{2}\text{MPQnem}_{i}+(\beta_{0}+\beta_{1})\text{LargeEns}_{ij}</mrow>
+            <mrow> \amp \quad +\beta_{2}\text{MPQnem}_{i}\text{LargeEns}_{ij}</mrow>
+          </md>
+          <p>As long as baseline negative emotionality is held constant (at any level, not just 0), then <m>\hat{\beta}_{1}</m> represents the estimated difference in the large ensemble effect between those playing orchestral instruments and others.</p>
+        </li>
+      </ul>
     </subsection>
 
     <subsection xml:id="subsec-compare-modeld">
@@ -811,8 +851,21 @@ coef(summary(model.e))
     <p>
       where <c>previous</c> is the number of previous diary entries filled out by that individual (<c>diary-1</c>); <c>students</c>, <c>juried</c>, and <c>public</c> are indicator variables created from the <c>audience</c> categorical variable (so that <q>Instructor</q> is the reference level); and, <c>solo</c> is 1 if the performance was a solo and 0 if the performance was either a small or large ensemble.
     </p>
+    <p>In addition, we assume the following variance-covariance structure at Level Two:</p>
+    <me>
+      \left[ \begin{array}{c} u_{i} \\ v_{i} \\ w_{i} \\ x_{i} \\ y_{i} \\ z_{i} \end{array} \right]
+      \sim N \left( \left[ \begin{array}{c} 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \end{array} \right], \left[
+      \begin{array}{cccccc}
+        \sigma_{u}^{2} \amp \amp \amp \amp \amp \\
+        \sigma_{uv} \amp \sigma_{v}^{2} \amp \amp \amp \amp \\
+        \sigma_{uw} \amp \sigma_{vw} \amp \sigma_{w}^{2} \amp \amp \amp \\
+        \sigma_{ux} \amp \sigma_{vx} \amp \sigma_{wx} \amp \sigma_{x}^{2} \amp \amp \\
+        \sigma_{uy} \amp \sigma_{vy} \amp \sigma_{wy} \amp \sigma_{xy} \amp \sigma_{y}^{2} \amp \\
+        \sigma_{uz} \amp \sigma_{vz} \amp \sigma_{wz} \amp \sigma_{xz} \amp \sigma_{yz} \amp \sigma_{z}^{2}
+      \end{array} \right] \right).
+    </me>
     <p>
-      Being able to write out the full variance-covariance matrix at Level Two (with 6 variance terms and 15 correlation terms) is less important than recognizing the number of variance components that must be estimated by our intended model. In cases where the number of terms is exploding, or the statistical software is struggling to simultaneously find estimates for all model parameters to maximize the likelihood function, we will consider ways to reduce the number of variance components in later sections.
+      Being able to write out these variance-covariance matrices is less important than recognizing the number of variance components that must be estimated by our intended model. In this case, we must use likelihood-based methods to obtain estimates for 6 variance terms and 15 correlation terms at Level Two, along with 1 variance term at Level One. Note that the number of correlation terms is equal to the number of unique pairs among Level Two random effects. In cases where the number of terms is exploding, or the statistical software is struggling to simultaneously find estimates for all model parameters to maximize the likelihood function, we will consider ways to reduce the number of variance components in later sections.
     </p>
     <p>
       From the signs of fixed effects estimates in the R output below, we see that performance anxiety is higher when a musician is performing in front of students, a jury, or the general public rather than their instructor, and it is lower for each additional diary the musician previously filled out. In addition, musicians with lower levels of positive emotionality and higher levels of absorption tend to experience greater performance anxiety. Addressing the researchers' primary hypothesis, after controlling for all these factors, we have significant evidence that musicians with higher levels of negative emotionality experience higher levels of performance anxiety, and that this association is even more pronounced when musicians are performing solos rather than as part of an ensemble group.
