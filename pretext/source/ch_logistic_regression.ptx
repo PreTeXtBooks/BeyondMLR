@@ -334,8 +334,22 @@ model.HaleD &lt;- glm(cbind(YesVotes, NumVotes - YesVotes) ~
 # alternative expression
 model.HaleD.alt &lt;- glm(YesVotes / NumVotes ~ distance,
     weights = NumVotes, family = binomial, data = rrHale.df)
+coef(summary(model.HaleD))
+cat(" Residual deviance = ", summary(model.HaleD)$deviance, " on ",
+    summary(model.HaleD)$df.residual, "df", "\n",
+    "Dispersion parameter = ", summary(model.HaleD)$dispersion)
         </code>
       </program>
+
+      <console>
+        <output>
+##             Estimate Std. Error z value   Pr(&gt;|z|)
+## (Intercept)   3.3093    0.11313   29.25 4.268e-188
+## distance     -0.2876    0.01302  -22.08 4.447e-108
+##  Residual deviance =  318.4  on  9 df 
+##  Dispersion parameter =  1
+        </output>
+      </console>
 
       <p>Our estimated binomial regression model is:
       <me>
@@ -349,8 +363,23 @@ model.HaleD.alt &lt;- glm(YesVotes / NumVotes ~ distance,
         <code>
 model.HaleBD &lt;- glm(cbind(YesVotes, NumVotes - YesVotes) ~
   distance + pctBlack, family = binomial, data = rrHale.df)
+coef(summary(model.HaleBD))
+cat(" Residual deviance = ", summary(model.HaleBD)$deviance, " on ",
+    summary(model.HaleBD)$df.residual, "df", "\n",
+    "Dispersion parameter = ", summary(model.HaleBD)$dispersion)
         </code>
       </program>
+
+      <console>
+        <output>
+##             Estimate Std. Error z value   Pr(&gt;|z|)
+## (Intercept)  4.22202   0.296963  14.217  7.155e-46
+## distance    -0.29173   0.013100 -22.270 7.236e-110
+## pctBlack    -0.01323   0.003897  -3.394  6.881e-04
+##  Residual deviance =  307.2  on  8 df 
+##  Dispersion parameter =  1
+        </output>
+      </console>
 
       <p>Despite the somewhat strong negative correlation between percent Black residents and distance, the estimated odds ratio for distance remains approximately the same in this new model (OR <m>= e^{-0.29} = 0.747</m>); controlling for percent Black residents does little to change our estimate of the effect of distance. For each additional mile from the proposed railroad, odds of a Yes vote declines by 25.3% after adjusting for the racial composition of a community. We also see that, for a fixed distance from the proposed railroad, the odds of a Yes vote declines by 1.3% (OR <m>= e^{-.0132} = .987</m>) for each additional percent of Black residents in the community.</p>
     </subsection>
@@ -367,8 +396,17 @@ model.HaleBD &lt;- glm(cbind(YesVotes, NumVotes - YesVotes) ~
       <program language="r" xml:id="code-ch6-drop1">
         <code>
 drop_in_dev &lt;- anova(model.HaleD, model.HaleBD, test = "Chisq")
+drop_in_dev
         </code>
       </program>
+
+      <console>
+        <output>
+  ResidDF ResidDev Deviance Df      pval
+1       9    318.4       NA NA        NA
+2       8    307.2    11.22  1 0.0008083
+        </output>
+      </console>
 
       <p>The drop-in-deviance test statistic is <m>318.44 - 307.22 = 11.22</m> on <m>9 - 8 = 1</m> df, producing a p-value of .00081, in close agreement with the Wald test.</p>
 
@@ -405,6 +443,15 @@ exp(confint(model.HaleBD))
         </code>
       </program>
 
+      <console>
+        <output>
+              2.5 %   97.5 %
+(Intercept) 38.2285 122.6116
+distance     0.7276   0.7660
+pctBlack     0.9794   0.9945
+        </output>
+      </console>
+
       <p>In the model with <c>distance</c> and <c>pctBlack</c>, the profile likelihood 95% confidence interval for <m>e^{\beta_2}</m> is (.979, .994), which is approximately equal to the Wald-based interval despite the small sample size. We can also confirm the statistically significant association between percent Black residents and odds of voting Yes (after controlling for distance), because 1 is not a plausible value of <m>e^{\beta_2}</m> (where an odds ratio of 1 would imply that the odds of voting Yes do not change with percent Black residents).</p>
     </subsection>
 
@@ -419,6 +466,12 @@ exp(confint(model.HaleBD))
         </code>
       </program>
 
+      <console>
+        <output>
+[1] 0
+        </output>
+      </console>
+
       <p>The model with <c>pctBlack</c> and <c>distance</c> has statistically significant evidence of lack-of-fit (<m>p\lt.001</m>).</p>
 
       <p>Similar to the Poisson regression models, this lack-of-fit <idx>lack-of-fit</idx> could result from (a) missing covariates, (b) outliers, or (c) overdispersion. We will first attempt to address (a) by fitting a model with an interaction between distance and percent Black residents, to determine whether the effect of racial composition differs based on how far a community is from the proposed railroad.</p>
@@ -428,15 +481,45 @@ exp(confint(model.HaleBD))
 model.HaleBxD &lt;- glm(cbind(YesVotes, NumVotes - YesVotes) ~
   distance + pctBlack + distance:pctBlack,
   family = binomial, data = rrHale.df)
+coef(summary(model.HaleBxD))
+cat(" Residual deviance = ", summary(model.HaleBxD)$deviance, " on ",
+    summary(model.HaleBxD)$df.residual, "df", "\n",
+    "Dispersion parameter = ", summary(model.HaleBxD)$dispersion)
         </code>
       </program>
+
+      <console>
+        <output>
+##                    Estimate Std. Error z value
+## (Intercept)        7.550902  0.6383697  11.828
+## distance          -0.614005  0.0573808 -10.701
+## pctBlack          -0.064731  0.0091723  -7.057
+## distance:pctBlack  0.005367  0.0008984   5.974
+##                    Pr(&gt;|z|)
+## (Intercept)       2.783e-32
+## distance          1.012e-26
+## pctBlack          1.698e-12
+## distance:pctBlack 2.321e-09
+##  Residual deviance =  274.2  on  7 df 
+##  Dispersion parameter =  1
+        </output>
+      </console>
 
       <program language="r" xml:id="code-ch6-drop2">
         <code>
 drop_in_dev &lt;- anova(model.HaleBD, model.HaleBxD,
                      test = "Chisq")
+drop_in_dev
         </code>
       </program>
+
+      <console>
+        <output>
+  ResidDF ResidDev Deviance Df      pval
+1       8    307.2       NA NA        NA
+2       7    274.2    32.98  1 9.294e-09
+        </output>
+      </console>
 
       <p>We have statistically significant evidence (Wald test: <m>Z = 5.974, p\lt.001</m>; Drop-in-deviance test: <m>\chi^2=32.984, p\lt.001</m>) that the effect of the proportion of community residents who are Black on the odds of voting Yes depends on the distance of the community from the proposed railroad.</p>
 
@@ -501,8 +584,29 @@ drop_in_dev &lt;- anova(model.HaleBD, model.HaleBxD,
 model.HaleBxDq &lt;- glm(cbind(YesVotes, NumVotes - YesVotes) ~
   distance + pctBlack + distance:pctBlack,
   family = quasibinomial, data = rrHale.df)
+coef(summary(model.HaleBxDq))
+cat(" Residual deviance = ", summary(model.HaleBxDq)$deviance, " on ",
+    summary(model.HaleBxDq)$df.residual, "df", "\n",
+    "Dispersion parameter = ", summary(model.HaleBxDq)$dispersion)
         </code>
       </program>
+
+      <console>
+        <output>
+##                    Estimate Std. Error t value
+## (Intercept)        7.550902   4.585464  1.6467
+## distance          -0.614005   0.412171 -1.4897
+## pctBlack          -0.064731   0.065885 -0.9825
+## distance:pctBlack  0.005367   0.006453  0.8316
+##                   Pr(&gt;|t|)
+## (Intercept)         0.1436
+## distance            0.1799
+## pctBlack            0.3586
+## distance:pctBlack   0.4331
+##  Residual deviance =  274.2  on  7 df 
+##  Dispersion parameter =  51.6
+        </output>
+      </console>
 
       <p>We therefore remove the interaction term and refit the model, adjusting for the extra-binomial variation that still exists.</p>
 
@@ -511,8 +615,23 @@ model.HaleBxDq &lt;- glm(cbind(YesVotes, NumVotes - YesVotes) ~
 model.HaleBDq &lt;- glm(cbind(YesVotes, NumVotes - YesVotes) ~
   distance + pctBlack,
   family = quasibinomial, data = rrHale.df)
+coef(summary(model.HaleBDq))
+cat(" Residual deviance = ", summary(model.HaleBDq)$deviance, " on ",
+    summary(model.HaleBDq)$df.residual, "df", "\n",
+    "Dispersion parameter = ", summary(model.HaleBDq)$dispersion)
         </code>
       </program>
+
+      <console>
+        <output>
+##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)  4.22202    1.99031  2.1213  0.06669
+## distance    -0.29173    0.08780 -3.3228  0.01050
+## pctBlack    -0.01323    0.02612 -0.5064  0.62620
+##  Residual deviance =  307.2  on  8 df 
+##  Dispersion parameter =  44.92
+        </output>
+      </console>
 
       <p>By removing the interaction term and using the overdispersion parameter, we see that distance is significantly associated with support, but percent Black residents is no longer significant after adjusting for distance.</p>
 
@@ -521,6 +640,15 @@ model.HaleBDq &lt;- glm(cbind(YesVotes, NumVotes - YesVotes) ~
 exp(confint(model.HaleBDq))
         </code>
       </program>
+
+      <console>
+        <output>
+             2.5 %   97.5 %
+(Intercept) 1.3609 5006.722
+distance    0.6091    0.871
+pctBlack    0.9366    1.044
+        </output>
+      </console>
 
       <p>While we previously found a 95% confidence interval for the odds ratio associated with distance of (.728, .766), our confidence interval is now much wider: (.609, .871). Appropriately accounting for overdispersion has changed both the significance of certain terms and the precision of our coefficient estimates.</p>
     </subsection>
@@ -717,8 +845,20 @@ risk2009 &lt;- risk2009 %&gt;%
         <code>
 model1 &lt;- glm(lose.wt.01 ~ female, family = binomial,
               data = risk2009)
+coef(summary(model1))
+cat(" Residual deviance = ", summary(model1)$deviance, " on ",
+    summary(model1)$df.residual, "df")
         </code>
       </program>
+
+      <console>
+        <output>
+##             Estimate Std. Error z value  Pr(&gt;|z|)
+## (Intercept)  -0.7522     0.1410  -5.334 9.588e-08
+## female        1.0919     0.1978   5.520 3.382e-08
+##  Residual deviance =  580.3  on  443 df
+        </output>
+      </console>
 
       <p>Our estimated binomial regression model is:
       <me>
@@ -730,8 +870,21 @@ model1 &lt;- glm(lose.wt.01 ~ female, family = binomial,
         <code>
 model2 &lt;- glm(lose.wt.01 ~ female + bmipct,
               family = binomial, data = risk2009)
+coef(summary(model2))
+cat(" Residual deviance = ", summary(model2)$deviance, " on ",
+    summary(model2)$df.residual, "df")
         </code>
       </program>
+
+      <console>
+        <output>
+##             Estimate Std. Error z value  Pr(&gt;|z|)
+## (Intercept) -4.25914    0.44927  -9.480 2.541e-21
+## female       1.86067    0.25896   7.185 6.714e-13
+## bmipct       0.04715    0.00524   8.997 2.313e-19
+##  Residual deviance =  463  on  442 df
+        </output>
+      </console>
 
       <p>We see that there is statistically significant evidence (<m>Z=8.997, p\lt.001</m>) that BMI is positively associated with the odds of trying to lose weight, after controlling for sex. Clearly BMI percentile belongs in the model with sex.</p>
 
@@ -749,8 +902,22 @@ model2 &lt;- glm(lose.wt.01 ~ female + bmipct,
         <code>
 model3 &lt;- glm(lose.wt.01 ~ female + bmipct + sport,
               family = binomial, data = risk2009)
+coef(summary(model3))
+cat(" Residual deviance = ", summary(model3)$deviance, " on ",
+    summary(model3)$df.residual, "df")
         </code>
       </program>
+
+      <console>
+        <output>
+##             Estimate Std. Error z value  Pr(&gt;|z|)
+## (Intercept) -4.17138   0.468463 -8.9044 5.367e-19
+## female       1.84951   0.259514  7.1268 1.027e-12
+## bmipct       0.04728   0.005251  9.0032 2.193e-19
+## sportSports -0.14767   0.235101 -0.6281 5.299e-01
+##  Residual deviance =  462.6  on  441 df
+        </output>
+      </console>
 
       <program language="r" xml:id="code-ch6-model3int">
         <code>
@@ -768,8 +935,22 @@ model3int &lt;- glm(lose.wt.01 ~ female + bmipct + sport +
         <code>
 model4 &lt;- glm(lose.wt.01 ~ female + bmipct + media,
               family = binomial, data = risk2009)
+coef(summary(model4))
+cat(" Residual deviance = ", summary(model4)$deviance, " on ",
+    summary(model4)$df.residual, "df")
         </code>
       </program>
+
+      <console>
+        <output>
+##             Estimate Std. Error z value  Pr(&gt;|z|)
+## (Intercept) -4.08892   0.462947  -8.832 1.025e-18
+## female       1.84776   0.259636   7.117 1.105e-12
+## bmipct       0.04783   0.005287   9.046 1.485e-19
+## media       -0.09938   0.072464  -1.371 1.702e-01
+##  Residual deviance =  461.1  on  441 df
+        </output>
+      </console>
 
       <p>Media is not a statistically significant term (<m>Z=-1.371</m>, <m>p=0.170</m>). However, because our interest centers on how media may affect attempts to lose weight and how its effect might be different for females and males, we fit a model with a media term and a sex by media interaction term (not shown). Neither term was statistically significant, so we have no support in our data that media exposure as measured by hours spent watching TV is associated with the odds a teen is trying to lose weight after accounting for sex and BMI.</p>
     </subsection>
@@ -781,8 +962,19 @@ model4 &lt;- glm(lose.wt.01 ~ female + bmipct + media,
         <code>
 drop_in_dev &lt;- anova(model1, model2, model3, model4,
                      test="Chisq")
+drop_in_dev
         </code>
       </program>
+
+      <console>
+        <output>
+  ResidDF ResidDev Deviance Df      pval     df   AIC
+1     443    580.3       NA NA        NA  model1 584.3
+2     442    463.0 117.3301  1 2.431e-27  model2 469.0
+3     441    462.6   0.3947  1 5.298e-01  model3 470.6
+4     441    461.1   1.5007  0        NA  model4 469.1
+        </output>
+      </console>
 
       <p>Comparing models using differences in deviances requires that the models be <term>nested</term>, meaning each smaller model is a simplified version of the larger model. In our case, Models 1, 2, and 4 are nested, as are Models 1, 2, and 3, but Models 3 and 4 cannot be compared using a drop-in-deviance test.</p>
 
