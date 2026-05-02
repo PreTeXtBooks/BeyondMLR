@@ -36,12 +36,7 @@ jobs:
         run: |
           pip install pretext
           
-      - name: Install ImageMagick for image conversion
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y imagemagick
-      
-      - name: Copy and convert images for PreTeXt
+      - name: Copy and prepare images for PreTeXt
         run: |
           python3 copy_images.py
           

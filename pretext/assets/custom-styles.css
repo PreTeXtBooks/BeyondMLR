@@ -77,3 +77,60 @@ pre,
   --link-text-color: #C1FDE8;
   --link-active-text-color: #7DB1B8;
 }
+
+/* ---------------------------------------------------------------
+   R code toggle button
+   --------------------------------------------------------------- */
+
+.r-code-toggle-wrapper {
+  margin: 0.5rem 0;
+}
+
+.r-code-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.25em 0.75em;
+  margin-bottom: 0.35rem;
+  font-size: 0.82rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  color: var(--brand-slate);
+  background: transparent;
+  border: 1px solid var(--brand-slate);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  line-height: 1.4;
+}
+
+.r-code-toggle-btn::before {
+  content: "{ }";
+  font-family: var(--font-monospace);
+  font-size: 0.9em;
+  opacity: 0.7;
+}
+
+.r-code-toggle-btn:hover,
+.r-code-toggle-btn:focus-visible {
+  background: var(--brand-slate);
+  color: #fff;
+  outline: none;
+}
+
+.r-code-toggle-btn[aria-expanded="true"] {
+  background: var(--brand-slate);
+  color: #fff;
+}
+
+:root.dark-mode .r-code-toggle-btn {
+  color: var(--brand-mint);
+  border-color: var(--brand-mint);
+}
+
+:root.dark-mode .r-code-toggle-btn:hover,
+:root.dark-mode .r-code-toggle-btn:focus-visible,
+:root.dark-mode .r-code-toggle-btn[aria-expanded="true"] {
+  background: var(--brand-teal);
+  color: #fff;
+}

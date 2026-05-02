@@ -5,8 +5,12 @@
 # don't track unpublished builds
 output
 
-# don't track assets generated from source
+# don't track PreTeXt auto-generated assets (Asymptote, Sage, etc.)
 generated-assets
+
+# don't track images copied/prepared by copy_images.py at build time
+assets/generated-assets
+assets/data
 
 # don't track node packages
 node_modules
