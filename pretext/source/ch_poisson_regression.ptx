@@ -717,19 +717,19 @@ cat(" Residual deviance = ", summary(modelinb)$deviance, " on ",
     <title>Case Study: Weekend Drinking</title>
 
     <introduction>
-      <p>Sometimes when analyzing Poisson data, there are many more zeros than expected for a Poisson random variable. An informal survey of students in an introductory statistics course included the question, <q>How many alcoholic drinks did you consume last weekend?</q> This survey was conducted on a dry campus where no alcohol is officially allowed, so some respondents never drink. These non-drinkers would always report zero drinks. However, there are also students who are drinkers reporting zero drinks because they simply did not happen to drink the past weekend. Our zeros are a <term>mixture</term> of responses from non-drinkers and drinkers who abstained. Ideally, we would like to sort out non-drinkers from drinkers when performing our analysis.</p>
+      <p>Sometimes when analyzing Poisson data, you may see many more zeros in your data set than you would expect for a Poisson random variable. For example, an informal survey of students in an introductory statistics course included the question, <q>How many alcoholic drinks did you consume last weekend?</q>  This survey was conducted on a dry campus where no alcohol is officially allowed, even among students of drinking age, so we expect that some portion of the respondents never drink. The non-drinkers would thus always report zero drinks. However, there will also be students who are drinkers reporting zero drinks because they just did not happen to drink during the past weekend. Our zeros, then, are a <term>mixture</term> of responses from non-drinkers and drinkers who abstained during the past weekend. Ideally, we'd like to sort out the non-drinkers and drinkers when performing our analysis.</p>
     </introduction>
 
     <subsection xml:id="sec-drinking-rq">
       <title>Research Question</title>
 
-      <p>The purpose of this survey is to explore factors related to drinking behavior on a dry campus. What proportion of students on this dry campus never drink? What factors, such as off-campus living and sex, are related to whether students drink? Among those who do drink, to what extent is moving off campus associated with the number of drinks in a weekend? These questions would be simple to answer if we knew who was and was not a drinker in our sample. Unfortunately, the non-drinkers did not identify themselves as such, so we need a model that allows us to estimate the proportion of drinkers and non-drinkers.</p>
+      <p>The purpose of this survey is to explore factors related to drinking behavior on a dry campus. What proportion of students on this dry campus never drink? What factors, such as off-campus living and sex, are related to whether students drink? Among those who do drink, to what extent is moving off campus associated with the number of drinks in a weekend? It is commonly assumed that males' alcohol consumption is greater than females'; is this true on this campus? Answering these questions would be a simple matter if we knew who was and was not a drinker in our sample. Unfortunately, the non-drinkers did not identify themselves as such, so we will need to use the data available with a model that allows us to estimate the proportion of drinkers and non-drinkers.</p>
     </subsection>
 
     <subsection xml:id="sec-drinking-dataorg">
       <title>Data Organization</title>
 
-      <p>Each line of <c>weekendDrinks.csv</c> contains data from a student in an introductory statistics course. The response is <c>drinks</c>, the number of alcoholic drinks consumed the previous weekend. Predictors include whether the student lives <c>off.campus</c>, <c>sex</c>, and whether the student is likely a <c>firstYear</c> student based on dorm assignment:</p>
+      <p>Each line of <c>weekendDrinks.csv</c> contains data provided by a student in an introductory statistics course. In this analysis, the response of interest is the respondent's report of the number of alcoholic <c>drinks</c> they consumed the previous weekend, whether the student lives <c>off.campus</c>, and <c>sex</c>. We will also consider whether a student is likely a <c>firstYear</c> student based on the <c>dorm</c> they live in.  Here is a sample of observations from this data set:</p>
 
       <program language="r" xml:id="code-ch4-drinking-load">
         <code>
@@ -746,7 +746,14 @@ head(zip.data)
     <subsection xml:id="sec-drinking-eda">
       <title>Exploratory Data Analysis</title>
 
-      <p>About 47% of the 77 respondents reported zero drinks last weekend. A Poisson distribution with the observed mean of 2.08 drinks would predict only about 12% zeros. This dramatic excess of zeros motivates a zero-inflated model.</p>
+      <p>As always we take stock of the amount of data; here there are 77 observations. Large sample sizes are preferred for the type of model we will consider, and n=77 is on the small side. We proceed with that in mind.</p>
+
+      <p>A premise of this analysis is that we believe that those responding zero drinks are coming from a mixture of non-drinkers and drinkers who abstained the weekend of the survey.</p>
+
+      <p><ul>
+        <li><p><em>Non-drinkers</em>: respondents who never drink and would always reply with zero.</p></li>
+        <li><p><em>Drinkers</em>: obviously this includes those responding with one or more drinks, but it also includes people who are drinkers but did not happen to imbibe the past weekend. These people reply zero but are not considered non-drinkers.</p></li>
+      </ul></p>
 
       <figure xml:id="fig-obsVmodel">
         <caption>Observed proportions of weekend drink counts (left) vs. proportions predicted by a Poisson model with mean 2.08 (right). The observed data have far more zeros than the Poisson model predicts.</caption>
@@ -754,28 +761,46 @@ head(zip.data)
           <description>Two bar charts comparing observed frequencies of weekend drinks to Poisson model predictions, showing excess zeros in the observed data.</description>
         </image>
       </figure>
+
+      <p>Beginning the EDA with the response, number of drinks, we find that over 46% of the students reported no drinks during the past weekend. Figure <xref ref="fig-obsVmodel"/>a portrays the observed number of drinks reported by the students. The mean number of drinks reported the past weekend is 2.013. Our sample consists of 74% females and 26% males, only 9% of whom live off campus.</p>
+
+      <p>Because our response is a count, it is natural to consider a Poisson regression model. You may recall that a Poisson distribution has only one parameter, <m>\lambda</m>, for its mean and variance. Here we will include an additional parameter, <m>\alpha</m>. We define <m>\alpha</m> to be the true proportion of <em>non-drinkers</em> in the population.</p>
+
+      <p>The next step in the EDA is especially helpful if you suspect your data contains excess zeros.  Figure <xref ref="fig-obsVmodel"/>b is what we might expect to see under a Poisson model. Bars represent the probabilities for a Poisson distribution (using the Poisson probability formula) with <m>\lambda</m> equal to the mean observed number of drinks, 2.013 drinks per weekend. Comparing this Poisson distribution to what we observed (Figure <xref ref="fig-obsVmodel"/>a), it is clear that many more zeros have been reported by the students than you would expect to see if the survey observations were coming from a Poisson distribution. This doesn't surprise us because we had expected a subset of the survey respondents to be non-drinkers; i.e., they would not be included in this Poisson process. This circumstance actually arises in many Poisson regression settings. We will define <m>\lambda</m> to be the mean number of drinks <em>among those who drink</em>, and <m>\alpha</m> to be the proportion of <em>non-drinkers</em> (<q>true zeros</q>).  Then, we will attempt to model <m>\lambda</m> and <m>\alpha</m> (or functions of <m>\lambda</m> and <m>\alpha</m>) simultaneously using covariates like sex, first-year status, and off-campus residence.  This type of model is referred to as a <term>zero-inflated Poisson model</term> or <term>ZIP model</term>. <idx>zero-inflated Poisson</idx></p>
+    </subsection>
+
+    <subsection xml:id="sec-drinking-modeling">
+      <title>Modeling</title>
+
+      <p>We first fit a simple Poisson model with the covariates <c>off.campus</c> and <c>sex</c>.</p>
+
+      <p>Both covariates are statistically significant, but a goodness-of-fit test reveals that there remains significant lack-of-fit (residual deviance: 230.54 with only 74 df; p&lt;.001 based on <m>\chi^2</m> test with 74 df). In the absence of important missing covariates or extreme observations, this lack-of-fit may be explained by the presence of a group of non-drinkers.</p>
+
+      <p>A zero-inflated Poisson regression model to take non-drinkers into account consists of two parts:</p>
+
+      <p><ul>
+        <li><p>One part  models the association, among drinkers, between number of drinks and the predictors of sex and off-campus residence.</p></li>
+        <li><p>The other part uses a predictor for first-year status to obtain an estimate of the proportion of non-drinkers based on the reported zeros.</p></li>
+      </ul></p>
+
+      <p>The form for each part of the model follows. The first part looks like an ordinary Poisson regression model:
+      <me>
+        \log(\lambda) = \beta_0 + \beta_1\textrm{off.campus} + \beta_2\textrm{sex}
+      </me>
+      where <m>\lambda</m> is the mean number of drinks in a weekend <em>among those who drink</em>.
+      The second part has the form
+      <me>
+        \textrm{logit}(\alpha) = \beta_0 + \beta_1\textrm{firstYear}
+      </me>
+      where <m>\alpha</m> is the probability of being in the non-drinkers group and <m>\textrm{logit}(\alpha) = \log(\alpha/(1-\alpha))</m>.  We'll provide more detail on the logit in <xref ref="ch-logreg"/>. There are many ways in which to structure this model; here we use different predictors in the two pieces, although it would have been perfectly fine to use the same predictors for both pieces, or even no predictors for one of the pieces.</p>
     </subsection>
 
     <subsection xml:id="sec-zip-model">
-      <title>Zero-Inflated Poisson Model</title>
+      <title>Fitting a ZIP Model</title>
 
-      <p>A <term>zero-inflated Poisson (ZIP)</term> <idx>zero-inflated Poisson (ZIP)</idx> model assumes that zeros arise from two sources: (1) structural zeros from true non-drinkers who would always report zero, and (2) sampling zeros from drinkers who happened to abstain during the past weekend. The model has two components:</p>
+      <p>How is it possible to fit such a model? We cannot observe whether a respondent is a drinker or not (which probably would've been good to ask). The ZIP model is a special case of a more general type of statistical model referred to as a <term>latent variable model</term>. More specifically, it is a type of a <term>mixture model</term> <idx>mixture model</idx> where observations for one or more groups occur together and the group membership is unknown.  Zero-inflated models are a particularly common example of a mixture model, but the response does not need to follow a Poisson distribution.  Likelihood methods are at the core of this methodology, but fitting is an iterative process where it is necessary to start out with some guesses (or starting values).  In general, it is important to know that models like ZIP exist, although we'll only explore interpretations and fitting options for a single case study here.</p>
 
-      <p><ul>
-        <li><p>A <em>binary</em> component to classify students as non-drinkers (structural zeros) or potential drinkers, using logistic regression with predictors like <c>firstYear</c>.</p></li>
-        <li><p>A <em>Poisson count</em> component to model the number of drinks among potential drinkers, using predictors like <c>off.campus</c> and <c>sex</c>.</p></li>
-      </ul></p>
-
-      <p>Let <m>\alpha</m> denote the probability that a student is a non-drinker (structural zero). Then:
-      <me>
-        P(Y = 0) = \alpha + (1 - \alpha) e^{-\lambda}
-      </me>
-      <me>
-        P(Y = y) = (1 - \alpha) \frac{e^{-\lambda} \lambda^y}{y!} \quad \text{for } y = 1, 2, 3, \ldots
-      </me>
-      </p>
-
-      <p>We first fit an ordinary Poisson model, then a ZIP model:</p>
+      <p>Here is the general idea of how ZIP models are fit.  Imagine that the graph of the Poisson distribution in Figure <xref ref="fig-obsVmodel"/>b is removed from the observed data distribution in Figure <xref ref="fig-obsVmodel"/>a. Some zero responses will remain. These would correspond to non-drinkers, and the proportion of all observations these zeros constitute might make a reasonable estimate for <m>\alpha</m>, the proportion of non-drinkers. The likelihood is used and some iterating in the fitting process is involved  because the Poisson distribution in Figure <xref ref="fig-obsVmodel"/>b is based on the mean of the observed data, which means it is the average among all students, not only among drinkers. Furthermore, the likelihood incorporates the predictors, <c>sex</c> and <c>off.campus</c>. So there is a little more to it than computing the proportion of zeros, but this heuristic should provide you a general idea of how these kinds of models are fit. We will use the R function <c>zeroinfl</c> from the package <c>pscl</c> to fit a ZIP model.</p>
 
       <program language="r" xml:id="code-ch4-zip-fit">
         <code>
@@ -790,39 +815,46 @@ summary(zip.m2)
         </code>
       </program>
 
-      <p>The ZIP model output contains two sets of coefficients: count model coefficients (Poisson part) and zero-inflation model coefficients (binary part). We exponentiate coefficients for ease of interpretation:</p>
+      <p>Our model uses <c>firstYear</c> to distinguish drinkers and non-drinkers (<q>Zero-inflation model coefficients</q>) and <c>off.campus</c> and <c>sex</c> to help explain the differences in the number of drinks among drinkers (<q>Count model coefficients</q>).  Again, we could have used the same covariates for the two pieces of a ZIP model, but neither <c>off.campus</c> nor <c>sex</c> proved to be a useful predictor of drinkers vs. non-drinkers after we accounted for first-year status.</p>
 
       <program language="r" xml:id="code-ch4-zip-coef">
         <code>
-exp(coef(zip.m2))
+exp(coef(zip.m2))   # exponentiated coefficients
         </code>
       </program>
 
-      <p>Considering the <q>Count model coefficients,</q> which provide information on how the sex and off-campus status of a drinker relate to the number of drinks: for those who drink, the average number of drinks for males is <m>e^{1.0209} = 2.76</m> times the number for females (<m>Z = 5.827</m>, p &lt; 0.001), given that both students live in comparable settings. Among drinkers, the mean number of drinks for students living off campus is <m>e^{0.4159} = 1.52</m> times that of students living on campus for those of the same sex (<m>Z = 2.021</m>, p = 0.0433).</p>
+      <p>We'll first consider the <q>Count model coefficients,</q> which provide information on how the sex and off-campus status of a student who is a drinker are related to the number of drinks reported by that student over a weekend. As we have done with previous Poisson regression models, we exponentiate each coefficient for ease of interpretation. Thus, for those who drink, the average number of drinks for males is <m>e^{1.0209}</m> or 2.76 times the number for females (<m>Z = 5.827</m>, p &lt; 0.001) given that you are comparing people who live in comparable settings, i.e., either both on or both off campus. Among drinkers, the mean number of drinks for students living off campus is <m>e^{0.4159}=1.52</m> times that of students living on campus for those of the same sex (<m>Z = 2.021</m>, p = 0.0433).</p>
 
-      <p>The <q>Zero-inflation model coefficients</q> refer to separating drinkers from non-drinkers. An important consideration is whether a student is a first-year student. We have
+      <p>The <q>Zero-inflation model coefficients</q> refer to separating drinkers from non-drinkers. An important consideration in separating drinkers from non-drinkers may be whether this is their first year, where <c>firstYear</c> is a 0/1 indicator variable.</p>
+
+      <p>We have
       <me>
-        \log\!\left(\frac{\alpha}{1-\alpha}\right) = -0.6036 + 1.1364 \cdot \textrm{firstYear}.
+        \log(\alpha/(1-\alpha)) = -0.6036 + 1.1364\textrm{firstYear}
       </me>
       </p>
 
-      <p>Exponentiating the coefficient for the first-year term yields 3.12. This is interpreted as: the odds (<m>\alpha/(1-\alpha)</m>) that a first-year student is a non-drinker are 3.12 times the odds that an upper-class student is a non-drinker. Solving for <m>\alpha</m>, we get
+      <p>However, we are interested in <m>\alpha</m>, the proportion of non-drinkers. Exponentiating the coefficient for the first-year term for this model yields 3.12. Here it is interpreted as the odds (<m>\frac{\alpha}{1-\alpha}</m>) that a first-year student is a non-drinker is 3.12 times the odds that an upper-class student is a non-drinker. Furthermore, with a little algebra (solving the equation with <m>\log(\alpha/(1-\alpha))</m> for <m>\alpha</m>),
+      we have
       <me>
-        \hat{\alpha} = \frac{e^{-0.6036 + 1.1364\,(\textrm{firstYear})}}{1 + e^{-0.6036 + 1.1364\,(\textrm{firstYear})}}.
+        \hat{\alpha} =
+        \frac{e^{-0.6036+1.1364(\textrm{firstYear})}}
+        {1+e^{-0.6036+1.1364(\textrm{firstYear})}}.
       </me>
       </p>
 
-      <p>The estimated probability that a first-year student is a non-drinker is
+      <p>The estimated chance that a first-year student is a non-drinker is
       <me>
-        \frac{e^{0.533}}{1 + e^{0.533}} = 0.630,
+        \frac{e^{0.533}}{1+e^{0.533}} = 0.630
       </me>
-      or 63.0%, while for non-first-year students, the estimated probability of being a non-drinker is 0.354. This transformation (logistic) is the same one used to estimate probabilities in logistic regression, which we discuss in <xref ref="ch-logreg"/>.</p>
+      or 63.0%, while for non-first-year students, the estimated probability of being a non-drinker is 0.354.  If you have seen logistic regression, you'll recognize that this transformation is what is used to estimate a probability. More on this in <xref ref="ch-logreg"/>.</p>
     </subsection>
 
     <subsection xml:id="sec-vuong-test">
       <title>The Vuong Test (optional)</title>
 
-      <p>Moving from ordinary Poisson to zero-inflated Poisson has helped us address additional research questions. While a ZIP model seems more faithful to the nature and structure of this data, can we quantitatively show that a ZIP is better than an ordinary Poisson model? We cannot use the drop-in-deviance test because these two models are not nested. <cite ref="Vuong1989"/> devised a test to compare predicted probabilities of <term>non-nested</term> models. Essentially, the <term>Vuong test</term> <idx>Vuong test</idx> can compare a zero-inflated model and an ordinary regression model.</p>
+      <p>Moving from ordinary Poisson to zero-inflated Poisson has helped us address additional research questions: What proportion of students are non-drinkers, and what factors are associated with whether or not a student is a non-drinker?  While a ZIP model seems more faithful to the nature and structure of this data, can we quantitatively show that a zero-inflated Poisson is better than an ordinary Poisson model?</p>
+
+      <p>We cannot use the drop-in-deviance test we discussed earlier because these two models are not nested within one another. <cite ref="Vuong1989"/> devised a test to make this comparison for the special case of comparing a zero-inflated model and ordinary regression model. Essentially, the <term>Vuong Test</term> <idx>Vuong test</idx> is able to compare predicted probabilities of <term>non-nested</term> models.</p>
 
       <program language="r" xml:id="code-ch4-vuong">
         <code>
@@ -830,13 +862,13 @@ vuong(pois.m1, zip.m2)
         </code>
       </program>
 
-      <p>The Vuong test compares Model 1 (ordinary Poisson) to Model 2 (ZIP). If the two models do not differ, the test statistic is asymptotically standard Normal with a large p-value. Here the test indicates that the zero-inflation model is better (<m>Z = -2.69</m>, p = .0036). Note that the test depends on sufficiently large <m>n</m> for the Normal approximation, so since our sample size (n = 77) is somewhat small, we interpret this result with caution.</p>
+      <p>Here, we have structured the Vuong Test to compare Model 1: Ordinary Poisson Model to Model 2: Zero-inflation Model. If the two models do not differ, the test statistic for Vuong would be asymptotically standard Normal and the p-value would be relatively large. Here the first line of the output table indicates that the zero-inflation model is better (<m>Z=-2.69</m>, p=.0036). Note that the test depends upon sufficiently large n for the Normal approximation, so since our sample size (n=77) is somewhat small, we need to interpret this result with caution. More research is underway to address statistical issues related to these comparisons.</p>
     </subsection>
 
     <subsection xml:id="sec-drinking-residuals">
       <title>Residual Plot</title>
 
-      <p>Fitted values (<m>\hat{y}</m>) and residuals (<m>y - \hat{y}</m>) can be computed for zero-inflation models and plotted. Figure <xref ref="fig-poisRes"/> reveals that one observation appears to be extreme (<m>Y = 22</m> drinks during the past weekend). It might be worthwhile to get a sense of how influential this extreme observation is by removing <m>Y = 22</m> and refitting the model.</p>
+      <p>Fitted values (<m>\hat{y}</m>) and residuals (<m>y-\hat{y}</m>) can be computed for zero-inflation models and plotted. Figure <xref ref="fig-poisRes"/> reveals that one observation appears to be extreme (Y=22 drinks during the past weekend). Is this a legitimate observation or was there a transcribing error? Without the original respondents, we cannot settle this question. It might be worthwhile to get a sense of how influential this extreme observation is by removing Y=22 and refitting the model.</p>
 
       <figure xml:id="fig-poisRes">
         <caption>Residuals by fitted counts for ZIP model. One observation (<m>Y=22</m>) appears extreme.</caption>
@@ -861,9 +893,13 @@ ggplot(res.df, aes(x = fit, y = resid)) +
     <subsection xml:id="sec-drinking-limitations">
       <title>Limitations</title>
 
-      <p>The weekend drinking survey question should raise several red flags. What time period constitutes the <q>weekend</q>? Some students may think of only Saturday night, while others include Friday night or Sunday evening. What constitutes a drink---a bottle of beer? How many drinks will a respondent report for a bottle of wine? Precise definitions would vastly improve data quality. There is also an issue related to confidentiality: if the data are collected in class, will the teacher be able to identify the respondent? Will respondents worry that a particular response will affect their grade or lead to repercussions on a dry campus?</p>
+      <p>Given that you have progressed this far in your statistical education, the weekend drinking survey question should raise some red flags. What time period constitutes the <q>weekend</q>?  Will some students be thinking of only Saturday night, while others include Friday night or possibly Sunday evening? What constitutes a drink---a bottle of beer? How many drinks will a respondent report for a bottle of wine? Precise definitions would vastly improve the quality of this data.  There is also an issue related to confidentiality.  If the data is collected in class, will the teacher be able to identify the respondent? Will respondents worry that a particular response will affect their grade in the class or lead to repercussions on a dry campus?</p>
 
-      <p>In addition, there are concerns about whether this data represents a random sample of any population (it does not), and the sample size (n = 77) is not impressively large for ZIP models. ZIP models are becoming increasingly common---they demonstrate that modeling can be flexible and creative, a theme throughout this book.</p>
+      <p>In addition to these concerns, there are a number of other limitations that should be noted. Following the concern of whether this data represents a random sample of any population (it doesn't), we also must be concerned with the size of this data set. ZIP models are not appropriate for small samples and this data set is not impressively large.</p>
+
+      <p>At times, a mixture of zeros occurs naturally. It may not come about because of neglecting to ask a critical question on a survey, but the information about the subpopulation may simply not be ascertainable. For example, visitors from a state park were asked as they departed how many fish they caught, but those who report 0 could be either non-fishers or fishers who had bad luck. These kinds of circumstances occur often enough that ZIP models are becoming increasingly common.</p>
+
+      <p>Actually, applications which extend beyond ordinary Poisson regression applications---ZIPs and other Poisson modeling approaches such as hurdle models and quasi-Poisson applications---are becoming increasingly common. So it is worth taking a look at these variations of Poisson regression models. Here we have only skimmed the surface of zero-inflated models, but we want you to be aware of models of this type. ZIP models demonstrate that modeling can be flexible and creative---a theme we hope you will see throughout this book.</p>
     </subsection>
   </section>
 
