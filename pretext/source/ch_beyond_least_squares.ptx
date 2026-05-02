@@ -782,7 +782,7 @@ optimize(oLik.f, interval=c(0,1), maximum=TRUE)
         <m>\hat{p}_{B|\textrm{B Bias}}</m> is slightly greater than 0.53, providing light support
         for the <q>sex runs in families</q> theory when it comes to boys. What about girls? Do
         families with more girls than boys tend to have a greater probability of having a girl? We
-        found that the MLE for the probability of a girl in a girl-biased setting is 1-0.89=0.11.
+        found that the MLE for the probability of a girl in a girl-biased setting is 1-0.89=0.11.<fn>Note: A nice property of MLEs is demonstrated here. We have the MLE for <m>p_{B|\textrm{G Bias}}</m>, and we want the MLE of <m>p_{G|\textrm{G Bias}}=1-p_{B|\textrm{G Bias}}</m>. We can get it by replacing <m>p_{B|\textrm{G Bias}}</m> with its MLE; i.e., <m>\hat{p}_{G|\textrm{G Bias}}=1-\hat{p}_{B|\textrm{G Bias}}</m>. In mathematical terms, you can get the MLE of a function by applying the function to the original MLE.</fn>
         This data does not provide evidence that girls run in families since
         <m>\hat{p}_{G|G_{bias}} = 0.11 \lt \hat{p}_{G|N}=0.47</m>; there is a markedly lower
         probability of a girl if the family is already girl biased. This data is, however,
@@ -998,7 +998,7 @@ optimize(oLik.f, interval=c(0,1), maximum=TRUE)
 
       <md>
         <mrow>\mathrm{Lik}(p_{B|N},\ p_{B|\textrm{B Bias}},\ p_{B|\textrm{G Bias}}) \amp=
-          \big[\neutral^{3161}(1-\neutral)^{3119}
+          \big[p_{B|N}^{3161}(1-p_{B|N})^{3119}
         </mrow>
         <mrow number="no">
           \amp{} p_{B|\textrm{B Bias}}^{1131}(1-p_{B|\textrm{B Bias}})^{1164}
