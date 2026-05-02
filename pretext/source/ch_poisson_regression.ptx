@@ -259,22 +259,51 @@ anova(modela, modela2, test = "Chisq")
     <subsection xml:id="likelihood-sec">
       <title>Using Likelihoods to Fit Models</title>
 
-      <p>Poisson regression coefficients are estimated by <term>maximum likelihood</term> <idx>maximum likelihood</idx>. Assuming observations are independent, each with a Poisson distribution, the likelihood for all <m>n</m> observations is
-      <men xml:id="eq-poisLoglik">
-        L(\boldsymbol{\beta}) = \prod_{i=1}^{n} \frac{e^{-\lambda_i} \lambda_i^{y_i}}{y_i!},
-      </men>
-      where <m>\lambda_i = e^{\beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip}}</m>. Taking the log gives the log-likelihood:
-      <men xml:id="eq-poisLoglik2">
-        \ell(\boldsymbol{\beta}) = \sum_{i=1}^{n} \left[ -\lambda_i + y_i \log(\lambda_i) - \log(y_i!) \right].
-      </men>
-      Maximum likelihood estimators <m>\hat{\boldsymbol{\beta}}</m> are found by maximizing <m>\ell(\boldsymbol{\beta})</m> using iteratively reweighted least squares (IRLS).
+      <p>Before continuing with model building, we take a short detour to see how coefficient estimates are determined in a Poisson regression model. The least squares approach requires a linear relationship between the parameter, <m>\lambda_i</m> (the expected or mean response for observation <m>i</m>), and <m>x_i</m> (the age for observation <m>i</m>). However, it is <m>\log(\lambda_i)</m>, not <m>\lambda_i</m>, that is linearly related to X with the Poisson model. The assumptions of equal variance and normality also do not hold for Poisson regression. Thus, the method of least squares will not be helpful for inference in Poisson Regression. Instead of least squares, we employ the <term>likelihood</term> <idx>likelihood</idx> principle to find estimates of our model coefficients. We look for those coefficient estimates for which the likelihood of our data is maximized; these are the <term>maximum likelihood estimates</term>. <idx>maximum likelihood estimate (MLE)</idx></p>
+
+      <p>The likelihood for n <em>independent</em> <idx>independent</idx> observations is the product of the probabilities. For example, if we observe five households with household sizes of 4, 2, 8, 6, and 1 person beyond the head, the likelihood is:
+      <me>
+        Likelihood = P(Y_1=4) \cdot P(Y_2=2) \cdot P(Y_3=8) \cdot P(Y_4=6) \cdot P(Y_5=1)
+      </me>
+      Recall that the probability of a Poisson response can be written
+      <me>
+        P(Y=y)=\frac{e^{-\lambda}\lambda^y}{y!}
+      </me>
+      for <m>y = 0, 1, 2, \ldots</m> So, the likelihood can be written as
+      <md>
+        <mrow>Likelihood \amp = \frac{ e^{-\lambda_1}\lambda_1^4 }{ 4! } \cdot \frac{ e^{-\lambda_2}\lambda_2^2 }{ 2! } \cdot \frac{e^{-\lambda_3}\lambda_3^8}{8!} \cdot \frac{e^{-\lambda_4}\lambda_4^6}{6!} \cdot \frac{e^{-\lambda_5}\lambda_5^1}{1!}</mrow>
+      </md>
+      where each <m>\lambda_i</m> can differ for each household depending on a particular <m>x_i</m>. As in <xref ref="ch-beyondmost"/>, it will be easier to find a maximum if we take the log of the likelihood and ignore the constant term resulting from the sum of the factorials:
+      <mdn>
+        <mrow>-\log L \amp \propto \lambda_{1}-4\log(\lambda_{1})+\lambda_{2}-2\log(\lambda_{2}) \notag</mrow>
+        <mrow>\amp +\lambda_{3}-8\log(\lambda_{3})+\lambda_{4}-6\log(\lambda_{4}) \notag</mrow>
+        <mrow xml:id="eq-poisLoglik">\amp +\lambda_{5}-\log(\lambda_{5})</mrow>
+      </mdn>
       </p>
+
+      <p>Now if we had the age of the head of the household for each house (<m>x_i</m>), we consider the Poisson regression model:
+      <me>
+        \log(\lambda_i)=\beta_0+\beta_1 x_i
+      </me>
+      This implies that <m>\lambda</m> differs for each age and can be determined using
+      <me>
+        \lambda_i=e^{\beta_0+\beta_1 x_i.}
+      </me>
+      If the ages are <m>X=c(32,21,55,44,28)</m> years, our loglikelihood can be written:
+      <mdn>
+        <mrow>\log L \amp \propto [-e^{\beta_0+\beta_1 32}+4({\beta_0+\beta_1 32})]+[-e^{\beta_0+\beta_1 21}+2({\beta_0+\beta_1 21})]+ \notag</mrow>
+        <mrow>\amp [-e^{\beta_0+\beta_1 55}+8({\beta_0+\beta_1 55})]+[-e^{\beta_0+\beta_1 44}+6({\beta_0+\beta_1 44})]+ \notag</mrow>
+        <mrow xml:id="eq-poisLoglik2">\amp [-e^{\beta_0+\beta_1 28}+({\beta_0+\beta_1 28})]</mrow>
+      </mdn>
+      </p>
+
+      <p>To see this, match the terms in <xref ref="eq-poisLoglik"/> with those in <xref ref="eq-poisLoglik2"/>, noting that <m>\lambda_i</m> has been replaced with <m>e^{\beta_0+\beta_1 x_i}</m>. It is <xref ref="eq-poisLoglik2"/> that will be used to estimate the coefficients <m>\beta_0</m> and <m>\beta_1</m>. Although this looks a little more complicated than the loglikelihoods we saw in <xref ref="ch-beyondmost"/>, the fundamental ideas are the same. In theory, we try out different possible values of <m>\beta_0</m> and <m>\beta_1</m> until we find the two for which the loglikelihood is largest. Most statistical software packages have automated search algorithms to find those values for <m>\beta_0</m> and <m>\beta_1</m> that maximize the loglikelihood.</p>
     </subsection>
 
     <subsection xml:id="sec-pois-quadratic">
       <title>Second Order Model</title>
 
-      <p>The quadratic model for the Philippines data includes both a linear and squared age term:</p>
+      <p>In <xref ref="sec-Devtocompare"/>, the Wald-type test and drop-in-deviance test both suggest that a linear term in age is useful. But our exploratory data analysis in <xref ref="exploreHH"/> suggests that a quadratic model might be more appropriate. A quadratic model would allow us to see if there exists an age where the number in the house is, on average, a maximum. The output for a quadratic model appears below.</p>
 
       <program language="r" xml:id="code-ch4-quad-model">
         <code>
@@ -284,13 +313,34 @@ summary(modela2)
         </code>
       </program>
 
-      <p>Both the linear and quadratic terms are highly significant. The positive linear coefficient and negative quadratic coefficient capture the inverted-U shape: mean household size increases with age up to a peak and then decreases. This is consistent with the life-cycle pattern of household formation, childbearing, and children leaving home.</p>
+      <p>We can assess the importance of the quadratic term in two ways. First, the p-value for the Wald-type statistic for age<m>^2</m> is statistically significant (Z = -11.058, p &lt; 0.001). Another approach is to perform a drop-in-deviance test.</p>
+
+      <p><m>H_0</m>: <m>\log(\lambda)=\beta_0+\beta_1 \textrm{age}</m> (reduced model)</p>
+
+      <p><m>H_A</m>: <m>\log(\lambda)=\beta_0+\beta_1 \textrm{age} + \beta_2 \textrm{age}^2</m> (larger model)</p>
+
+      <p>The first order model has a residual deviance of 2337.1 with 1498 df and the second order model, the quadratic model, has a residual deviance of 2200.9 with 1497 df. The drop-in-deviance by adding the quadratic term to the linear model is 2337.1 - 2200.9 = 136.2 which can be compared to a <m>\chi^2</m> distribution with one degree of freedom. The p-value is essentially 0, so the observed drop of 136.2 again provides significant support for including the quadratic term.</p>
+
+      <p>We now have an equation in age which yields the estimated log(mean number in the house).
+      <me>
+        \textrm{log(mean numHouse)} = -0.333 + 0.071 \textrm{age} - 0.00071 \textrm{age}^2
+      </me>
+      </p>
+
+      <p>As shown in the following, with calculus we can determine that the maximum estimated additional number in the house is <m>e^{1.441} = 4.225</m> when the head of the household is 50.04 years old.
+      <md>
+        <mrow>\textrm{log(total)} \amp = -0.333 + 0.071\textrm{age} - 0.00071 \textrm{age}^2</mrow>
+        <mrow>\frac{d}{d\textrm{age}}\textrm{log(total)} \amp = 0 + 0.071 - 0.0014 \textrm{age} = 0</mrow>
+        <mrow>\textrm{age} \amp = 50.04</mrow>
+        <mrow>\textrm{max[log(total)]} \amp = -0.333 + 0.071 \times 50.04 - 0.00071 \times (50.04)^2 = 1.441</mrow>
+      </md>
+      </p>
     </subsection>
 
     <subsection xml:id="sec-pois-addcovariate">
       <title>Adding a Covariate</title>
 
-      <p>We next add region as a covariate, since the EDA showed notable regional variation in household size:</p>
+      <p>We should consider other covariates that may be related to household size. By controlling for important covariates, we can obtain more precise estimates of the relationship between age and household size. In addition, we may discover that the relationship between age and household size may differ by levels of a covariate. One important covariate to consider is location. As described earlier in the case study, there are 5 different regions that are associated with the <c>Location</c> variable: Central Luzon, Metro Manila, Visayas, Davao Region, and Ilocos Region. Assessing the utility of including the covariate <c>Location</c> is, in essence, comparing two nested models; here the quadratic model is compared to the quadratic model plus terms for <c>Location</c>. Results from the fitted model appears below; note that Central Luzon is the reference region that all other regions are compared to.</p>
 
       <program language="r" xml:id="code-ch4-region-model">
         <code>
@@ -300,91 +350,118 @@ summary(modela2L)
         </code>
       </program>
 
-      <p>A drop-in-deviance test comparing the model with and without region strongly favors including region as a covariate. After accounting for region, the quadratic pattern with age remains significant.</p>
+      <p>Our Poisson regression model now looks like:
+      <md>
+        <mrow>\textrm{log(total)} \amp = -0.384 + 0.070 \cdot \textrm{age} - 0.00070 \cdot \textrm{age}^2 +0.061 \cdot \textrm{IlocosRegion} +</mrow>
+        <mrow>\amp 0.054 \cdot\textrm{MetroManila} +0.112 \cdot\textrm{Visayas} - 0.019 \cdot \textrm{DavaoRegion}</mrow>
+      </md>
+      Notice that because there are 5 different locations, we must represent the effects of different locations through 4 indicator variables. For example, <m>\hat{\beta}_6=-0.0194</m> indicates that, after controlling for the age of the head of household, the log mean household size is 0.0194 lower for households in the Davao Region than for households in the reference location of Central Luzon. In more interpretable terms, mean household size is <m>e^{-0.0194}=0.98</m> times &#x201C;higher&#x201D; (i.e., 2% lower) in the Davao Region than in Central Luzon, when holding age constant.</p>
+
+      <p>To test if the mean household size significantly differs by location, we must use a drop-in-deviance test, rather than a Wald-type test, because four terms (instead of just one) are added when including the <c>location</c> variable. From the Analysis of Deviance table above, adding the four terms corresponding to location to the quadratic model with age produces a statistically significant improvement (<m>\chi^2=13.144</m>, df = 4, <m>p=0.0106</m>), so there is significant evidence that mean household size differs by location, after controlling for age of the head of household. Further modeling (not shown) shows that after controlling for location and age of the head of household, mean household size did not differ between the two types of roofing material.</p>
     </subsection>
 
     <subsection xml:id="sec-PoisResid">
       <title>Residuals for Poisson Models</title>
 
-      <p>Two types of residuals are commonly used for Poisson models. The <term>response residuals</term> (also called <term>raw residuals</term>) are the differences between observed and fitted counts:
-      <men xml:id="eq-OLSresid">
-        e_i = y_i - \hat{\lambda}_i.
-      </men>
-      The <term>Pearson residuals</term> standardize the raw residuals by dividing by the estimated standard deviation <m>\sqrt{\hat{\lambda}_i}</m>:
-      <me>
-        r_i = \frac{y_i - \hat{\lambda}_i}{\sqrt{\hat{\lambda}_i}}.
-      </me>
-      Large absolute values of Pearson residuals indicate observations that are poorly fit by the model.</p>
+      <p>Residual plots may provide some insight into Poisson regression models, especially linearity and outliers, although the plots are not quite as useful here as they are for linear least squares regression. There are a few options for computing residuals and predicted values. Residuals may have the form of residuals for LLSR models or the form of deviance residuals which, when squared, sum to the total deviance for the model. Predicted values can be estimates of the counts, <m>e^{\beta_0+\beta_1X}</m>, or log counts, <m>\beta_0+\beta_1X</m>. We will typically use the deviance residuals and predicted counts.</p>
 
-      <p>Figure <xref ref="fig-resid1"/> shows Pearson residuals plotted against fitted values from the quadratic model with region. The residuals appear roughly symmetric around zero with no strong trend, though some observations are far from zero.</p>
+      <p>The residuals for linear least squares regression have the form:
+      <mdn>
+        <mrow>\textrm{LLSR residual}_i \amp = \textrm{obs}_i - \textrm{fit}_i \notag</mrow>
+        <mrow>\amp = Y_i-\hat{\mu}_i \notag</mrow>
+        <mrow xml:id="eq-OLSresid">\amp = Y_i-(\hat{\beta}_0 +\hat{\beta}_1 X_i)</mrow>
+      </mdn>
+      Residual sum of squares (RSS) are formed by squaring and adding these residuals, and we generally seek to minimize RSS in model building. We have several options for creating residuals for Poisson regression models. One is to create residuals in much the same way as we do in LLSR. For Poisson residuals, the predicted values are denoted by <m>\hat{\lambda}_i</m> (in place of <m>\hat{\mu}_i</m> in <xref ref="eq-OLSresid"/>); they are then standardized by dividing by the standard error, <m>\sqrt{\hat{\lambda}_i}</m>. These kinds of residuals are referred to as <term>Pearson residuals</term>. <idx>Pearson residuals</idx>
+      <me>
+        \textrm{Pearson residual}_i = \frac{Y_i-\hat{\lambda}_i}{\sqrt{\hat{\lambda}_i}}
+      </me>
+      </p>
+
+      <p>Pearson residuals have the advantage that you are probably familiar with their meaning and the kinds of values you would expect. For example, after standardizing we expect most Pearson residuals to fall between -2 and 2. However, <term>deviance residuals</term> <idx>deviance residuals</idx> have some useful properties that make them a better choice for Poisson regression.</p>
+
+      <p>First, we define a <term>deviance residual</term> for an observation from a Poisson regression:
+      <me>
+        \textrm{deviance residual}_i = \textrm{sign}(Y_i-\hat{\lambda}_i)
+        \sqrt{
+        2 \left[Y_i \log\left(\frac{Y_i}{\hat{\lambda}_i}\right)
+        -(Y_i - \hat{\lambda}_i) \right]}
+      </me>
+      where <m>\textrm{sign}(x)</m> is defined such that:
+      <me>
+        \textrm{sign}(x) = \begin{cases} 1 \amp \textrm{if }\ x > 0 \\
+                                         -1 \amp \textrm{if }\ x &lt; 0  \\
+                                         0  \amp \textrm{if }\ x = 0\end{cases}
+      </me>
+      </p>
+
+      <p>As its name implies, a deviance residual describes how the observed data deviates from the fitted model. Squaring and summing the deviances for all observations produces the <term>residual deviance</term> <m>=\sum (\textrm{deviance residual})^2_i</m>. <idx>residual deviance</idx> Relatively speaking, observations for good fitting models will have small deviances; that is, the predicted values will deviate little from the observed. However, you can see that the deviance for an observation does not easily translate to a difference in observed and predicted responses as is the case with LLSR models.</p>
+
+      <p>A careful inspection of the deviance formula reveals several places where the deviance compares <m>Y</m> to <m>\hat{\lambda}</m>: the sign of the deviance is based on the difference between <m>Y</m> and <m>\hat{\lambda}</m>, and under the radical sign we see the ratio <m>Y/\hat{\lambda}</m> and the difference <m>Y -\hat{\lambda}</m>. When <m>Y = \hat{\lambda}</m>, that is, when the model fits perfectly, the difference will be 0 and the ratio will be 1 (so that its log will be 0). So like the residuals in LLSR, an observation that fits perfectly will not contribute to the sum of the squared deviances. This definition of a deviance depends on the likelihood for Poisson models. Other models will have different forms for the deviance depending on their likelihood.</p>
 
       <figure xml:id="fig-resid1">
-        <caption>Pearson residuals vs. fitted values for the Philippines household size Poisson regression model with quadratic age and region.</caption>
+        <caption>Residual plot for the Poisson model of household size by age of the household head.</caption>
         <image source="generated-assets/fig-resid1.png" width="60%">
-          <description>Scatterplot of Pearson residuals versus fitted values from the Poisson regression model for Philippines household sizes.</description>
+          <description>Scatterplot of deviance residuals versus fitted values from the Poisson regression model for Philippines household sizes, showing curvature in the residuals.</description>
         </image>
       </figure>
+
+      <p>A plot (<xref ref="fig-resid1"/>) of the deviance residuals versus predicted responses for the first order model exhibits curvature, supporting the idea that the model may improved by adding a quadratic term. Other details related to residual plots can be found in a variety of sources including <xref ref="McCullagh1989"/>.</p>
     </subsection>
 
     <subsection xml:id="sec-PoisGOF">
       <title>Goodness-of-Fit</title>
 
-      <p>Goodness-of-fit for a Poisson regression model can be assessed using the residual deviance or the Pearson chi-squared statistic. Under the null hypothesis that the model is correctly specified, the residual deviance (or Pearson chi-squared statistic) follows an approximate chi-squared distribution with degrees of freedom equal to <m>n - p</m>. A large p-value (residual deviance much smaller than df) indicates that the model fits reasonably well.</p>
+      <p>The model residual deviance can be used to assess the degree to which the predicted values differ from the observed. When a model is true, we can expect the residual deviance to be distributed as a <m>\chi^2</m> random variable with degrees of freedom equal to the model's residual degrees of freedom. Our model thus far, the quadratic terms for age plus the indicators for location, has a residual deviance of 2187.8 with 1493 df. The probability of observing a deviance this large if the model fits is esentially 0, saying that there is significant evidence of lack-of-fit.</p>
 
-      <p>For the Philippines quadratic model with region, the residual deviance is 1715.7 on 1480 df (p &lt; .001), suggesting some evidence of lack of fit. This may be because we have not accounted for all relevant predictors or because the Poisson variance assumption is violated.</p>
+      <p>There are several reasons why <term>lack-of-fit</term> <idx>lack-of-fit</idx> may be observed. (1) We may be missing important covariates or interactions; a more comprehensive data set may be needed. (2) There may be extreme observations that may cause the deviance to be larger than expected; however, our residual plots did not reveal any unusual points. (3) Lastly, there may be a problem with the Poisson model. In particular, the Poisson model has only a single parameter, <m>\lambda</m>, for each combination of the levels of the predictors which must describe both the mean and the variance. This limitation can become manifest when the variance appears to be larger than the corresponding means. In that case, the response is more variable than the Poisson model would imply, and the response is considered to be <term>overdispersed</term>. <idx>overdispersion</idx></p>
     </subsection>
   </section>
 
   <section xml:id="sec-ols-vs-poisson">
     <title>Linear Least Squares vs. Poisson Regression</title>
 
-    <p>Table <xref ref="tab-olsVspois"/> summarizes the key differences between ordinary least squares (OLS) regression and Poisson regression.</p>
+    <p>Table <xref ref="tab-olsVspois"/> summarizes the key differences between linear least squares (LLSR) regression and Poisson regression.</p>
 
     <table xml:id="tab-olsVspois">
-      <title>Comparison of OLS and Poisson Regression</title>
+      <title>Comparison of LLSR and Poisson Regression</title>
       <tabular halign="left" top="major" bottom="major">
         <col width="30%"/>
         <col width="35%"/>
         <col width="35%"/>
         <row header="yes" bottom="medium">
           <cell>Characteristic</cell>
-          <cell>OLS Regression</cell>
+          <cell>LLSR</cell>
           <cell>Poisson Regression</cell>
         </row>
         <row>
-          <cell>Response type</cell>
-          <cell>Continuous</cell>
-          <cell>Count (non-negative integer)</cell>
-        </row>
-        <row>
-          <cell>Conditional distribution</cell>
+          <cell>Response</cell>
           <cell>Normal</cell>
-          <cell>Poisson</cell>
+          <cell>Counts</cell>
         </row>
         <row>
-          <cell>Link function</cell>
-          <cell>Identity (<m>\mu = \mathbf{X}\boldsymbol{\beta}</m>)</cell>
-          <cell>Log (<m>\log(\lambda) = \mathbf{X}\boldsymbol{\beta}</m>)</cell>
+          <cell>Variance</cell>
+          <cell>Equal for each level of X</cell>
+          <cell>Equal to the mean for each level of X</cell>
         </row>
         <row>
-          <cell>Mean-variance relationship</cell>
-          <cell>Constant variance (<m>\sigma^2</m>)</cell>
-          <cell>Mean = variance (<m>\lambda</m>)</cell>
+          <cell>Model Fitting</cell>
+          <cell><m>\mu=\beta_0+\beta_1 x</m> using Least Squares</cell>
+          <cell><m>\log(\lambda)=\beta_0+\beta_1 x</m> using Maximum Likelihood</cell>
         </row>
         <row>
-          <cell>Parameter estimation</cell>
-          <cell>Least squares (closed form)</cell>
-          <cell>Maximum likelihood (iterative)</cell>
+          <cell>EDA</cell>
+          <cell>Plot X vs. Y; add line</cell>
+          <cell>Find <m>\log(\bar{y})</m> for several subgroups; plot vs. X</cell>
         </row>
         <row>
-          <cell>Coefficient interpretation</cell>
-          <cell>Additive change in mean</cell>
-          <cell>Multiplicative change (rate ratio)</cell>
+          <cell>Comparing Models</cell>
+          <cell>Extra sum of squares F-tests; AIC/BIC</cell>
+          <cell>Drop in Deviance tests; AIC/BIC</cell>
         </row>
         <row>
-          <cell>Inference</cell>
-          <cell>t-tests, F-tests</cell>
-          <cell>Z-tests, chi-squared tests, drop-in-deviance</cell>
+          <cell>Interpreting Coefficients</cell>
+          <cell><m>\beta_1=</m> change in <m>\mu_y</m> for unit change in X</cell>
+          <cell><m>e^{\beta_1}=</m> percent change in <m>\lambda</m> for unit change in X</cell>
         </row>
       </tabular>
     </table>
