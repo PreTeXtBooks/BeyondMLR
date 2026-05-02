@@ -471,13 +471,21 @@ summary(modela2L)
     <title>Case Study: Campus Crime</title>
 
     <introduction>
-      <p>Our second case study examines violent crime on U.S. college and university campuses. Data on 81 schools were collected, including the number of violent crimes reported in 2010, the enrollment, the type of institution (college or university), and the geographic region. We will use Poisson regression with an offset to model the rate of violent crime per 1,000 enrolled students.</p>
+      <p>Students want to feel safe and secure when attending a college or university. In response to legislation, the US Department of Education seeks to provide data and reassurances to students and parents alike. All postsecondary institutions that participate in federal student aid programs are required by the Jeanne Clery Disclosure of Campus Security Policy and Campus Crime Statistics Act and the Higher Education Opportunity Act to collect and report data on crime occurring on campus to the Department of Education. In turn, this data is publicly available on the website of the Office of Postsecondary Education. We are interested in looking at whether there are regional differences in violent crime on campus, controlling for differences in the type of school.</p>
     </introduction>
 
     <subsection xml:id="sec-crime-dataorg">
       <title>Data Organization</title>
 
-      <p>The data set <c>c_data.csv</c> is loaded and new variables are created for the enrollment in thousands and the violent crime rate per 1,000 students:</p>
+      <p>Each row of <c>c_data.csv</c> contains crime information from a post secondary institution, either a college or university. The variables include:</p>
+      <ul>
+        <li><p><c>Enrollment</c> = enrollment at the school</p></li>
+        <li><p><c>type</c> = college (C) or university (U)</p></li>
+        <li><p><c>nv</c> = the number of violent crimes for that institution for the given year</p></li>
+        <li><p><c>nvrate</c> = number of violent crimes per 1000 students</p></li>
+        <li><p><c>enroll1000</c> = enrollment at the school, in thousands</p></li>
+        <li><p><c>region</c> = region of the country (C = Central, MW = Midwest, NE = Northeast, SE = Southeast, SW = Southwest, and W = West)</p></li>
+      </ul>
 
       <program language="r" xml:id="code-ch4-crime-load">
         <code>
@@ -492,7 +500,7 @@ c.data &lt;- c.data %&gt;%
     <subsection xml:id="sec-crime-eda">
       <title>Exploratory Data Analysis</title>
 
-      <p>Figure <xref ref="fig-nviolent"/> shows the distribution of violent crime counts. The distribution is right-skewed with one extreme value (a large Southeastern school with a rate of 5.4 violent crimes per 1,000 students). The mean count (8.6) and variance (113.7) are far apart, suggesting potential overdispersion.</p>
+      <p>A graph of the number of violent crimes, Figure <xref ref="fig-nviolent"/>, reveals the pattern often found with distributions of counts of rare events. Many schools reported no violent crimes or very few crimes. A few schools have a large number of crimes making for a distribution that appears to be far from normal. Therefore, Poisson regression should be used to model our data; Poisson random variables are often used to represent counts (e.g., number of violent crimes) per unit of time or space (e.g., one year).</p>
 
       <figure xml:id="fig-nviolent">
         <caption>Histogram of the number of violent crimes reported at 81 U.S. college and university campuses in 2010.</caption>
@@ -501,9 +509,11 @@ c.data &lt;- c.data %&gt;%
         </image>
       </figure>
 
-      <p>The data include two covariates of interest: type of institution and region. In our data, 65% of the 81 schools are universities and 35% are colleges. The proportion of colleges varies from a low of 20% in the Southwest (SW) to a high of 50% in the West (W).</p>
+      <p>Let's take a look at two covariates of interest for these schools: type of institution and region. In our data, the majority of institutions are universities (65% of the 81 schools) and only 35% are colleges. Interest centers on whether the different regions tend to have different crime rates. Table <xref ref="tab-regions"/> contains the name of each region and each column represents the percentage of schools in that region which are colleges or universities. The proportion of colleges varies from a low of 20% in the Southwest (SW) to a high of 50% in the West (W).</p>
 
-      <p>While a Poisson regression model is a good first choice because the responses are counts per year, the counts are not directly comparable because they come from different size schools. We expect schools with more students to have more reports of violent crime. We therefore examine the violent crime rate per 1,000 enrolled students during the exploratory analysis. Note that there is a noticeable outlier for a Southeastern school (5.4 violent crimes per 1,000 students) and there is an observed rate of 0 for the Southwestern colleges. We combined the SW and SE regions to form a single South category and removed the extreme observation from the data set.</p>
+      <p>While a Poisson regression model is a good first choice because the responses are counts per year, it is important to note that the counts are not directly comparable because they come from different size schools. This issue sometimes is referred to as the need to account for <em>sampling effort</em>; in other words, we expect schools with more students to have more reports of violent crime since there are more students who could be affected. We cannot directly compare the 30 violent crimes from the first school in the data set to no violent crimes for the second school when their enrollments are vastly different: 5,590 for school 1 versus 540 for school 2. We can take the differences in enrollments into account by including an <term>offset</term> <idx>offset</idx> in our model, which we will discuss in the next section. For the remainder of the EDA, we examine the violent crime counts in terms of the rate per 1,000 enrolled (<m>\frac{\textrm{number of violent crimes}}{\textrm{number enrolled}} \cdot 1000</m>).</p>
+
+      <p>Note that there is a noticeable outlier for a Southeastern school (5.4 violent crimes per 1000 students), and there is an observed rate of 0 for the Southwestern colleges which can lead to some computational issues. We therefore combined the SW and SE to form a single category of the South, and we also removed the extreme observation from the data set.</p>
 
       <figure xml:id="fig-boxtyperegion">
         <caption>Boxplot of violent crime rate per 1,000 students by region and type of institution (colleges (C) on the left, and universities (U) on the right).</caption>
@@ -512,13 +522,13 @@ c.data &lt;- c.data %&gt;%
         </image>
       </figure>
 
-      <p>Figure <xref ref="fig-boxtyperegion"/> shows that mean violent crime rates are generally lower at colleges within a region (with the exception of the Northeast), and the regional pattern of rates at universities appears to differ from that of the colleges.</p>
+      <p>Table <xref ref="tab-table4ch4"/> and Figure <xref ref="fig-boxtyperegion"/> display mean violent crime rates that are generally lower at the colleges within a region (with the exception of the Northeast). In addition, the regional pattern of rates at universities appears to differ from that of the colleges.</p>
     </subsection>
 
     <subsection xml:id="sec-crime-offset">
       <title>Accounting for Enrollment</title>
 
-      <p>Although working with observed rates per 1,000 students is useful during the EDA, we do not use these rates explicitly in the model. The counts (per year) are the Poisson responses when modeling, so we must account for differences in enrollment using an <term>offset</term>. <idx>offset</idx>  The offset is the log of the enrollment in thousands, added to the right side of the model with a fixed coefficient of 1:
+      <p>Although working with the observed rates (per 1000 students) is useful during the exploratory data analysis, we do not use these rates explicitly in the model. The counts (per year) are the Poisson responses when modeling, so we must take into account the enrollment in a different way. Our approach is to include a term on the right side of the model called an <term>offset</term>, <idx>offset</idx> which is the log of the enrollment, in thousands. There is an intuitive heuristic for the form of the offset. If we think of <m>\lambda</m> as the mean number of violent crimes per year, then <m>\lambda/\textrm{enroll1000}</m> represents the number per 1000 students, so that the yearly count is adjusted to be comparable across schools of different sizes. Adjusting the yearly count by enrollment is equivalent to adding <m>\log(\textrm{enroll1000})</m> to the right-hand side of the Poisson regression equation<mdash/>essentially adding a predictor with a fixed coefficient of 1:
       <md>
         <mrow>\log\!\left(\frac{\lambda}{\textrm{enroll1000}}\right) \amp= \beta_0 + \beta_1(\textrm{type})</mrow>
         <mrow>\log(\lambda) - \log(\textrm{enroll1000}) \amp= \beta_0 + \beta_1(\textrm{type})</mrow>
@@ -526,7 +536,7 @@ c.data &lt;- c.data %&gt;%
       </md>
       </p>
 
-      <p>While this heuristic is helpful, it is important to note that it is <em>not</em> <m>\lambda/\textrm{enroll1000}</m> that we are modeling. We are still modeling <m>\log(\lambda)</m>, but adding an offset to adjust for differing enrollments, where the offset has the unusual feature that its coefficient is fixed at 1.0. As a result, no estimated coefficient for <c>enroll1000</c> or <m>\log(\textrm{enroll1000})</m> will appear in the output.</p>
+      <p>While this heuristic is helpful, it is important to note that it is <em>not</em> <m>\lambda/\textrm{enroll1000}</m> that we are modeling. We are still modeling <m>\log(\lambda)</m>, but we're adding an offset to adjust for differing enrollments, where the offset has the unusual feature that the coefficient is fixed at 1.0. As a result, no estimated coefficient for <c>enroll1000</c> or <m>\log(\textrm{enroll1000})</m> will appear in the output. As this heuristic illustrates, modeling <m>\log(\lambda)</m> and adding an offset is equivalent to modeling rates, and coefficients can be interpreted that way.</p>
     </subsection>
   </section>
 
@@ -600,13 +610,11 @@ drop_in_dev
     <subsection xml:id="sec-dispersion-param">
       <title>Dispersion Parameter Adjustment</title>
 
-      <p><term>Overdispersion</term> <idx>overdispersion</idx> suggests that there is more variation in the response than the model implies. Under a Poisson model, we would expect the means and variances of the response to be about the same in various groups. Without adjusting for overdispersion, we use incorrect, artificially small standard errors, leading to artificially small p-values for model coefficients.</p>
+      <p><term>Overdispersion</term> <idx>overdispersion</idx> suggests that there is more variation in the response than the model implies. Under a Poisson model, we would expect the means and variances of the response to be about the same in various groups. Without adjusting for overdispersion, we use incorrect, artificially small standard errors leading to artificially small p-values for model coefficients. We may also end up with artificially complex models.</p>
 
-      <p>We can estimate a dispersion parameter, <m>\hat{\phi}</m>, by dividing the sum of squared Pearson residuals by the residual degrees of freedom:
-      <me>
-        \hat{\phi} = \frac{\sum r_i^2}{n-p},
-      </me>
-      where <m>r_i</m> are the Pearson residuals. If there is no overdispersion, this estimate should be close to 1. Values greater than 1 indicate overdispersion. We can inflate standard errors by multiplying the variance by <m>\hat{\phi}</m>, giving <term>quasi-Poisson</term> <idx>quasi-Poisson</idx> standard errors: <m>SE_Q(\hat{\beta}) = \sqrt{\hat{\phi}} \cdot SE(\hat{\beta})</m>. This approach is called <term>quasilikelihood</term>. <idx>quasilikelihood</idx></p>
+      <p>We can take overdispersion into account in several different ways. The simplest is to use an estimated dispersion factor to inflate standard errors. Another way is to use a negative-binomial regression model. We begin with using an estimate of the dispersion parameter.</p>
+
+      <p>We can estimate a dispersion parameter, <m>\phi</m>, by dividing the model deviance by its corresponding degrees of freedom; i.e., <m>\hat{\phi}=\frac{\sum(\textrm{Pearson residuals})^2}{n-p}</m> where <m>p</m> is the number of model parameters. It follows from what we know about the <m>\chi^2</m> distribution that if there is no overdispersion, this estimate should be close to one. It will be larger than one in the presence of overdispersion. We inflate the standard errors by multiplying the variance by <m>\phi</m>, so that the standard errors are larger than the likelihood approach would imply; i.e., <m>SE_Q(\hat{\beta})=\sqrt{\hat{\phi}} \cdot SE(\hat{\beta})</m>, where <m>Q</m> stands for <q>quasi-Poisson</q> <idx>quasi-Poisson</idx> since multiplying variances by <m>\phi</m> is an ad-hoc solution. Our process for model building and comparison is called <term>quasilikelihood</term><mdash/>similar to likelihood but without exact underlying distributions. <idx>quasilikelihood</idx> If we choose to use a dispersion parameter with our model, we refer to the approach as quasilikelihood. The following output illustrates a quasi-Poisson approach to the interaction model:</p>
 
       <program language="r" xml:id="code-ch4-quasipoisson">
         <code>
@@ -622,7 +630,7 @@ cat(" Residual deviance = ", summary(modeliq)$deviance, " on ",
 
       <p>The estimated dispersion parameter is 4.447, much larger than 1.0, confirming overdispersion. The larger estimated standard errors in the quasi-Poisson model reflect this adjustment. For example, the standard error for the West region term from the likelihood approach is 0.7906, whereas the quasilikelihood standard error is <m>\sqrt{4.47} \cdot 0.7906 = 1.6671</m>. This term is no longer significant under the quasi-Poisson model. After adjusting for overdispersion, none of the model coefficients are significant at the 0.05 level, because standard errors were all increased by a factor of 2.1 (<m>\sqrt{\hat{\phi}} = \sqrt{4.447} = 2.1</m>).</p>
 
-      <p>Note that tests for individual parameters are now based on the t-distribution rather than a standard Normal, with test statistic <m>t = \hat{\beta} / SE_Q(\hat{\beta})</m>. Drop-in-deviance tests can similarly be adjusted by dividing the test statistic (per degree of freedom) by the estimated dispersion parameter and comparing the result to an F-distribution: <m>F = \frac{\textrm{drop in deviance} / \textrm{difference in df}}{\hat{\phi}}</m>.</p>
+      <p>Note that tests for individual parameters are now based on the t-distribution rather than a standard normal distribution, with test statistic <m>t=\frac{\hat{\beta}}{SE_Q(\hat{\beta})}</m> following an (approximate) t-distribution with <m>n-p</m> degrees of freedom if the null hypothesis is true (<m>H_0:\beta=0</m>). Drop-in-deviance tests can be similarly adjusted for overdispersion in the quasi-Poisson model. In this case, you can divide the test statistic (per degree of freedom) by the estimated dispersion parameter and compare the result to an F-distribution with the difference in the model degrees of freedom for the numerator and the degrees of freedom for the larger model in the denominator. That is, <m>F=\frac{\textrm{drop in deviance}}{\textrm{difference in df}} / {\hat{\phi}}</m> follows an (approximate) F-distribution when the null hypothesis is true (<m>H_0</m>: reduced model sufficient). The output below tests for an interaction between region and type of institution after adjusting for overdispersion (extra variance):</p>
 
       <program language="r" xml:id="code-ch4-quasi-drop">
         <code>
@@ -684,9 +692,9 @@ drop_in_dev
     <subsection xml:id="sec-negbinom">
       <title>Negative Binomial Modeling</title>
 
-      <p>Another approach to dealing with overdispersion is to model the response using a <term>negative binomial</term> <idx>negative binomial regression</idx> instead of a Poisson distribution. An advantage of this approach is that it introduces an additional parameter beyond <m>\lambda</m>, giving the model more flexibility. Unlike the quasi-Poisson model, the negative binomial model assumes an explicit likelihood, which enables standard model comparison tools.</p>
+      <p>Another approach to dealing with overdispersion is to model the response using a negative binomial instead of a Poisson distribution. An advantage of this approach is that it introduces another parameter in addition to <m>\lambda</m>, which gives the model more flexibility and, as opposed to the quasi-Poisson model, the negative binomial model assumes an explicit likelihood model. You may recall that negative binomial random variables take on non-negative integer values, which is consistent with modeling counts. This model posits selecting a <m>\lambda</m> for each institution and then generating a count using a Poisson random variable with the selected <m>\lambda</m>. With this approach, the counts will be more dispersed than would be expected for observations based on a single Poisson variable with rate <m>\lambda</m>. (See Guided Exercises on the Gamma-Poisson mixture in Chapter 3.)</p>
 
-      <p>Mathematically, the negative binomial model can be thought of as a Poisson model where <m>\lambda</m> is itself random, following a gamma distribution. Specifically, if <m>Y|\lambda \sim \textrm{Poisson}(\lambda)</m> and <m>\lambda \sim \textrm{gamma}(r, \frac{1-p}{p})</m>, then <m>Y \sim \textrm{NegBinom}(r, p)</m> where <m>E(Y) = \mu</m> and <m>\textrm{Var}(Y) = \mu + \mu^2/r</m>. Smaller values of <m>r</m> indicate greater overdispersion.</p>
+      <p>Mathematically, you can think of the negative binomial model as a Poisson model where <m>\lambda</m> is also random, following a gamma distribution. Specifically, if <m>Y|\lambda \sim \textrm{Poisson}(\lambda)</m> and <m>\lambda \sim \textrm{gamma}(r,\frac{1-p}{p})</m>, then <m>Y \sim \textrm{NegBinom}(r,p)</m> where <m>E(Y)=\frac{pr}{1-p}=\mu</m> and <m>\textrm{Var}(Y)=\frac{pr}{(1-p)^2}=\mu+\frac{\mu^2}{r}</m>. The overdispersion in this case is given by <m>\frac{\mu^2}{r}</m>, which approaches 0 as <m>r</m> increases (so smaller values of <m>r</m> indicate greater overdispersion).</p>
 
       <program language="r" xml:id="code-ch4-negbinom">
         <code>
@@ -699,9 +707,9 @@ cat(" Residual deviance = ", summary(modelinb)$deviance, " on ",
         </code>
       </program>
 
-      <p>These results differ from the quasi-Poisson model. Several effects are now statistically significant at the 0.05 level: the effect of type of institution for the Central region (<m>Z = 2.64</m>, p = .008), the difference between Northeast and Central regions for colleges (<m>Z = 2.76</m>, p = .006), and the West/Central difference in type effect (<m>Z = 2.71</m>, p = .007). Compared to the quasi-Poisson model, negative binomial coefficient estimates are generally similar in direction and magnitude, but the negative binomial standard errors are somewhat smaller.</p>
+      <p>These results differ from the quasi-Poisson model. Several effects are now statistically significant at the .05 level: the effect of type of institution for the Central region (<m>Z=2.64</m>, p = .008), the difference between Northeast and Central regions for colleges (<m>Z=2.76</m>, p = .006), the difference between Northeast and Central regions in type effect (<m>Z=-2.01</m>, p = .044), and the difference between West and Central regions in type effect (<m>Z=2.71</m>, p = .007). In this case, compared to the quasi-Poisson model, negative binomial coefficient estimates are generally in the same direction and similar in size, but negative binomial standard errors are somewhat smaller.</p>
 
-      <p>In summary, we explored differences in violent crime rate between colleges and universities, controlling for region. Our initial efforts suggested differences between college and university types with a significant region-by-type interaction. However, this model exhibited significant lack-of-fit. Accounting for lack-of-fit through quasilikelihood and negative binomial regression provided slightly different conclusions. We may want to look for additional covariates and/or more data.</p>
+      <p>In summary, we explored the possibility of differences in the violent crime rate between colleges and universities, controlling for region. Our initial efforts seemed to suggest that there are indeed differences between colleges and universities, and the pattern of those differences depends upon the region. However, this model exhibited significant lack-of-fit which remained after the removal of an extreme observation. In the absence of additional covariates, we accounted for the lack-of-fit by using a quasilikelihood approach and a negative binomial regression, which provided slightly different conclusions. We may want to look for additional covariates and/or more data.</p>
     </subsection>
   </section>
 
