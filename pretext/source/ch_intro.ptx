@@ -447,17 +447,27 @@ kable(table1, booktabs=T,
         </input>
       </program>
 
-      <table xml:id="tab-introtable1">
-        <title>The first five and the last five observations from the Kentucky Derby case study.</title>
-        <tabular>
-          <row header="yes">
-            <cell>year</cell><cell>winner</cell><cell>condition</cell>
-            <cell>speed</cell><cell>starters</cell><cell>fast</cell>
-            <cell>good</cell><cell>yearnew</cell><cell>fastfactor</cell>
-          </row>
-          <row><cell colspan="9">(Generated from <c>derbyplus.csv</c> via R code above)</cell></row>
-        </tabular>
-      </table>
+<table xml:id="tab-introtable1">
+  <title>The first five and the last five observations from the Kentucky Derby case study.</title>
+  <tabular>
+    <row header="yes">
+      <cell>year</cell><cell>winner</cell><cell>condition</cell>
+      <cell>speed</cell><cell>starters</cell><cell>fast</cell>
+      <cell>good</cell><cell>yearnew</cell><cell>fastfactor</cell>
+    </row>
+    <row><cell>1896</cell><cell>Ben Brush</cell><cell>good</cell><cell>51.66</cell><cell>8</cell><cell>0</cell><cell>1</cell><cell>0</cell><cell>not fast</cell></row>
+    <row><cell>1897</cell><cell>Typhoon II</cell><cell>slow</cell><cell>49.81</cell><cell>6</cell><cell>0</cell><cell>0</cell><cell>1</cell><cell>not fast</cell></row>
+    <row><cell>1898</cell><cell>Plaudit</cell><cell>good</cell><cell>51.16</cell><cell>4</cell><cell>0</cell><cell>1</cell><cell>2</cell><cell>not fast</cell></row>
+    <row><cell>1899</cell><cell>Manuel</cell><cell>fast</cell><cell>50.00</cell><cell>5</cell><cell>1</cell><cell>0</cell><cell>3</cell><cell>fast</cell></row>
+    <row><cell>1900</cell><cell>Lieut. Gibson</cell><cell>fast</cell><cell>52.28</cell><cell>7</cell><cell>1</cell><cell>0</cell><cell>4</cell><cell>fast</cell></row>
+    <row><cell colspan="9">⋮</cell></row>
+    <row><cell>2013</cell><cell>Orb</cell><cell>slow</cell><cell>53.71</cell><cell>19</cell><cell>0</cell><cell>0</cell><cell>117</cell><cell>not fast</cell></row>
+    <row><cell>2014</cell><cell>California Chrome</cell><cell>fast</cell><cell>53.37</cell><cell>19</cell><cell>1</cell><cell>0</cell><cell>118</cell><cell>fast</cell></row>
+    <row><cell>2015</cell><cell>American Pharoah</cell><cell>fast</cell><cell>53.65</cell><cell>18</cell><cell>1</cell><cell>0</cell><cell>119</cell><cell>fast</cell></row>
+    <row><cell>2016</cell><cell>Nyquist</cell><cell>fast</cell><cell>54.41</cell><cell>20</cell><cell>1</cell><cell>0</cell><cell>120</cell><cell>fast</cell></row>
+    <row><cell>2017</cell><cell>Always Dreaming</cell><cell>fast</cell><cell>53.40</cell><cell>20</cell><cell>1</cell><cell>0</cell><cell>121</cell><cell>fast</cell></row>
+  </tabular>
+</table>
     </subsection>
 
     <subsection xml:id="subsec-univariate">
@@ -691,6 +701,17 @@ cat(" R squared = ", summary(model1)$r.squared, "\n",
         </input>
       </program>
 
+    <console>
+      <output>
+##             Estimate Std. Error t value  Pr(&gt;|t|)
+## (Intercept)  2.05347   4.543754  0.4519 6.521e-01
+## year         0.02613   0.002322 11.2515 1.717e-20
+
+##  R squared =  0.5134 
+##  Residual standard error =  0.9032
+      </output>
+    </console>
+
       <p>
         You may have noticed in Model 1 that the intercept has little meaning in context, since it
         estimates a winning speed in Year 0, when the first Kentucky Derby run at the current distance
@@ -727,6 +748,16 @@ cat(" R squared = ", summary(model2)$r.squared, "\n",
     "Residual standard error = ", summary(model2)$sigma)
         </input>
       </program>
+
+    <console>
+      <output>
+##             Estimate Std. Error t value  Pr(&gt;|t|)
+## (Intercept) 51.58839   0.162549  317.37 2.475e-177
+## yearnew      0.02613   0.002322   11.25  1.717e-20
+##  R squared =  0.5134 
+##  Residual standard error =  0.9032
+      </output>
+    </console>
 
       <program language="r" xml:id="code-center-fig">
         <input>
@@ -865,6 +896,18 @@ cat(" R squared = ", summary(model2q)$r.squared, "\n",
         </input>
       </program>
 
+    <console>
+      <output>
+##             Estimate  Std. Error  t value Pr(&gt;|t|)
+## (Intercept) 50.5874566  2.082e-01 243.010 2.615e-162
+## yearnew      0.0761728  7.950e-03   9.581  1.839e-16
+## yearnew2    -0.0004136  6.359e-05  -6.505  1.921e-09
+
+##  R squared =  0.641 
+##  Residual standard error =  0.779
+      </output>
+    </console>
+
       <program language="r" xml:id="code-resid2q">
         <input>
 # Residual diagnostics for Model 2Q
@@ -938,6 +981,17 @@ cat(" R squared = ", summary(model3)$r.squared, "\n",
         </input>
       </program>
 
+    <console>
+      <output>
+##             Estimate Std. Error t value   Pr(&gt;|t|)
+## (Intercept)   51.994     0.1826 284.698 1.117e-171
+## fast           1.629     0.2150   7.577  8.166e-12
+
+##  R squared =  0.3236 
+##  Residual standard error =  1.065
+      </output>
+    </console>
+
       <p>
         You might be asking at this point: If we simply wanted to compare mean winning speeds under
         fast and non-fast conditions, why didn't we just run a two-sample t-test? The answer is: we
@@ -988,6 +1042,18 @@ cat(" R squared = ", summary(model4)$r.squared, "\n",
         </input>
       </program>
 
+    <console>
+      <output>
+##             Estimate Std. Error t value   Pr(&gt;|t|)
+## (Intercept) 50.91782   0.154602  329.35 5.360e-178
+## yearnew      0.02258   0.001919   11.77  1.117e-21
+## fast         1.22685   0.150721    8.14  4.393e-13
+
+##  R squared =  0.6874 
+##  Residual standard error =  0.7269
+      </output>
+    </console>
+
       <p>
         Our new model estimates that winning speeds are, on average, 1.23 ft/s faster under fast
         conditions after accounting for time trends, which is down from an estimated 1.63 ft/s without
@@ -1035,6 +1101,19 @@ new.data &lt;- data.frame(yearnew = 2017 - 1896, fast = 1)
 predict(model4, new = new.data, interval = "prediction")
         </input>
       </program>
+
+    <console>
+      <output>
+               2.5 %   97.5 %
+(Intercept) 50.61169 51.22395
+yearnew      0.01878  0.02638
+fast         0.92840  1.52529
+
+    fit   lwr   upr
+1 54.88 53.41 56.34
+      </output>
+    </console>
+
     </subsection>
 
     <subsection xml:id="sec-multreg-boot">
@@ -1089,6 +1168,18 @@ bootreg %&gt;%
             high=quantile(estimate, .975))
         </input>
       </program>
+
+
+    <console>
+      <output>
+# A tibble: 3 x 3
+  term            low    high
+  &lt;chr&gt;         &lt;dbl&gt;   &lt;dbl&gt;
+1 (Intercept) 50.6    51.3   
+2 fast         0.909   1.57  
+3 yearnew      0.0182  0.0265
+      </output>
+    </console>
 
       <program language="r" xml:id="code-boot4-fig">
         <input>
@@ -1167,6 +1258,19 @@ cat(" R squared = ", summary(model5)$r.squared, "\n",
     "Residual standard error = ", summary(model5)$sigma)
         </input>
       </program>
+
+    <console>
+      <output>
+##              Estimate Std. Error t value   Pr(&gt;|t|)
+## (Intercept)  50.52863   0.205072 246.394 6.989e-162
+## yearnew       0.03075   0.003471   8.859  9.839e-15
+## fast          1.83352   0.262175   6.994  1.730e-10
+## yearnew:fast -0.01149   0.004117  -2.791  6.128e-03
+
+##  R squared =  0.7068 
+##  Residual standard error =  0.7071
+      </output>
+    </console>
 
       <p>According to our model, estimated winning speeds can be found by:</p>
 
@@ -1299,6 +1403,21 @@ cat(" R squared = ", summary(model0)$r.squared, "\n",
         </input>
       </program>
 
+    <console>
+      <output>
+##               Estimate Std. Error t value   Pr(&gt|t|)
+## (Intercept) 50.0203151  1.946e-01 256.980 1.035e-161
+## yearnew      0.0700341  6.130e-03  11.424  1.038e-20
+## yearnew2    -0.0003697  4.598e-05  -8.041  8.435e-13
+## fast         1.3926656  1.305e-01  10.670  6.199e-19
+## good         0.9156982  2.077e-01   4.409  2.331e-05
+## starters    -0.0252836  1.360e-02  -1.859  6.559e-02
+
+##  R squared =  0.8267 
+##  Residual standard error =  0.5483
+      </output>
+    </console>
+
       <program language="r" xml:id="code-model0-anova">
         <input>
 # Compare models with and without terms for track condition
@@ -1318,6 +1437,14 @@ row.names(did_print) &lt;- row.names(drop_in_dev)
 did_print
         </input>
       </program>
+
+    <console>
+      <output>
+  ResidDF   RSS   SS Df      pval
+1     118 69.26   NA NA        NA
+2     116 34.87 57.2  2 5.194e-18
+      </output>
+    </console>
 
       <p>
         This model accounts for the slowing annual increases in winning speed with a negative quadratic
