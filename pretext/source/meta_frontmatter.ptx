@@ -38,7 +38,8 @@
     <title>Preface</title>
 
     <p>
-      Welcome to <em>Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R</em>.
+      Welcome!  This is the <url href="https://bookdown.org/roback/bookdown-BeyondMLR/" visual="online version">online version</url>
+      of <em>Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R</em>.
       Hard copies can be purchased through
       <url href="https://www.routledge.com/Beyond-Multiple-Linear-Regression-Applied-Generalized-Linear-Models-And/Roback-Legler/p/book/9781439885383" visual="CRC Press">CRC Press</url>
       or on <url href="https://www.amazon.com/Generalized-Correlated-Methods-Chapman-Statistical/dp/1439885389" visual="Amazon">Amazon</url>.
@@ -153,6 +154,18 @@
     </p>
 
     <p>
+      <term>Copyright</term>
+    </p>
+
+    <p>
+      &#169; 2021 by Taylor &amp; Francis Group, LLC. Except as permitted under U.S. copyright law,
+      no part of this book may be reprinted, reproduced, transmitted, or utilized in any form by an
+      electronic, mechanical, or other means, now known or hereafter invented, including photocopying,
+      microfilming, and recording, or in any information storage or retrieval system, without written
+      permission from the publishers.
+    </p>
+
+    <p>
       This work is licensed under a
       <url href="http://creativecommons.org/licenses/by-nc-sa/4.0/" visual="Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</url>.
     </p>
@@ -171,30 +184,99 @@
       Dr. Legler is past Chair of the ASA/MAA Joint Committee on Undergraduate Statistics, is a co-author of
       <em>Stat2: Modelling with Regression and ANOVA</em>, and was a biostatistician at the National Cancer Institute.
     </p>
-  </preface>
-
-  <preface xml:id="preface-acknowledgments">
-    <title>Acknowledgments</title>
 
     <p>
-      We would like to thank students of Stat 316 at St. Olaf College since 2010 for their patience as this
-      book has taken shape with their feedback. We would especially like to thank these St. Olaf students for
-      their summer research efforts which significantly improved aspects of this book: Cecilia Noecker,
-      Anna Johanson, Nicole Bettes, Kiegan Rice, Anna Wall, Jack Wolf, Josh Pelayo, Spencer Eanes, and
-      Emily Patterson. Early editions of this book also benefitted greatly from feedback from instructors
-      who used these materials in their classes, including Matt Beckman, Laura Boehm Vock, Beth Chance,
-      Laura Chihara, Mine Dogucu, and Katie Ziegler-Graham. Finally, we have appreciated the support of
-      two NSF grants (#DMS-1045015 and #DMS-0354308) and of our colleagues in the Department of Mathematics,
-      Statistics, and Computer Science at St. Olaf. We are also thankful to Samantha Roback for developing
-      the cover image.
+      <term>Dedication</term>
+    </p>
+
+    <blockquote>
+      <p>To our families:</p>
+      <p>Karen, Samantha, Timothy, and Sophie</p>
+      <p>Paul, Ali, Mark, Sean, Lila, and Eva</p>
+    </blockquote>
+
+    <p>
+      <term>Acknowledgments.</term>  We would like to thank students of Stat 316 at St. Olaf College since
+      2010 for their patience as this book has taken shape with their feedback. We would especially like to
+      thank these St. Olaf students for their summer research efforts which significantly improved aspects of
+      this book: Cecilia Noecker, Anna Johanson, Nicole Bettes, Kiegan Rice, Anna Wall, Jack Wolf, Josh Pelayo,
+      Spencer Eanes, and Emily Patterson. Early editions of this book also benefitted greatly from feedback from
+      instructors who used these materials in their classes, including Matt Beckman, Laura Boehm Vock, Beth Chance,
+      Laura Chihara, Mine Dogucu, and Katie Ziegler-Graham. Finally, we have appreciated the support of two NSF
+      grants (#DMS-1045015 and #DMS-0354308) and of our colleagues in the Department of Mathematics, Statistics,
+      and Computer Science at St. Olaf. We are also thankful to Samantha Roback for developing the cover image.
     </p>
   </preface>
 
-  <dedication xml:id="dedication">
-    <p>To our families:</p>
-    <p>Karen, Samantha, Timothy, and Sophie</p>
-    <p>Paul, Ali, Mark, Sean, Lila, and Eva</p>
-  </dedication>
+  <preface xml:id="preface-r-packages">
+    <title>Versions of R Packages Used</title>
+
+    <p>
+      If you are seeing different results than what is in the book, we recommend installing the exact version
+      of the packages we used. This can be done by first installing the <c>remotes</c> package via
+      <c>install.packages("remotes")</c>. Then, use <c>install_version()</c> replacing the <c>package</c>
+      argument with the package name in quotes and the <c>version</c> argument with the particular version
+      number to install. For example:
+    </p>
+
+    <program language="r">
+      <input>
+remotes::install_version(package = "broom", version = "0.5.6")
+      </input>
+    </program>
+
+    <table xml:id="tab-r-packages">
+      <title>R Packages Used</title>
+      <tabular halign="left" top="minor" bottom="minor" left="minor" right="minor">
+        <row header="yes" bottom="medium">
+          <cell>R package</cell><cell>Version used</cell>
+        </row>
+        <row><cell>bookdown</cell><cell>0.19</cell></row>
+        <row><cell>boot</cell><cell>1.3-25</cell></row>
+        <row><cell>broom</cell><cell>0.5.6</cell></row>
+        <row><cell>data.table</cell><cell>1.12.8</cell></row>
+        <row><cell>dplyr</cell><cell>1.0.0</cell></row>
+        <row><cell>forcats</cell><cell>0.5.0</cell></row>
+        <row><cell>Formula</cell><cell>1.2-3</cell></row>
+        <row><cell>GGally</cell><cell>2.0.0</cell></row>
+        <row><cell>ggformula</cell><cell>0.9.4</cell></row>
+        <row><cell>ggmosaic</cell><cell>0.2.0</cell></row>
+        <row><cell>ggplot2</cell><cell>3.3.1</cell></row>
+        <row><cell>ggstance</cell><cell>0.3.4</cell></row>
+        <row><cell>gridExtra</cell><cell>2.3</cell></row>
+        <row><cell>Hmisc</cell><cell>4.4-0</cell></row>
+        <row><cell>ICC</cell><cell>2.3.0</cell></row>
+        <row><cell>jtools</cell><cell>2.0.5</cell></row>
+        <row><cell>kableExtra</cell><cell>1.1.0</cell></row>
+        <row><cell>knitr</cell><cell>1.28</cell></row>
+        <row><cell>lattice</cell><cell>0.20-41</cell></row>
+        <row><cell>lme4</cell><cell>1.1-23</cell></row>
+        <row><cell>MASS</cell><cell>7.3-51.6</cell></row>
+        <row><cell>Matrix</cell><cell>1.2-18</cell></row>
+        <row><cell>mice</cell><cell>3.9.0</cell></row>
+        <row><cell>mnormt</cell><cell>2.0.0</cell></row>
+        <row><cell>mosaic</cell><cell>1.7.0</cell></row>
+        <row><cell>mosaicData</cell><cell>0.18.0</cell></row>
+        <row><cell>multcomp</cell><cell>1.4-13</cell></row>
+        <row><cell>mvtnorm</cell><cell>1.1-1</cell></row>
+        <row><cell>nlme</cell><cell>3.1-148</cell></row>
+        <row><cell>pander</cell><cell>0.6.3</cell></row>
+        <row><cell>pscl</cell><cell>1.5.5</cell></row>
+        <row><cell>purrr</cell><cell>0.3.4</cell></row>
+        <row><cell>readr</cell><cell>1.3.1</cell></row>
+        <row><cell>reshape2</cell><cell>1.4.4</cell></row>
+        <row><cell>rsample</cell><cell>0.0.7</cell></row>
+        <row><cell>sessioninfo</cell><cell>1.1.1</cell></row>
+        <row><cell>stringr</cell><cell>1.4.0</cell></row>
+        <row><cell>survival</cell><cell>3.1-12</cell></row>
+        <row><cell>TH.data</cell><cell>1.0-10</cell></row>
+        <row><cell>tibble</cell><cell>3.0.1</cell></row>
+        <row><cell>tidyr</cell><cell>1.1.0</cell></row>
+        <row><cell>tidyverse</cell><cell>1.3.0</cell></row>
+        <row><cell>xtable</cell><cell>1.8-4</cell></row>
+      </tabular>
+    </table>
+  </preface>
 
   <preface xml:id="preface-ptx-version">
     <title>Note on This PreTeXt Edition</title>
