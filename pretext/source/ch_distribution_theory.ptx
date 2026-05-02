@@ -1042,7 +1042,7 @@ pbeta(0.8, shape1 = 4/3, shape2 = 2, lower.tail = FALSE)
       <p>
         In this course, we encounter <m>\chi^2</m>
         distributions<idx><h>chi-square distribution</h></idx> in several testing situations. In
-        <xref provisional="sec-lrtest"/> we performed likelihood ratio tests (LRTs) to compare
+        <xref ref="subsubsec-nested-models"/> we performed likelihood ratio tests (LRTs) to compare
         nested models. When a larger model provides no significant improvement over a reduced model,
         the LRT statistic (which is twice the difference in the log-likelihoods) follows a
         <m>\chi^2</m> distribution with the degrees of freedom equal to the difference in the
