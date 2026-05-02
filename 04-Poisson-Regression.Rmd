@@ -485,9 +485,9 @@ We now have an equation in age which yields the estimated log(mean number in the
 # Finding the age where the number in the house is a maximum
 coefa2 = modela2$coefficients[3]
 coefa = modela2$coefficients[2]
-coefi = modela2$coefficients[1]
+coef0 = modela2$coefficients[1]
 estLogNumHouse.f <- function(age){
-  return(coefa2*(age)^2 + coefa*(age) + coefi)
+  return(coefa2*(age)^2 + coefa*(age) + coef0)
 }
 optimize(estLogNumHouse.f, interval=c(20,70), maximum=TRUE)
 
