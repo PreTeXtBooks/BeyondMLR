@@ -37,20 +37,21 @@ library(tidyverse)
     <title>Case Study: College Basketball Referees</title>
 
     <p>
-      An article by Anderson and Pierce describes empirical evidence that officials in NCAA men's
-      college basketball tend to "even out" foul calls over the course of a game, based on data
-      collected in 2004–2005. Using logistic regression to model the effect of foul differential
-      on the probability that the next foul called would be on the home team, Anderson and Pierce
-      found that "the probability of the next foul being called on the visiting team can reach as
-      high as 0.70." More recently, Moskowitz and Wertheim argue that the number one reason for
-      the home field advantage in sports is referee bias. Specifically, in basketball, they
-      demonstrate that calls over which referees have greater control were more likely to benefit
-      the home team, especially in crucial situations.
+      An article by Anderson and Pierce <xref ref="Anderson2009"/> describes empirical evidence
+      that officials in NCAA men's college basketball tend to "even out" foul calls over the course
+      of a game, based on data collected in 2004–2005. Using logistic regression to model the
+      effect of foul differential on the probability that the next foul called would be on the home
+      team, Anderson and Pierce found that "the probability of the next foul being called on the
+      visiting team can reach as high as 0.70." More recently, Moskowitz and Wertheim argue that
+      the number one reason for the home field advantage in sports is referee bias. Specifically,
+      in basketball, they demonstrate that calls over which referees have greater control were more
+      likely to benefit the home team, especially in crucial situations
+      <xref ref="Moskowitz2011"/>.
     </p>
 
     <p>
       Data have been gathered from the 2009–2010 college basketball season for three major
-      conferences to investigate the following questions:
+      conferences to investigate the following questions <xref ref="Noecker2012"/>:
     </p>
 
     <ul>
@@ -734,6 +735,14 @@ model.f &lt;- glmer(foul.home ~ foul.diff + score.diff +
     </p>
 
     <p>
+      Analyses of data from 2004–2005 <xref ref="Noecker2012"/> showed that the tendency to even
+      out foul calls was stronger when one team had a large lead, but we found no evidence of a
+      foul differential by score differential interaction in the 2009–2010 data, although home
+      team fouls are more likely when the home team has a large lead, regardless of the foul
+      differential.
+    </p>
+
+    <p>
       Here are specific interpretations of key model parameters:
     </p>
 
@@ -1041,12 +1050,12 @@ print(ranef1[[1]], more = TRUE)
         <title>Heart attacks in Aboriginal Australians</title>
         <statement>
           <p>
-            Randall et al. published a 2014 article in <em>Health and Place</em> entitled,
-            "Exploring disparities in acute myocardial infarction events between Aboriginal and
-            non-Aboriginal Australians: Roles of age, gender, geography and area-level
-            disadvantage." They used multilevel Poisson models to compare rates of acute
-            myocardial infarction (AMI) in the 199 Statistical Local Areas (SLAs) in New South
-            Wales. Within SLA, AMI rates were summarized by subgroups determined by year
+            <xref ref="Randall2014"/> published a 2014 article in <em>Health and Place</em>
+            entitled, "Exploring disparities in acute myocardial infarction events between
+            Aboriginal and non-Aboriginal Australians: Roles of age, gender, geography and
+            area-level disadvantage." They used multilevel Poisson models to compare rates of
+            acute myocardial infarction (AMI) in the 199 Statistical Local Areas (SLAs) in New
+            South Wales. Within SLA, AMI rates were summarized by subgroups determined by year
             (2002–2007), age (in 10-year groupings), sex, and Aboriginal status; these are Level
             One variables. Analyses also incorporated remoteness (classified by quartiles) and
             socio-economic status (classified by quintiles) assessed at the SLA level (Level
@@ -1058,7 +1067,7 @@ print(ranef1[[1]], more = TRUE)
       <exercise xml:id="exercise-ch11-20">
         <statement>
           <p>
-            From the Randall et al. (2014) study described in the previous problem, let
+            From the <xref ref="Randall2014"/> study described in the previous problem, let
             <m>Y_{ij}</m> be the number of acute myocardial infarctions in subgroup <m>j</m>
             from SLA <m>i</m>. Write out the multilevel model that likely produced their Table 2.
             How many fixed effects and variance components must be estimated?
@@ -1070,7 +1079,7 @@ print(ranef1[[1]], more = TRUE)
         <statement>
           <p>
             Provide interpretations in context for the following rate ratios, confidence
-            intervals, and p-values from the Randall et al. (2014) Table 2: RR of 2.1 and CI
+            intervals, and p-values from the <xref ref="Randall2014"/> Table 2: RR of 2.1 and CI
             of 1.98–2.23 for Aboriginal = Yes; p-value of <m>\lt .01</m> for Age Group; CI
             of 5.44–6.64 for Age Group = 35–44; RR of 0.45 for Sex = Female; CI of 0.86–0.91
             for Year = 2007.
@@ -1082,7 +1091,7 @@ print(ranef1[[1]], more = TRUE)
         <statement>
           <p>
             Given the rate ratio and 95% confidence interval reported for Aboriginal Australians
-            in the Randall et al. (2014) table, find the estimated model fixed effect for
+            in the <xref ref="Randall2014"/> table, find the estimated model fixed effect for
             Aboriginal Australians along with its standard error.
           </p>
         </statement>
@@ -1091,7 +1100,7 @@ print(ranef1[[1]], more = TRUE)
       <exercise xml:id="exercise-ch11-23">
         <statement>
           <p>
-            How might the p-value for Age Group have been produced in the Randall et al. (2014)
+            How might the p-value for Age Group have been produced in the <xref ref="Randall2014"/>
             table?
           </p>
         </statement>
@@ -1100,7 +1109,7 @@ print(ranef1[[1]], more = TRUE)
       <exercise xml:id="exercise-ch11-24">
         <statement>
           <p>
-            Randall et al. report that, "we identified a significant interaction between
+            <xref ref="Randall2014"/> report that, "we identified a significant interaction between
             Aboriginal status and age group (<m>p \lt .01</m>) and Aboriginal status and sex
             (<m>p \lt .01</m>), but there was no significant interaction between Aboriginal
             status and year (p = 0.94)." How would the multilevel model need to have been
@@ -1112,7 +1121,7 @@ print(ranef1[[1]], more = TRUE)
       <exercise xml:id="exercise-ch11-25">
         <statement>
           <p>
-            Randall et al. (2014) also present Table 3, showing adjusted rate ratios for
+            <xref ref="Randall2014"/> also present Table 3, showing adjusted rate ratios for
             area-level variables (remoteness and SES quintile) from a multilevel Poisson model
             with random intercept for area. Describe the changes to the multilevel model for
             Table 2 that likely produced this new table.
@@ -1124,7 +1133,7 @@ print(ranef1[[1]], more = TRUE)
         <statement>
           <p>
             Provide interpretations in context for the following rate ratios, confidence
-            intervals, and p-values from the Randall et al. (2014) Table 3: p-value of
+            intervals, and p-values from the <xref ref="Randall2014"/> Table 3: p-value of
             <m>\lt .01</m> for Remoteness of Residence; RR of 1.22 for Remote/very remote; CI
             of 1.52–1.91 for SES quintile = 5.
           </p>
@@ -1134,7 +1143,7 @@ print(ranef1[[1]], more = TRUE)
       <exercise xml:id="exercise-ch11-27">
         <statement>
           <p>
-            Randall et al. (2014) also report the results of a single-level Poisson regression
+            <xref ref="Randall2014"/> also report the results of a single-level Poisson regression
             model: "After adjusting for age, sex and year of event, the rate of AMI events in
             Aboriginal people was 2.3 times higher than in non-Aboriginal people (95% CI:
             2.17–2.44)." Compare this to the results of the multilevel Poisson model; what might
@@ -1146,7 +1155,7 @@ print(ranef1[[1]], more = TRUE)
       <exercise xml:id="exercise-ch11-28">
         <statement>
           <p>
-            Randall et al. (2014) claim that, "our application of multilevel modelling techniques
+            <xref ref="Randall2014"/> claim that, "our application of multilevel modelling techniques
             allowed us to account for clustering by area of residence and produce 'shrunken'
             small-area estimates, which are not as prone to random fluctuations as crude or
             standardised rates." Explain what they mean by this statement.
@@ -1162,12 +1171,12 @@ print(ranef1[[1]], more = TRUE)
         <title>Airbnb in Chicago</title>
         <statement>
           <p>
-            Trinh et al. collected data on 1561 Airbnb listings in Chicago from August 2016,
-            merging in information from the neighborhood where each listing was located. Treat
-            overall satisfaction as a binary variable (5 out of 5 vs. not). Conduct an EDA,
-            build a multilevel generalized model, and interpret model coefficients to answer:
-            What are characteristics of a higher rated listing? Are the most influential traits
-            associated with individual listings or entire neighborhoods? Are there intriguing
+            <xref ref="Trinh2018"/> collected data on 1561 Airbnb listings in Chicago from
+            August 2016, merging in information from the neighborhood where each listing was
+            located. Treat overall satisfaction as a binary variable (5 out of 5 vs. not). Conduct
+            an EDA, build a multilevel generalized model, and interpret model coefficients to
+            answer: What are characteristics of a higher rated listing? Are the most influential
+            traits associated with individual listings or entire neighborhoods? Are there intriguing
             interactions? Variables in <c>airbnb.csv</c> include:
           </p>
           <ul>
@@ -1184,13 +1193,14 @@ print(ranef1[[1]], more = TRUE)
         <title>Seed germination</title>
         <statement>
           <p>
-            We will return to the data from Case Study 7.3 (seeds), but whether or not a seed
-            germinated will be considered the response variable rather than the heights of
-            germinated plants. We will use the wide data set (one row per plant) <c>seeds2.csv</c>
-            and ignore plant heights over time, focusing solely on if the plant germinated at any
-            time. Use multilevel generalized linear models to determine the effects of soil type
-            and sterilization on germination rates; perform separate analyses for coneflowers and
-            leadplants, and describe differences between the two species.
+            We will return to the data from <xref ref="Angell2010"/> used in Case Study 7.3
+            (seeds), but whether or not a seed germinated will be considered the response variable
+            rather than the heights of germinated plants. We will use the wide data set (one row
+            per plant) <c>seeds2.csv</c> and ignore plant heights over time, focusing solely on if
+            the plant germinated at any time. Use multilevel generalized linear models to determine
+            the effects of soil type and sterilization on germination rates; perform separate
+            analyses for coneflowers and leadplants, and describe differences between the two
+            species.
           </p>
         </statement>
       </exercise>
@@ -1199,15 +1209,23 @@ print(ranef1[[1]], more = TRUE)
         <title>Book banning</title>
         <statement>
           <p>
+            Provocative literature constantly risks being challenged and subsequently banned.
+            Reasons for censorship have changed over time, with modern day challenges more likely
+            to be for reasons relating to obscenity and child protection rather than overt
+            political and religious objections <xref ref="Jenkins2006"/>. Many past studies have
+            addressed chiefly the reasons listed by those who challenge a book, but few examine
+            the overall context in which books are banned.
+          </p>
+          <p>
             A team of students assembled a data set from book challenges from the American Library
-            Society occurring in U.S. States between January 2000 and November 2010, with
-            state-level demographic information from the U.S. Census Bureau and the Political
-            Value Index (PVI). All book challenges are included except those from Texas. Variables
-            in <c>bookbanningNoTex.csv</c> include <c>book</c>, <c>booktitle</c>, <c>author</c>,
-            <c>state</c>, <c>removed</c> (primary response: 1 if book was removed), <c>pvi2</c>,
-            <c>cperhs</c>, <c>cmedin</c>, <c>cperba</c>, <c>days2000</c>, <c>obama</c>,
-            <c>freqchal</c>, <c>sexexp</c>, <c>antifamily</c>, <c>occult</c>, <c>language</c>,
-            <c>homosexuality</c>, and <c>violence</c>.
+            Society <xref ref="Fast2011"/> occurring in U.S. States between January 2000 and
+            November 2010, with state-level demographic information from the U.S. Census Bureau
+            and the Political Value Index (PVI). All book challenges are included except those
+            from Texas. Variables in <c>bookbanningNoTex.csv</c> include <c>book</c>,
+            <c>booktitle</c>, <c>author</c>, <c>state</c>, <c>removed</c> (primary response: 1
+            if book was removed), <c>pvi2</c>, <c>cperhs</c>, <c>cmedin</c>, <c>cperba</c>,
+            <c>days2000</c>, <c>obama</c>, <c>freqchal</c>, <c>sexexp</c>, <c>antifamily</c>,
+            <c>occult</c>, <c>language</c>, <c>homosexuality</c>, and <c>violence</c>.
           </p>
           <p>
             Perform exploratory analyses and then run multilevel models to examine significant
@@ -1221,11 +1239,12 @@ print(ranef1[[1]], more = TRUE)
         <title>Yelp restaurant reviews</title>
         <statement>
           <p>
-            Mohr et al. assembled a data set of Yelp restaurant reviews in Madison, WI, from 2005
-            through 2017. The data in <c>yelp.csv</c> contains almost 60,000 reviews on 888
-            restaurants from over 20,000 reviewers, with variables on the reviewer (e.g., total
-            reviews, average stars), the restaurant (e.g., neighborhood, average stars,
-            category), and the review itself (e.g., stars, year, useful ratings, actual text).
+            <xref ref="Mohr2018"/> assembled a data set of Yelp restaurant reviews in Madison,
+            WI, from 2005 through 2017. The data in <c>yelp.csv</c> contains almost 60,000
+            reviews on 888 restaurants from over 20,000 reviewers, with variables on the reviewer
+            (e.g., total reviews, average stars), the restaurant (e.g., neighborhood, average
+            stars, category), and the review itself (e.g., stars, year, useful ratings, actual
+            text).
           </p>
           <p>
             Possible questions to pursue: How can we model number of stars in the rating, or

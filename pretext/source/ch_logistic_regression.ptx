@@ -837,7 +837,7 @@ drop_in_dev &lt;- anova(model1, model2, model3, model4,
 
       <exercise xml:id="exer-ch6-c3">
         <statement>
-          <p>Construct a table and calculate the corresponding odds and odds ratios. Comment on the reported and calculated results in the following excerpt.</p>
+          <p>Construct a table and calculate the corresponding odds and odds ratios. Comment on the reported and calculated results in the following excerpt <xref ref="Kolata2009"/>.</p>
           <p>In November, the Centers for Disease Control and Prevention published a paper reporting that babies conceived with IVF, or with a technique in which sperm are injected directly into eggs, have a slightly increased risk of several birth defects, including a hole between the two chambers of the heart, a cleft lip or palate, an improperly developed esophagus and a malformed rectum. The study involved 9,584 babies with birth defects and 4,792 babies without. Among the mothers of babies without birth defects, 1.1% had used IVF or related methods, compared with 2.4% of mothers of babies with birth defects.</p>
           <p>The findings are considered preliminary, and researchers say they believe IVF does not carry excessive risks. There is a 3% chance that any given baby will have a birth defect.</p>
         </statement>
@@ -969,7 +969,7 @@ cdplot(as.factor(rtemp1)~dtemp1)
       <exercise xml:id="exer-ch6-g4">
         <title>Birdkeeping and lung cancer: a retrospective observational study</title>
         <statement>
-          <p>A 1972&#8211;1981 health survey in The Hague, Netherlands, discovered an association between keeping pet birds and increased risk of lung cancer. To investigate birdkeeping as a risk factor, researchers conducted a case-control study of patients in 1985 at four hospitals in The Hague. They identified 49 cases of lung cancer among patients who were registered with a general practice, who were age 65 or younger, and who had resided in the city since 1965. Each patient (case) with cancer was matched with two control subjects (without cancer) by age and sex.</p>
+          <p>A 1972&#8211;1981 health survey in The Hague, Netherlands, discovered an association between keeping pet birds and increased risk of lung cancer. To investigate birdkeeping as a risk factor, researchers conducted a case-control study of patients in 1985 at four hospitals in The Hague. They identified 49 cases of lung cancer among patients who were registered with a general practice, who were age 65 or younger, and who had resided in the city since 1965. Each patient (case) with cancer was matched with two control subjects (without cancer) by age and sex. Further details can be found in <xref ref="Holst1988"/>.</p>
           <p>Age, sex, and smoking history are all known to be associated with lung cancer incidence. Thus, researchers wished to determine: after age, sex, socioeconomic status, and smoking have been controlled for, is there an additional risk associated with birdkeeping? The data <xref ref="Ramsey2002"/> is found in <c>birdkeeping.csv</c>, and the variables are listed below.</p>
           <p><ul>
             <li><p><c>female</c> = sex (1 = Female, 0 = Male)</p></li>
