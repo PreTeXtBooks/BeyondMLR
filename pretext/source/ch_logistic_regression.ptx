@@ -98,7 +98,7 @@ library(tidyverse)
       <p>Does the probability of a save in a soccer match depend upon whether the goalkeeper's team is behind or not? <xref ref="Roskes2011"/> looked at penalty kicks in the men's World Cup soccer championships from 1982 to 2010, and they assembled data on 204 penalty kicks during shootouts. The data for this study is summarized in Table <xref ref="tab-table1chp6"/>.</p>
 
       <table xml:id="tab-table1chp6">
-        <title>Soccer goalkeepers' penalty kick saves when their team is and is not behind. (Source: Roskes et al. 2011.)</title>
+        <title>Soccer goalkeepers' penalty kick saves when their team is and is not behind. (Source: <xref ref="Roskes2011"/>.)</title>
         <tabular halign="center" top="major" bottom="major">
           <row header="yes" bottom="medium">
             <cell></cell>
