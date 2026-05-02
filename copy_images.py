@@ -86,6 +86,8 @@ def main():
     # ------------------------------------------------------------------
     static_maps = [
         # (source_file, target_name_in_generated_assets)
+        # Note: source filenames preserve the original capitalisation as
+        # committed to the repository (e.g. .PNG vs .png).
         ("StudyDesignDiagram.PNG",          "seedstudy-1.png"),
         ("DamsTreesStructure.png",          "fig-DamsTreesStructure.png"),
         ("ParametricBootstrapDiagram9.png", "fig-parabootdiagram.png"),

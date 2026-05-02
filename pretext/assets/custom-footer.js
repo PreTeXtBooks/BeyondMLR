@@ -66,15 +66,18 @@
 
       // Hide the code block initially
       box.style.display = "none";
+      box.setAttribute("aria-hidden", "true");
 
       btn.addEventListener("click", function () {
         var expanded = btn.getAttribute("aria-expanded") === "true";
         if (expanded) {
           box.style.display = "none";
+          box.setAttribute("aria-hidden", "true");
           btn.setAttribute("aria-expanded", "false");
           btn.textContent = "Show R code";
         } else {
           box.style.display = "";
+          box.removeAttribute("aria-hidden");
           btn.setAttribute("aria-expanded", "true");
           btn.textContent = "Hide R code";
         }
