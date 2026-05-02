@@ -990,11 +990,49 @@ optimize(oLik.f, interval=c(0,1), maximum=TRUE)
       </table>
 
       <p>
-        The products of the likelihood contributions for the Sex Conditional Model for all of the
-        one-, two- and three-child NLSY families give us the full likelihood as a function of the
-        three parameters <m>p_{B|N}</m>, <m>p_{B|\textrm{B Bias}}</m>, and
-        <m>p_{B|\textrm{G Bias}}</m>.
+        The products of the last three columns of <xref ref="tab-table8chp2"/> provide the
+        likelihood contributions for the Sex Conditional Model for all of the one-, two- and
+        three-child NLSY families. We write the likelihood as a function of the three parameters
+        <m>p_{B|N}</m>, <m>p_{B|\textrm{B Bias}}</m>, and <m>p_{B|\textrm{G Bias}}</m>.
       </p>
+
+      <table xml:id="tab-table8chp2">
+        <title>Likelihood contributions for NLSY families in Sex Unconditional and Sex Conditional
+        Models.</title>
+        <tabular>
+          <row header="yes">
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+            <cell colspan="3">Sex Conditional Model</cell>
+          </row>
+          <row header="yes">
+            <cell>Family composition</cell>
+            <cell>Num. families</cell>
+            <cell>Sex Unconditional</cell>
+            <cell>Child 1</cell>
+            <cell>Child 2</cell>
+            <cell>Child 3</cell>
+          </row>
+          <row><cell>B</cell><cell>930</cell><cell><m>p_B</m></cell><cell><m>p_{B|N}</m></cell><cell></cell><cell></cell></row>
+          <row><cell>G</cell><cell>951</cell><cell><m>(1-p_B)</m></cell><cell><m>1-p_{B|N}</m></cell><cell></cell><cell></cell></row>
+          <row><cell>BB</cell><cell>582</cell><cell><m>p_B^2</m></cell><cell><m>p_{B|N}</m></cell><cell><m>p_{B|\textrm{B Bias}}</m></cell><cell></cell></row>
+          <row><cell>BG</cell><cell>666</cell><cell><m>p_B(1-p_B)</m></cell><cell><m>p_{B|N}</m></cell><cell><m>1-p_{B|\textrm{B Bias}}</m></cell><cell></cell></row>
+          <row><cell>GB</cell><cell>666</cell><cell><m>(1-p_B)p_B</m></cell><cell><m>1-p_{B|N}</m></cell><cell><m>p_{B|\textrm{G Bias}}</m></cell><cell></cell></row>
+          <row><cell>GG</cell><cell>530</cell><cell><m>(1-p_B)^2</m></cell><cell><m>1-p_{B|N}</m></cell><cell><m>1-p_{B|\textrm{G Bias}}</m></cell><cell></cell></row>
+          <row><cell>BBB</cell><cell>186</cell><cell><m>p_B^3</m></cell><cell><m>p_{B|N}</m></cell><cell><m>p_{B|\textrm{B Bias}}</m></cell><cell><m>p_{B|\textrm{B Bias}}</m></cell></row>
+          <row><cell>BBG</cell><cell>177</cell><cell><m>p_B^2(1-p_B)</m></cell><cell><m>p_{B|N}</m></cell><cell><m>p_{B|\textrm{B Bias}}</m></cell><cell><m>1-p_{B|\textrm{B Bias}}</m></cell></row>
+          <row><cell>BGG</cell><cell>173</cell><cell><m>p_B(1-p_B)^2</m></cell><cell><m>p_{B|N}</m></cell><cell><m>1-p_{B|\textrm{B Bias}}</m></cell><cell><m>1-p_{B|N}</m></cell></row>
+          <row><cell>BGB</cell><cell>148</cell><cell><m>p_B^2(1-p_B)</m></cell><cell><m>p_{B|N}</m></cell><cell><m>1-p_{B|\textrm{B Bias}}</m></cell><cell><m>p_{B|N}</m></cell></row>
+          <row><cell>GBB</cell><cell>151</cell><cell><m>p_B^2(1-p_B)</m></cell><cell><m>1-p_{B|N}</m></cell><cell><m>p_{B|\textrm{G Bias}}</m></cell><cell><m>p_{B|N}</m></cell></row>
+          <row><cell>GGB</cell><cell>125</cell><cell><m>p_B(1-p_B)^2</m></cell><cell><m>1-p_{B|N}</m></cell><cell><m>1-p_{B|\textrm{G Bias}}</m></cell><cell><m>p_{B|\textrm{G Bias}}</m></cell></row>
+          <row><cell>GBG</cell><cell>182</cell><cell><m>p_B(1-p_B)^2</m></cell><cell><m>1-p_{B|N}</m></cell><cell><m>p_{B|\textrm{G Bias}}</m></cell><cell><m>1-p_{B|N}</m></cell></row>
+          <row><cell>GGG</cell><cell>159</cell><cell><m>(1-p_B)^3</m></cell><cell><m>1-p_{B|N}</m></cell><cell><m>1-p_{B|\textrm{G Bias}}</m></cell><cell><m>1-p_{B|\textrm{G Bias}}</m></cell></row>
+          <row><cell>log-likelihood</cell><cell></cell><cell><m>-7396.067</m></cell><cell></cell><cell><m>-7374.238</m></cell><cell></cell></row>
+          <row><cell>AIC</cell><cell></cell><cell><m>14794.13</m></cell><cell></cell><cell><m>14751.48</m></cell><cell></cell></row>
+          <row><cell>BIC</cell><cell></cell><cell><m>14810.68</m></cell><cell></cell><cell><m>14749.18</m></cell><cell></cell></row>
+        </tabular>
+      </table>
 
       <md>
         <mrow>\mathrm{Lik}(p_{B|N},\ p_{B|\textrm{B Bias}},\ p_{B|\textrm{G Bias}}) \amp=
@@ -1014,9 +1052,10 @@ optimize(oLik.f, interval=c(0,1), maximum=TRUE)
       </men>
 
       <p>
-        To use calculus to estimate the probability of a boy entering a neutral family,
-        <m>p_{B|N}</m>, we differentiate <xref ref="eq-log-likall"/> with respect to
-        <m>p_{B|N}</m> holding all other parameters constant:
+        To use calculus to estimate the probability of a boy entering a neutral family (a family
+        with equal boys and girls), <m>p_{B|N}</m>, we begin with the logarithm of the likelihood
+        in <xref ref="eq-log-likall"/>. Differentiating the log-likelihood with respect to
+        <m>p_{B|N}</m> holding all other parameters constant yields an intuitive estimate.
       </p>
 
       <md>
