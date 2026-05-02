@@ -39,34 +39,41 @@ library(tidyverse)
     <title>Introduction to Poisson Regression</title>
 
     <introduction>
-      <p>Recall from <xref ref="ch-distthry"/> that if <m>Y \sim \textrm{Poisson}(\lambda)</m>, then both the mean and variance of <m>Y</m> equal <m>\lambda</m>. The <term>Poisson regression</term> <idx>Poisson regression</idx> model links one or more explanatory variables to a Poisson response variable. Given explanatory variables <m>X_1, X_2, \ldots, X_p</m>, we model the mean count <m>\lambda</m> via
+      <p>Consider the following questions:</p>
+      <ol>
+        <li><p>Are the number of motorcycle deaths in a given year related to a state's helmet laws?</p></li>
+        <li><p>Does the number of employers conducting on-campus interviews during a year differ for public and private colleges?</p></li>
+        <li><p>Does the daily number of asthma-related visits to an Emergency Room differ depending on air pollution indices?</p></li>
+        <li><p>Has the number of deformed fish in randomly selected Minnesota lakes been affected by changes in trace minerals in the water over the last decade?</p></li>
+      </ol>
+      <p>Each example involves predicting a response using one or more explanatory variables, although these examples have response variables that are counts per some unit of time or space.  A Poisson random variable is often used to model counts; see <xref ref="ch-distthry"/> for properties of the Poisson distribution.  Since a Poisson random variable is a count, its minimum value is zero and, in theory, the maximum is unbounded. We'd like to model our main parameter <m>\lambda</m>, the average number of occurrences per unit of time or space, as a function of one or more covariates.  For example, in the first question above, <m>\lambda_i</m> represents the average number of motorcycle deaths in a year for state <m>i</m>, and we hope to show that state-to-state variability in <m>\lambda_i</m> can be explained by state helmet laws.</p>
+      <p>For a linear least squares regression model, the parameter of interest is the average response, <m>\mu_i</m>, for subject <m>i</m>, and <m>\mu_i</m> is modeled as a line in the case of one explanatory variable. By analogy, it might seem reasonable to try to model the Poisson parameter <m>\lambda_i</m> as a linear function of an explanatory variable, but there are some problems with this approach.  In fact, a model like <m>\lambda_i=\beta_0+\beta_1x_i</m> doesn't work well for Poisson data.  A line is certain to yield negative values for certain <m>x_i</m>, but <m>\lambda_i</m> can only take on values from 0 to <m>\infty</m>. In addition, the equal variance assumption in linear regression inference is violated because as the mean rate for a Poisson variable increases, the variance also increases (recall from <xref ref="ch-distthry"/> that if <m>Y</m> is the observed count, then <m>E(Y)=Var(Y)=\lambda</m>).</p>
+      <p>One way to avoid these problems is to model <m>log(\lambda_i)</m> instead of <m>\lambda_i</m> as a function of the covariates. The <m>log(\lambda_i)</m> takes on values from <m>-\infty</m> to <m>\infty</m>. We can also take into account the increase in the variance with an increasing mean using this approach. (Note that throughout <em>Beyond Multiple Linear Regression</em> we use log to represent the natural logarithm.)  Thus, we will consider the <term>Poisson regression</term> <idx>Poisson regression</idx> model:
       <me>
-        \log(\lambda) = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p,
+        log(\lambda_i)=\beta_0+\beta_1 x_i
       </me>
-      or equivalently,
-      <me>
-        \lambda = e^{\beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p}.
-      </me>
-      <fn>Note that throughout <em>Beyond Multiple Linear Regression</em> we use log to represent the natural logarithm.</fn>
-      </p>
-
-      <p>Because counts are necessarily non-negative and the exponential function always produces positive values, the Poisson regression model respects this constraint automatically. Compare this to ordinary least squares (OLS) regression, where a fitted linear model could produce negative predicted values when the response can only be zero or positive.</p>
+      where the observed values <m>Y_i \sim</m> Poisson with <m>\lambda=\lambda_i</m> for a given <m>x_i</m>. For example, each state <m>i</m> can potentially have a different <m>\lambda</m> depending on its value of <m>x_i</m>, where <m>x_i</m> could represent presence or absence of a particular helmet law.  Note that the Poisson regression model contains no separate error term like the <m>\epsilon</m> we see in linear regression, because <m>\lambda</m> determines both the mean and the variance of a Poisson random variable.</p>
     </introduction>
 
     <subsection xml:id="sec-pois-assumptions">
       <title>Poisson Regression Assumptions</title>
-      <p>The key assumptions of Poisson regression are:</p>
-      <p><ol>
-        <li><p><term>Poisson response</term>: the response variable is a count that follows a Poisson distribution.</p></li>
-        <li><p><term>Independence</term>: the observations are independent of one another.</p></li>
-        <li><p><term>Mean equals variance</term>: as implied by the Poisson distribution, the mean and variance of the count response are equal.</p></li>
-        <li><p><term>Linearity</term>: the log of the mean count, <m>\log(\lambda)</m>, is a linear function of the predictors.</p></li>
-      </ol></p>
+      <p>Much like linear least squares regression (LLSR), using Poisson regression to make inferences requires model assumptions.</p>
+      <ol>
+        <li><p><term>Poisson Response</term> The response variable is a count per unit of time or space, described by a Poisson distribution.</p></li>
+        <li><p><term>Independence</term> The observations must be independent of one another.</p></li>
+        <li><p><term>Mean=Variance</term> By definition, the mean of a Poisson random variable must be equal to its variance.</p></li>
+        <li><p><term>Linearity</term> The log of the mean rate, <m>log(\lambda)</m>, must be a linear function of x.</p></li>
+      </ol>
     </subsection>
 
     <subsection xml:id="sec-pois-graphical">
       <title>A Graphical Look at Poisson Regression</title>
-      <p>Figure <xref ref="fig-OLSpois"/> compares OLS and Poisson regression. In OLS, the conditional distribution of <m>Y</m> given <m>X</m> is assumed to be normal with constant variance. In contrast, Poisson regression assumes the conditional distribution is Poisson, with mean (and variance) that changes as a function of <m>X</m>. Note that we plot <m>\log(\bar{Y})</m> against <m>X</m> (rather than <m>\bar{Y}</m> against <m>X</m>) when assessing the linearity assumption, since the model is linear in <m>\log(\lambda)</m>.</p>
+      <p>Figure <xref ref="fig-OLSpois"/> illustrates a comparison of the LLSR model for inference to Poisson regression using a log function of <m>\lambda</m>.</p>
+      <ol>
+        <li><p>The graphic displaying the LLSR inferential model appears in the left panel of Figure <xref ref="fig-OLSpois"/>. It shows that, for each level of X, the responses are approximately normal.  The panel on the right side of Figure <xref ref="fig-OLSpois"/> depicts what a Poisson regression model looks like. For each level of X, the responses follow a Poisson distribution (Assumption 1). For Poisson regression, small values of <m>\lambda</m> are associated with a distribution that is noticeably skewed with lots of small values and only a few larger ones. As <m>\lambda</m> increases the distribution of the responses begins to look more and more like a normal distribution.</p></li>
+        <li><p>In the LLSR model, the variation in <m>Y</m> at each level of X, <m>\sigma^2</m>, is the same. For Poisson regression the responses at each level of X become more variable with increasing means, where variance=mean (Assumption 3).</p></li>
+        <li><p>In the case of LLSR, the mean responses for each level of X, <m>\mu_{Y|X}</m>, fall on a line. In the case of the Poisson model, the mean values of <m>Y</m> at each level of <m>X</m>, <m>\lambda_{Y|X}</m>, fall on a curve, not a line, although the logs of the means should follow a line (Assumption 4).</p></li>
+      </ol>
 
       <figure xml:id="fig-OLSpois">
         <caption>Comparing OLS regression (left) and Poisson regression (right). In OLS, the conditional distributions are normal with constant variance. In Poisson regression, the conditional distributions are Poisson with mean equal to variance, both of which change with <m>X</m>.</caption>
@@ -87,17 +94,19 @@ library(tidyverse)
     <title>Case Study: Household Size in the Philippines</title>
 
     <introduction>
-      <p>Our first case study uses data from the 2015 Philippine Statistics Authority Family Income and Expenditure Survey (FIES). We will use Poisson regression to model the number of people living in a household using age of the household head and region as predictors. </p>
+      <p>How many other people live with you in your home? The number of people sharing a house differs from country to country and often from region to region. International agencies use household size when determining needs of populations, and the household sizes determine the magnitude of the household needs.</p>
+      <p>The Philippine Statistics Authority (PSA) spearheads the Family Income and Expenditure Survey (FIES) nationwide. The survey, which is undertaken every three years, is aimed at providing data on family income and expenditure, including levels of consumption by item of expenditure. Our data, from the 2015 FIES, is a subset of 1500 of the 40,000 observations.  Our data set focuses on five regions: Central Luzon, Metro Manila, Ilocos, Davao, and Visayas (see <xref ref="fig-philippinesmap"/>).</p>
+      <p>At what age are heads of households in the Philippines most likely to find the largest number of people in their household? Is this association similar for poorer households (measured by the presence of a roof made from predominantly light/salvaged materials)? We begin by explicitly defining our response, <m>Y=</m> number of household members other than the head of the household. We then define the explanatory variables: age of the head of the household, type of roof (predominantly light/salvaged material or predominantly strong material), and location (Central Luzon, Davao Region, Ilocos Region, Metro Manila, or Visayas). Note that predominantly light/salvaged materials are a combination of light material, mixed but predominantly light material, and mixed but predominantly salvaged material, and salvaged matrial.  Our response is a count, so we consider a Poisson regression where the parameter of interest is <m>\lambda</m>, the average number of people, other than the head, per household. We will primarily examine the relationship between household size and age of the head of household, controlling for location and income.</p>
     </introduction>
 
     <subsection xml:id="organizedata4">
       <title>Data Organization</title>
 
-      <p>The Philippine Statistics Authority (PSA) conducts the Family Income and Expenditure Survey (FIES) nationwide every three years to provide data on family income and expenditure. Our data, from the 2015 FIES, is a subset of 1,500 of the 40,000 observations. Our data set focuses on five regions: Central Luzon, Metro Manila, Ilocos, Davao, and Visayas (see <xref ref="fig-philippinesmap"/>). Each line of the data file <c>fHH1.csv</c> refers to a household at the time of the survey:</p>
+      <p>The first five rows from our data set <c>fHH1.csv</c> are illustrated in <xref ref="tab-fHH1table1"/>. Each line of the data file refers to a household at the time of the survey:</p>
       <ul>
         <li><p><c>location</c> = where the house is located (Central Luzon, Davao Region, Ilocos Region, Metro Manila, or Visayas)</p></li>
         <li><p><c>age</c> = the age of the head of household</p></li>
-        <li><p><c>total</c> = the number of people in the household <em>other than</em> the head</p></li>
+        <li><p><c>total</c> = the number of people in the household other than the head</p></li>
         <li><p><c>numLT5</c> = the number in the household under 5 years of age</p></li>
         <li><p><c>roof</c> = the type of roof in the household (either Predominantly Light/Salvaged Material, or Predominantly Strong Material, where stronger material can sometimes be used as a proxy for greater wealth)</p></li>
       </ul>
@@ -119,7 +128,7 @@ fHH1 &lt;- read_csv("data/fHH1.csv")
     <subsection xml:id="exploreHH">
       <title>Exploratory Data Analyses</title>
 
-      <p>We begin with a histogram of <c>total</c>, the number of people in the household. Figure <xref ref="fig-nhouse"/> shows the distribution of household sizes. The majority of households have between 2 and 6 people, and the distribution is right-skewed. The sample mean is about 4.7 people per household and the variance is close to the mean, providing initial evidence that a Poisson model may be appropriate.</p>
+      <p>For the rest of this case study, we will refer to the number of people in a household as the total number of people in that specific household <em>besides</em> the head of household. The average number of people in a household is 3.68 (Var = 5.53), and there are anywhere from 0 to 16 people in the houses. Over 11.1% of these households are made from predominantly light and salvaged material. The mean number of people in a house for houses with a roof made from predominantly strong material is 3.69 (Var=5.55), whereas houses with a roof made from predominantly light/salvaged material average 3.64 people (Var=5.41). Of the various locations, Visayas has the largest household size, on average, with a mean of 3.90 in the household, and the Davao Region has the smallest with a mean of 3.39.</p>
 
       <figure xml:id="fig-nhouse">
         <caption>Histogram of the number of people in a household (Philippines data).</caption>
@@ -128,7 +137,7 @@ fHH1 &lt;- read_csv("data/fHH1.csv")
         </image>
       </figure>
 
-      <p>To assess the linearity assumption, we compute the mean household size for each age group and plot the log of the mean against age (Figure <xref ref="fig-totalPoisByAge"/>). The relationship between log mean household size and age appears reasonably linear, supporting the linearity assumption.</p>
+      <p>Figure <xref ref="fig-nhouse"/> reveals a fair amount of variability in the number in each house; responses range from 0 to 16 with many of the respondents reporting between 1 and 5 people in the house. Like many Poisson distributions, this graph is right skewed. It clearly does not suggest that the number of people in a household is a normally distributed response.</p>
 
       <figure xml:id="fig-totalPoisByAge">
         <caption>Distribution of household sizes by age group of the household head.</caption>
@@ -137,7 +146,13 @@ fHH1 &lt;- read_csv("data/fHH1.csv")
         </image>
       </figure>
 
-      <p>Figure <xref ref="fig-ageXnhouse"/> shows a scatterplot of household size against age of the household head. The mean count (blue line) shows an inverted-U shape: household size tends to increase in early adulthood, peak, and then decrease as children grow up and leave home. This suggests that a quadratic term in age might improve the model.</p>
+      <p>Figure <xref ref="fig-totalPoisByAge"/> further shows that responses can be reasonably modeled with a Poisson distribution when grouped by a key explanatory variable: age of the household head.  These last two plots together suggest that Assumption 1 (Poisson Response) is satisfactory in this case study.</p>
+
+      <p>For Poisson random variables, the variance of <m>Y</m> (i.e., the square of the standard deviation of <m>Y</m>), is equal to its mean, where <m>Y</m> represents the size of an individual household. As the mean increases, the variance increases. So, if the response is a count and the mean and variance are approximately equal for each group of <m>X</m>, a Poisson regression model may be a good choice. In <xref ref="tab-table1chp4"/> we display age groups by 5-year increments, to check to see if the empirical means and variances of the number in the house are approximately equal for each age group. This provides us one way in which to check the Poisson Assumption 3 (mean = variance).</p>
+
+      <p>If there is a problem with this assumption, most often we see variances much larger than means.  Here, as expected, we see more variability as age increases.  However, it appears that the variance is smaller than the mean for lower ages, while the variance is greater than the mean for higher ages.  Thus, there is some evidence of a violation of the mean=variance assumption (Assumption 3), although any violations are modest.</p>
+
+      <p>The Poisson regression model also implies that <m>log(\lambda_i)</m>, not the mean household size <m>\lambda_i</m>, is a linear function of age; i.e., <m>log(\lambda_i)=\beta_0+\beta_1\textrm{age}_i</m>. Therefore, to check the linearity assumption (Assumption 4) for Poisson regression, we would like to plot <m>log(\lambda_i)</m> by age.  Unfortunately, <m>\lambda_i</m> is unknown. Our best guess of <m>\lambda_i</m> is the observed mean number in the household for each age (level of <m>X</m>). Because these means are computed for observed data, they are referred to as <term>empirical</term> means. Taking the logs of the empirical means and plotting by age provides a way to assess the linearity assumption. The smoothed curve added to Figure <xref ref="fig-ageXnhouse"/> suggests that there is a curvilinear relationship between age and the log of the mean household size, implying that adding a quadratic term should be considered. This finding is consistent with the researchers' hypothesis that there is an age at which a maximum household size occurs. It is worth noting that we are not modeling the log of the empirical means, rather it is the log of the <em>true</em> rate that is modeled. Looking at empirical means, however, does provide an idea of the form of the relationship between <m>log(\lambda)</m> and <m>x_i</m>.</p>
 
       <figure xml:id="fig-ageXnhouse">
         <caption>The log of the mean household sizes, besides the head of household, by age of the head of household, with loess smoother.</caption>
@@ -146,7 +161,7 @@ fHH1 &lt;- read_csv("data/fHH1.csv")
         </image>
       </figure>
 
-      <p>Figure <xref ref="fig-byregion"/> displays mean household size by region. The Central Visayas and ARMM (Autonomous Region in Muslim Mindanao) regions tend to have the largest households, while the National Capital Region tends to have the smallest. Regional variation motivates including region as a covariate.</p>
+      <p>We can extend Figure <xref ref="fig-ageXnhouse"/> by fitting separate curves for each region (see Figure <xref ref="fig-byregion"/>).  This allows us to see if the relationship between mean household size and age is consistent across region.  In this case, the relationships are pretty similar; if they weren't, we could consider adding an age-by-region interaction to our eventual Poisson regression model.</p>
 
       <figure xml:id="fig-byregion">
         <caption>Empirical log of the mean household sizes vs. age of the head of household, with loess smoother by region.</caption>
@@ -154,12 +169,20 @@ fHH1 &lt;- read_csv("data/fHH1.csv")
           <description>Bar chart of mean household size by Philippines region, showing notable variation across regions.</description>
         </image>
       </figure>
+
+      <p>Finally, the independence assumption (Assumption 2) can be assessed using knowledge of the study design and the data collection process.  In this case, we do not have enough information to assess the independence assumption with the information we are given. If each household was not selected individually in a random manner, but rather groups of households were selected from different regions with differing customs about living arrangements, the independence assumption would be violated. If this were the case, we could use a multilevel model like those discussed in later chapters with a village term.</p>
     </subsection>
 
     <subsection xml:id="sec-PoisInference">
       <title>Estimation and Inference</title>
 
-      <p>We first fit a simple Poisson regression model using only age of the household head as a predictor:</p>
+      <p>We first consider a model for which <m>log(\lambda)</m> is linear in age. We then will determine whether a model with a quadratic term in age provides a significant improvement based on trends we observed in the exploratory data analysis.</p>
+
+      <p>R reports an estimated regression equation for the linear Poisson model as:
+      <me>
+        log(\hat{\lambda}) = 1.55 - 0.0047 \textrm{age}
+      </me>
+      </p>
 
       <program language="r" xml:id="code-ch4-pois-fit1">
         <code>
@@ -169,37 +192,35 @@ summary(modela)
         </code>
       </program>
 
-      <p>With only age as a predictor, the fitted model is:
-      <me>
-        \log(\hat{\lambda}) = 1.5789 - 0.00655 \cdot \textrm{age},
-      </me>
-      or equivalently, <m>\hat{\lambda} = e^{1.5789 - 0.00655 \cdot \textrm{age}}</m>.</p>
-
-      <p>The coefficient for age (<m>\hat{\beta}_1 = -0.00655</m>) is negative, suggesting that mean household size decreases as the age of the household head increases, after accounting for the inverted-U pattern visible in the EDA. The corresponding rate ratio is obtained by exponentiating the coefficient:
-      <men xml:id="eq-rateRatio">
-        e^{\hat{\beta}_1} = e^{-0.00655} \approx 0.9935.
-      </men>
+      <p>How can the coefficient estimates be interpreted in terms of this example? As done when interpreting slopes in the LLSR models, we consider how the estimated mean number in the house, <m>\lambda</m>, changes as the age of the household head increases by an additional year. But in place of looking at change in the mean number in the house, with a Poisson regression we consider the log of the mean number in the house and then convert back to original units. For example, consider a comparison of two models---one for a given age (<m>x</m>) and one after increasing age by 1 (<m>x+1</m>):
+      <mdn>
+        <mrow>log(\lambda_X) \amp= \beta_0 + \beta_1X</mrow>
+        <mrow>log(\lambda_{X+1}) \amp= \beta_0 + \beta_1(X+1)</mrow>
+        <mrow>log(\lambda_{X+1})-log(\lambda_X) \amp=  \beta_1</mrow>
+        <mrow>log \left(\frac{\lambda_{X+1}}{\lambda_X}\right) \amp= \beta_1</mrow>
+        <mrow xml:id="eq-rateRatio">\frac{\lambda_{X+1}}{\lambda_X} \amp= e^{\beta_1}</mrow>
+      </mdn>
       </p>
 
-      <p>We interpret the rate ratio as follows: for each one-year increase in the age of the household head, the mean number of household members is multiplied by 0.9935 (a decrease of about 0.65%), holding all other predictors constant. We call <m>e^{\hat{\beta}_j}</m> the <term>rate ratio</term> <idx>rate ratio</idx> for predictor <m>X_j</m>.</p>
+      <p>These results suggest that by exponentiating the coefficient on age we obtain the multiplicative factor by which the mean count changes. In this case, the mean number in the house changes by a factor of <m>e^{-0.0047}=0.995</m> or decreases by 0.5% (since <m>1-.995 = .005</m>) with each additional year older the household head is; or, we predict a 0.47% <em>increase</em> in mean household size for a 1-year <em>decrease</em> in age of the household head (since <m>1/.995=1.0047</m>). The quantity on the left-hand side of Equation <xref ref="eq-rateRatio"/> is referred to as a <term>rate ratio</term>  or <term>relative risk</term>, <idx>relative risk (rate ratio)</idx> and it represents a percent change in the response for a unit change in X.  In fact, for regression models in general, whenever a variable (response or explanatory) is logged, we make interpretations about multiplicative effects on that variable, while with unlogged variables we can reach our usual interpretations about additive effects.</p>
 
-      <p>Wald-type inference for a Poisson regression coefficient <m>\beta_j</m> uses the test statistic
-      <me>
-        Z = \frac{\hat{\beta}_j}{SE(\hat{\beta}_j)},
-      </me>
-      which follows an approximate standard Normal distribution under <m>H_0: \beta_j = 0</m>. The p-value of the age predictor is very small (p &lt; 0.001), providing strong evidence that age is related to household size.</p>
+      <p>Typically, the standard errors for the estimated coefficients are included in Poisson regression output. Here the standard error for the estimated coefficient for age is 0.00094. We can use the standard error to construct a confidence interval for <m>\beta_1</m>. A 95% CI provides a range of plausible values for the <c>age</c> coefficient and can be constructed:
+      <me>(\hat\beta_1-Z^*\cdot SE(\hat\beta_1), \quad \hat\beta_1+Z^*\cdot SE(\hat\beta_1))</me>
+      <me>(-0.0047-1.96*0.00094, \quad -0.0047+1.96*0.00094)</me>
+      <me>(-0.0065, -0.0029).</me>
+      </p>
+
+      <p>Exponentiating the endpoints yields a confidence interval for the relative risk; i.e., the percent change in household size for each additional year older.  Thus <m>(e^{-0.0065},e^{-0.0029})=(0.993,0.997)</m> suggests that we are 95% confident that the mean number in the house decreases between 0.7% and 0.3% for each additional year older the head of household is. It is best to construct a confidence interval for the coefficient and then exponentiate the endpoints because the estimated coefficients more closely follow a normal distribution than the exponentiated coefficients. There are other approaches to constructing intervals in these circumstances, including profile likelihood, the delta method, and bootstrapping, and we will discuss some of those approaches later.  In this case, for instance, the profile likelihood interval is nearly identical to the Wald-type (normal theory) confidence interval <idx>Wald-type confidence interval</idx> above.</p>
+
+      <p>If there is no association between age and household size, there is no change in household size for each additional year, so <m>\lambda_X</m> is equal to <m>\lambda_{X+1}</m> and the ratio <m>\lambda_{X+1}/\lambda_X</m> is 1.  In other words, if there is no association between age and household size, then <m>\beta_1=0</m> and <m>e^{\beta_1}=1</m>.  Note that our interval for <m>e^{\beta_1}</m>, (0.993,0.997), does not include 1, so the model with age is preferred to a model without age; i.e., age is significantly associated with household size.  Note that we could have similarly confirmed that our interval for <m>\beta_1</m> does not include 0 to show the significance of age as a predictor of household size.</p>
+
+      <p>Another way to test the significance of the age term is to calculate a <term>Wald-type statistic</term>. <idx>Wald-type test</idx> A Wald-type test statistic is the estimated coefficient divided by its standard error. When the true coefficient is 0, this test statistic follows a standard normal distribution for sufficiently large <m>n</m>. The estimated coefficient associated with the linear term in age is <m>{\hat{\beta}_1}=-0.0047</m> with standard error <m>SE(\hat{\beta}_1)=0.00094</m>.  The value for the Wald test statistic is then <m>Z=\hat{\beta}_1/SE(\hat{\beta}_1)=-5.026</m>, where <m>Z</m> follows a standard normal distribution if <m>\beta_1=0</m>.  In this case, the two-sided p-value based on the standard normal distribution for testing <m>H_0:\beta_1=0</m> is almost 0 (<m>p=0.000000501</m>).  Therefore, we have statistically significant evidence (Z = -5.026, p &lt; .001) that average household size decreases as age of the head of household increases.</p>
     </subsection>
 
     <subsection xml:id="sec-Devtocompare">
       <title>Using Deviances to Compare Models</title>
 
-      <p>The <term>deviance</term> <idx>deviance</idx> of a Poisson regression model measures how well the model fits the data, analogous to the residual sum of squares in OLS regression. The <term>residual deviance</term> is twice the log-likelihood difference between a saturated model (one parameter per observation) and the fitted model. A large residual deviance relative to its degrees of freedom (residual deviance / df <m>\gg</m> 1) suggests lack of fit.</p>
-
-      <p>We can compare two nested Poisson models using a <term>drop-in-deviance test</term> <idx>drop-in-deviance test</idx>. The test statistic is
-      <me>
-        G^2 = D(\textrm{reduced}) - D(\textrm{full}),
-      </me>
-      where <m>D</m> denotes residual deviance. Under the null hypothesis that the reduced model is adequate, <m>G^2</m> follows an approximate chi-squared distribution with degrees of freedom equal to the difference in the number of parameters between the two models.</p>
+      <p>There is another way in which to assess how useful age is in our model. A <term>deviance</term> <idx>deviance</idx> is a way in which to measure how the observed data deviates from the model predictions; it will be defined more precisely in <xref ref="sec-PoisResid"/>, but it is similar to sum of squared errors (unexplained variability in the response) in LLSR regression.  Because we want models that minimize deviance, we calculate the <term>drop-in-deviance</term> <idx>drop-in-deviance test</idx> when adding age to the model with no covariates (the <term>null model</term>). <idx>null (reduced) model</idx> The deviances for the null model and the model with age can be found in the model output. A residual deviance for the model with age is reported as 2337.1 with 1498 df. The output also includes the deviance and degrees of freedom for the null model (2362.5 with 1499 df). The drop-in-deviance is 25.4 (2362.5 - 2337.1) with a difference of only 1 df, so that the addition of one extra term (age) reduced unexplained variability by 25.4.  If the null model were true, we would expect the drop-in-deviance to follow a <m>\chi^2</m> distribution with 1 df. Therefore, the p-value for comparing the null model to the model with age is found by determining the probability that the value for a <m>\chi^2</m> random variable with one degree of freedom exceeds 25.4, which is essentially 0. Once again, we can conclude that we have statistically significant evidence (<m>\chi^2_{\text{df} =1}=25.4</m>, <m>p &lt; .001</m>) that average household size decreases as age of the head of household increases.</p>
 
       <program language="r" xml:id="code-ch4-deviance-test">
         <code>
@@ -209,7 +230,30 @@ anova(modela, modela2, test = "Chisq")
         </code>
       </program>
 
-      <p>The drop-in-deviance test strongly favors the model with the quadratic term (<m>G^2 = 120.6</m>, df = 1, p &lt; .001), consistent with the inverted-U pattern observed in the EDA.</p>
+      <p>More formally, we are testing:
+      <me>\textrm{Null (reduced) Model}: \log(\lambda) = \beta_0 \textrm{ or } \beta_1=0</me>
+      <me>\textrm{Larger (full) Model}: \log(\lambda) = \beta_0 + \beta_1\textrm{age} \textrm{ or } \beta_1 \neq 0</me>
+      </p>
+
+      <p>In order to use the drop-in-deviance test, the models being compared must be <term>nested</term>; <idx>nested models</idx> e.g., all the terms in the smaller model must appear in the larger model. Here the smaller model is the null model with the single term <m>\beta_0</m> and the larger model has <m>\beta_0</m> and <m>\beta_1</m>, so the two models are indeed nested. For nested models, we can compare the models' residual deviances to determine whether the larger model provides a significant improvement.</p>
+
+      <p>Here, then, is a summary of these two approaches to hypothesis testing about terms in Poisson regression models:</p>
+
+      <p><alert>Drop-in-deviance test to compare models</alert> <idx>drop-in-deviance test</idx></p>
+      <ul>
+        <li><p>Compute the deviance for each model, then calculate: drop-in-deviance = residual deviance for reduced model -- residual deviance for the larger model.</p></li>
+        <li><p>When the reduced model is true, the drop-in-deviance <m>\sim \chi^2_d</m> where d= the difference in the degrees of freedom associated with the two models (that is, the difference in the number of terms/coefficients).</p></li>
+        <li><p>A large drop-in-deviance favors the larger model.</p></li>
+      </ul>
+
+      <p><alert>Wald test for a single coefficient</alert> <idx>Wald-type test</idx></p>
+      <ul>
+        <li><p>Wald-type statistic = estimated coefficient / standard error</p></li>
+        <li><p>When the true coefficient is 0, for sufficiently large <m>n</m>, the test statistic <m>\sim</m> N(0,1).</p></li>
+        <li><p>If the magnitude of the test statistic is large, there is evidence that the true coefficient is not 0.</p></li>
+      </ul>
+
+      <p>The drop-in-deviance and the Wald-type tests usually provide consistent results; however, if there is a discrepancy, the drop-in-deviance is preferred.  Not only does the drop-in-deviance test perform better in more cases, but it's also more flexible.  If two models differ by one term, then the drop-in-deviance test essentially tests if a single coefficient is 0 like the Wald test does, while if two models differ by more than one term, the Wald test is no longer appropriate.</p>
     </subsection>
 
     <subsection xml:id="likelihood-sec">
