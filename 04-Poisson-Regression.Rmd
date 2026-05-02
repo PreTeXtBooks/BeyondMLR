@@ -195,7 +195,7 @@ kable(headfHH1, booktabs=T,
 
 ### Exploratory Data Analyses {#exploreHH}
 
-```{r}
+```{r, include=FALSE}
 mean(fHH1$total)
 var(fHH1$total)
 #sd(fHH1$total)
@@ -320,7 +320,7 @@ log \left(\frac{\lambda_{X+1}}{\lambda_X}\right)   &= \beta_1\\
 
 These results suggest that by exponentiating the coefficient on age we obtain the multiplicative factor by which the mean count changes. In this case, the mean number in the house changes by a factor of $e^{-0.0047}=0.995$ or decreases by 0.5\% (since $1-.995 = .005$) with each additional year older the household head is; or, we predict a 0.47\% *increase* in mean household size for a 1-year *decrease* in age of the household head (since $1/.995=1.0047$). The quantity on the left-hand side of Equation \@ref(eq:rateRatio) is referred to as a __rate ratio__  or __relative risk__, \index{relative risk (rate ratio)} and it represents a percent change in the response for a unit change in X.  In fact, for regression models in general, whenever a variable (response or explanatory) is logged, we make interpretations about multiplicative effects on that variable, while with unlogged variables we can reach our usual interpretations about additive effects.  
 
-```{r}
+```{r, 4verb2a, message=FALSE, include=FALSE}
 # Wald type CI by hand
 beta1hat <- summary(modela)$coefficients[2,1]
 beta1se <- summary(modela)$coefficients[2,2]
@@ -481,13 +481,13 @@ We now have an equation in age which yields the estimated log(mean number in the
 
 \[\textrm{log(mean numHouse)} =  -0.333 + 0.071 \textrm{age} - 0.00071 \textrm{age}^2\]
 
-```{r}
+```{r, include=FALSE}
 # Finding the age where the number in the house is a maximum
 coefa2 = modela2$coefficients[3]
 coefa = modela2$coefficients[2]
-beta0 = modela2$coefficients[1]
+coefi = modela2$coefficients[2]
 estLogNumHouse.f <- function(age){
-  return(coefa2*(age)^2 + coefa*(age) + beta0)
+  return(coefa2*(age)^2 + coefa*(age) + coefi)
 }
 optimize(estLogNumHouse.f, interval=c(20,70), maximum=TRUE)
 
@@ -519,7 +519,7 @@ cat(" Residual deviance = ", summary(modela2L)$deviance, " on ",
     "Dispersion parameter = ", summary(modela2L)$dispersion)
 ```
 
-```{r}
+```{r, include=FALSE}
 exp(modela2L$coefficients)
 ```
 
