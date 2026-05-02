@@ -636,7 +636,7 @@ count_2b &lt;- rbinom(24, 10, pi_2b)
 
     <p>
       A student research team at St. Olaf College contributed to the efforts of biologist Kathy
-      Shea to investigate a rich data set concerning forestation in the surrounding land. Here is
+      Shea to investigate a rich data set concerning forestation in the surrounding land <xref ref="Eisinger2011"/>. Here is
       a paragraph from the introduction to their project report:
     </p>
 
@@ -888,9 +888,9 @@ tube_multi1 &lt;- lmer(growth_yr1 ~ tubes + (1|transect),
               improve the radon estimates.</p>
             </li>
             <li>
-              <p><alert>Teen alcohol use.</alert> Curran et al. collected data on 82 adolescents
+              <p><alert>Teen alcohol use.</alert> <xref ref="Curran1997"/> collected data on 82 adolescents
               at three time points starting at age 14 to assess factors that affect teen drinking
-              behavior. Key variables in the data set <c>alcohol.csv</c> are as follows:</p>
+              behavior. Key variables in the data set <c>alcohol.csv</c> (source: <xref ref="Singer2003"/>) are as follows:</p>
               <ul>
                 <li><p><c>id</c> = numerical identifier for subject</p></li>
                 <li><p><c>age</c> = 14, 15, or 16</p></li>

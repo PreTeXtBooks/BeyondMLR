@@ -93,7 +93,7 @@ library(tidyverse)
     <subsection xml:id="organizedata4">
       <title>Data Organization</title>
 
-      <p>The Philippine Statistics Authority (PSA) conducts the Family Income and Expenditure Survey (FIES) nationwide every three years to provide data on family income and expenditure. Our data, from the 2015 FIES, is a subset of 1,500 of the 40,000 observations. Our data set focuses on five regions: Central Luzon, Metro Manila, Ilocos, Davao, and Visayas (see <xref ref="fig-philippinesmap"/>). Each line of the data file <c>fHH1.csv</c> refers to a household at the time of the survey:</p>
+      <p>The Philippine Statistics Authority (PSA) conducts the Family Income and Expenditure Survey (FIES) nationwide every three years to provide data on family income and expenditure. Our data, from the 2015 FIES, is a subset of 1,500 of the 40,000 observations <xref ref="PSA"/>. Our data set focuses on five regions: Central Luzon, Metro Manila, Ilocos, Davao, and Visayas (see <xref ref="fig-philippinesmap"/>). Each line of the data file <c>fHH1.csv</c> refers to a household at the time of the survey:</p>
       <ul>
         <li><p><c>location</c> = where the house is located (Central Luzon, Davao Region, Ilocos Region, Metro Manila, or Visayas)</p></li>
         <li><p><c>age</c> = the age of the head of household</p></li>
@@ -693,7 +693,7 @@ exp(coef(zip.m2))
     <subsection xml:id="sec-vuong-test">
       <title>The Vuong Test (optional)</title>
 
-      <p>Moving from ordinary Poisson to zero-inflated Poisson has helped us address additional research questions. While a ZIP model seems more faithful to the nature and structure of this data, can we quantitatively show that a ZIP is better than an ordinary Poisson model? We cannot use the drop-in-deviance test because these two models are not nested. <cite ref="Vuong1989"/> devised a test to compare predicted probabilities of <term>non-nested</term> models. Essentially, the <term>Vuong test</term> <idx>Vuong test</idx> can compare a zero-inflated model and an ordinary regression model.</p>
+      <p>Moving from ordinary Poisson to zero-inflated Poisson has helped us address additional research questions. While a ZIP model seems more faithful to the nature and structure of this data, can we quantitatively show that a ZIP is better than an ordinary Poisson model? We cannot use the drop-in-deviance test because these two models are not nested. <xref ref="Vuong1989"/> devised a test to compare predicted probabilities of <term>non-nested</term> models. Essentially, the <term>Vuong test</term> <idx>Vuong test</idx> can compare a zero-inflated model and an ordinary regression model.</p>
 
       <program language="r" xml:id="code-ch4-vuong">
         <code>
@@ -854,7 +854,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
       <exercise xml:id="exer-ch4-c15">
         <title>Dating online</title>
         <statement>
-          <p>Researchers are interested in the number of dates respondents arranged online and whether the rates differ by age group. Each survey respondent was asked how many dates they have arranged online in the past 3 months as well as the typical amount of time, <m>t</m>, in hours, they spend online weekly. Some rows of data appear in Table <xref ref="tab-ch4-dating"/>.</p>
+          <p>Researchers are interested in the number of dates respondents arranged online and whether the rates differ by age group. Each survey respondent was asked how many dates they have arranged online in the past 3 months as well as the typical amount of time, <m>t</m>, in hours, they spend online weekly (source: <xref ref="Duggan2013"/>). Some rows of data appear in Table <xref ref="tab-ch4-dating"/>.</p>
 
           <table xml:id="tab-ch4-dating">
             <title>Sample data for Exercise 15 (dating online)</title>
@@ -884,7 +884,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
         <statement>
           <p>For rare diseases, the probability of a case occurring, <m>p</m>, in a very large population, <m>n</m>, is small. With a small <m>p</m> and large <m>n</m>, the random variable <m>Y</m> = the number of cases out of <m>n</m> people can be approximated using a Poisson random variable with <m>\lambda = np</m>. Poisson regression can take into account differences in population sizes, <m>n_i</m>, using as an offset <m>\log(n_i)</m>, as well as differences in a population characteristic like <m>x_i</m>. Thus the model has the form: <m>\log(\lambda_i) = \beta_0 + \beta_1 x_i + \log(n_i)</m>, where <m>Y_i \sim \textrm{Poisson}(\lambda_i = n_i p_i)</m>.</p>
 
-          <p>Scotto et al. (1974) wondered if skin cancer rates by age group differ by city. Based on their data in Table <xref ref="tab-ch4-skincancer"/>, identify and describe the following quantities:</p>
+          <p><xref ref="Scotto1974"/> wondered if skin cancer rates by age group differ by city. Based on their data in Table <xref ref="tab-ch4-skincancer"/>, identify and describe the following quantities:</p>
 
           <table xml:id="tab-ch4-skincancer">
             <title>Data on the number of cases of non-melanoma skin cancer for women by age group in two metropolitan areas (Minneapolis-St. Paul and Dallas-Ft. Worth)</title>
@@ -935,7 +935,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
       <exercise xml:id="exer-ch4-g2">
         <title>Elephant mating</title>
         <statement>
-          <p>How does age affect male elephant mating patterns? An article by Poole (1989) investigated whether mating success in male elephants increases with age and whether there is a peak age for mating success. To address this question, the research team followed 41 elephants for one year and recorded both their ages and their number of matings. The data is found in <c>elephant.csv</c>, and the variables are:</p>
+          <p>How does age affect male elephant mating patterns? An article by <xref ref="Poole1989"/> investigated whether mating success in male elephants increases with age and whether there is a peak age for mating success. To address this question, the research team followed 41 elephants for one year and recorded both their ages and their number of matings. The data <xref ref="Ramsey2002"/> is found in <c>elephant.csv</c>, and the variables are:</p>
           <p><ul>
             <li><p><c>MATINGS</c> = the number of matings in a given year</p></li>
             <li><p><c>AGE</c> = the age of the elephant in years.</p></li>
@@ -1097,7 +1097,7 @@ fit3 &lt;- glm(burg09 ~ act.comp + tuition.thous +
         <statement>
           <p>In this exercise, you will use a <term>hurdle model</term> <idx>hurdle model</idx> to analyze the data. A hurdle model is similar to a zero-inflated Poisson model, but instead of assuming that <q>zeros</q> are comprised of two distinct groups (those who would always be 0 and those who happen to be 0), the hurdle model assumes that <q>zeros</q> are a single entity. Therefore, in a hurdle model, cases are either <q>zeros</q> or <q>non-zeros</q>, where <q>non-zeros</q> <em>hurdle</em> the 0 threshold and must always have counts of 1 or above. We will use the <c>pscl</c> package and the <c>hurdle</c> function.</p>
 
-          <p>In a 2018 study, Chapp (2018) scraped every issue statement from webpages of candidates for the U.S. House of Representatives, counting the number of issues candidates commented on and scoring the level of ambiguity of each statement. The data set <c>ambiguity.csv</c> contains:</p>
+          <p>In a 2018 study, <xref ref="Chapp2018"/> scraped every issue statement from webpages of candidates for the U.S. House of Representatives, counting the number of issues candidates commented on and scoring the level of ambiguity of each statement. The data set <c>ambiguity.csv</c> contains:</p>
           <p><ul>
             <li><p><c>name</c>: candidate name</p></li>
             <li><p><c>distID</c>: unique identification number for Congressional district</p></li>
@@ -1128,7 +1128,7 @@ fit3 &lt;- glm(burg09 ~ act.comp + tuition.thous +
       <exercise xml:id="exer-ch4-oe1">
         <title>Airbnb in NYC</title>
         <statement>
-          <p>Awad (2017) scraped 40,628 Airbnb listings from New York City in March 2017 and assembled the data set <c>NYCairbnb.csv</c>. Key variables include:</p>
+          <p><xref ref="Awad2017"/> scraped 40,628 Airbnb listings from New York City in March 2017 and assembled the data set <c>NYCairbnb.csv</c>. Key variables include:</p>
           <p><ul>
             <li><p><c>id</c>: unique ID number for each unit</p></li>
             <li><p><c>last_scraped</c>: date when information was scraped</p></li>
@@ -1151,7 +1151,7 @@ fit3 &lt;- glm(burg09 ~ act.comp + tuition.thous +
       <exercise xml:id="exer-ch4-oe2">
         <title>Crab satellites</title>
         <statement>
-          <p>Brockmann (1996) carried out a study of nesting female horseshoe crabs. Female horseshoe crabs often have male crabs attached to a female's nest, known as <term>satellites</term>. One objective of the study was to determine which characteristics of the female were associated with the number of satellites. The data can be found in <c>crab.csv</c> and includes:</p>
+          <p><xref ref="Brockmann1996"/> carried out a study of nesting female horseshoe crabs. Female horseshoe crabs often have male crabs attached to a female's nest, known as <term>satellites</term>. One objective of the study was to determine which characteristics of the female were associated with the number of satellites. The data can be found in <c>crab.csv</c> and includes:</p>
           <p><ul>
             <li><p><c>NumSat</c>: number of satellites</p></li>
             <li><p><c>Width</c>: carapace width (cm)</p></li>
@@ -1166,7 +1166,7 @@ fit3 &lt;- glm(burg09 ~ act.comp + tuition.thous +
       <exercise xml:id="exer-ch4-oe3">
         <title>Doctor visits</title>
         <statement>
-          <p>Data was collected on doctor visits from a sample of 5,190 people in the 1977/1978 Australian Health Survey. Cameron (1986) sought to explain the variation in doctor visits using one or more explanatory variables. The data can be found in an R data set from <c>library(AER)</c> accessible with the command <c>data("DoctorVisits")</c>. Variable descriptions can be found under <c>help("DoctorVisits")</c>.</p>
+          <p>Data was collected on doctor visits from a sample of 5,190 people in the 1977/1978 Australian Health Survey. <xref ref="Cameron1986"/> sought to explain the variation in doctor visits using one or more explanatory variables. The data can be found in an R data set from <c>library(AER)</c> accessible with the command <c>data("DoctorVisits")</c>. Variable descriptions can be found under <c>help("DoctorVisits")</c>.</p>
           <p>Explore the use of a zero-inflated model for this data. Begin with a histogram of the number of visits, complete an EDA, and then fit several models. Summarize your results.</p>
         </statement>
       </exercise>
@@ -1174,7 +1174,7 @@ fit3 &lt;- glm(burg09 ~ act.comp + tuition.thous +
       <exercise xml:id="exer-ch4-oe4">
         <title>More fish</title>
         <statement>
-          <p>The number of fish caught (<c>count</c>), persons in the party (<c>persons</c>), the number of children in the party (<c>child</c>), whether or not they brought a camper into the park (<c>camper</c>), and the length of stay (<c>LOS</c>) were recorded for 250 camping parties. The data can be found in <c>fish2.csv</c>. Create and assess a model for the number of fish caught.</p>
+          <p>The number of fish caught (<c>count</c>), persons in the party (<c>persons</c>), the number of children in the party (<c>child</c>), whether or not they brought a camper into the park (<c>camper</c>), and the length of stay (<c>LOS</c>) were recorded for 250 camping parties. The data can be found in <c>fish2.csv</c> (source: <xref ref="idre2018"/>). Create and assess a model for the number of fish caught.</p>
         </statement>
       </exercise>
     </exercisegroup>

@@ -45,7 +45,7 @@ library(tidyverse)
     <title>Case Study: Charter Schools</title>
 
     <p>
-      Charter schools were first introduced in the state of Minnesota in 1991. Since then, charter
+      Charter schools were first introduced in the state of Minnesota in 1991 <xref ref="CharterSchools"/>. Since then, charter
       schools have begun appearing all over the United States. While publicly funded, a unique
       feature of charter schools is their independence from many of the regulations that are present
       in the public school systems of their respective city or state. Thus, charters will often
@@ -57,7 +57,7 @@ library(tidyverse)
       We will examine data collected by the Minnesota Department of Education for all Minnesota
       schools during the years 2008–2010. Specifically, we focus on the math portion of the
       Minnesota Comprehensive Assessment (MCA-II) data for 6th grade students enrolled in 618
-      different Minnesota schools. We hope to answer the following research questions:
+      different Minnesota schools <xref ref="MNDepartmentOfEducation"/>. We hope to answer the following research questions:
     </p>
 
     <ul>
@@ -1098,7 +1098,7 @@ model.f2a &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
         <title>Parenting and gang activity</title>
         <statement>
           <p>
-            Walker-Barnes and Mason describe a longitudinal study in which 300 ninth graders from
+            <xref ref="Walker-Barnes2001"/> and Mason describe a longitudinal study in which 300 ninth graders from
             one high school in an urban southeastern city were assessed at the beginning of the
             school year about their gang activity, the gang activity of their peers, behavior of
             their parents, and their ethnic and cultural heritage. Then, information about their
@@ -1311,9 +1311,9 @@ model.f2a &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
         <title>Teen alcohol use</title>
         <statement>
           <p>
-            Curran et al. collected data on 82 adolescents at three time points starting at age
+            <xref ref="Curran1997"/> collected data on 82 adolescents at three time points starting at age
             14 to assess factors that affect teen drinking behavior. Key variables in
-            <c>alcohol.csv</c> are as follows:
+            <c>alcohol.csv</c> (source: <xref ref="Singer2003"/>) are as follows:
           </p>
           <ul>
             <li><p><c>id</c> = numerical identifier for subject</p></li>
@@ -1446,9 +1446,9 @@ modelG &lt;- lmer(diverthours ~ year2013 + totalvisits1 +
         <title>UCLA nurse blood pressure study</title>
         <statement>
           <p>
-            A study collected information from 203 registered nurses in the Los Angeles area
+            A study by <xref ref="Goldstein2000"/> collected information from 203 registered nurses in the Los Angeles area
             between 24 and 50 years of age on blood pressure (BP) and potential factors that
-            contribute to hypertension. Data from this study (in <c>nursebp.csv</c>) includes
+            contribute to hypertension. Data from this study (in <c>nursebp.csv</c>, source: <xref ref="Weiss2005"/>) includes
             observations (40–60 per nurse) repeatedly taken over the course of a single day. The
             first BP measurement was taken half an hour before the subject's normal start of work,
             and BP was then measured approximately every 20 minutes for the rest of the day.
@@ -1474,7 +1474,7 @@ modelG &lt;- lmer(diverthours ~ year2013 + totalvisits1 +
         <statement>
           <p>
             Education researchers wonder which factors most affect the completion rates at U.S.
-            colleges. Using the IPEDS database containing data from 1310 institutions over the
+            colleges. Using the IPEDS database <xref ref="IPEDS"/> containing data from 1310 institutions over the
             years 2002–2009 (in <c>colleges.csv</c>), the following variables were assembled.
             Response: <c>rate</c> = completion rate (number of degrees awarded per 100 students
             enrolled). Level 1 predictors: <c>year</c>, <c>instpct</c> = percentage of students
@@ -1496,7 +1496,7 @@ modelG &lt;- lmer(diverthours ~ year2013 + totalvisits1 +
         <title>Beating the Blues</title>
         <statement>
           <p>
-            Proudfoot et al. developed and studied an interactive multimedia program of cognitive
+            <xref ref="Proudfoot2003"/> developed and studied an interactive multimedia program of cognitive
             behavioral therapy (CBT) called Beating the Blues (BtheB). In their study, 167
             participants suffering from anxiety and/or depression were randomly allocated to
             receive BtheB therapy or treatment as usual (TAU). The primary response was the Beck
@@ -1504,7 +1504,7 @@ modelG &lt;- lmer(diverthours ~ year2013 + totalvisits1 +
             months later), and at 2, 4, and 6 months post-treatment follow-up.
           </p>
           <p>
-            Data from the BtheB study can be found in <c>BtheB.csv</c>. Variables include:
+            Data from the BtheB study can be found in <c>BtheB.csv</c> <xref ref="Everitt2006"/>. Variables include:
             <c>drug</c> (prescribed concomitant drug therapy?), <c>length</c> (current episode
             of depression longer or shorter than 6 months?), <c>treatment</c> (TAU or BtheB),
             <c>bdi.pre</c> (baseline BDI), <c>bdi.2m</c>, <c>bdi.4m</c>, <c>bdi.6m</c>,

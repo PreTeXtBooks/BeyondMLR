@@ -43,13 +43,13 @@ library(tidyverse)
 
     <p>
       It is estimated that 82–99% of historic tallgrass prairie ecosystems have been converted to
-      agricultural use. A prime example of this large-scale conversion of native prairie to
+      agricultural use <xref ref="Baer2002"/>. A prime example of this large-scale conversion of native prairie to
       agricultural purposes can be seen in Minnesota, where less than 1% of the prairies that once
-      existed in the state remain. Such large-scale alteration of prairie communities has been
+      existed in the state remain <xref ref="Camill2004"/>. Such large-scale alteration of prairie communities has been
       associated with numerous problems. For example, erosion and decomposition that readily take
       place in cultivated soils have increased atmospheric CO<m>_2</m> levels and increased nitrogen
-      inputs to adjacent waterways. In addition, cultivation practices are known to affect
-      rhizosphere composition as tilling can disrupt networks of soil microbes. The rhizosphere is
+      inputs to adjacent waterways (<xref ref="Baer2002"/>, <xref ref="Camill2004"/>, <xref ref="Knops2000"/>). In addition, cultivation practices are known to affect
+      rhizosphere composition as tilling can disrupt networks of soil microbes <xref ref="Allison2005"/>. The rhizosphere is
       the narrow region of soil that is directly influenced by root secretions and associated soil
       microorganisms; much of the nutrient cycling and disease suppression needed by plants occur
       immediately adjacent to roots.
@@ -61,7 +61,7 @@ library(tidyverse)
       decided to experimentally explore the underlying causes of variation in reconstruction projects
       in order to make future projects more effective. Introductory ecology classes were organized to
       collect longitudinal data on native plant species grown in a greenhouse setting, using soil
-      samples from surrounding lands. We will examine their data to compare germination and growth of
+      samples from surrounding lands <xref ref="Angell2010"/>. We will examine their data to compare germination and growth of
       two species of prairie plants — leadplants (<em>Amorpha canescens</em>) and coneflowers
       (<em>Ratibida pinnata</em>) — in soils taken from a remnant (natural) prairie, a cultivated
       (agricultural) field, and a restored (reconstructed) prairie. Additionally, half of the sampled
@@ -1147,7 +1147,7 @@ anova(modelfl0, modeldl0, test = "Chisq")
         <statement>
           <p>
             <term>Collective efficacy and violent crime.</term> In a 1997 <em>Science</em> article,
-            Sampson et al. studied the effects on violent crime of a neighborhood's collective
+            <xref ref="Sampson1997"/> studied the effects on violent crime of a neighborhood's collective
             efficacy, defined as "social cohesion among neighbors combined with their willingness to
             intervene on behalf of the common good." Multiple items related to collective efficacy
             were collected from 8782 Chicago residents from 343 neighborhood clusters. For this
@@ -1159,7 +1159,7 @@ anova(modelfl0, modeldl0, test = "Chisq")
       <exercise xml:id="exer-collective-efficacy-interp">
         <statement>
           <p>
-            Using Table 3 from Sampson et al. (1997), provide interpretations of the following
+            Using Table 3 from <xref ref="Sampson1997"/>, provide interpretations of the following
             coefficients in context: homeowner, age, SES, immigrant concentration, and residential
             stability.
           </p>
@@ -1171,7 +1171,7 @@ anova(modelfl0, modeldl0, test = "Chisq")
           <p>
             Let <m>Y_{ijk}</m> be the response of person <m>j</m> from neighborhood <m>i</m> to
             item <m>k</m> regarding collective efficacy. Then (a) write out the three-level model
-            that likely produced Table 3 of Sampson et al. (1997), and (b) write out the
+            that likely produced Table 3 of <xref ref="Sampson1997"/>, and (b) write out the
             corresponding composite model. Assume there was also an unreported variance component
             estimating item-to-item variability within person.
           </p>
@@ -1180,14 +1180,14 @@ anova(modelfl0, modeldl0, test = "Chisq")
 
       <exercise xml:id="exer-collective-efficacy-eda">
         <statement>
-          <p>Suggest valuable exploratory data analysis plots to complement Table 3 of Sampson et al. (1997).</p>
+          <p>Suggest valuable exploratory data analysis plots to complement Table 3 of <xref ref="Sampson1997"/>.</p>
         </statement>
       </exercise>
 
       <exercise xml:id="exer-collective-efficacy-params">
         <statement>
           <p>
-            If the model from Sampson et al. (1997) were expanded to include all potential variance
+            If the model from <xref ref="Sampson1997"/> were expanded to include all potential variance
             components, how many total parameters would need to be estimated? If it were expanded
             further to include the 3 neighborhood-level covariates as predictors in all Level Three
             equations, how many total parameters would need to be estimated?
@@ -1198,7 +1198,7 @@ anova(modelfl0, modeldl0, test = "Chisq")
       <exercise xml:id="exer-collective-efficacy-pctvar">
         <statement>
           <p>
-            At the bottom of Table 3 from Sampson et al. (1997), the percent of variance explained
+            At the bottom of Table 3 from <xref ref="Sampson1997"/>, the percent of variance explained
             is given within and between neighborhoods. Explain what these values likely represent
             and how they were calculated.
           </p>
@@ -1208,7 +1208,7 @@ anova(modelfl0, modeldl0, test = "Chisq")
       <exercise xml:id="exer-collective-efficacy-model4">
         <statement>
           <p>
-            Sampson et al. (1997) Table 4 shows neighborhood correlates of perceived neighborhood
+            <xref ref="Sampson1997"/> Table 4 shows neighborhood correlates of perceived neighborhood
             violence in two models (with and without collective efficacy as a neighborhood-level
             predictor). Describe the multilevel model that likely produced this table. State the
             primary result from this table in context. [Note that collective efficacy is a Level
@@ -1228,7 +1228,7 @@ anova(modelfl0, modeldl0, test = "Chisq")
           <p>
             <term>Tree tubes.</term> A student research team at St. Olaf College contributed to
             the efforts of biologist Dr. Kathy Shea to investigate a rich data set concerning
-            forestation in the surrounding land. Tubes were placed on trees in some locations or
+            forestation in the surrounding land <xref ref="Eisinger2011"/>. Tubes were placed on trees in some locations or
             <em>transects</em> but not in others. Interest centers on whether tree growth is
             affected by the presence of tubes. The data is currently stored in long format in
             <c>treetube.csv</c>. Each row represents one tree in a given year. Key variables
@@ -1262,7 +1262,7 @@ anova(modelfl0, modeldl0, test = "Chisq")
         <statement>
           <p>
             <term>Kentucky math scores.</term> Data was collected from 48,058 eighth graders from
-            Kentucky who took the California Basic Educational Skills Test. These students attended
+            Kentucky who took the California Basic Educational Skills Test <xref ref="Bickel2007"/>. These students attended
             235 different middle schools from 132 different districts, and the following variables
             can be found in <c>kentucky.csv</c>:
           </p>
@@ -1312,7 +1312,7 @@ anova(modelfl0, modeldl0, test = "Chisq")
         <statement>
           <p>
             <term>Mudamalai leaf growth.</term> Plant growth is influenced by many environmental
-            factors, among them sunlight and water availability. A study conducted in the Mudamalai
+            factors, among them sunlight and water availability. A study <xref ref="Pray2009"/> conducted in the Mudamalai
             Wildlife Sanctuary in India in October of 2008 had as its purpose to "broaden the
             specific knowledge of certain tree species and climate zones located in the Nilgiri
             Hills of South India, and to enhance the overall knowledge of the dynamic relationship
