@@ -1405,7 +1405,7 @@ cat(" R squared = ", summary(model0)$r.squared, "\n",
 
     <console>
       <output>
-##               Estimate Std. Error t value   Pr(&gt|t|)
+##               Estimate Std. Error t value   Pr(&gt;|t|)
 ## (Intercept) 50.0203151  1.946e-01 256.980 1.035e-161
 ## yearnew      0.0700341  6.130e-03  11.424  1.038e-20
 ## yearnew2    -0.0003697  4.598e-05  -8.041  8.435e-13
