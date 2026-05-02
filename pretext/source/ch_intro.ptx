@@ -253,7 +253,7 @@ ggplot(dat, aes(x, y)) +
           <p>
             <alert>Heights of sons and fathers.</alert> Sir Francis Galton suspected that a son's
             height could be predicted using the father's height. He collected observations on heights
-            of fathers and their firstborn sons <xref provisional="Stigler2002"/>.
+            of fathers and their firstborn sons <xref ref="Stigler2002"/>.
           </p>
           <ul>
             <li><p><em>Response variable:</em> Height of the firstborn son</p></li>
@@ -397,7 +397,7 @@ ggplot(dat, aes(x, y)) +
         <c>derbyplus.csv</c> contains the <c>year</c> of the race, the winning horse (<c>winner</c>),
         the <c>condition</c> of the track, the average <c>speed</c> (in feet per second) of the winner,
         and the number of <c>starters</c> (field size, or horses who raced) for the years 1896<ndash/>2017
-        <xref provisional="KentuckyDerby"/>. The track <c>condition</c> has been grouped into three
+        <xref ref="KentuckyDerby"/>. The track <c>condition</c> has been grouped into three
         categories: fast, good (which includes the official designations <q>good</q> and <q>dusty</q>),
         and slow (which includes the designations <q>slow</q>, <q>heavy</q>, <q>muddy</q>, and
         <q>sloppy</q>). We would like to use least squares linear regression techniques to model the
@@ -1120,8 +1120,8 @@ ggplot(bootreg, aes(estimate)) +
         chosen from a normal distribution. In addition, researchers have devised other ways of
         calculating confidence intervals besides the percentile method, including normality,
         studentized, and bias-corrected and accelerated methods
-        (<xref provisional="Hesterberg2015"/>; <xref provisional="Efron1993"/>;
-        <xref provisional="Davison1997"/>). We will focus on case resampling and percentile confidence
+        (<xref ref="Hesterberg2015"/>; <xref ref="Efron1993"/>;
+        <xref ref="Davison1997"/>). We will focus on case resampling and percentile confidence
         intervals for now for their understandability and wide applicability.
       </p>
     </subsection>
@@ -1348,7 +1348,7 @@ did_print
       <title>Soccer</title>
 
       <p>
-        <xref provisional="Roskes2011"/> The right side? Under time pressure, approach motivation
+        <xref ref="Roskes2011"/> The right side? Under time pressure, approach motivation
         leads to right-oriented bias. <em>Psychological Science</em> [Online]
         <alert>22(11)</alert>:1403-7. DOI: 10.1177/0956797611418677, October 2011.
       </p>
@@ -1381,7 +1381,7 @@ did_print
       <title>Elephant Mating</title>
 
       <p>
-        <xref provisional="Poole1989"/> Mate guarding, reproductive success and female choice in
+        <xref ref="Poole1989"/> Mate guarding, reproductive success and female choice in
         African elephants. <em>Animal Behavior</em> <alert>37</alert>:842-49.
       </p>
 
@@ -1414,7 +1414,7 @@ did_print
       <title>Parenting and Gang Activity</title>
 
       <p>
-        <xref provisional="Walker-Barnes2001"/> Ethnic differences in the effect of parenting on gang
+        <xref ref="Walker-Barnes2001"/> Ethnic differences in the effect of parenting on gang
         involvement and gang delinquency: a longitudinal, hierarchical linear modeling perspective.
         <em>Child Development</em> <alert>72(6)</alert>:1814-31.
       </p>
@@ -1453,7 +1453,7 @@ did_print
       <title>Crime</title>
 
       <p>
-        <xref provisional="Gelman2007"/> An analysis of the NYPD's stop-and-frisk policy in the context
+        <xref ref="Gelman2007"/> An analysis of the NYPD's stop-and-frisk policy in the context
         of claims of racial bias. <em>Journal of the American Statistical Association</em>
         <alert>102(479)</alert>:813-823.
       </p>
@@ -1582,9 +1582,9 @@ did_print
         <statement>
           <p>
             <alert>Moneyball.</alert> In a 2011 article in <em>The Sport Journal</em>, Farrar and
-            Bruggink <xref provisional="Farrar2011"/> attempt to show that Major League Baseball
+            Bruggink <xref ref="Farrar2011"/> attempt to show that Major League Baseball
             general managers did not immediately embrace the findings of Michael Lewis's 2003
-            <em>Moneyball</em> book <xref provisional="Lewis2003"/>. They contend that players'
+            <em>Moneyball</em> book <xref ref="Lewis2003"/>. They contend that players'
             on-base percentage remained relatively undercompensated compared to slugging percentage
             three years after the book came out. Two regression models are described: Team Run
             Production Model and Player Salary Model.
@@ -1624,7 +1624,7 @@ did_print
             addressing this issue was to examine the starting salaries of all skilled, entry-level
             clerical workers between 1965 and 1975. The following variables, which can be found in
             <c>banksalary.csv</c>, were collected for each worker
-            <xref provisional="Ramsey2002"/>:
+            <xref ref="Ramsey2002"/>:
           </p>
           <ul>
             <li><p><c>bsal</c> = beginning salary (annual salary at time of hire)</p></li>
@@ -1689,7 +1689,7 @@ did_print
       <exercise xml:id="ex-ch1-sitting">
         <statement>
           <p>
-            <alert>Sitting and MTL thickness.</alert> <xref provisional="Siddarth2018"/> researched
+            <alert>Sitting and MTL thickness.</alert> <xref ref="Siddarth2018"/> researched
             relations between time spent sitting (sedentary behavior) and the thickness of a
             participant's medial temporal lobe (MTL) in a 2018 paper entitled, <q>Sedentary behavior
             associated with reduced medial temporal lobe thickness in middle-aged and older adults</q>.
@@ -1722,7 +1722,7 @@ did_print
             the sole explanatory variable. Are LLSR conditions satisfied?</p></li>
             <li><p>Expand on your previous model by including a centered version of <c>age</c> as a
             covariate. Interpret all three coefficients in this model.</p></li>
-            <li><p>One model fit in <xref provisional="Siddarth2018"/> includes <c>sitting</c>,
+            <li><p>One model fit in <xref ref="Siddarth2018"/> includes <c>sitting</c>,
             log-transformed <c>MET</c>, and <c>age</c> as explanatory variables. They report an
             estimate <m>\hat{\beta}_{1} = -0.02</m> with confidence interval
             <m>(-0.04,-0.002)</m> for the coefficient corresponding to <c>sitting</c>, and
@@ -1734,8 +1734,8 @@ did_print
             predictor of brain structure, specifically MTL thickness [than physical activity]</q>?
             Why or why not?</p></li>
             <li><p>A <em>New York Times</em> article was published discussing
-            <xref provisional="Siddarth2018"/> with the title <q>Standing Up at Your Desk Could
-            Make You Smarter</q> <xref provisional="Friedman2018"/>. Do you agree with this
+            <xref ref="Siddarth2018"/> with the title <q>Standing Up at Your Desk Could
+            Make You Smarter</q> <xref ref="Friedman2018"/>. Do you agree with this
             headline choice? Why or why not?</p></li>
           </ol>
         </statement>
@@ -1746,7 +1746,7 @@ did_print
           <p>
             <alert>Housing prices and log transformations.</alert> The dataset
             <c>kingCountyHouses.csv</c> contains data on over 20,000 houses sold in King County,
-            Washington <xref provisional="harlfoxem"/>. The dataset includes the following variables:
+            Washington <xref ref="harlfoxem"/>. The dataset includes the following variables:
           </p>
           <ul>
             <li><p><c>price</c> = selling price of the house</p></li>
@@ -1803,7 +1803,7 @@ did_print
           <p>
             <alert>The Bechdel Test.</alert> In April, 2014, website FiveThirtyEight published the
             article, <q>The Dollar-And-Cents Case Against Hollywood's Exclusion of Women</q>
-            <xref provisional="Hickey2014"/>. There, they analyze returns on investment for 1,615
+            <xref ref="Hickey2014"/>. There, they analyze returns on investment for 1,615
             films released between 1990 and 2013 based on the Bechdel test. The test, developed by
             cartoonist Alison Bechdel, measures gender bias in films by checking if a film meets
             three criteria:
@@ -1841,7 +1841,7 @@ did_print
         <statement>
           <p>
             <alert>Waitress tips.</alert> A student collected data from a restaurant where she was a
-            waitress <xref provisional="Dahlquist2011"/>. The student was interested in learning under
+            waitress <xref ref="Dahlquist2011"/>. The student was interested in learning under
             what conditions a waitress can expect the largest tips<mdash/>for example: At dinner time
             or late at night? From younger or older patrons? From patrons receiving free meals? From
             patrons drinking alcohol? From patrons tipping with cash or credit? And should tip amount

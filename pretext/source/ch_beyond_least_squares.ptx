@@ -87,7 +87,7 @@ testplot
       of questions have implications for population demographics and sibling harmony. For example, a
       2009 study at the University of Ulster in Northern Ireland found that growing up with sisters,
       as compared to brothers, can enhance the quality of life of an adult
-      <xref provisional="BBCNEWS1995"/>.
+      <xref ref="BBCNEWS1995"/>.
     </p>
 
     <p>
@@ -106,22 +106,22 @@ testplot
       terms of parental expenditure. Most often, in practice, sex ratios differ from what Fisher
       predicted. From 1970 to 2002, the sex ratio at birth in the US among white non-Hispanics was
       105 boys to 100 girls, but only 103 boys to 100 girls among African Americans and Native
-      Americans <xref provisional="Mathews2005"/>. A 1997 study in <em>Nature</em> reports evidence
+      Americans <xref ref="Mathews2005"/>. A 1997 study in <em>Nature</em> reports evidence
       which suggests that the human sex ratio may be currently shifting in the United States toward
-      more female babies, closer to Fisher's prediction! <xref provisional="Komdeur1997"/> Sex ratio
+      more female babies, closer to Fisher's prediction! <xref ref="Komdeur1997"/> Sex ratio
       comparisons between countries are also intriguing. For example, Switzerland has a sex ratio of
       106 boys to 100 girls, whereas there are 112 boys to every 100 girls in China according to
-      The World Factbook <xref provisional="CIA2013"/>. In the next section, we bring the notion of
+      The World Factbook <xref ref="CIA2013"/>. In the next section, we bring the notion of
       gender imbalance closer to home by focusing on families instead of countries or
       sub-populations.
     </p>
 
     <p>
       To investigate this question and others, we look at the gender composition of 5,626 families
-      collected by the National Longitudinal Survey of Youth <xref provisional="NLSY1997"/>. We fit
+      collected by the National Longitudinal Survey of Youth <xref ref="NLSY1997"/>. We fit
       models to explore whether there is evidence sex runs in families, a model we refer to as a Sex
       Conditional Model. We also consider a separate but related question about whether couples are
-      <q>waiting for a boy</q> <xref provisional="Rodgers2001"/>.
+      <q>waiting for a boy</q> <xref ref="Rodgers2001"/>.
     </p>
 
     <subsection xml:id="subsec-research-questions">
@@ -800,7 +800,7 @@ optimize(oLik.f, interval=c(0,1), maximum=TRUE)
       <p>
         You should now have a feel for using the Likelihood Principle to obtain estimates of
         parameters using family gender composition data. Next, these ideas will be applied to the
-        NLSY data summarized in Table 2 of <xref provisional="Rodgers2001"/>. In addition to
+        NLSY data summarized in Table 2 of <xref ref="Rodgers2001"/>. In addition to
         considering the Sex Unconditional and Conditional Models, we investigate some models that
         incorporate choices couples may make about when to stop having more children.
       </p>
@@ -914,7 +914,7 @@ optimize(oLik.f, interval=c(0,1), maximum=TRUE)
 
       <p>
         There are many other ways to formulate and explore the idea that sex runs in families or that
-        couples wait for a boy (or a girl). See <xref provisional="Rodgers2001"/> for other examples.
+        couples wait for a boy (or a girl). See <xref ref="Rodgers2001"/> for other examples.
       </p>
     </subsection>
 
@@ -1205,7 +1205,7 @@ optimize(oLik.f, interval=c(0,1), maximum=TRUE)
     <title>Model 3: Stopping Rule Model (Waiting for a Boy)</title>
 
     <p>
-      <xref provisional="Rodgers2001"/> offer one reason to explain the contradictory results:
+      <xref ref="Rodgers2001"/> offer one reason to explain the contradictory results:
       waiting for a male child. It has been noted by demographers that some parents are only
       interested in producing a male heir so that the appearance of a boy leads more often to the
       family ending childbearing. Stopping models investigate questions like: Are couples more likely
@@ -1473,7 +1473,7 @@ optimize(oLik.f, interval=c(0,1), maximum=TRUE)
   <section xml:id="sec-lik-and-course">
     <title>Likelihoods and This Course</title>
 
-    <p><xref provisional="Rodgers2001"/> noted that</p>
+    <p><xref ref="Rodgers2001"/> noted that</p>
 
     <blockquote>
       <p>
@@ -1662,7 +1662,7 @@ optimize(oLik.f, interval=c(0,1), maximum=TRUE)
       <exercise xml:id="ex-ch2-hot-hand">
         <statement>
           <p>
-            <alert>The hot hand in basketball.</alert> <xref provisional="Gilovich1985"/> wrote a
+            <alert>The hot hand in basketball.</alert> <xref ref="Gilovich1985"/> wrote a
             controversial but compelling article claiming that there is no such thing as <q>the hot
             hand</q> in basketball. That is, there is no empirical evidence that shooters have
             stretches where they are more likely to make consecutive shots, and basketball shots are
