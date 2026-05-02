@@ -52,7 +52,9 @@ library(tidyverse)
       rhizosphere composition as tilling can disrupt networks of soil microbes <xref ref="Allison2005"/>. The rhizosphere is
       the narrow region of soil that is directly influenced by root secretions and associated soil
       microorganisms; much of the nutrient cycling and disease suppression needed by plants occur
-      immediately adjacent to roots.
+      immediately adjacent to roots. It is important to note that microbial communities in prairie
+      soils have been implicated with plant diversity and overall ecosystem function by controlling
+      carbon and nitrogen cycling in the soils <xref ref="Zak2003"/>.
     </p>
 
     <p>

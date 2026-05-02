@@ -272,7 +272,7 @@ summary(modela2L)
       </me>
       Large absolute values of Pearson residuals indicate observations that are poorly fit by the model.</p>
 
-      <p>Figure <xref ref="fig-resid1"/> shows Pearson residuals plotted against fitted values from the quadratic model with region. The residuals appear roughly symmetric around zero with no strong trend, though some observations are far from zero.</p>
+      <p>Figure <xref ref="fig-resid1"/> shows Pearson residuals plotted against fitted values from the quadratic model with region. The residuals appear roughly symmetric around zero with no strong trend, though some observations are far from zero. Other details related to residual plots can be found in <xref ref="McCullagh1989"/>.</p>
 
       <figure xml:id="fig-resid1">
         <caption>Pearson residuals vs. fitted values for the Philippines household size Poisson regression model with quadratic age and region.</caption>
