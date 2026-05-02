@@ -208,7 +208,7 @@ Our interest centers on estimating $\hat{\beta_0}$ and $\hat{\beta_1}$, not $p_1
 \end{equation*}
       
 Now what? Fitting the model means finding estimates of $\beta_0$ and $\beta_1$, but familiar methods from calculus for maximizing the likelihood don't work here.  Instead, we consider all possible combinations of $\beta_0$ and $\beta_1$.  That is, we will pick that pair of values for $\beta_0$ and $\beta_1$ that yield the largest likelihood for our data. Trial and error to find the best pair is tedious at best, but more efficient numerical methods are available. The MLEs for the coefficients in the soccer goalkeeper study are $\hat{\beta_0}= 1.2852$ and $\hat{\beta_1}=1.1127$.  
-```{r, echo=FALSE, comment=NA, include=FALSE}
+```{r}
 soccer <- tribble(
   ~behind, ~scores, ~shots,
   #--|--|----
@@ -409,7 +409,7 @@ cat(" Residual deviance = ",
     summary(model.HaleBD)$dispersion)
 ```
 
-```{r, include=FALSE}
+```{r}
 exp(coef(model.HaleBD))
 ```
 
@@ -603,7 +603,7 @@ cat(" Residual deviance = ",
 
 By removing the interaction term and using the overdispersion parameter, we see that distance is significantly associated with support, but percent Black residents is no longer significant after adjusting for distance.  
 
-```{r, include=FALSE}
+```{r}
 exp(coef(model.HaleBDq))
 ```
 
@@ -746,7 +746,7 @@ rm(risk2009.samp)
 write_csv(risk2009, "data/risk2009.csv")
 ```
 
-```{r, include = FALSE}
+```{r}
 risk2009 <- read_csv("data/risk2009.csv")
 risk2009 <- risk2009 %>%
   mutate(female = ifelse(sex=="Female", 1, 0))
@@ -784,7 +784,7 @@ ggplot(data = risk2009, aes(x = sex, fill = lose.wt)) +
 ```
 
 
-```{r, echo=FALSE, include=FALSE, comment=NA}
+```{r}
 risk2009 %>%
   group_by(sex, lose.wt) %>%
   summarise(mean = mean(bmipct), sd = sd(bmipct), n = n())
@@ -889,7 +889,7 @@ Our estimated binomial regression model is:
 \[\log\left(\frac{\hat{p}}{1-\hat{p}}\right)=-0.75+1.09 \textrm{female}\]
 where $\hat{p}$ is the estimated proportion of youth wanting to lose weight. We can interpret the coefficient on `female` by exponentiating $e^{1.0919} = 2.98$ (95% CI = $(2.03, 4.41)$) indicating that the odds of a female trying to lose weight is nearly three times the odds of a male trying to lose weight ($Z=5.520$, $p=3.38e-08$). We retain sex in the model and consider adding the BMI percentile:
 
-```{r, include=FALSE}
+```{r}
 exp(coef(model1))
 exp(confint(model1))
 ```

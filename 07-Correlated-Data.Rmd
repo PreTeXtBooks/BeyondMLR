@@ -164,7 +164,7 @@ hist_1b <- ggplot(data = scenario_1, aes(x = count_1b)) +
 grid.arrange(hist_1a, hist_1b, ncol=1)
 ```
 
-```{r scenario1Summary, include=FALSE}
+```{r scenario1Summary}
 scenario_1 %>% 
   summarise(mean_1a = mean(count_1a), sd_1a = sd(count_1a),
             mean_1b = mean(count_1b), sd_1b = sd(count_1b) )
@@ -195,7 +195,7 @@ which produces an estimated odds of deformity $\widehat{p}/(1-\widehat{p}) = e^{
 \end{alignedat}
 \]
 
-```{r scenario1aBinom, include=FALSE}
+```{r scenario1aBinom}
 fit_1a_binom <- glm(phat_1a ~ 1, family=binomial, weight=rep(10,24), data = scenario_1)
 summary(fit_1a_binom) 
 # estimated odds of deformity
@@ -208,7 +208,7 @@ exp(confint(fit_1a_binom))
 exp(confint(fit_1a_binom)) / (1 + exp(confint(fit_1a_binom)))
 ```
 
-```{r scenario1aQuasi, include=FALSE}
+```{r scenario1aQuasi}
 fit_1a_quasi = glm(phat_1a ~ 1, family=quasibinomial, weight=rep(10,24), data=scenario_1)
 summary(fit_1a_quasi) 
 # estimated odds of deformity
@@ -232,7 +232,7 @@ However, we can account for potential overdispersion \index{overdispersion} with
 
 Turning to Scenario 1b, where each dam has a unique probability of producing a pup with a deformity based on a beta distribution, we can fit binomial and quasibinomial models as well.
 
-```{r scenario1bBinom, include=FALSE}
+```{r scenario1bBinom}
 fit_1b_binom <- glm(phat_1b ~ 1, family=binomial, weight=rep(10,24), data = scenario_1)
 summary(fit_1b_binom) 
 # estimated odds of deformity
@@ -259,7 +259,7 @@ with associated profile likelihood 95\% confidence intervals:
 \end{alignedat}
 \]
 
-```{r scenario1bQuasi, include=FALSE}
+```{r scenario1bQuasi}
 fit_1b_quasi = glm(phat_1b ~ 1, family=quasibinomial, weight=rep(10,24), data=scenario_1)
 summary(fit_1b_quasi) 
 # estimated odds of deformity
@@ -302,7 +302,7 @@ In Scenario 2a, a dam who received a dose of $x$ would have probability
 
 \[p = P(\textrm{deformity}\mid \textrm{dose} = x) = e^{-2+1.33x}/(1+e^{-2+1.33x}). \]
 Thus, dams who received doses of 0, 1, 2, and 3 mg would have probabilities 0.12, 0.34, 0.66, and 0.88, respectively, under Scenario 2a.  
-```{r secnario2aPCalculations, include=FALSE}
+```{r secnario2aPCalculations}
 x <- 0:3
 p_2 <- exp(-2+4/3*x)/(1+exp(-2+4/3*x))
 p_2
@@ -381,7 +381,7 @@ hist4 <- ggplot() +
 grid.arrange(hist1, hist2, hist3, hist4, ncol=1)
 ```
 
-```{r scenario2Summary, include=FALSE, message=FALSE}
+```{r scenario2Summary, message=FALSE}
 scenario_2 %>% 
   summarise(mean_2a = mean(count_2a), sd_2a = sd(count_2a),
             mean_2b = mean(count_2b), sd_2b = sd(count_2b) )
@@ -423,7 +423,7 @@ We first model Scenario 2a without adjusting for potential overdispersion. Binom
 \end{equation}
 Equation \@ref(eq:mod2aBinom) has associated odds ratio corresponding to a 1-mg dose increase of $e^{\beta_1} = 3.54$ with 95\% profile likelihood confidence interval $(2.61, 4.96)$.  We can be 95\% confident that odds of deformity are between 2.61 and 4.96 times higher for each 1-mg increase in dose.
 
-```{r scenario2aBinom, include=FALSE}
+```{r scenario2aBinom}
 scenario_2 <- scenario_2 %>%
   mutate(dose = dose,
          phat_2a = count_2a / 10, phat_2b = count_2b / 10,
@@ -437,7 +437,7 @@ exp(confint(fit_2a_binom))
 
 Alternatively, we can use a quasibinomial model to account for any overdispersion in the binomial model. With $\widehat{\phi} = 1.27$, we have the 95\% profile likelihood confidence interval for $e^\beta_1$: $(2.51, 5.19)$.
 
-```{r scenario2aQuasi, include=FALSE}
+```{r scenario2aQuasi}
 fit_2a_quasi = glm(phat_2a ~ dose, family=quasibinomial, weight=rep(10,24), 
                    data=scenario_2)
 summary(fit_2a_quasi) 
@@ -450,7 +450,7 @@ Turning to Scenario 2b, where probabilities were different between dams receivin
   \log\bigg( \frac{\hat{p}}{1-\hat{p}} \bigg) = -2.41 + 1.46\;\textrm{dose}
 \end{equation*}
 Generating a 95\% confidence interval for $e^{\beta_1}$, we have: $(3.09, 6.27)$.
-```{r scenario2bBinom, include=FALSE}
+```{r scenario2bBinom}
 fit_2b_binom = glm(phat_2b ~ dose, family=binomial, weight=rep(10,24), data=scenario_2)
 summary(fit_2b_binom) 
 exp(confint(fit_2b_binom)) 
@@ -458,7 +458,7 @@ exp(confint(fit_2b_binom))
 
 If we use a quasibinomial model, we find overdispersion paramater $\widehat{\phi} = 1.93$, yielding 95\% confidence interval for $e^{\beta_1}$: $(2.74, 7.35)$.
 
-```{r scenario2bQuasi, include=FALSE}
+```{r scenario2bQuasi}
 fit_2b_quasi = glm(phat_2b ~ dose, family=quasibinomial,
                    weight=rep(10,24), data=scenario_2)
 summary(fit_2b_quasi)
