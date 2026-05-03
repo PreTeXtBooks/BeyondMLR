@@ -103,6 +103,55 @@ library(tidyverse)
       <title>Data Organization</title>
 
       <p>The first five rows from our data set <c>fHH1.csv</c> are illustrated in <xref ref="tab-fHH1table1"/>. Each line of the data file refers to a household at the time of the survey:</p>
+
+      <table xml:id="tab-fHH1table1">
+        <title>The first five observations from the Philippines Household case study.</title>
+        <tabular halign="left" top="major" bottom="major">
+          <row header="yes" bottom="medium">
+            <cell>location</cell>
+            <cell>age</cell>
+            <cell>total</cell>
+            <cell>numLT5</cell>
+            <cell>roof</cell>
+          </row>
+          <row>
+            <cell>CentralLuzon</cell>
+            <cell>65</cell>
+            <cell>0</cell>
+            <cell>0</cell>
+            <cell>Predominantly Strong Material</cell>
+          </row>
+          <row>
+            <cell>MetroManila</cell>
+            <cell>75</cell>
+            <cell>3</cell>
+            <cell>0</cell>
+            <cell>Predominantly Strong Material</cell>
+          </row>
+          <row>
+            <cell>DavaoRegion</cell>
+            <cell>54</cell>
+            <cell>4</cell>
+            <cell>0</cell>
+            <cell>Predominantly Strong Material</cell>
+          </row>
+          <row>
+            <cell>Visayas</cell>
+            <cell>49</cell>
+            <cell>3</cell>
+            <cell>0</cell>
+            <cell>Predominantly Strong Material</cell>
+          </row>
+          <row>
+            <cell>MetroManila</cell>
+            <cell>74</cell>
+            <cell>3</cell>
+            <cell>0</cell>
+            <cell>Predominantly Strong Material</cell>
+          </row>
+        </tabular>
+      </table>
+
       <ul>
         <li><p><c>location</c> = where the house is located (Central Luzon, Davao Region, Ilocos Region, Metro Manila, or Visayas)</p></li>
         <li><p><c>age</c> = the age of the head of household</p></li>
@@ -149,6 +198,84 @@ fHH1 &lt;- read_csv("data/fHH1.csv")
       <p>Figure <xref ref="fig-totalPoisByAge"/> further shows that responses can be reasonably modeled with a Poisson distribution when grouped by a key explanatory variable: age of the household head.  These last two plots together suggest that Assumption 1 (Poisson Response) is satisfactory in this case study.</p>
 
       <p>For Poisson random variables, the variance of <m>Y</m> (i.e., the square of the standard deviation of <m>Y</m>), is equal to its mean, where <m>Y</m> represents the size of an individual household. As the mean increases, the variance increases. So, if the response is a count and the mean and variance are approximately equal for each group of <m>X</m>, a Poisson regression model may be a good choice. In <xref ref="tab-table1chp4"/> we display age groups by 5-year increments, to check to see if the empirical means and variances of the number in the house are approximately equal for each age group. This provides us one way in which to check the Poisson Assumption 3 (mean = variance).</p>
+
+      <table xml:id="tab-table1chp4">
+        <title>Compare mean and variance of household size within each age group.</title>
+        <tabular halign="center" top="major" bottom="major">
+          <row header="yes" bottom="medium">
+            <cell>Age Groups</cell>
+            <cell>Mean</cell>
+            <cell>Variance</cell>
+            <cell>n</cell>
+          </row>
+          <row>
+            <cell>(15, 20]</cell>
+            <cell>1.667</cell>
+            <cell>0.667</cell>
+            <cell>6</cell>
+          </row>
+          <row>
+            <cell>(20, 25]</cell>
+            <cell>2.167</cell>
+            <cell>1.559</cell>
+            <cell>18</cell>
+          </row>
+          <row>
+            <cell>(25, 30]</cell>
+            <cell>2.918</cell>
+            <cell>1.410</cell>
+            <cell>49</cell>
+          </row>
+          <row>
+            <cell>(30, 35]</cell>
+            <cell>3.444</cell>
+            <cell>2.193</cell>
+            <cell>108</cell>
+          </row>
+          <row>
+            <cell>(35, 40]</cell>
+            <cell>3.842</cell>
+            <cell>3.574</cell>
+            <cell>158</cell>
+          </row>
+          <row>
+            <cell>(40, 45]</cell>
+            <cell>4.234</cell>
+            <cell>4.445</cell>
+            <cell>175</cell>
+          </row>
+          <row>
+            <cell>(45, 50]</cell>
+            <cell>4.490</cell>
+            <cell>6.396</cell>
+            <cell>194</cell>
+          </row>
+          <row>
+            <cell>(50, 55]</cell>
+            <cell>4.011</cell>
+            <cell>5.251</cell>
+            <cell>188</cell>
+          </row>
+          <row>
+            <cell>(55, 60]</cell>
+            <cell>3.807</cell>
+            <cell>6.532</cell>
+            <cell>145</cell>
+          </row>
+          <row>
+            <cell>(60, 65]</cell>
+            <cell>3.706</cell>
+            <cell>6.196</cell>
+            <cell>153</cell>
+          </row>
+          <row>
+            <cell>(65, 70]</cell>
+            <cell>3.339</cell>
+            <cell>7.998</cell>
+            <cell>115</cell>
+          </row>
+        </tabular>
+      </table>
 
       <p>If there is a problem with this assumption, most often we see variances much larger than means.  Here, as expected, we see more variability as age increases.  However, it appears that the variance is smaller than the mean for lower ages, while the variance is greater than the mean for higher ages.  Thus, there is some evidence of a violation of the mean=variance assumption (Assumption 3), although any violations are modest.</p>
 
@@ -520,9 +647,147 @@ c.data &lt;- c.data %&gt;%
 
       <p>Let's take a look at two covariates of interest for these schools: type of institution and region. In our data, the majority of institutions are universities (65% of the 81 schools) and only 35% are colleges. Interest centers on whether the different regions tend to have different crime rates. Table <xref ref="tab-regions"/> contains the name of each region and each column represents the percentage of schools in that region which are colleges or universities. The proportion of colleges varies from a low of 20% in the Southwest (SW) to a high of 50% in the West (W).</p>
 
+      <table xml:id="tab-regions">
+        <title>Proportion of colleges and universities within region in the campus crime data set.</title>
+        <tabular halign="center" top="major" bottom="major">
+          <row header="yes" bottom="medium">
+            <cell></cell>
+            <cell>C</cell>
+            <cell>MW</cell>
+            <cell>NE</cell>
+            <cell>SE</cell>
+            <cell>SW</cell>
+            <cell>W</cell>
+          </row>
+          <row>
+            <cell>C</cell>
+            <cell>0.294</cell>
+            <cell>0.300</cell>
+            <cell>0.381</cell>
+            <cell>0.400</cell>
+            <cell>0.200</cell>
+            <cell>0.500</cell>
+          </row>
+          <row>
+            <cell>U</cell>
+            <cell>0.706</cell>
+            <cell>0.700</cell>
+            <cell>0.619</cell>
+            <cell>0.600</cell>
+            <cell>0.800</cell>
+            <cell>0.500</cell>
+          </row>
+        </tabular>
+      </table>
+
       <p>While a Poisson regression model is a good first choice because the responses are counts per year, it is important to note that the counts are not directly comparable because they come from different size schools. This issue sometimes is referred to as the need to account for <em>sampling effort</em>; in other words, we expect schools with more students to have more reports of violent crime since there are more students who could be affected. We cannot directly compare the 30 violent crimes from the first school in the data set to no violent crimes for the second school when their enrollments are vastly different: 5,590 for school 1 versus 540 for school 2. We can take the differences in enrollments into account by including an <term>offset</term> <idx>offset</idx> in our model, which we will discuss in the next section. For the remainder of the EDA, we examine the violent crime counts in terms of the rate per 1,000 enrolled (<m>\frac{\textrm{number of violent crimes}}{\textrm{number enrolled}} \cdot 1000</m>).</p>
 
       <p>Note that there is a noticeable outlier for a Southeastern school (5.4 violent crimes per 1000 students), and there is an observed rate of 0 for the Southwestern colleges which can lead to some computational issues. We therefore combined the SW and SE to form a single category of the South, and we also removed the extreme observation from the data set.</p>
+
+      <table xml:id="tab-table4ch4">
+        <title>The mean and variance of the violent crime rate by region and type of institution.</title>
+        <tabular halign="center" top="major" bottom="major">
+          <row header="yes" bottom="medium">
+            <cell>region</cell>
+            <cell>type</cell>
+            <cell>MeanCount</cell>
+            <cell>VarCount</cell>
+            <cell>MeanRate</cell>
+            <cell>VarRate</cell>
+            <cell>n</cell>
+          </row>
+          <row>
+            <cell>C</cell>
+            <cell>C</cell>
+            <cell>1.600</cell>
+            <cell>3.300</cell>
+            <cell>0.398</cell>
+            <cell>0.278</cell>
+            <cell>5</cell>
+          </row>
+          <row>
+            <cell>C</cell>
+            <cell>U</cell>
+            <cell>4.750</cell>
+            <cell>30.932</cell>
+            <cell>0.222</cell>
+            <cell>0.035</cell>
+            <cell>12</cell>
+          </row>
+          <row>
+            <cell>MW</cell>
+            <cell>C</cell>
+            <cell>0.333</cell>
+            <cell>0.333</cell>
+            <cell>0.016</cell>
+            <cell>0.001</cell>
+            <cell>3</cell>
+          </row>
+          <row>
+            <cell>MW</cell>
+            <cell>U</cell>
+            <cell>8.714</cell>
+            <cell>30.905</cell>
+            <cell>0.402</cell>
+            <cell>0.062</cell>
+            <cell>7</cell>
+          </row>
+          <row>
+            <cell>NE</cell>
+            <cell>C</cell>
+            <cell>6.000</cell>
+            <cell>32.857</cell>
+            <cell>1.125</cell>
+            <cell>1.182</cell>
+            <cell>8</cell>
+          </row>
+          <row>
+            <cell>NE</cell>
+            <cell>U</cell>
+            <cell>5.923</cell>
+            <cell>79.244</cell>
+            <cell>0.436</cell>
+            <cell>0.385</cell>
+            <cell>13</cell>
+          </row>
+          <row>
+            <cell>S</cell>
+            <cell>C</cell>
+            <cell>1.125</cell>
+            <cell>5.839</cell>
+            <cell>0.187</cell>
+            <cell>0.105</cell>
+            <cell>8</cell>
+          </row>
+          <row>
+            <cell>S</cell>
+            <cell>U</cell>
+            <cell>8.625</cell>
+            <cell>68.250</cell>
+            <cell>0.571</cell>
+            <cell>0.278</cell>
+            <cell>16</cell>
+          </row>
+          <row>
+            <cell>W</cell>
+            <cell>C</cell>
+            <cell>0.500</cell>
+            <cell>0.333</cell>
+            <cell>0.068</cell>
+            <cell>0.013</cell>
+            <cell>4</cell>
+          </row>
+          <row>
+            <cell>W</cell>
+            <cell>U</cell>
+            <cell>12.500</cell>
+            <cell>57.000</cell>
+            <cell>0.468</cell>
+            <cell>0.025</cell>
+            <cell>4</cell>
+          </row>
+        </tabular>
+      </table>
 
       <figure xml:id="fig-boxtyperegion">
         <caption>Boxplot of violent crime rate per 1,000 students by region and type of institution (colleges (C) on the left, and universities (U) on the right).</caption>
