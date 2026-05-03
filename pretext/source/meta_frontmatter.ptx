@@ -46,9 +46,9 @@
     </p>
 
     <p>
-      <em>Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R</em>
+      <em>Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R</em> <xref ref="RProject"/>
       is intended to be accessible to undergraduate students who have successfully completed a regression course
-      through, for example, a textbook like <em>Stat2</em>. We started teaching this course at St. Olaf College
+      through, for example, a textbook like <em>Stat2</em> <xref ref="Cannon2019"/>. We started teaching this course at St. Olaf College
       in 2003 so students would be able to deal with the non-normal, correlated world we live in. It has been
       offered at St. Olaf every year since. Even though there is no mathematical prerequisite, we still introduce
       fairly sophisticated topics such as likelihood theory, zero-inflated Poisson, and parametric bootstrapping
