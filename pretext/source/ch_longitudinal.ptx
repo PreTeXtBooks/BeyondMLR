@@ -45,7 +45,7 @@ library(tidyverse)
     <title>Case Study: Charter Schools</title>
 
     <p>
-      Charter schools were first introduced in the state of Minnesota in 1991. Since then, charter
+      Charter schools were first introduced in the state of Minnesota in 1991 <xref ref="CharterSchools"/>. Since then, charter
       schools have begun appearing all over the United States. While publicly funded, a unique
       feature of charter schools is their independence from many of the regulations that are present
       in the public school systems of their respective city or state. Thus, charters will often
@@ -54,10 +54,37 @@ library(tidyverse)
     </p>
 
     <p>
+      One example of this unique schedule structure is the KIPP (Knowledge Is Power Program) Stand
+      Academy in Minneapolis, MN. KIPP stresses longer days and better partnerships with parents,
+      and they claim that 80% of their students go to college from a population where 87% qualify
+      for free and reduced lunch and 95% are African American or Latino <xref ref="KIPP"/>.
+      However, the larger question is whether or not charter schools are out-performing non-charter
+      public schools in general.
+    </p>
+
+    <p>
+      Comparisons of student performance in charter schools versus public schools have produced
+      conflicting results. A study found that charter schools are less likely to meet state
+      performance standards than conventional public schools <xref ref="Finnigan2004"/>. However,
+      <xref ref="Witte2007"/> performed a statistical analysis comparing Wisconsin charter and
+      non-charter schools and found that average achievement test scores were significantly higher
+      in charter schools after controlling for demographic variables. A study of California students
+      found that charter schools, on average, were performing at the same level as conventional
+      public schools <xref ref="Buddin2005"/>.
+    </p>
+
+    <p>
+      As described in <xref ref="Green2003"/>, it is very challenging to compare charter and public
+      non-charter schools, as charter schools are often designed to target or attract specific
+      populations of students. Without accounting for differences in student populations,
+      comparisons lose meaning.
+    </p>
+
+    <p>
       We will examine data collected by the Minnesota Department of Education for all Minnesota
       schools during the years 2008–2010. Specifically, we focus on the math portion of the
       Minnesota Comprehensive Assessment (MCA-II) data for 6th grade students enrolled in 618
-      different Minnesota schools. We hope to answer the following research questions:
+      different Minnesota schools <xref ref="MNDepartmentOfEducation"/>. We hope to answer the following research questions:
     </p>
 
     <ul>
@@ -143,8 +170,10 @@ library(tidyverse)
         <li><p><em>Apply multilevel methods,</em> which use available data to estimate patterns
         over time by school and then combine those school estimates in a way that recognizes that
         time trends for schools with complete data are more precise than time trends for schools
-        with fewer measurements. This is the approach we will follow in the remainder of the
-        text.</p></li>
+        with fewer measurements. <xref ref="Laird1988"/> demonstrates that multilevel models are
+        valid under the fairly unrestrictive condition that the probability of missingness cannot
+        depend on any unobserved predictors or the response. This is the approach we will follow
+        in the remainder of the text.</p></li>
       </ul>
     </subsection>
 
@@ -862,7 +891,9 @@ model.f0 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
       <p>
         When testing random effects at the boundary (such as <m>\sigma_v^2 = 0</m>) or those with
         restricted ranges (such as <m>\rho_{uv} = 0</m>), using a chi-square distribution to
-        conduct a likelihood ratio test is not appropriate. Researchers often use methods like the
+        conduct a likelihood ratio test is not appropriate; it can produce a conservative test with
+        p-values that are too large (<xref ref="Bryk2002"/>; <xref ref="Singer2003"/>;
+        <xref ref="Faraway2005"/>). Researchers often use methods like the
         <term>parametric bootstrap</term><idx><h>parametric bootstrap</h></idx> to better
         approximate the distribution of the likelihood test statistic. The basic steps are:
       </p>
@@ -1025,8 +1056,11 @@ bootstrapAnova(mA = model.f2ml, m0 = model.f0ml, B = 1000)
       <p>
         Models with the same fixed effects but different covariance structures can be compared with
         AIC and BIC measures when models are not nested and with likelihood ratio tests when models
-        are nested. In the charter school example, the choice of covariance matrix does not greatly
-        affect estimates of fixed effects.
+        are nested. However, using a chi-square distribution to conduct a likelihood ratio test for
+        random effects can produce a conservative test with p-values that are too large
+        (<xref ref="Bryk2002"/>; <xref ref="Singer2003"/>; <xref ref="Faraway2005"/>). In the
+        charter school example, the choice of covariance matrix does not greatly affect estimates
+        of fixed effects.
       </p>
     </subsection>
 
@@ -1098,7 +1132,7 @@ model.f2a &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
         <title>Parenting and gang activity</title>
         <statement>
           <p>
-            Walker-Barnes and Mason describe a longitudinal study in which 300 ninth graders from
+            <xref ref="Walker-Barnes2001"/> and Mason describe a longitudinal study in which 300 ninth graders from
             one high school in an urban southeastern city were assessed at the beginning of the
             school year about their gang activity, the gang activity of their peers, behavior of
             their parents, and their ethnic and cultural heritage. Then, information about their
@@ -1159,7 +1193,7 @@ model.f2a &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
         <statement>
           <p>
             Provide interpretations of significant coefficients in context from the Walker-Barnes
-            and Mason Table 2 results of hierarchical linear modeling analyses modeling gang
+            and Mason <xref ref="Walker-Barnes2001"/> Table 2 results of hierarchical linear modeling analyses modeling gang
             involvement (psychological control parenting behavior).
           </p>
         </statement>
@@ -1311,9 +1345,9 @@ model.f2a &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
         <title>Teen alcohol use</title>
         <statement>
           <p>
-            Curran et al. collected data on 82 adolescents at three time points starting at age
+            <xref ref="Curran1997"/> collected data on 82 adolescents at three time points starting at age
             14 to assess factors that affect teen drinking behavior. Key variables in
-            <c>alcohol.csv</c> are as follows:
+            <c>alcohol.csv</c> (source: <xref ref="Singer2003"/>) are as follows:
           </p>
           <ul>
             <li><p><c>id</c> = numerical identifier for subject</p></li>
@@ -1374,8 +1408,9 @@ model.f2a &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
         <statement>
           <p>
             One response to emergency department overcrowding is "ambulance diversion" — closing
-            its doors and forcing ambulances to bring patients to alternative hospitals. A data
-            set (<c>ambulance3.csv</c>) contains the following variables from 184 California
+            its doors and forcing ambulances to bring patients to alternative hospitals.
+            An award-winning student project <xref ref="Radtke2019"/> assembled a data
+            set (<c>ambulance3.csv</c>) containing the following variables from 184 California
             hospitals over a 3-year period (2013–2015):
           </p>
           <ul>
@@ -1446,9 +1481,9 @@ modelG &lt;- lmer(diverthours ~ year2013 + totalvisits1 +
         <title>UCLA nurse blood pressure study</title>
         <statement>
           <p>
-            A study collected information from 203 registered nurses in the Los Angeles area
+            A study by <xref ref="Goldstein2000"/> collected information from 203 registered nurses in the Los Angeles area
             between 24 and 50 years of age on blood pressure (BP) and potential factors that
-            contribute to hypertension. Data from this study (in <c>nursebp.csv</c>) includes
+            contribute to hypertension. Data from this study (in <c>nursebp.csv</c>, source: <xref ref="Weiss2005"/>) includes
             observations (40–60 per nurse) repeatedly taken over the course of a single day. The
             first BP measurement was taken half an hour before the subject's normal start of work,
             and BP was then measured approximately every 20 minutes for the rest of the day.
@@ -1474,7 +1509,7 @@ modelG &lt;- lmer(diverthours ~ year2013 + totalvisits1 +
         <statement>
           <p>
             Education researchers wonder which factors most affect the completion rates at U.S.
-            colleges. Using the IPEDS database containing data from 1310 institutions over the
+            colleges. Using the IPEDS database <xref ref="IPEDS"/> containing data from 1310 institutions over the
             years 2002–2009 (in <c>colleges.csv</c>), the following variables were assembled.
             Response: <c>rate</c> = completion rate (number of degrees awarded per 100 students
             enrolled). Level 1 predictors: <c>year</c>, <c>instpct</c> = percentage of students
@@ -1496,7 +1531,7 @@ modelG &lt;- lmer(diverthours ~ year2013 + totalvisits1 +
         <title>Beating the Blues</title>
         <statement>
           <p>
-            Proudfoot et al. developed and studied an interactive multimedia program of cognitive
+            <xref ref="Proudfoot2003"/> developed and studied an interactive multimedia program of cognitive
             behavioral therapy (CBT) called Beating the Blues (BtheB). In their study, 167
             participants suffering from anxiety and/or depression were randomly allocated to
             receive BtheB therapy or treatment as usual (TAU). The primary response was the Beck
@@ -1504,7 +1539,7 @@ modelG &lt;- lmer(diverthours ~ year2013 + totalvisits1 +
             months later), and at 2, 4, and 6 months post-treatment follow-up.
           </p>
           <p>
-            Data from the BtheB study can be found in <c>BtheB.csv</c>. Variables include:
+            Data from the BtheB study can be found in <c>BtheB.csv</c> <xref ref="Everitt2006"/>. Variables include:
             <c>drug</c> (prescribed concomitant drug therapy?), <c>length</c> (current episode
             of depression longer or shorter than 6 months?), <c>treatment</c> (TAU or BtheB),
             <c>bdi.pre</c> (baseline BDI), <c>bdi.2m</c>, <c>bdi.4m</c>, <c>bdi.6m</c>,

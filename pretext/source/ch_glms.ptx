@@ -28,7 +28,7 @@ library(knitr)
 
     <p>
       Thus far, we have expanded our repertoire of models from linear least squares regression to
-      include Poisson regression. But in the early 1970s, Nelder and Wedderburn identified a broader
+      include Poisson regression. But in the early 1970s, <xref ref="Nelder1972"/> and Wedderburn identified a broader
       class of models that generalizes the multiple linear regression we considered in the
       introductory chapter and are referred to as
       <term>generalized linear models (GLMs)</term>.<idx><h>generalized linear models (GLMs)</h></idx>
