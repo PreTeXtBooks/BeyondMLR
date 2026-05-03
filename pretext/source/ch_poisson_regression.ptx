@@ -188,10 +188,14 @@ fHH1 &lt;- read_csv("data/fHH1.csv")
         <code>
 modela &lt;- glm(total ~ age, 
                   family = poisson, data = fHH1)
-summary(modela)
+coef(summary(modela))
+cat(" Residual deviance = ", summary(modela)$deviance, " on ",
+    summary(modela)$df.residual, "df", "\n",
+    "Dispersion parameter = ", summary(modela)$dispersion)
         </code>
       </program>
 
+<<<<<<< copilot/fix-chapter-4-ptx-book
       <p>How can the coefficient estimates be interpreted in terms of this example? As done when interpreting slopes in the LLSR models, we consider how the estimated mean number in the house, <m>\lambda</m>, changes as the age of the household head increases by an additional year. But in place of looking at change in the mean number in the house, with a Poisson regression we consider the log of the mean number in the house and then convert back to original units. For example, consider a comparison of two models---one for a given age (<m>x</m>) and one after increasing age by 1 (<m>x+1</m>):
       <mdn>
         <mrow>log(\lambda_X) \amp= \beta_0 + \beta_1X</mrow>
@@ -203,6 +207,23 @@ summary(modela)
       </p>
 
       <p>These results suggest that by exponentiating the coefficient on age we obtain the multiplicative factor by which the mean count changes. In this case, the mean number in the house changes by a factor of <m>e^{-0.0047}=0.995</m> or decreases by 0.5% (since <m>1-.995 = .005</m>) with each additional year older the household head is; or, we predict a 0.47% <em>increase</em> in mean household size for a 1-year <em>decrease</em> in age of the household head (since <m>1/.995=1.0047</m>). The quantity on the left-hand side of Equation <xref ref="eq-rateRatio"/> is referred to as a <term>rate ratio</term>  or <term>relative risk</term>, <idx>relative risk (rate ratio)</idx> and it represents a percent change in the response for a unit change in X.  In fact, for regression models in general, whenever a variable (response or explanatory) is logged, we make interpretations about multiplicative effects on that variable, while with unlogged variables we can reach our usual interpretations about additive effects.</p>
+=======
+      <console>
+        <output>
+##              Estimate Std. Error z value   Pr(&gt;|z|)
+## (Intercept)  1.549942  0.0502754  30.829 1.070e-208
+## age         -0.004706  0.0009363  -5.026  5.013e-07
+##  Residual deviance =  2337  on  1498 df 
+##  Dispersion parameter =  1
+        </output>
+      </console>
+
+      <p>With only age as a predictor, the fitted model is:
+      <me>
+        \log(\hat{\lambda}) = 1.5789 - 0.00655 \cdot \textrm{age},
+      </me>
+      or equivalently, <m>\hat{\lambda} = e^{1.5789 - 0.00655 \cdot \textrm{age}}</m>.</p>
+>>>>>>> master
 
       <p>Typically, the standard errors for the estimated coefficients are included in Poisson regression output. Here the standard error for the estimated coefficient for age is 0.00094. We can use the standard error to construct a confidence interval for <m>\beta_1</m>. A 95% CI provides a range of plausible values for the <c>age</c> coefficient and can be constructed:
       <me>(\hat\beta_1-Z^*\cdot SE(\hat\beta_1), \quad \hat\beta_1+Z^*\cdot SE(\hat\beta_1))</me>
@@ -230,6 +251,7 @@ anova(modela, modela2, test = "Chisq")
         </code>
       </program>
 
+<<<<<<< copilot/fix-chapter-4-ptx-book
       <p>More formally, we are testing:
       <me>\textrm{Null (reduced) Model}: \log(\lambda) = \beta_0 \textrm{ or } \beta_1=0</me>
       <me>\textrm{Larger (full) Model}: \log(\lambda) = \beta_0 + \beta_1\textrm{age} \textrm{ or } \beta_1 \neq 0</me>
@@ -254,6 +276,17 @@ anova(modela, modela2, test = "Chisq")
       </ul>
 
       <p>The drop-in-deviance and the Wald-type tests usually provide consistent results; however, if there is a discrepancy, the drop-in-deviance is preferred.  Not only does the drop-in-deviance test perform better in more cases, but it's also more flexible.  If two models differ by one term, then the drop-in-deviance test essentially tests if a single coefficient is 0 like the Wald test does, while if two models differ by more than one term, the Wald test is no longer appropriate.</p>
+=======
+      <console>
+        <output>
+  ResidDF ResidDev Deviance Df      pval
+1    1498     2337       NA NA        NA
+2    1497     2201    136.1  1 1.854e-31
+        </output>
+      </console>
+
+      <p>The drop-in-deviance test strongly favors the model with the quadratic term (<m>G^2 = 120.6</m>, df = 1, p &lt; .001), consistent with the inverted-U pattern observed in the EDA.</p>
+>>>>>>> master
     </subsection>
 
     <subsection xml:id="likelihood-sec">
@@ -309,10 +342,14 @@ anova(modela, modela2, test = "Chisq")
         <code>
 modela2 &lt;- glm(total ~ age + I(age^2), 
                   family = poisson, data = fHH1)
-summary(modela2)
+coef(summary(modela2))
+cat(" Residual deviance = ", summary(modela2)$deviance, " on ",
+    summary(modela2)$df.residual, "df", "\n",
+    "Dispersion parameter = ", summary(modela2)$dispersion)
         </code>
       </program>
 
+<<<<<<< copilot/fix-chapter-4-ptx-book
       <p>We can assess the importance of the quadratic term in two ways. First, the p-value for the Wald-type statistic for age<m>^2</m> is statistically significant (Z = -11.058, p &lt; 0.001). Another approach is to perform a drop-in-deviance test.</p>
 
       <p><m>H_0</m>: <m>\log(\lambda)=\beta_0+\beta_1 \textrm{age}</m> (reduced model)</p>
@@ -335,6 +372,20 @@ summary(modela2)
         <mrow>\textrm{max[log(total)]} \amp = -0.333 + 0.071 \times 50.04 - 0.00071 \times (50.04)^2 = 1.441</mrow>
       </md>
       </p>
+=======
+      <console>
+        <output>
+##               Estimate Std. Error z value  Pr(&gt;|z|)
+## (Intercept) -0.3325296  1.788e-01  -1.859 6.297e-02
+## age          0.0708868  6.890e-03  10.288 8.007e-25
+## I(age^2)    -0.0007083  6.406e-05 -11.058 2.009e-28
+##  Residual deviance =  2201  on  1497 df 
+##  Dispersion parameter =  1
+        </output>
+      </console>
+
+      <p>Both the linear and quadratic terms are highly significant. The positive linear coefficient and negative quadratic coefficient capture the inverted-U shape: mean household size increases with age up to a peak and then decreases. This is consistent with the life-cycle pattern of household formation, childbearing, and children leaving home.</p>
+>>>>>>> master
     </subsection>
 
     <subsection xml:id="sec-pois-addcovariate">
@@ -344,12 +395,16 @@ summary(modela2)
 
       <program language="r" xml:id="code-ch4-region-model">
         <code>
-modela2L &lt;- glm(total ~ age + I(age^2) + region, 
+modela2L &lt;- glm(total ~ age + I(age^2) + location, 
                   family = poisson, data = fHH1)
-summary(modela2L)
+coef(summary(modela2L))
+cat(" Residual deviance = ", summary(modela2L)$deviance, " on ",
+    summary(modela2L)$df.residual, "df", "\n",
+    "Dispersion parameter = ", summary(modela2L)$dispersion)
         </code>
       </program>
 
+<<<<<<< copilot/fix-chapter-4-ptx-book
       <p>Our Poisson regression model now looks like:
       <md>
         <mrow>\textrm{log(total)} \amp = -0.384 + 0.070 \cdot \textrm{age} - 0.00070 \cdot \textrm{age}^2 +0.061 \cdot \textrm{IlocosRegion} +</mrow>
@@ -358,6 +413,32 @@ summary(modela2L)
       Notice that because there are 5 different locations, we must represent the effects of different locations through 4 indicator variables. For example, <m>\hat{\beta}_6=-0.0194</m> indicates that, after controlling for the age of the head of household, the log mean household size is 0.0194 lower for households in the Davao Region than for households in the reference location of Central Luzon. In more interpretable terms, mean household size is <m>e^{-0.0194}=0.98</m> times &#x201C;higher&#x201D; (i.e., 2% lower) in the Davao Region than in Central Luzon, when holding age constant.</p>
 
       <p>To test if the mean household size significantly differs by location, we must use a drop-in-deviance test, rather than a Wald-type test, because four terms (instead of just one) are added when including the <c>location</c> variable. From the Analysis of Deviance table above, adding the four terms corresponding to location to the quadratic model with age produces a statistically significant improvement (<m>\chi^2=13.144</m>, df = 4, <m>p=0.0106</m>), so there is significant evidence that mean household size differs by location, after controlling for age of the head of household. Further modeling (not shown) shows that after controlling for location and age of the head of household, mean household size did not differ between the two types of roofing material.</p>
+=======
+      <console>
+        <output>
+##                        Estimate Std. Error  z value
+## (Intercept)          -0.3843338  0.1820919  -2.1107
+## age                   0.0703628  0.0069051  10.1900
+## I(age^2)             -0.0007026  0.0000642 -10.9437
+## locationDavaoRegion  -0.0193872  0.0537827  -0.3605
+## locationIlocosRegion  0.0609820  0.0526598   1.1580
+## locationMetroManila   0.0544801  0.0472012   1.1542
+## locationVisayas       0.1121092  0.0417496   2.6853
+##                       Pr(&gt;|z|)
+## (Intercept)          3.480e-02
+## age                  2.197e-24
+## I(age^2)             7.126e-28
+## locationDavaoRegion  7.185e-01
+## locationIlocosRegion 2.468e-01
+## locationMetroManila  2.484e-01
+## locationVisayas      7.247e-03
+##  Residual deviance =  2188  on  1493 df 
+##  Dispersion parameter =  1
+        </output>
+      </console>
+
+      <p>A drop-in-deviance test comparing the model with and without region strongly favors including region as a covariate. After accounting for region, the quadratic pattern with age remains significant.</p>
+>>>>>>> master
     </subsection>
 
     <subsection xml:id="sec-PoisResid">
@@ -565,6 +646,20 @@ cat(" Residual deviance = ", summary(modeltr)$deviance, " on ",
         </code>
       </program>
 
+      <console>
+        <output>
+##             Estimate Std. Error z value  Pr(&gt;|z|)
+## (Intercept) -1.54780     0.1711 -9.0439 1.512e-19
+## typeU        0.27956     0.1331  2.0997 3.576e-02
+## regionMW     0.09912     0.1775  0.5583 5.766e-01
+## regionNE     0.77813     0.1531  5.0836 3.703e-07
+## regionS      0.58238     0.1490  3.9098 9.238e-05
+## regionW      0.26275     0.1875  1.4011 1.612e-01
+##  Residual deviance =  348.7  on  74 df 
+##  Dispersion parameter =  1
+        </output>
+      </console>
+
       <p>From our model, the Northeast and the South differ significantly from the Central region (p = 0.00000037 and p = 0.0000924, respectively). The estimated coefficient of 0.778 means that the violent crime rate per 1,000 in the Northeast is nearly 2.2 (<m>e^{0.778}</m>) times that of the Central region, controlling for the type of school. A Wald-type confidence interval for this factor can be constructed by first calculating a CI for the coefficient (<m>0.778 \pm 1.96 \cdot 0.153</m>) and then exponentiating (1.61 to 2.94).</p>
     </introduction>
 
@@ -584,6 +679,24 @@ tibble(comparison = rownames(mult_comp$linfct),
         </code>
       </program>
 
+      <console>
+        <output>
+## # A tibble: 10 x 5
+##    comparison estimate    SE z_value    p_value
+##    &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+##  1 MW - C       0.0991 0.178   0.558 0.980     
+##  2 NE - C       0.778  0.153   5.08  0.00000349
+##  3 S - C        0.582  0.149   3.91  0.000828  
+##  4 W - C        0.263  0.188   1.40  0.621     
+##  5 NE - MW      0.679  0.155   4.37  0.000109  
+##  6 S - MW       0.483  0.151   3.19  0.0121    
+##  7 W - MW       0.164  0.189   0.864 0.908     
+##  8 S - NE      -0.196  0.122  -1.61  0.486     
+##  9 W - NE      -0.515  0.166  -3.11  0.0157    
+## 10 W - S       -0.320  0.163  -1.96  0.280
+        </output>
+      </console>
+
       <p>We find that the Northeast has significantly higher rates of violent crimes than the Central, Midwest, and Western regions, while the South has significantly higher rates than the Central and Midwest, controlling for the type of institution. The university indicator is significant; after exponentiating the coefficient, we estimate an approximately 32% (<m>e^{0.280}</m>) increase in violent crime rate over colleges after controlling for region.</p>
 
       <p>These results suggest significant differences in regions and type of institution. However, the EDA findings suggest the effect of the type of institution may vary by region, so we consider a model with an interaction between region and type:</p>
@@ -597,6 +710,14 @@ drop_in_dev &lt;- anova(modeltr, modeli, test = "Chisq")
 drop_in_dev
         </code>
       </program>
+
+      <console>
+        <output>
+  ResidDF ResidDev Deviance Df    pval
+1      74    348.7       NA NA      NA
+2      70    276.7    71.98  4 8.664e-15
+        </output>
+      </console>
 
       <p>The drop-in-deviance test provides convincing evidence of an interaction between region and type of institution (<m>\chi^2 = 71.98</m>, df = 4, p &lt; .001). Our model estimates that violent crime rates are 13.6 (<m>e^{.196+2.411}</m>) times higher in universities in the West compared to colleges, while in the Northeast we estimate that violent crime rates are 2.4 (<m>\frac{1}{e^{.196-1.070}}</m>) times higher in colleges.</p>
 
@@ -628,6 +749,24 @@ cat(" Residual deviance = ", summary(modeliq)$deviance, " on ",
         </code>
       </program>
 
+      <console>
+        <output>
+##                Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)     -1.4741     0.7455 -1.9773  0.05195
+## typeU            0.1959     0.7961  0.2461  0.80631
+## regionMW        -1.9765     2.2366 -0.8837  0.37987
+## regionNE         1.5529     0.8053  1.9284  0.05786
+## regionS         -0.1562     1.0246 -0.1525  0.87924
+## regionW         -1.8337     1.6671 -1.0999  0.27513
+## typeU:regionMW   2.1965     2.2701  0.9676  0.33659
+## typeU:regionNE  -1.0698     0.8856 -1.2080  0.23111
+## typeU:regionS    0.8121     1.0771  0.7540  0.45338
+## typeU:regionW    2.4106     1.7164  1.4045  0.16460
+##  Residual deviance =  276.7  on  70 df 
+##  Dispersion parameter =  4.447
+        </output>
+      </console>
+
       <p>The estimated dispersion parameter is 4.447, much larger than 1.0, confirming overdispersion. The larger estimated standard errors in the quasi-Poisson model reflect this adjustment. For example, the standard error for the West region term from the likelihood approach is 0.7906, whereas the quasilikelihood standard error is <m>\sqrt{4.47} \cdot 0.7906 = 1.6671</m>. This term is no longer significant under the quasi-Poisson model. After adjusting for overdispersion, none of the model coefficients are significant at the 0.05 level, because standard errors were all increased by a factor of 2.1 (<m>\sqrt{\hat{\phi}} = \sqrt{4.447} = 2.1</m>).</p>
 
       <p>Note that tests for individual parameters are now based on the t-distribution rather than a standard normal distribution, with test statistic <m>t=\frac{\hat{\beta}}{SE_Q(\hat{\beta})}</m> following an (approximate) t-distribution with <m>n-p</m> degrees of freedom if the null hypothesis is true (<m>H_0:\beta=0</m>). Drop-in-deviance tests can be similarly adjusted for overdispersion in the quasi-Poisson model. In this case, you can divide the test statistic (per degree of freedom) by the estimated dispersion parameter and compare the result to an F-distribution with the difference in the model degrees of freedom for the numerator and the degrees of freedom for the larger model in the denominator. That is, <m>F=\frac{\textrm{drop in deviance}}{\textrm{difference in df}} / {\hat{\phi}}</m> follows an (approximate) F-distribution when the null hypothesis is true (<m>H_0</m>: reduced model sufficient). The output below tests for an interaction between region and type of institution after adjusting for overdispersion (extra variance):</p>
@@ -640,6 +779,14 @@ drop_in_dev &lt;- anova(modeltrq, modeliq, test = "F")
 drop_in_dev
         </code>
       </program>
+
+      <console>
+        <output>
+  ResidDF ResidDev     F Df     pval
+1      74    348.7    NA NA       NA
+2      70    276.7 4.047  4 0.005213
+        </output>
+      </console>
 
       <p>Even after adjusting for overdispersion, there is still statistically significant evidence (<m>F = 4.05</m>, p = .0052) that the difference between colleges and universities in violent crime rate differs by region.</p>
     </subsection>
@@ -707,7 +854,29 @@ cat(" Residual deviance = ", summary(modelinb)$deviance, " on ",
         </code>
       </program>
 
+<<<<<<< copilot/fix-chapter-4-ptx-book
       <p>These results differ from the quasi-Poisson model. Several effects are now statistically significant at the .05 level: the effect of type of institution for the Central region (<m>Z=2.64</m>, p = .008), the difference between Northeast and Central regions for colleges (<m>Z=2.76</m>, p = .006), the difference between Northeast and Central regions in type effect (<m>Z=-2.01</m>, p = .044), and the difference between West and Central regions in type effect (<m>Z=2.71</m>, p = .007). In this case, compared to the quasi-Poisson model, negative binomial coefficient estimates are generally in the same direction and similar in size, but negative binomial standard errors are somewhat smaller.</p>
+=======
+      <console>
+        <output>
+##                Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)      0.4904     0.4281  1.1455 0.252008
+## typeU            1.2174     0.4608  2.6422 0.008237
+## regionMW        -1.0953     0.8075 -1.3563 0.175004
+## regionNE         1.3966     0.5053  2.7641 0.005709
+## regionS          0.1461     0.5559  0.2627 0.792752
+## regionW         -1.1858     0.6870 -1.7260 0.084347
+## typeU:regionMW   1.6342     0.8498  1.9231 0.054469
+## typeU:regionNE  -1.1259     0.5601 -2.0102 0.044411
+## typeU:regionS    0.4513     0.5995  0.7527 0.451638
+## typeU:regionW    2.0387     0.7527  2.7086 0.006758
+##  Residual deviance =  199.6  on  69 df 
+##  Dispersion parameter (theta) =  1.313
+        </output>
+      </console>
+
+      <p>These results differ from the quasi-Poisson model. Several effects are now statistically significant at the 0.05 level: the effect of type of institution for the Central region (<m>Z = 2.64</m>, p = .008), the difference between Northeast and Central regions for colleges (<m>Z = 2.76</m>, p = .006), and the West/Central difference in type effect (<m>Z = 2.71</m>, p = .007). Compared to the quasi-Poisson model, negative binomial coefficient estimates are generally similar in direction and magnitude, but the negative binomial standard errors are somewhat smaller.</p>
+>>>>>>> master
 
       <p>In summary, we explored the possibility of differences in the violent crime rate between colleges and universities, controlling for region. Our initial efforts seemed to suggest that there are indeed differences between colleges and universities, and the pattern of those differences depends upon the region. However, this model exhibited significant lack-of-fit which remained after the removal of an extreme observation. In the absence of additional covariates, we accounted for the lack-of-fit by using a quasilikelihood approach and a negative binomial regression, which provided slightly different conclusions. We may want to look for additional covariates and/or more data.</p>
     </subsection>
@@ -811,11 +980,32 @@ pois.m1 &lt;- glm(drinks ~ off.campus + sex,
 # Zero-inflated Poisson model
 zip.m2 &lt;- zeroinfl(drinks ~ off.campus + sex | firstYear,
                    data = zip.data)
-summary(zip.m2)
+coef(summary(zip.m2))
+cat(" Log likelihood = ", as.numeric(logLik(zip.m2)))
         </code>
       </program>
 
+<<<<<<< copilot/fix-chapter-4-ptx-book
       <p>Our model uses <c>firstYear</c> to distinguish drinkers and non-drinkers (<q>Zero-inflation model coefficients</q>) and <c>off.campus</c> and <c>sex</c> to help explain the differences in the number of drinks among drinkers (<q>Count model coefficients</q>).  Again, we could have used the same covariates for the two pieces of a ZIP model, but neither <c>off.campus</c> nor <c>sex</c> proved to be a useful predictor of drinkers vs. non-drinkers after we accounted for first-year status.</p>
+=======
+      <console>
+        <output>
+## $count
+##             Estimate Std. Error z value  Pr(&gt;|z|)
+## (Intercept)   0.7543     0.1440   5.238 1.624e-07
+## off.campus    0.4159     0.2059   2.020 4.333e-02
+## sexm          1.0209     0.1752   5.827 5.634e-09
+## 
+## $zero
+##               Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)    -0.6036     0.3114  -1.938  0.05261
+## firstYearTRUE   1.1364     0.6095   1.864  0.06226
+##  Log likelihood =  -140.8
+        </output>
+      </console>
+
+      <p>The ZIP model output contains two sets of coefficients: count model coefficients (Poisson part) and zero-inflation model coefficients (binary part). We exponentiate coefficients for ease of interpretation:</p>
+>>>>>>> master
 
       <program language="r" xml:id="code-ch4-zip-coef">
         <code>
@@ -823,9 +1013,24 @@ exp(coef(zip.m2))   # exponentiated coefficients
         </code>
       </program>
 
+<<<<<<< copilot/fix-chapter-4-ptx-book
       <p>We'll first consider the <q>Count model coefficients,</q> which provide information on how the sex and off-campus status of a student who is a drinker are related to the number of drinks reported by that student over a weekend. As we have done with previous Poisson regression models, we exponentiate each coefficient for ease of interpretation. Thus, for those who drink, the average number of drinks for males is <m>e^{1.0209}</m> or 2.76 times the number for females (<m>Z = 5.827</m>, p &lt; 0.001) given that you are comparing people who live in comparable settings, i.e., either both on or both off campus. Among drinkers, the mean number of drinks for students living off campus is <m>e^{0.4159}=1.52</m> times that of students living on campus for those of the same sex (<m>Z = 2.021</m>, p = 0.0433).</p>
 
       <p>The <q>Zero-inflation model coefficients</q> refer to separating drinkers from non-drinkers. An important consideration in separating drinkers from non-drinkers may be whether this is their first year, where <c>firstYear</c> is a 0/1 indicator variable.</p>
+=======
+      <console>
+        <output>
+##  count_(Intercept)   count_off.campus 
+##             2.1261             1.5158 
+##         count_sexm   zero_(Intercept) 
+##             2.7757             0.5468 
+## zero_firstYearTRUE 
+##             3.1155
+        </output>
+      </console>
+
+      <p>Considering the <q>Count model coefficients,</q> which provide information on how the sex and off-campus status of a drinker relate to the number of drinks: for those who drink, the average number of drinks for males is <m>e^{1.0209} = 2.76</m> times the number for females (<m>Z = 5.827</m>, p &lt; 0.001), given that both students live in comparable settings. Among drinkers, the mean number of drinks for students living off campus is <m>e^{0.4159} = 1.52</m> times that of students living on campus for those of the same sex (<m>Z = 2.021</m>, p = 0.0433).</p>
+>>>>>>> master
 
       <p>We have
       <me>
@@ -862,7 +1067,28 @@ vuong(pois.m1, zip.m2)
         </code>
       </program>
 
+<<<<<<< copilot/fix-chapter-4-ptx-book
       <p>Here, we have structured the Vuong Test to compare Model 1: Ordinary Poisson Model to Model 2: Zero-inflation Model. If the two models do not differ, the test statistic for Vuong would be asymptotically standard Normal and the p-value would be relatively large. Here the first line of the output table indicates that the zero-inflation model is better (<m>Z=-2.69</m>, p=.0036). Note that the test depends upon sufficiently large n for the Normal approximation, so since our sample size (n=77) is somewhat small, we need to interpret this result with caution. More research is underway to address statistical issues related to these comparisons.</p>
+=======
+      <console>
+        <output>
+## Vuong Non-Nested Hypothesis Test-Statistic: 
+## (test-statistic is asymptotically distributed N(0,1) under the
+##  null that the models are indistinguishible)
+## -------------------------------------------------------------
+##               Vuong z-statistic             H_A
+## Raw                      -2.689 model2 &gt; model1
+## AIC-corrected            -2.534 model2 &gt; model1
+## BIC-corrected            -2.353 model2 &gt; model1
+##               p-value
+## Raw            0.0036
+## AIC-corrected  0.0056
+## BIC-corrected  0.0093
+        </output>
+      </console>
+
+      <p>The Vuong test compares Model 1 (ordinary Poisson) to Model 2 (ZIP). If the two models do not differ, the test statistic is asymptotically standard Normal with a large p-value. Here the test indicates that the zero-inflation model is better (<m>Z = -2.69</m>, p = .0036). Note that the test depends on sufficiently large <m>n</m> for the Normal approximation, so since our sample size (n = 77) is somewhat small, we interpret this result with caution.</p>
+>>>>>>> master
     </subsection>
 
     <subsection xml:id="sec-drinking-residuals">

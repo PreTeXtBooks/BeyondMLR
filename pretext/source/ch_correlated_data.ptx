@@ -770,8 +770,21 @@ count_2b &lt;- rbinom(24, 10, pi_2b)
       <program language="r" xml:id="code-tree-linear">
         <input>
 tube_linear &lt;- lm(growth_yr1 ~ tubes, data = treetubes_yr1)
+coef(summary(tube_linear))
+cat(" R squared = ", summary(tube_linear)$r.squared, "\n",
+    "Residual standard error = ", summary(tube_linear)$sigma)
         </input>
       </program>
+
+    <console>
+      <output>
+##             Estimate Std. Error t value  Pr(&gt;|t|)
+## (Intercept)  0.10585   0.005665  18.685 9.931e-56
+## tubes       -0.04013   0.041848  -0.959 3.382e-01
+##  R squared =  0.002414 
+##  Residual standard error =  0.1097
+      </output>
+    </console>
 
       <p>
         However, the LLSR model assumes that all observations are independent, including trees in
@@ -785,8 +798,22 @@ tube_linear &lt;- lm(growth_yr1 ~ tubes, data = treetubes_yr1)
         <input>
 tube_multi1 &lt;- lmer(growth_yr1 ~ tubes + (1|transect),
                      data = treetubes_yr1)
+coef(summary(tube_multi1))
+VCrandom &lt;- VarCorr(tube_multi1)
+print(VCrandom, comp = c("Variance", "Std.Dev."))
         </input>
       </program>
+
+    <console>
+      <output>
+##             Estimate Std. Error t value
+## (Intercept)  0.10636    0.01329   8.005
+## tubes       -0.04065    0.05165  -0.787
+##  Groups   Name        Variance Std.Dev.
+##  transect (Intercept) 0.00084  0.029   
+##  Residual             0.01155  0.107
+      </output>
+    </console>
 
       <p>
         As we saw in the case of the binary outcomes, the standard error for the coefficients is
