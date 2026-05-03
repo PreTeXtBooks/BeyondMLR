@@ -561,7 +561,7 @@ c.data &lt;- c.data %&gt;%
     <title>Initial Models</title>
 
     <introduction>
-      <p>We are interested primarily in differences in violent crime between institutional types controlling for difference in regions, so we fit a model with region, institutional type, and our offset. Note that the central region is the reference level in our model.</p>
+      <p>We are interested primarily in differences in violent crime between institutional types controlling for differences in regions, so we fit a model with region, institutional type, and our offset. Note that the central region is the reference level in our model.</p>
 
       <program language="r" xml:id="code-ch4-main-model">
         <code>
@@ -1338,7 +1338,7 @@ fit3 &lt;- glm(burg09 ~ act.comp + tuition.thous +
       <exercise xml:id="exer-ch4-g7">
         <title>Going vague: ambiguity in political issue statements</title>
         <statement>
-          <p>In this exercise, you will use a <term>hurdle model</term> <idx>hurdle model</idx> to analyze the data. A hurdle model is similar to a zero-inflated Poisson model, but instead of assuming that <q>zeros</q> are comprised of two distinct groups (those who would always be 0 and those who happen to be 0) (e.g., non-drinkers and drinkers who had zero drinks over the weekend in Case Study <xref ref="cs-drinking"/>), the hurdle model assumes that <q>zeros</q> are a single entity. Therefore, in a hurdle model, cases are either <q>zeros</q> or <q>non-zeros</q>, where <q>non-zeros</q> <em>hurdle</em> the 0 threshold and must always have counts of 1 or above. We will use the <c>pscl</c> package and the <c>hurdle</c> function. Note that coefficients in the <sq>zero hurdle model</sq> section of the output relate predictors to the log-odds of being a <em>non-zero</em> (i.e., having at least one issue statement), which is opposite of the ZIP model.</p>
+          <p>In this exercise, you will use a <term>hurdle model</term> <idx>hurdle model</idx> to analyze the data. A hurdle model is similar to a zero-inflated Poisson model, but instead of assuming that <q>zeros</q> are comprised of two distinct groups (those who would always be 0 and those who happen to be 0) (e.g., non-drinkers and drinkers who had zero drinks over the weekend in Case Study <xref ref="cs-drinking"/>), the hurdle model assumes that <q>zeros</q> are a single entity. Therefore, in a hurdle model, cases are either <q>zeros</q> or <q>non-zeros</q>, where <q>non-zeros</q> <em>hurdle</em> the 0 threshold and must always have counts of 1 or above. We will use the <c>pscl</c> package and the <c>hurdle</c> function. Note that coefficients in the <q>zero hurdle model</q> section of the output relate predictors to the log-odds of being a <em>non-zero</em> (i.e., having at least one issue statement), which is opposite of the ZIP model.</p>
 
           <p>In a 2018 study, Chapp (2018) scraped every issue statement from webpages of candidates for the U.S. House of Representatives, counting the number of issues candidates commented on and scoring the level of ambiguity of each statement. The data set <c>ambiguity.csv</c> contains:</p>
           <p><ul>
