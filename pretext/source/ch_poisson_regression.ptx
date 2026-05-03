@@ -68,15 +68,15 @@ library(tidyverse)
 
     <subsection xml:id="sec-pois-graphical">
       <title>A Graphical Look at Poisson Regression</title>
-      <p>Figure <xref ref="fig-OLSpois"/> illustrates a comparison of the LLSR model for inference to Poisson regression using a log function of <m>\lambda</m>.</p>
+      <p><xref ref="fig-OLSpois"/> illustrates a comparison of the LLSR model for inference to Poisson regression using a log function of <m>\lambda</m>.</p>
       <ol>
-        <li><p>The graphic displaying the LLSR inferential model appears in the left panel of Figure <xref ref="fig-OLSpois"/>. It shows that, for each level of X, the responses are approximately normal.  The panel on the right side of Figure <xref ref="fig-OLSpois"/> depicts what a Poisson regression model looks like. For each level of X, the responses follow a Poisson distribution (Assumption 1). For Poisson regression, small values of <m>\lambda</m> are associated with a distribution that is noticeably skewed with lots of small values and only a few larger ones. As <m>\lambda</m> increases the distribution of the responses begins to look more and more like a normal distribution.</p></li>
+        <li><p>The graphic displaying the LLSR inferential model appears in the left panel of <xref ref="fig-OLSpois"/>. It shows that, for each level of X, the responses are approximately normal.  The panel on the right side of <xref ref="fig-OLSpois"/> depicts what a Poisson regression model looks like. For each level of X, the responses follow a Poisson distribution (Assumption 1). For Poisson regression, small values of <m>\lambda</m> are associated with a distribution that is noticeably skewed with lots of small values and only a few larger ones. As <m>\lambda</m> increases the distribution of the responses begins to look more and more like a normal distribution.</p></li>
         <li><p>In the LLSR model, the variation in <m>Y</m> at each level of X, <m>\sigma^2</m>, is the same. For Poisson regression the responses at each level of X become more variable with increasing means, where variance=mean (Assumption 3).</p></li>
         <li><p>In the case of LLSR, the mean responses for each level of X, <m>\mu_{Y|X}</m>, fall on a line. In the case of the Poisson model, the mean values of <m>Y</m> at each level of <m>X</m>, <m>\lambda_{Y|X}</m>, fall on a curve, not a line, although the logs of the means should follow a line (Assumption 4).</p></li>
       </ol>
 
       <figure xml:id="fig-OLSpois">
-        <caption>Comparing OLS regression (left) and Poisson regression (right). In OLS, the conditional distributions are normal with constant variance. In Poisson regression, the conditional distributions are Poisson with mean equal to variance, both of which change with <m>X</m>.</caption>
+        <caption>Regression models: Linear regression (left) and Poisson regression (right).</caption>
         <image source="generated-assets/fig-OLSpois.png" width="80%">
           <description>Two panels comparing OLS and Poisson regression. The left panel shows bell curves of equal height at each X value. The right panel shows Poisson distributions that grow and spread as X increases.</description>
         </image>
@@ -96,13 +96,33 @@ library(tidyverse)
     <introduction>
       <p>How many other people live with you in your home? The number of people sharing a house differs from country to country and often from region to region. International agencies use household size when determining needs of populations, and the household sizes determine the magnitude of the household needs.</p>
       <p>The Philippine Statistics Authority (PSA) spearheads the Family Income and Expenditure Survey (FIES) nationwide. The survey, which is undertaken every three years, is aimed at providing data on family income and expenditure, including levels of consumption by item of expenditure. Our data, from the 2015 FIES, is a subset of 1500 of the 40,000 observations.  Our data set focuses on five regions: Central Luzon, Metro Manila, Ilocos, Davao, and Visayas (see <xref ref="fig-philippinesmap"/>).</p>
-      <p>At what age are heads of households in the Philippines most likely to find the largest number of people in their household? Is this association similar for poorer households (measured by the presence of a roof made from predominantly light/salvaged materials)? We begin by explicitly defining our response, <m>Y=</m> number of household members other than the head of the household. We then define the explanatory variables: age of the head of the household, type of roof (predominantly light/salvaged material or predominantly strong material), and location (Central Luzon, Davao Region, Ilocos Region, Metro Manila, or Visayas). Note that predominantly light/salvaged materials are a combination of light material, mixed but predominantly light material, and mixed but predominantly salvaged material, and salvaged matrial.  Our response is a count, so we consider a Poisson regression where the parameter of interest is <m>\lambda</m>, the average number of people, other than the head, per household. We will primarily examine the relationship between household size and age of the head of household, controlling for location and income.</p>
+      <program language="r" xml:id="code-ch4-philippines-load">
+        <code>
+fHH1 &lt;- read_csv("data/fHH1.csv")
+        </code>
+      </program>
+      <figure xml:id="fig-philippinesmap">
+        <caption>Regions of the Philippines.</caption>
+        <image source="data/map_of_philippines.jpg" width="50%">
+          <description>A map of the Philippines showing its archipelago and labeled regions used in the case study.</description>
+        </image>
+      </figure>
+
+<p>At what age are heads of households in the Philippines most likely to find the largest number of people in their household? Is this association similar for poorer households (measured by the presence of a roof made from predominantly light/salvaged materials)? We begin by explicitly defining our response, <m>Y=</m> number of household members other than the head of the household. We then define the explanatory variables: age of the head of the household, type of roof (predominantly light/salvaged material or predominantly strong material), and location (Central Luzon, Davao Region, Ilocos Region, Metro Manila, or Visayas). Note that predominantly light/salvaged materials are a combination of light material, mixed but predominantly light material, and mixed but predominantly salvaged material, and salvaged matrial.  Our response is a count, so we consider a Poisson regression where the parameter of interest is <m>\lambda</m>, the average number of people, other than the head, per household. We will primarily examine the relationship between household size and age of the head of household, controlling for location and income.</p>
     </introduction>
 
     <subsection xml:id="organizedata4">
       <title>Data Organization</title>
 
       <p>The first five rows from our data set <c>fHH1.csv</c> are illustrated in <xref ref="tab-fHH1table1"/>. Each line of the data file refers to a household at the time of the survey:</p>
+
+      <ul>
+        <li><p><c>location</c> = where the house is located (Central Luzon, Davao Region, Ilocos Region, Metro Manila, or Visayas)</p></li>
+        <li><p><c>age</c> = the age of the head of household</p></li>
+        <li><p><c>total</c> = the number of people in the household other than the head</p></li>
+        <li><p><c>numLT5</c> = the number in the household under 5 years of age</p></li>
+        <li><p><c>roof</c> = the type of roof in the household (either Predominantly Light/Salvaged Material, or Predominantly Strong Material, where stronger material can sometimes be used as a proxy for greater wealth)</p></li>
+      </ul>
 
       <table xml:id="tab-fHH1table1">
         <title>The first five observations from the Philippines Household case study.</title>
@@ -151,28 +171,6 @@ library(tidyverse)
           </row>
         </tabular>
       </table>
-
-      <p>The Philippine Statistics Authority (PSA) conducts the Family Income and Expenditure Survey (FIES) nationwide every three years to provide data on family income and expenditure. Our data, from the 2015 FIES, is a subset of 1,500 of the 40,000 observations <xref ref="PSA"/>. Our data set focuses on five regions: Central Luzon, Metro Manila, Ilocos, Davao, and Visayas (see <xref ref="fig-philippinesmap"/>). Each line of the data file <c>fHH1.csv</c> refers to a household at the time of the survey:</p>
-      <ul>
-        <li><p><c>location</c> = where the house is located (Central Luzon, Davao Region, Ilocos Region, Metro Manila, or Visayas)</p></li>
-        <li><p><c>age</c> = the age of the head of household</p></li>
-        <li><p><c>total</c> = the number of people in the household other than the head</p></li>
-        <li><p><c>numLT5</c> = the number in the household under 5 years of age</p></li>
-        <li><p><c>roof</c> = the type of roof in the household (either Predominantly Light/Salvaged Material, or Predominantly Strong Material, where stronger material can sometimes be used as a proxy for greater wealth)</p></li>
-      </ul>
-
-      <figure xml:id="fig-philippinesmap">
-        <caption>Map of the Philippines showing its three main island groups (Luzon, Visayas, and Mindanao) and major regions.</caption>
-        <image source="data/map_of_philippines.jpg" width="50%">
-          <description>A map of the Philippines showing its archipelago and labeled regions used in the case study.</description>
-        </image>
-      </figure>
-
-      <program language="r" xml:id="code-ch4-philippines-load">
-        <code>
-fHH1 &lt;- read_csv("data/fHH1.csv")
-        </code>
-      </program>
     </subsection>
 
     <subsection xml:id="exploreHH">
@@ -181,13 +179,13 @@ fHH1 &lt;- read_csv("data/fHH1.csv")
       <p>For the rest of this case study, we will refer to the number of people in a household as the total number of people in that specific household <em>besides</em> the head of household. The average number of people in a household is 3.68 (Var = 5.53), and there are anywhere from 0 to 16 people in the houses. Over 11.1% of these households are made from predominantly light and salvaged material. The mean number of people in a house for houses with a roof made from predominantly strong material is 3.69 (Var=5.55), whereas houses with a roof made from predominantly light/salvaged material average 3.64 people (Var=5.41). Of the various locations, Visayas has the largest household size, on average, with a mean of 3.90 in the household, and the Davao Region has the smallest with a mean of 3.39.</p>
 
       <figure xml:id="fig-nhouse">
-        <caption>Histogram of the number of people in a household (Philippines data).</caption>
+        <caption>Distribution of household size in 5 Philippine regions.</caption>
         <image source="generated-assets/fig-nhouse.png" width="60%">
           <description>A histogram of household size showing right-skewed distribution with most households having 2 to 6 members.</description>
         </image>
       </figure>
 
-      <p>Figure <xref ref="fig-nhouse"/> reveals a fair amount of variability in the number in each house; responses range from 0 to 16 with many of the respondents reporting between 1 and 5 people in the house. Like many Poisson distributions, this graph is right skewed. It clearly does not suggest that the number of people in a household is a normally distributed response.</p>
+      <p><xref ref="fig-nhouse"/> reveals a fair amount of variability in the number in each house; responses range from 0 to 16 with many of the respondents reporting between 1 and 5 people in the house. Like many Poisson distributions, this graph is right skewed. It clearly does not suggest that the number of people in a household is a normally distributed response.</p>
 
       <figure xml:id="fig-totalPoisByAge">
         <caption>Distribution of household sizes by age group of the household head.</caption>
@@ -196,91 +194,34 @@ fHH1 &lt;- read_csv("data/fHH1.csv")
         </image>
       </figure>
 
-      <p>Figure <xref ref="fig-totalPoisByAge"/> further shows that responses can be reasonably modeled with a Poisson distribution when grouped by a key explanatory variable: age of the household head.  These last two plots together suggest that Assumption 1 (Poisson Response) is satisfactory in this case study.</p>
+      <p><xref ref="fig-totalPoisByAge"/> further shows that responses can be reasonably modeled with a Poisson distribution when grouped by a key explanatory variable: age of the household head.  These last two plots together suggest that Assumption 1 (Poisson Response) is satisfactory in this case study.</p>
 
       <p>For Poisson random variables, the variance of <m>Y</m> (i.e., the square of the standard deviation of <m>Y</m>), is equal to its mean, where <m>Y</m> represents the size of an individual household. As the mean increases, the variance increases. So, if the response is a count and the mean and variance are approximately equal for each group of <m>X</m>, a Poisson regression model may be a good choice. In <xref ref="tab-table1chp4"/> we display age groups by 5-year increments, to check to see if the empirical means and variances of the number in the house are approximately equal for each age group. This provides us one way in which to check the Poisson Assumption 3 (mean = variance).</p>
 
       <table xml:id="tab-table1chp4">
         <title>Compare mean and variance of household size within each age group.</title>
-        <tabular halign="center" top="major" bottom="major">
-          <row header="yes" bottom="medium">
-            <cell>Age Groups</cell>
-            <cell>Mean</cell>
-            <cell>Variance</cell>
-            <cell>n</cell>
-          </row>
-          <row>
-            <cell>(15, 20]</cell>
-            <cell>1.667</cell>
-            <cell>0.667</cell>
-            <cell>6</cell>
-          </row>
-          <row>
-            <cell>(20, 25]</cell>
-            <cell>2.167</cell>
-            <cell>1.559</cell>
-            <cell>18</cell>
-          </row>
-          <row>
-            <cell>(25, 30]</cell>
-            <cell>2.918</cell>
-            <cell>1.410</cell>
-            <cell>49</cell>
-          </row>
-          <row>
-            <cell>(30, 35]</cell>
-            <cell>3.444</cell>
-            <cell>2.193</cell>
-            <cell>108</cell>
-          </row>
-          <row>
-            <cell>(35, 40]</cell>
-            <cell>3.842</cell>
-            <cell>3.574</cell>
-            <cell>158</cell>
-          </row>
-          <row>
-            <cell>(40, 45]</cell>
-            <cell>4.234</cell>
-            <cell>4.445</cell>
-            <cell>175</cell>
-          </row>
-          <row>
-            <cell>(45, 50]</cell>
-            <cell>4.490</cell>
-            <cell>6.396</cell>
-            <cell>194</cell>
-          </row>
-          <row>
-            <cell>(50, 55]</cell>
-            <cell>4.011</cell>
-            <cell>5.251</cell>
-            <cell>188</cell>
-          </row>
-          <row>
-            <cell>(55, 60]</cell>
-            <cell>3.807</cell>
-            <cell>6.532</cell>
-            <cell>145</cell>
-          </row>
-          <row>
-            <cell>(60, 65]</cell>
-            <cell>3.706</cell>
-            <cell>6.196</cell>
-            <cell>153</cell>
-          </row>
-          <row>
-            <cell>(65, 70]</cell>
-            <cell>3.339</cell>
-            <cell>7.998</cell>
-            <cell>115</cell>
-          </row>
+  <tabular>
+    <row header="yes">
+      <cell>Age Groups</cell><cell>Mean</cell><cell>Variance</cell><cell>n</cell>
+    </row>
+    <row><cell>(15,20]</cell><cell>1.667</cell><cell>0.6667</cell><cell>6</cell></row>
+    <row><cell>(20,25]</cell><cell>2.167</cell><cell>1.5588</cell><cell>18</cell></row>
+    <row><cell>(25,30]</cell><cell>2.918</cell><cell>1.4099</cell><cell>49</cell></row>
+    <row><cell>(30,35]</cell><cell>3.444</cell><cell>2.1931</cell><cell>108</cell></row>
+    <row><cell>(35,40]</cell><cell>3.842</cell><cell>3.5735</cell><cell>158</cell></row>
+    <row><cell>(40,45]</cell><cell>4.234</cell><cell>4.4448</cell><cell>175</cell></row>
+    <row><cell>(45,50]</cell><cell>4.490</cell><cell>6.3963</cell><cell>194</cell></row>
+    <row><cell>(50,55]</cell><cell>4.011</cell><cell>5.2512</cell><cell>188</cell></row>
+    <row><cell>(55,60]</cell><cell>3.807</cell><cell>6.5319</cell><cell>145</cell></row>
+    <row><cell>(60,65]</cell><cell>3.706</cell><cell>6.1958</cell><cell>153</cell></row>
+    <row><cell>(65,70]</cell><cell>3.339</cell><cell>7.9980</cell><cell>115</cell></row>
+    <row><cell>NA</cell><cell>2.550</cell><cell>5.5436</cell><cell>191</cell></row>
         </tabular>
       </table>
 
       <p>If there is a problem with this assumption, most often we see variances much larger than means.  Here, as expected, we see more variability as age increases.  However, it appears that the variance is smaller than the mean for lower ages, while the variance is greater than the mean for higher ages.  Thus, there is some evidence of a violation of the mean=variance assumption (Assumption 3), although any violations are modest.</p>
 
-      <p>The Poisson regression model also implies that <m>log(\lambda_i)</m>, not the mean household size <m>\lambda_i</m>, is a linear function of age; i.e., <m>log(\lambda_i)=\beta_0+\beta_1\textrm{age}_i</m>. Therefore, to check the linearity assumption (Assumption 4) for Poisson regression, we would like to plot <m>log(\lambda_i)</m> by age.  Unfortunately, <m>\lambda_i</m> is unknown. Our best guess of <m>\lambda_i</m> is the observed mean number in the household for each age (level of <m>X</m>). Because these means are computed for observed data, they are referred to as <term>empirical</term> means. Taking the logs of the empirical means and plotting by age provides a way to assess the linearity assumption. The smoothed curve added to Figure <xref ref="fig-ageXnhouse"/> suggests that there is a curvilinear relationship between age and the log of the mean household size, implying that adding a quadratic term should be considered. This finding is consistent with the researchers' hypothesis that there is an age at which a maximum household size occurs. It is worth noting that we are not modeling the log of the empirical means, rather it is the log of the <em>true</em> rate that is modeled. Looking at empirical means, however, does provide an idea of the form of the relationship between <m>log(\lambda)</m> and <m>x_i</m>.</p>
+      <p>The Poisson regression model also implies that <m>log(\lambda_i)</m>, not the mean household size <m>\lambda_i</m>, is a linear function of age; i.e., <m>log(\lambda_i)=\beta_0+\beta_1\textrm{age}_i</m>. Therefore, to check the linearity assumption (Assumption 4) for Poisson regression, we would like to plot <m>log(\lambda_i)</m> by age.  Unfortunately, <m>\lambda_i</m> is unknown. Our best guess of <m>\lambda_i</m> is the observed mean number in the household for each age (level of <m>X</m>). Because these means are computed for observed data, they are referred to as <term>empirical</term> means. Taking the logs of the empirical means and plotting by age provides a way to assess the linearity assumption. The smoothed curve added to <xref ref="fig-ageXnhouse"/> suggests that there is a curvilinear relationship between age and the log of the mean household size, implying that adding a quadratic term should be considered. This finding is consistent with the researchers' hypothesis that there is an age at which a maximum household size occurs. It is worth noting that we are not modeling the log of the empirical means, rather it is the log of the <em>true</em> rate that is modeled. Looking at empirical means, however, does provide an idea of the form of the relationship between <m>log(\lambda)</m> and <m>x_i</m>.</p>
 
       <figure xml:id="fig-ageXnhouse">
         <caption>The log of the mean household sizes, besides the head of household, by age of the head of household, with loess smoother.</caption>
@@ -289,7 +230,7 @@ fHH1 &lt;- read_csv("data/fHH1.csv")
         </image>
       </figure>
 
-      <p>We can extend Figure <xref ref="fig-ageXnhouse"/> by fitting separate curves for each region (see Figure <xref ref="fig-byregion"/>).  This allows us to see if the relationship between mean household size and age is consistent across region.  In this case, the relationships are pretty similar; if they weren't, we could consider adding an age-by-region interaction to our eventual Poisson regression model.</p>
+      <p>We can extend <xref ref="fig-ageXnhouse"/> by fitting separate curves for each region (see <xref ref="fig-byregion"/>).  This allows us to see if the relationship between mean household size and age is consistent across region.  In this case, the relationships are pretty similar; if they weren't, we could consider adding an age-by-region interaction to our eventual Poisson regression model.</p>
 
       <figure xml:id="fig-byregion">
         <caption>Empirical log of the mean household sizes vs. age of the head of household, with loess smoother by region.</caption>
@@ -323,6 +264,17 @@ cat(" Residual deviance = ", summary(modela)$deviance, " on ",
         </code>
       </program>
 
+      <console>
+        <output>
+##              Estimate Std. Error z value   Pr(&gt;|z|)
+## (Intercept)  1.549942  0.0502754  30.829 1.070e-208
+## age         -0.004706  0.0009363  -5.026  5.013e-07
+
+##  Residual deviance =  2337  on  1498 df 
+##  Dispersion parameter =  1
+        </output>
+      </console>
+
       <p>How can the coefficient estimates be interpreted in terms of this example? As done when interpreting slopes in the LLSR models, we consider how the estimated mean number in the house, <m>\lambda</m>, changes as the age of the household head increases by an additional year. But in place of looking at change in the mean number in the house, with a Poisson regression we consider the log of the mean number in the house and then convert back to original units. For example, consider a comparison of two models---one for a given age (<m>x</m>) and one after increasing age by 1 (<m>x+1</m>):
       <mdn>
         <mrow>log(\lambda_X) \amp= \beta_0 + \beta_1X</mrow>
@@ -343,6 +295,35 @@ cat(" Residual deviance = ", summary(modela)$deviance, " on ",
 
       <p>Exponentiating the endpoints yields a confidence interval for the relative risk; i.e., the percent change in household size for each additional year older.  Thus <m>(e^{-0.0065},e^{-0.0029})=(0.993,0.997)</m> suggests that we are 95% confident that the mean number in the house decreases between 0.7% and 0.3% for each additional year older the head of household is. It is best to construct a confidence interval for the coefficient and then exponentiate the endpoints because the estimated coefficients more closely follow a normal distribution than the exponentiated coefficients. There are other approaches to constructing intervals in these circumstances, including profile likelihood, the delta method, and bootstrapping, and we will discuss some of those approaches later.  In this case, for instance, the profile likelihood interval is nearly identical to the Wald-type (normal theory) confidence interval <idx>Wald-type confidence interval</idx> above.</p>
 
+      <program language="r" xml:id="code-ch4-pois-fit1">
+        <code>
+# CI for betas using profile likelihood
+confint(modela)
+        </code>
+      </program>
+
+      <console>
+        <output>
+##                 2.5 %    97.5 %
+## (Intercept)  1.451170  1.648249
+## age         -0.006543 -0.002873
+        </output>
+      </console>
+
+      <program language="r" xml:id="code-ch4-pois-fit1">
+        <code>
+exp(confint(modela))
+        </code>
+      </program>
+
+      <console>
+        <output>
+##              2.5 % 97.5 %
+## (Intercept) 4.2681 5.1979
+## age         0.9935 0.9971
+        </output>
+      </console>
+
       <p>If there is no association between age and household size, there is no change in household size for each additional year, so <m>\lambda_X</m> is equal to <m>\lambda_{X+1}</m> and the ratio <m>\lambda_{X+1}/\lambda_X</m> is 1.  In other words, if there is no association between age and household size, then <m>\beta_1=0</m> and <m>e^{\beta_1}=1</m>.  Note that our interval for <m>e^{\beta_1}</m>, (0.993,0.997), does not include 1, so the model with age is preferred to a model without age; i.e., age is significantly associated with household size.  Note that we could have similarly confirmed that our interval for <m>\beta_1</m> does not include 0 to show the significance of age as a predictor of household size.</p>
 
       <p>Another way to test the significance of the age term is to calculate a <term>Wald-type statistic</term>. <idx>Wald-type test</idx> A Wald-type test statistic is the estimated coefficient divided by its standard error. When the true coefficient is 0, this test statistic follows a standard normal distribution for sufficiently large <m>n</m>. The estimated coefficient associated with the linear term in age is <m>{\hat{\beta}_1}=-0.0047</m> with standard error <m>SE(\hat{\beta}_1)=0.00094</m>.  The value for the Wald test statistic is then <m>Z=\hat{\beta}_1/SE(\hat{\beta}_1)=-5.026</m>, where <m>Z</m> follows a standard normal distribution if <m>\beta_1=0</m>.  In this case, the two-sided p-value based on the standard normal distribution for testing <m>H_0:\beta_1=0</m> is almost 0 (<m>p=0.000000501</m>).  Therefore, we have statistically significant evidence (Z = -5.026, p &lt; .001) that average household size decreases as age of the head of household increases.</p>
@@ -355,11 +336,18 @@ cat(" Residual deviance = ", summary(modela)$deviance, " on ",
 
       <program language="r" xml:id="code-ch4-deviance-test">
         <code>
-modela2 &lt;- glm(total ~ age + I(age^2), 
-                  family = poisson, data = fHH1)
-anova(modela, modela2, test = "Chisq")
+model0 &lt;- glm(total ~ 1, family = poisson, data = fHH1)
+drop_in_dev &lt; anova(model0, modela, test = "Chisq")
         </code>
       </program>
+
+      <console>
+        <output>
+  ResidDF ResidDev Deviance Df      pval
+1    1499     2362       NA NA        NA
+2    1498     2337     25.4  1 4.661e-07
+        </output>
+      </console>
 
       <p>More formally, we are testing:
       <me>\textrm{Null (reduced) Model}: \log(\lambda) = \beta_0 \textrm{ or } \beta_1=0</me>
@@ -447,7 +435,33 @@ cat(" Residual deviance = ", summary(modela2)$deviance, " on ",
         </code>
       </program>
 
+      <console>
+        <output>
+##               Estimate Std. Error z value  Pr(&gt;|z|)
+## (Intercept) -0.3325296  1.788e-01  -1.859 6.297e-02
+## age          0.0708868  6.890e-03  10.288 8.007e-25
+## age2        -0.0007083  6.406e-05 -11.058 2.009e-28
+
+##  Residual deviance =  2201  on  1497 df 
+##  Dispersion parameter =  1
+        </output>
+      </console>
+
       <p>We can assess the importance of the quadratic term in two ways. First, the p-value for the Wald-type statistic for age<m>^2</m> is statistically significant (Z = -11.058, p &lt; 0.001). Another approach is to perform a drop-in-deviance test.</p>
+
+      <program language="r" xml:id="code-ch4-quad-model">
+        <code>
+drop_in_dev &lt;- anova(modela, modela2, test = "Chisq")
+        </code>
+      </program>
+
+      <console>
+        <output>
+  ResidDF ResidDev Deviance Df      pval
+1    1498     2337       NA NA        NA
+2    1497     2201    136.1  1 1.854e-31
+        </output>
+      </console>
 
       <p><m>H_0</m>: <m>\log(\lambda)=\beta_0+\beta_1 \textrm{age}</m> (reduced model)</p>
 
@@ -487,6 +501,31 @@ cat(" Residual deviance = ", summary(modela2L)$deviance, " on ",
         </code>
       </program>
 
+      <console>
+        <output>
+##                        Estimate Std. Error  z value
+## (Intercept)          -0.3843338  0.1820919  -2.1107
+## age                   0.0703628  0.0069051  10.1900
+## age2                 -0.0007026  0.0000642 -10.9437
+## locationDavaoRegion  -0.0193872  0.0537827  -0.3605
+## locationIlocosRegion  0.0609820  0.0526598   1.1580
+## locationMetroManila   0.0544801  0.0472012   1.1542
+## locationVisayas       0.1121092  0.0417496   2.6853
+
+##                       Pr(&gt;|z|)
+## (Intercept)          3.480e-02
+## age                  2.197e-24
+## age2                 7.126e-28
+## locationDavaoRegion  7.185e-01
+## locationIlocosRegion 2.468e-01
+## locationMetroManila  2.484e-01
+## locationVisayas      7.247e-03
+
+##  Residual deviance =  2188  on  1493 df 
+##  Dispersion parameter =  1
+        </output>
+      </console>
+
       <p>Our Poisson regression model now looks like:
       <md>
         <mrow>\textrm{log(total)} \amp = -0.384 + 0.070 \cdot \textrm{age} - 0.00070 \cdot \textrm{age}^2 +0.061 \cdot \textrm{IlocosRegion} +</mrow>
@@ -494,6 +533,19 @@ cat(" Residual deviance = ", summary(modela2L)$deviance, " on ",
       </md>
       Notice that because there are 5 different locations, we must represent the effects of different locations through 4 indicator variables. For example, <m>\hat{\beta}_6=-0.0194</m> indicates that, after controlling for the age of the head of household, the log mean household size is 0.0194 lower for households in the Davao Region than for households in the reference location of Central Luzon. In more interpretable terms, mean household size is <m>e^{-0.0194}=0.98</m> times &#x201C;higher&#x201D; (i.e., 2% lower) in the Davao Region than in Central Luzon, when holding age constant.</p>
 
+      <program language="r" xml:id="code-ch4-region-model">
+        <code>
+drop_in_dev &lt;- anova(modela2, modela2L, test = "Chisq")
+        </code>
+      </program>
+
+      <console>
+        <output>
+  ResidDF ResidDev Deviance Df    pval
+1    1497     2201       NA NA      NA
+2    1493     2188    13.14  4 0.01059
+        </output>
+      </console>
       <p>To test if the mean household size significantly differs by location, we must use a drop-in-deviance test, rather than a Wald-type test, because four terms (instead of just one) are added when including the <c>location</c> variable. From the Analysis of Deviance table above, adding the four terms corresponding to location to the quadratic model with age produces a statistically significant improvement (<m>\chi^2=13.144</m>, df = 4, <m>p=0.0106</m>), so there is significant evidence that mean household size differs by location, after controlling for age of the head of household. Further modeling (not shown) shows that after controlling for location and age of the head of household, mean household size did not differ between the two types of roofing material.</p>
     </subsection>
 
@@ -534,7 +586,6 @@ cat(" Residual deviance = ", summary(modela2L)$deviance, " on ",
       <p>As its name implies, a deviance residual describes how the observed data deviates from the fitted model. Squaring and summing the deviances for all observations produces the <term>residual deviance</term> <m>=\sum (\textrm{deviance residual})^2_i</m>. <idx>residual deviance</idx> Relatively speaking, observations for good fitting models will have small deviances; that is, the predicted values will deviate little from the observed. However, you can see that the deviance for an observation does not easily translate to a difference in observed and predicted responses as is the case with LLSR models.</p>
 
       <p>A careful inspection of the deviance formula reveals several places where the deviance compares <m>Y</m> to <m>\hat{\lambda}</m>: the sign of the deviance is based on the difference between <m>Y</m> and <m>\hat{\lambda}</m>, and under the radical sign we see the ratio <m>Y/\hat{\lambda}</m> and the difference <m>Y -\hat{\lambda}</m>. When <m>Y = \hat{\lambda}</m>, that is, when the model fits perfectly, the difference will be 0 and the ratio will be 1 (so that its log will be 0). So like the residuals in LLSR, an observation that fits perfectly will not contribute to the sum of the squared deviances. This definition of a deviance depends on the likelihood for Poisson models. Other models will have different forms for the deviance depending on their likelihood.</p>
-      <p>Figure <xref ref="fig-resid1"/> shows Pearson residuals plotted against fitted values from the quadratic model with region. The residuals appear roughly symmetric around zero with no strong trend, though some observations are far from zero. Other details related to residual plots can be found in <xref ref="McCullagh1989"/>.</p>
 
       <figure xml:id="fig-resid1">
         <caption>Residual plot for the Poisson model of household size by age of the household head.</caption>
@@ -551,14 +602,24 @@ cat(" Residual deviance = ", summary(modela2L)$deviance, " on ",
 
       <p>The model residual deviance can be used to assess the degree to which the predicted values differ from the observed. When a model is true, we can expect the residual deviance to be distributed as a <m>\chi^2</m> random variable with degrees of freedom equal to the model's residual degrees of freedom. Our model thus far, the quadratic terms for age plus the indicators for location, has a residual deviance of 2187.8 with 1493 df. The probability of observing a deviance this large if the model fits is esentially 0, saying that there is significant evidence of lack-of-fit.</p>
 
+      <program language="r" xml:id="code-ch4-region-model">
+        <code>
+1-pchisq(modela2$deviance, modela2$df.residual)  # GOF test
+        </code>
+      </program>
+
+      <console>
+        <output>
+[1] 0
+        </output>
+      </console>
+
       <p>There are several reasons why <term>lack-of-fit</term> <idx>lack-of-fit</idx> may be observed. (1) We may be missing important covariates or interactions; a more comprehensive data set may be needed. (2) There may be extreme observations that may cause the deviance to be larger than expected; however, our residual plots did not reveal any unusual points. (3) Lastly, there may be a problem with the Poisson model. In particular, the Poisson model has only a single parameter, <m>\lambda</m>, for each combination of the levels of the predictors which must describe both the mean and the variance. This limitation can become manifest when the variance appears to be larger than the corresponding means. In that case, the response is more variable than the Poisson model would imply, and the response is considered to be <term>overdispersed</term>. <idx>overdispersion</idx></p>
     </subsection>
   </section>
 
   <section xml:id="sec-ols-vs-poisson">
     <title>Linear Least Squares vs. Poisson Regression</title>
-
-    <p>Table <xref ref="tab-olsVspois"/> summarizes the key differences between linear least squares (LLSR) regression and Poisson regression.</p>
 
     <table xml:id="tab-olsVspois">
       <title>Comparison of LLSR and Poisson Regression</title>
@@ -633,21 +694,39 @@ c.data &lt;- c.data %&gt;%
          nvrate = nv / enroll1000)
         </code>
       </program>
+
+      <console>
+        <output>
+# A tibble: 10 x 6
+   Enrollment type     nv nvrate enroll1000 region
+        &lt;dbl&gt;  &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt;      <dbl> &lt;chr&gt; 
+ 1       5590 U        30 5.37         5.59 SE    
+ 2        540 C         0 0            0.54 SE    
+ 3      35747 U        23 0.643       35.7  W     
+ 4      28176 C         1 0.0355      28.2  W     
+ 5      10568 U         1 0.0946      10.6  SW    
+ 6       3127 U         0 0            3.13 SW    
+ 7      20675 U         7 0.339       20.7  W     
+ 8      12548 C         0 0           12.5  W     
+ 9      30063 U        19 0.632       30.1  C     
+10       4429 C         4 0.903        4.43 C     
+        </output>
+      </console>
     </subsection>
 
     <subsection xml:id="sec-crime-eda">
       <title>Exploratory Data Analysis</title>
 
-      <p>A graph of the number of violent crimes, Figure <xref ref="fig-nviolent"/>, reveals the pattern often found with distributions of counts of rare events. Many schools reported no violent crimes or very few crimes. A few schools have a large number of crimes making for a distribution that appears to be far from normal. Therefore, Poisson regression should be used to model our data; Poisson random variables are often used to represent counts (e.g., number of violent crimes) per unit of time or space (e.g., one year).</p>
-
       <figure xml:id="fig-nviolent">
-        <caption>Histogram of the number of violent crimes reported at 81 U.S. college and university campuses in 2010.</caption>
+        <caption>Histogram of number of violent crimes by institution.</caption>
         <image source="generated-assets/fig-nviolent.png" width="60%">
           <description>Histogram of violent crime counts across campuses, right-skewed with a potential outlier.</description>
         </image>
       </figure>
 
-      <p>Let's take a look at two covariates of interest for these schools: type of institution and region. In our data, the majority of institutions are universities (65% of the 81 schools) and only 35% are colleges. Interest centers on whether the different regions tend to have different crime rates. Table <xref ref="tab-regions"/> contains the name of each region and each column represents the percentage of schools in that region which are colleges or universities. The proportion of colleges varies from a low of 20% in the Southwest (SW) to a high of 50% in the West (W).</p>
+      <p>A graph of the number of violent crimes, <xref ref="fig-nviolent"/>, reveals the pattern often found with distributions of counts of rare events. Many schools reported no violent crimes or very few crimes. A few schools have a large number of crimes making for a distribution that appears to be far from normal. Therefore, Poisson regression should be used to model our data; Poisson random variables are often used to represent counts (e.g., number of violent crimes) per unit of time or space (e.g., one year).</p>
+
+      <p>Let's take a look at two covariates of interest for these schools: type of institution and region. In our data, the majority of institutions are universities (65% of the 81 schools) and only 35% are colleges. Interest centers on whether the different regions tend to have different crime rates. <xref ref="tab-regions"/> contains the name of each region and each column represents the percentage of schools in that region which are colleges or universities. The proportion of colleges varies from a low of 20% in the Southwest (SW) to a high of 50% in the West (W).</p>
 
       <table xml:id="tab-regions">
         <title>Proportion of colleges and universities within region in the campus crime data set.</title>
@@ -798,7 +877,7 @@ c.data &lt;- c.data %&gt;%
         </image>
       </figure>
 
-      <p>Table <xref ref="tab-table4ch4"/> and Figure <xref ref="fig-boxtyperegion"/> display mean violent crime rates that are generally lower at the colleges within a region (with the exception of the Northeast). In addition, the regional pattern of rates at universities appears to differ from that of the colleges.</p>
+      <p><xref ref="tab-table4ch4"/> and <xref ref="fig-boxtyperegion"/> display mean violent crime rates that are generally lower at the colleges within a region (with the exception of the Northeast). In addition, the regional pattern of rates at universities appears to differ from that of the colleges.</p>
     </subsection>
 
     <subsection xml:id="sec-crime-offset">
@@ -819,7 +898,7 @@ c.data &lt;- c.data %&gt;%
   <section xml:id="sec-modeling-assumptions">
     <title>Modeling Assumptions</title>
 
-    <p>In <xref ref="tab-table1chp4"/>, we see that the variances are greatly higher than the mean counts in almost every group, giving reason to question the Poisson assumption that variability equals the mean. The fact that the variance of the violent crime rate tends to be on the same scale as the mean suggests that adjusting for enrollment may provide some help, although it may not completely solve the issues with excessive variance; we will have to return to this issue after some initial modeling.</p>
+    <p>In <xref ref="tab-table1chp4"/>, we see that the variances are greatly higher than the mean counts in almost every group. Thus, we have reason to question the Poisson regression assumption of variability equal to the mean; we will have to return to this issue after some initial modeling. The fact that the variance of the rate of violent crimes per 1000 students tends to be on the same scale as the mean tells us that adjusting for enrollment may provide some help, although that may not completely solve our issues with excessive variance.</p>
 
     <p>As for other model assumptions, linearity with respect to <m>\log(\lambda)</m> is difficult to discern without continuous predictors, and independence cannot be assessed without knowing how the schools were selected.</p>
   </section>
@@ -908,16 +987,43 @@ drop_in_dev
 
       <console>
         <output>
-  ResidDF ResidDev Deviance Df    pval
-1      74    348.7       NA NA      NA
-2      70    276.7    71.98  4 8.664e-15
+##                Estimate Std. Error z value  Pr(&gt;|z|)
+## (Intercept)     -1.4741     0.3536 -4.1694 3.054e-05
+## typeU            0.1959     0.3775  0.5190 6.038e-01
+## regionMW        -1.9765     1.0607 -1.8635 6.239e-02
+## regionNE         1.5529     0.3819  4.0664 4.775e-05
+## regionS         -0.1562     0.4859 -0.3216 7.478e-01
+## regionW         -1.8337     0.7906 -2.3194 2.037e-02
+## typeU:regionMW   2.1965     1.0765  2.0403 4.132e-02
+## typeU:regionNE  -1.0698     0.4200 -2.5473 1.086e-02
+## typeU:regionS    0.8121     0.5108  1.5899 1.118e-01
+## typeU:regionW    2.4106     0.8140  2.9616 3.061e-03
+
+##  Residual deviance =  276.7  on  70 df 
+##  Dispersion parameter =  1
         </output>
       </console>
 
       <p>These results provide convincing evidence of an interaction between the effect of region and the type of institution. A drop-in-deviance test like the one we carried out in the previous case study confirms the significance of the contribution of the interaction to this model. We have statistically significant evidence (<m>\chi^2 = 71.98</m>, df = 4, p &lt; .001) that the difference between colleges and universities in violent crime rate differs by region. Our model estimates that violent crime rates are 13.6 (<m>e^{.196+2.411}</m>) times higher in universities in the West compared to colleges, while in the Northeast we estimate that violent crime rates are 2.4 (<m>\frac{1}{e^{.196-1.070}}</m>) times higher in colleges.</p>
 
-      <p>The residual deviance (276.70 with 70 df) suggests significant lack-of-fit in the interaction model (p &lt; .001). One possibility is that there are other important covariates that could be used to describe the differences in the violent crime rates. Without additional covariates to consider, we look for extreme observations, but we have already eliminated the most extreme of the observations. In the absence of other covariates or extreme observations, we consider overdispersion as a possible explanation.</p>
-    </subsection>
+      <program language="r" xml:id="code-ch4-quasipoisson">
+        <code>
+drop_in_dev &lt;- anova(modeltr, modeli, test = "Chisq")
+        </code>
+      </program>
+
+      <console>
+        <output>
+  ResidDF ResidDev Deviance Df      pval
+1      74    348.7       NA NA        NA
+2      70    276.7    71.98  4 8.664e-15
+        </output>
+      </console>
+
+      <p>The residual deviance (276.70 with 70 df) suggests significant lack-of-fit in the interaction model (p < .001). One possibility is that there are other important covariates that could be used to describe the differences in the violent crime rates. Without additional covariates to consider, we look for extreme observations, but we have already eliminated the most extreme of the observations.</p>
+<p>In the absence of other covariates or extreme observations, we consider overdispersion as a possible explanation of the significant lack-of-fit.</p>
+
+</subsection>
   </section>
 
   <section xml:id="sec-overdispPois">
@@ -989,7 +1095,7 @@ drop_in_dev
     <subsection xml:id="sec-compTablePois">
       <title>No Dispersion vs. Overdispersion</title>
 
-      <p>Table <xref ref="tab-compTable"/> summarizes the comparison between Poisson inference (assuming no overdispersion) and quasi-Poisson inference (accounting for overdispersion).</p>
+      <p><xref ref="tab-compTable"/> summarizes the comparison between Poisson inference (assuming no overdispersion) and quasi-Poisson inference (accounting for overdispersion).</p>
 
       <table xml:id="tab-compTable">
         <title>Comparison of Poisson and quasi-Poisson Inference</title>
@@ -1106,11 +1212,11 @@ head(zip.data)
         </image>
       </figure>
 
-      <p>Beginning the EDA with the response, number of drinks, we find that over 46% of the students reported no drinks during the past weekend. Figure <xref ref="fig-obsVmodel"/>a portrays the observed number of drinks reported by the students. The mean number of drinks reported the past weekend is 2.013. Our sample consists of 74% females and 26% males, only 9% of whom live off campus.</p>
+      <p>Beginning the EDA with the response, number of drinks, we find that over 46% of the students reported no drinks during the past weekend. <xref ref="fig-obsVmodel"/>a portrays the observed number of drinks reported by the students. The mean number of drinks reported the past weekend is 2.013. Our sample consists of 74% females and 26% males, only 9% of whom live off campus.</p>
 
       <p>Because our response is a count, it is natural to consider a Poisson regression model. You may recall that a Poisson distribution has only one parameter, <m>\lambda</m>, for its mean and variance. Here we will include an additional parameter, <m>\alpha</m>. We define <m>\alpha</m> to be the true proportion of <em>non-drinkers</em> in the population.</p>
 
-      <p>The next step in the EDA is especially helpful if you suspect your data contains excess zeros.  Figure <xref ref="fig-obsVmodel"/>b is what we might expect to see under a Poisson model. Bars represent the probabilities for a Poisson distribution (using the Poisson probability formula) with <m>\lambda</m> equal to the mean observed number of drinks, 2.013 drinks per weekend. Comparing this Poisson distribution to what we observed (Figure <xref ref="fig-obsVmodel"/>a), it is clear that many more zeros have been reported by the students than you would expect to see if the survey observations were coming from a Poisson distribution. This doesn't surprise us because we had expected a subset of the survey respondents to be non-drinkers; i.e., they would not be included in this Poisson process. This circumstance actually arises in many Poisson regression settings. We will define <m>\lambda</m> to be the mean number of drinks <em>among those who drink</em>, and <m>\alpha</m> to be the proportion of <em>non-drinkers</em> (<q>true zeros</q>).  Then, we will attempt to model <m>\lambda</m> and <m>\alpha</m> (or functions of <m>\lambda</m> and <m>\alpha</m>) simultaneously using covariates like sex, first-year status, and off-campus residence.  This type of model is referred to as a <term>zero-inflated Poisson model</term> or <term>ZIP model</term>. <idx>zero-inflated Poisson</idx></p>
+      <p>The next step in the EDA is especially helpful if you suspect your data contains excess zeros.  <xref ref="fig-obsVmodel"/>b is what we might expect to see under a Poisson model. Bars represent the probabilities for a Poisson distribution (using the Poisson probability formula) with <m>\lambda</m> equal to the mean observed number of drinks, 2.013 drinks per weekend. Comparing this Poisson distribution to what we observed (<xref ref="fig-obsVmodel"/>a), it is clear that many more zeros have been reported by the students than you would expect to see if the survey observations were coming from a Poisson distribution. This doesn't surprise us because we had expected a subset of the survey respondents to be non-drinkers; i.e., they would not be included in this Poisson process. This circumstance actually arises in many Poisson regression settings. We will define <m>\lambda</m> to be the mean number of drinks <em>among those who drink</em>, and <m>\alpha</m> to be the proportion of <em>non-drinkers</em> (<q>true zeros</q>).  Then, we will attempt to model <m>\lambda</m> and <m>\alpha</m> (or functions of <m>\lambda</m> and <m>\alpha</m>) simultaneously using covariates like sex, first-year status, and off-campus residence.  This type of model is referred to as a <term>zero-inflated Poisson model</term> or <term>ZIP model</term>. <idx>zero-inflated Poisson</idx></p>
     </subsection>
 
     <subsection xml:id="sec-drinking-modeling">
@@ -1144,7 +1250,7 @@ head(zip.data)
 
       <p>How is it possible to fit such a model? We cannot observe whether a respondent is a drinker or not (which probably would've been good to ask). The ZIP model is a special case of a more general type of statistical model referred to as a <term>latent variable model</term>. More specifically, it is a type of a <term>mixture model</term> <idx>mixture model</idx> where observations for one or more groups occur together and the group membership is unknown.  Zero-inflated models are a particularly common example of a mixture model, but the response does not need to follow a Poisson distribution.  Likelihood methods are at the core of this methodology, but fitting is an iterative process where it is necessary to start out with some guesses (or starting values).  In general, it is important to know that models like ZIP exist, although we'll only explore interpretations and fitting options for a single case study here.</p>
 
-      <p>Here is the general idea of how ZIP models are fit.  Imagine that the graph of the Poisson distribution in Figure <xref ref="fig-obsVmodel"/>b is removed from the observed data distribution in Figure <xref ref="fig-obsVmodel"/>a. Some zero responses will remain. These would correspond to non-drinkers, and the proportion of all observations these zeros constitute might make a reasonable estimate for <m>\alpha</m>, the proportion of non-drinkers. The likelihood is used and some iterating in the fitting process is involved  because the Poisson distribution in Figure <xref ref="fig-obsVmodel"/>b is based on the mean of the observed data, which means it is the average among all students, not only among drinkers. Furthermore, the likelihood incorporates the predictors, <c>sex</c> and <c>off.campus</c>. So there is a little more to it than computing the proportion of zeros, but this heuristic should provide you a general idea of how these kinds of models are fit. We will use the R function <c>zeroinfl</c> from the package <c>pscl</c> to fit a ZIP model.</p>
+      <p>Here is the general idea of how ZIP models are fit.  Imagine that the graph of the Poisson distribution in <xref ref="fig-obsVmodel"/>b is removed from the observed data distribution in <xref ref="fig-obsVmodel"/>a. Some zero responses will remain. These would correspond to non-drinkers, and the proportion of all observations these zeros constitute might make a reasonable estimate for <m>\alpha</m>, the proportion of non-drinkers. The likelihood is used and some iterating in the fitting process is involved  because the Poisson distribution in <xref ref="fig-obsVmodel"/>b is based on the mean of the observed data, which means it is the average among all students, not only among drinkers. Furthermore, the likelihood incorporates the predictors, <c>sex</c> and <c>off.campus</c>. So there is a little more to it than computing the proportion of zeros, but this heuristic should provide you a general idea of how these kinds of models are fit. We will use the R function <c>zeroinfl</c> from the package <c>pscl</c> to fit a ZIP model.</p>
 
       <program language="r" xml:id="code-ch4-zip-fit">
         <code>
@@ -1213,7 +1319,7 @@ vuong(pois.m1, zip.m2)
     <subsection xml:id="sec-drinking-residuals">
       <title>Residual Plot</title>
 
-      <p>Fitted values (<m>\hat{y}</m>) and residuals (<m>y-\hat{y}</m>) can be computed for zero-inflation models and plotted. Figure <xref ref="fig-poisRes"/> reveals that one observation appears to be extreme (Y=22 drinks during the past weekend). Is this a legitimate observation or was there a transcribing error? Without the original respondents, we cannot settle this question. It might be worthwhile to get a sense of how influential this extreme observation is by removing Y=22 and refitting the model.</p>
+      <p>Fitted values (<m>\hat{y}</m>) and residuals (<m>y-\hat{y}</m>) can be computed for zero-inflation models and plotted. <xref ref="fig-poisRes"/> reveals that one observation appears to be extreme (Y=22 drinks during the past weekend). Is this a legitimate observation or was there a transcribing error? Without the original respondents, we cannot settle this question. It might be worthwhile to get a sense of how influential this extreme observation is by removing Y=22 and refitting the model.</p>
 
       <figure xml:id="fig-poisRes">
         <caption>Residuals by fitted counts for ZIP model. One observation (<m>Y=22</m>) appears extreme.</caption>
@@ -1364,7 +1470,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
       <exercise xml:id="exer-ch4-c15">
         <title>Dating online</title>
         <statement>
-          <p>Researchers are interested in the number of dates respondents arranged online and whether the rates differ by age group. Each survey respondent was asked how many dates they have arranged online in the past 3 months as well as the typical amount of time, <m>t</m>, in hours, they spend online weekly (source: <xref ref="Duggan2013"/>). Some rows of data appear in Table <xref ref="tab-ch4-dating"/>.</p>
+          <p>Researchers are interested in the number of dates respondents arranged online and whether the rates differ by age group. Each survey respondent was asked how many dates they have arranged online in the past 3 months as well as the typical amount of time, <m>t</m>, in hours, they spend online weekly (source: <xref ref="Duggan2013"/>). Some rows of data appear in <xref ref="tab-ch4-dating"/>.</p>
 
           <table xml:id="tab-ch4-dating">
             <title>Sample data for Exercise 15 (dating online)</title>
@@ -1394,7 +1500,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
         <statement>
           <p>For rare diseases, the probability of a case occurring, <m>p</m>, in a very large population, <m>n</m>, is small. With a small <m>p</m> and large <m>n</m>, the random variable <m>Y</m> = the number of cases out of <m>n</m> people can be approximated using a Poisson random variable with <m>\lambda = np</m>. Poisson regression can take into account differences in population sizes, <m>n_i</m>, using as an offset <m>\log(n_i)</m>, as well as differences in a population characteristic like <m>x_i</m>. Thus the model has the form: <m>\log(\lambda_i) = \beta_0 + \beta_1 x_i + \log(n_i)</m>, where <m>Y_i \sim \textrm{Poisson}(\lambda_i = n_i p_i)</m>. If the count of those with the disease is observed in several different populations independently of one another, the <m>Y_i</m> represents the number of cases in the <m>i^{th}</m> population and can be approximated using a Poisson random variable with <m>\lambda_i = n_i p_i</m> where <m>p_i</m> is the probability of a case for the <m>i^{th}</m> population. The coefficient of the offset is set at one; it is not estimated like the other coefficients. Note that <m>\lambda_i</m> depends on <m>x_i</m> which may differ for the different populations.</p>
 
-          <p><xref ref="Scotto1974"/> wondered if skin cancer rates by age group differ by city. Based on their data in Table <xref ref="tab-ch4-skincancer"/>, identify and describe the following quantities:</p>
+          <p><xref ref="Scotto1974"/> wondered if skin cancer rates by age group differ by city. Based on their data in <xref ref="tab-ch4-skincancer"/>, identify and describe the following quantities:</p>
 
           <table xml:id="tab-ch4-skincancer">
             <title>Data on the number of cases of non-melanoma skin cancer for women by age group in two metropolitan areas (Minneapolis-St. Paul and Dallas-Ft. Worth)</title>
@@ -1489,7 +1595,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
       <exercise xml:id="exer-ch4-g3">
         <title>Smoking at work and home</title>
         <statement>
-          <p>An earlier study examined the effect of workplace rules in Minnesota which require smokers to smoke cigarettes outside. The number of cigarettes smoked by smokers in a 2-hour period was recorded, along with whether the smoker was at home or at work. A (very) small subset of the data appears in Table <xref ref="tab-ch4-smoking"/>.</p>
+          <p>An earlier study examined the effect of workplace rules in Minnesota which require smokers to smoke cigarettes outside. The number of cigarettes smoked by smokers in a 2-hour period was recorded, along with whether the smoker was at home or at work. A (very) small subset of the data appears in <xref ref="tab-ch4-smoking"/>.</p>
 
           <table xml:id="tab-ch4-smoking">
             <title>A small subset of hypothetical data on Minnesota workplace rules on smoking. X is 0 for home and 1 for work; Y is number of cigarettes in a 2-hour period.</title>
@@ -1528,7 +1634,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
       <exercise xml:id="exer-ch4-g4">
         <title>Smoking at work and home (continued)</title>
         <statement>
-          <p>We will use the same data set as in Exercise 3 (Table <xref ref="tab-ch4-smoking"/>).</p>
+          <p>We will use the same data set as in Exercise 3 (<xref ref="tab-ch4-smoking"/>).</p>
           <p>For the remaining questions (d)&#8211;(l), we will focus exclusively on Model 3.</p>
           <p><ol marker="a">
             <li><p>Write out the log-likelihood function <m>\log L(\beta_0, \beta_1)</m> in Model 3. Again, use the data values above, and simplify where possible.</p></li>
