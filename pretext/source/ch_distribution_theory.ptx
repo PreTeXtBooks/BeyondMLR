@@ -191,7 +191,11 @@ grid.arrange(Binom1,Binom2,Binom3,Binom4,ncol=2)
 dbinom(2, size = 10, prob = .25)
         </input>
       </program>
-
+    <console>
+      <output>
+## [1] 0.2816
+      </output>
+    </console>
       <p>
         Therefore, there is a 28% chance of exactly 2 correct answers out of 10.
       </p>
@@ -271,7 +275,11 @@ grid.arrange(Geo1,Geo2, Geo3, ncol=1)
 dgeom(2, prob = 1/6)
         </input>
       </program>
-
+    <console>
+      <output>
+## [1] 0.1157
+      </output>
+    </console>
       <p>
         Thus, there is a 12% chance of rolling the first five on the third roll.
       </p>
@@ -409,7 +417,11 @@ grid.arrange(NBin1, NBin2, NBin3, ncol = 1)
 sum(dnbinom(0:2, size = 10, prob = .9))
         </input>
       </program>
-
+    <console>
+      <output>
+## [1] 0.8891
+      </output>
+    </console>
       <p>
         Thus, there is a 89% chance that she gets 10 correct responses before missing 3.
       </p>
@@ -493,7 +505,11 @@ grid.arrange(Hyp1, Hyp2, Hyp3, Hyp4, ncol=2)
 dhyper(4, m = 4, n = 48, k = 10)
         </input>
       </program>
-
+    <console>
+      <output>
+## [1] 0.0007757
+      </output>
+    </console>
       <p>
         So, there is a 0.08% chance of all 4 queens being within the first 10 cards of a randomly
         shuffled deck of cards.
@@ -583,7 +599,11 @@ grid.arrange(Pois1,Pois2,Pois3,ncol=1)
 sum(dpois(0:3, lambda = 5))   # or use ppois(3, 5)
         </input>
       </program>
-
+    <console>
+      <output>
+## [1] 0.265
+      </output>
+    </console>
       <p>
         Therefore, there is a 27% chance of 3 or fewer tickets being issued within one month.
       </p>
@@ -698,7 +718,11 @@ ggplot(data = Expdf, aes(x = x, y = value, color = Lambda)) +
 pexp(10, rate = 1/6)
         </input>
       </program>
-
+    <console>
+      <output>
+## [1] 0.8111
+      </output>
+    </console>
       <p>
         Hence, there is a 81% chance of waiting fewer than 10 days between tickets.
       </p>
@@ -806,7 +830,11 @@ ggplot(data = gammaDf, aes(x = x, y = value,
 pgamma(3, shape = 5, rate = 2)
         </input>
       </program>
-
+    <console>
+      <output>
+## [1] 0.7149
+      </output>
+    </console>
       <p>
         There is a 71.5% chance of catching 5 fish within the first 3 hours.
       </p>
@@ -900,7 +928,11 @@ ggplot(data = normDf,
 pnorm(15.5, mean = 15, sd = 0.5, lower.tail = FALSE)
         </input>
       </program>
-
+    <console>
+      <output>
+## [1] 0.1587
+      </output>
+    </console>
       <p>
         There is a 16% chance of a randomly selected box weighing more than 15.5 ounces.
       </p>
@@ -1010,7 +1042,11 @@ ggplot(data = betaDf,
 pbeta(0.8, shape1 = 4/3, shape2 = 2, lower.tail = FALSE)
         </input>
       </program>
-
+    <console>
+      <output>
+## [1] 0.0593
+      </output>
+    </console>
       <p>
         Hence, there is a 6% chance that a randomly selected student has a probability of accepting
         an admission decision above 80%.
