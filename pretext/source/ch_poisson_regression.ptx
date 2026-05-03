@@ -1043,10 +1043,6 @@ drop_in_dev &lt;- anova(modeltr, modeli, test = "Chisq")
 modeliq &lt;- glm(nv ~ type + region + region:type,
                family = quasipoisson,
                offset = log(enroll1000), data = c.data)
-coef(summary(modeliq))
-cat(" Residual deviance = ", summary(modeliq)$deviance, " on ",
-    summary(modeliq)$df.residual, "df", "\n",
-    "Dispersion parameter = ", summary(modeliq)$dispersion)
         </code>
       </program>
 
@@ -1068,7 +1064,7 @@ cat(" Residual deviance = ", summary(modeliq)$deviance, " on ",
         </output>
       </console>
 
-      <p>The estimated dispersion parameter is 4.447, much larger than 1.0, confirming overdispersion. The larger estimated standard errors in the quasi-Poisson model reflect this adjustment. For example, the standard error for the West region term from the likelihood approach is 0.7906, whereas the quasilikelihood standard error is <m>\sqrt{4.47} \cdot 0.7906 = 1.6671</m>. This term is no longer significant under the quasi-Poisson model. After adjusting for overdispersion, none of the model coefficients are significant at the 0.05 level, because standard errors were all increased by a factor of 2.1 (<m>\sqrt{\hat{\phi}} = \sqrt{4.447} = 2.1</m>), while estimated coefficients remain unchanged.</p>
+      <p>In the absence of overdispersion, we expect the dispersion parameter estimate to be 1.0. The estimated dispersion parameter here is much larger than 1.0 (4.447) indicating overdispersion (extra variance) that should be accounted for. The larger estimated standard errors in the quasi-Poisson model reflect the adjustment. For example, the standard error for the West region term from a likelihood based approach is 0.7906, whereas the quasilikelihood standard error is <m>\sqrt{4.47} \cdot 0.7906</m> or 1.6671. This term is no longer significant under the quasi-Poisson model. In fact, after adjusting for overdispersion (extra variation), none of the model coefficients in the quasi-Poisson model are significant at the .05 level! This is because standard errors were all increased by a factor of 2.1 (<m>\sqrt{\hat{\phi}}=\sqrt{4.447}=2.1</m>), while estimated coefficients remain unchanged.</p>
 
       <p>Note that tests for individual parameters are now based on the t-distribution rather than a standard normal distribution, with test statistic <m>t=\frac{\hat{\beta}}{SE_Q(\hat{\beta})}</m> following an (approximate) t-distribution with <m>n-p</m> degrees of freedom if the null hypothesis is true (<m>H_0:\beta=0</m>). Drop-in-deviance tests can be similarly adjusted for overdispersion in the quasi-Poisson model. In this case, you can divide the test statistic (per degree of freedom) by the estimated dispersion parameter and compare the result to an F-distribution with the difference in the model degrees of freedom for the numerator and the degrees of freedom for the larger model in the denominator. That is, <m>F=\frac{\textrm{drop in deviance}}{\textrm{difference in df}} / {\hat{\phi}}</m> follows an (approximate) F-distribution when the null hypothesis is true (<m>H_0</m>: reduced model sufficient). The output below tests for an interaction between region and type of institution after adjusting for overdispersion (extra variance):</p>
 
@@ -1077,7 +1073,6 @@ cat(" Residual deviance = ", summary(modeliq)$deviance, " on ",
 modeltrq &lt;- glm(nv ~ type + region, family = quasipoisson,
                offset = log(enroll1000), data = c.data)
 drop_in_dev &lt;- anova(modeltrq, modeliq, test = "F")
-drop_in_dev
         </code>
       </program>
 
@@ -1089,7 +1084,7 @@ drop_in_dev
         </output>
       </console>
 
-      <p>Even after adjusting for overdispersion, there is still statistically significant evidence (<m>F = 4.05</m>, p = .0052) that the difference between colleges and universities in violent crime rate differs by region.</p>
+      <p>Here, even after adjusting for overdispersion, we still have statistically significant evidence (<m>F=4.05, p=.0052</m>) that the difference between colleges and universities in violent crime rate differs by region.</p>
     </subsection>
 
     <subsection xml:id="sec-compTablePois">
@@ -1098,7 +1093,7 @@ drop_in_dev
       <p><xref ref="tab-compTable"/> summarizes the comparison between Poisson inference (assuming no overdispersion) and quasi-Poisson inference (accounting for overdispersion).</p>
 
       <table xml:id="tab-compTable">
-        <title>Comparison of Poisson and quasi-Poisson Inference</title>
+        <title>Comparison of Poisson and quasi-Poisson inference.</title>
         <tabular halign="left" top="major" bottom="major">
           <col width="35%"/>
           <col width="30%"/>
@@ -1116,7 +1111,7 @@ drop_in_dev
           <row>
             <cell>Std error</cell>
             <cell><m>SE(\hat{\beta})</m></cell>
-            <cell><m>SE_Q(\hat{\beta}) = \sqrt{\hat{\phi}}\, SE(\hat{\beta})</m></cell>
+            <cell><m>SE_Q(\hat{\beta}) = \sqrt{\hat{\phi}} SE(\hat{\beta})</m></cell>
           </row>
           <row>
             <cell>Wald-type test stat</cell>
@@ -1125,13 +1120,13 @@ drop_in_dev
           </row>
           <row>
             <cell>Confidence interval</cell>
-            <cell><m>\hat{\beta} \pm z^* SE(\hat{\beta})</m></cell>
-            <cell><m>\hat{\beta} \pm t^* SE_Q(\hat{\beta})</m></cell>
+            <cell><m>\hat{\beta} \pm z^{\prime} SE(\hat{\beta})</m></cell>
+            <cell><m>\hat{\beta} \pm t^{\prime} SE_Q(\hat{\beta})</m></cell>
           </row>
           <row>
-            <cell>Drop-in-deviance test</cell>
-            <cell><m>\chi^2 = D(\text{reduced}) - D(\text{full})</m></cell>
-            <cell><m>F = (\chi^2 / \Delta\text{df}) / \hat{\phi}</m></cell>
+            <cell>Drop in deviance test</cell>
+            <cell><m>\chi^2 = \textrm{resid dev(reduced) - resid dev(full)}</m></cell>
+            <cell><m>F = (\chi^2 / \textrm{difference in df}) / \hat{\phi}</m></cell>
           </row>
         </tabular>
       </table>
@@ -1148,16 +1143,31 @@ drop_in_dev
 
       <program language="r" xml:id="code-ch4-negbinom">
         <code>
+# Account for overdispersion with negative binomial model
 modelinb &lt;- glm.nb(nv ~ type + region + region:type,
-               offset(log(enroll1000)), data = c.data)
-coef(summary(modelinb))
-cat(" Residual deviance = ", summary(modelinb)$deviance, " on ",
-    summary(modelinb)$df.residual, "df", "\n",
-    "Dispersion parameter (theta) = ", summary(modelinb)$theta)
+               offset(log(enroll1000)), data = c.data2)
         </code>
       </program>
 
-      <p>These results differ from the quasi-Poisson model. Several effects are now statistically significant at the .05 level: the effect of type of institution for the Central region (<m>Z=2.64</m>, p = .008), the difference between Northeast and Central regions for colleges (<m>Z=2.76</m>, p = .006), the difference between Northeast and Central regions in type effect (<m>Z=-2.01</m>, p = .044), and the difference between West and Central regions in type effect (<m>Z=2.71</m>, p = .007). In this case, compared to the quasi-Poisson model, negative binomial coefficient estimates are generally in the same direction and similar in size, but negative binomial standard errors are somewhat smaller.</p>
+      <console>
+        <output>
+##                Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)      0.4904     0.4281  1.1455 0.252008
+## typeU            1.2174     0.4608  2.6422 0.008237
+## regionMW        -1.0953     0.8075 -1.3563 0.175004
+## regionNE         1.3966     0.5053  2.7641 0.005709
+## regionS          0.1461     0.5559  0.2627 0.792752
+## regionW         -1.1858     0.6870 -1.7260 0.084347
+## typeU:regionMW   1.6342     0.8498  1.9231 0.054469
+## typeU:regionNE  -1.1259     0.5601 -2.0102 0.044411
+## typeU:regionS    0.4513     0.5995  0.7527 0.451638
+## typeU:regionW    2.0387     0.7527  2.7086 0.006758
+##  Residual deviance =  199.6  on  69 df 
+##  Dispersion parameter (theta) =  1.313
+        </output>
+      </console>
+
+      <p>These results differ from the quasi-Poisson model. Several effects are now statistically significant at the .05 level: the effect of type of institution for the Central region (<m>Z=2.64, p=.008</m>), the difference between Northeast and Central regions for colleges (<m>Z=2.76, p=.006</m>), the difference between Northeast and Central regions in type effect (<m>Z=-2.01, p=.044</m>), and the difference between West and Central regions in type effect (<m>Z=2.71, p=.007</m>). In this case, compared to the quasi-Poisson model, negative binomial coefficient estimates are generally in the same direction and similar in size, but negative binomial standard errors are somewhat smaller.</p>
 
       <p>In summary, we explored the possibility of differences in the violent crime rate between colleges and universities, controlling for region. Our initial efforts seemed to suggest that there are indeed differences between colleges and universities, and the pattern of those differences depends upon the region. However, this model exhibited significant lack-of-fit which remained after the removal of an extreme observation. In the absence of additional covariates, we accounted for the lack-of-fit by using a quasilikelihood approach and a negative binomial regression, which provided slightly different conclusions. We may want to look for additional covariates and/or more data.</p>
     </subsection>
