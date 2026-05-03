@@ -1193,7 +1193,7 @@ model.f2a &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
         <statement>
           <p>
             Provide interpretations of significant coefficients in context from the Walker-Barnes
-            and Mason Table 2 results of hierarchical linear modeling analyses modeling gang
+            and Mason <xref ref="Walker-Barnes2001"/> Table 2 results of hierarchical linear modeling analyses modeling gang
             involvement (psychological control parenting behavior).
           </p>
         </statement>

@@ -872,7 +872,7 @@ drop_in_dev &lt;- anova(model1, model2, model3, model4,
       <exercise xml:id="exer-ch6-g1">
         <title>Soccer goals on target</title>
         <statement>
-          <p>Data comes from an article in <em>Psychological Science</em>. The authors report on the success rate of penalty kicks that were on-target, so that either the keeper saved the shot or the shot scored, for FIFA World Cup shootouts between 1982 and 2010. They found that 18 out of 20 shots were scored when the goalkeeper's team was behind, 71 out of 90 shots were scored when the game was tied, and 55 out of 75 shots were scored with the goalkeeper's team ahead.</p>
+          <p>Data comes from an article in <em>Psychological Science</em> <xref ref="Roskes2011"/>. The authors report on the success rate of penalty kicks that were on-target, so that either the keeper saved the shot or the shot scored, for FIFA World Cup shootouts between 1982 and 2010. They found that 18 out of 20 shots were scored when the goalkeeper's team was behind, 71 out of 90 shots were scored when the game was tied, and 55 out of 75 shots were scored with the goalkeeper's team ahead.</p>
           <p><ol marker="a">
             <li><p>Calculate the odds of a successful penalty kick for games in which the goalkeeper's team was behind, tied, or ahead. Then, construct empirical odds ratios for successful penalty kicks for (a) behind versus tied, and (b) tied versus ahead.</p></li>
             <li><p>Fit a model with the categorical predictor <c>c("behind","tied","ahead")</c> and interpret the exponentiated coefficients. How do they compare to the empirical odds ratios you calculated?</p></li>
