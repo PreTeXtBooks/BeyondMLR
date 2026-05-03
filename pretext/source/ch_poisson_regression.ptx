@@ -295,7 +295,7 @@ cat(" Residual deviance = ", summary(modela)$deviance, " on ",
 
       <p>Exponentiating the endpoints yields a confidence interval for the relative risk; i.e., the percent change in household size for each additional year older.  Thus <m>(e^{-0.0065},e^{-0.0029})=(0.993,0.997)</m> suggests that we are 95% confident that the mean number in the house decreases between 0.7% and 0.3% for each additional year older the head of household is. It is best to construct a confidence interval for the coefficient and then exponentiate the endpoints because the estimated coefficients more closely follow a normal distribution than the exponentiated coefficients. There are other approaches to constructing intervals in these circumstances, including profile likelihood, the delta method, and bootstrapping, and we will discuss some of those approaches later.  In this case, for instance, the profile likelihood interval is nearly identical to the Wald-type (normal theory) confidence interval <idx>Wald-type confidence interval</idx> above.</p>
 
-      <program language="r" xml:id="code-ch4-pois-fit1">
+      <program language="r" xml:id="code-ch4-pois-fit2">
         <code>
 # CI for betas using profile likelihood
 confint(modela)
@@ -310,7 +310,7 @@ confint(modela)
         </output>
       </console>
 
-      <program language="r" xml:id="code-ch4-pois-fit1">
+      <program language="r" xml:id="code-ch4-pois-fit3">
         <code>
 exp(confint(modela))
         </code>
@@ -449,7 +449,7 @@ cat(" Residual deviance = ", summary(modela2)$deviance, " on ",
 
       <p>We can assess the importance of the quadratic term in two ways. First, the p-value for the Wald-type statistic for age<m>^2</m> is statistically significant (Z = -11.058, p &lt; 0.001). Another approach is to perform a drop-in-deviance test.</p>
 
-      <program language="r" xml:id="code-ch4-quad-model">
+      <program language="r" xml:id="code-ch4-quad-did">
         <code>
 drop_in_dev &lt;- anova(modela, modela2, test = "Chisq")
         </code>
@@ -533,7 +533,7 @@ cat(" Residual deviance = ", summary(modela2L)$deviance, " on ",
       </md>
       Notice that because there are 5 different locations, we must represent the effects of different locations through 4 indicator variables. For example, <m>\hat{\beta}_6=-0.0194</m> indicates that, after controlling for the age of the head of household, the log mean household size is 0.0194 lower for households in the Davao Region than for households in the reference location of Central Luzon. In more interpretable terms, mean household size is <m>e^{-0.0194}=0.98</m> times &#x201C;higher&#x201D; (i.e., 2% lower) in the Davao Region than in Central Luzon, when holding age constant.</p>
 
-      <program language="r" xml:id="code-ch4-region-model">
+      <program language="r" xml:id="code-ch4-region-did">
         <code>
 drop_in_dev &lt;- anova(modela2, modela2L, test = "Chisq")
         </code>
@@ -602,7 +602,7 @@ drop_in_dev &lt;- anova(modela2, modela2L, test = "Chisq")
 
       <p>The model residual deviance can be used to assess the degree to which the predicted values differ from the observed. When a model is true, we can expect the residual deviance to be distributed as a <m>\chi^2</m> random variable with degrees of freedom equal to the model's residual degrees of freedom. Our model thus far, the quadratic terms for age plus the indicators for location, has a residual deviance of 2187.8 with 1493 df. The probability of observing a deviance this large if the model fits is esentially 0, saying that there is significant evidence of lack-of-fit.</p>
 
-      <program language="r" xml:id="code-ch4-region-model">
+      <program language="r" xml:id="code-ch4-region-gof">
         <code>
 1-pchisq(modela2$deviance, modela2$df.residual)  # GOF test
         </code>
@@ -1006,7 +1006,7 @@ drop_in_dev
 
       <p>These results provide convincing evidence of an interaction between the effect of region and the type of institution. A drop-in-deviance test like the one we carried out in the previous case study confirms the significance of the contribution of the interaction to this model. We have statistically significant evidence (<m>\chi^2 = 71.98</m>, df = 4, p &lt; .001) that the difference between colleges and universities in violent crime rate differs by region. Our model estimates that violent crime rates are 13.6 (<m>e^{.196+2.411}</m>) times higher in universities in the West compared to colleges, while in the Northeast we estimate that violent crime rates are 2.4 (<m>\frac{1}{e^{.196-1.070}}</m>) times higher in colleges.</p>
 
-      <program language="r" xml:id="code-ch4-quasipoisson">
+      <program language="r" xml:id="code-ch4-crime-did">
         <code>
 drop_in_dev &lt;- anova(modeltr, modeli, test = "Chisq")
         </code>
