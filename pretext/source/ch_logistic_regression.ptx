@@ -95,10 +95,10 @@ library(tidyverse)
     <title>Case Study: Soccer Goalkeepers</title>
 
     <introduction>
-      <p>Does the probability of a save in a soccer match depend upon whether the goalkeeper's team is behind or not? <xref ref="Roskes2011"/> looked at penalty kicks in the men's World Cup soccer championships from 1982 to 2010, and they assembled data on 204 penalty kicks during shootouts. The data for this study is summarized in Table <xref ref="tab-table1chp6"/>.</p>
+      <p>Does the probability of a save in a soccer match depend upon whether the goalkeeper's team is behind or not? <xref ref="Roskes2011"/> looked at penalty kicks in the men's World Cup soccer championships from 1982 to 2010, and they assembled data on 204 penalty kicks during shootouts. The data for this study is summarized in <xref ref="tab-table1chp6"/>.</p>
 
       <table xml:id="tab-table1chp6">
-        <title>Soccer goalkeepers' penalty kick saves when their team is and is not behind. (Source: <xref ref="Roskes2011"/>.)</title>
+        <title>Soccer goalkeepers' penalty kick saves when their team is and is not behind. (Source: Roskes et al. 2011.)</title>
         <tabular halign="center" top="major" bottom="major">
           <row header="yes" bottom="medium">
             <cell></cell>
@@ -253,7 +253,7 @@ library(tidyverse)
     <subsection xml:id="sec-alabama-data">
       <title>Data Organization</title>
 
-      <p>The unit of observation for this data is a community in Hale County. We will focus on the following variables from <c>RR_Data_Hale.csv</c> collected for each community (see Table <xref ref="tab-table2chp6"/>):</p>
+      <p>The unit of observation for this data is a community in Hale County. We will focus on the following variables from <c>RR_Data_Hale.csv</c> collected for each community (see <xref ref="tab-table2chp6"/>):</p>
       <ul>
         <li><p><c>pctBlack</c> = the percentage of Black residents in the community</p></li>
         <li><p><c>distance</c> = the distance, in miles, the proposed railroad is from the community</p></li>
@@ -634,6 +634,9 @@ cat(" Residual deviance = ", summary(model.HaleBDq)$deviance, " on ",
       </console>
 
       <p>By removing the interaction term and using the overdispersion parameter, we see that distance is significantly associated with support, but percent Black residents is no longer significant after adjusting for distance.</p>
+      <p>Because quasilikelihood methods do not change estimated coefficients, we still estimate a 25% decline  
+         <m>1 - e^{-0.292}</m> in support for each additional mile from the proposed railroad (odds ratio
+        of .75).</p>
 
       <program language="r" xml:id="code-ch6-confint-q">
         <code>
@@ -716,7 +719,7 @@ pctBlack    0.9366    1.044
 
       <p>We are interested in the following questions: Are the odds that young females report trying to lose weight greater than the odds that males do? Is increasing BMI associated with an interest in losing weight, regardless of sex? Does sports participation increase the desire to lose weight? Is media exposure associated with more interest in losing weight?</p>
 
-      <p>We have a sample of 500 teens from data collected in 2009 through the U.S. Youth Risk Behavior Surveillance System (YRBSS) <xref ref="YRBS2009"/>. The YRBSS is an annual national school-based survey conducted by the Centers for Disease Control and Prevention (CDC) and state, territorial, and local education and health agencies and tribal governments.</p>
+      <p>We have a sample of 500 teens from data collected in 2009 through the U.S. Youth Risk Behavior Surveillance System (YRBSS) <xref ref="YRBS2009"/>. The YRBSS is an annual national school-based survey conducted by the Centers for Disease Control and Prevention (CDC) and state, territorial, and local education and health agencies and tribal governments. More information on this survey can be found <url href="https://www.cdc.gov/yrbs/index.html">here</url></p>
     </introduction>
 
     <subsection xml:id="sec-weight-data">
@@ -795,7 +798,7 @@ risk2009 &lt;- risk2009 %&gt;%
         </tabular>
       </table>
 
-      <p>Table <xref ref="tab-table3chp6"/> displays the mean BMI of those wanting and not wanting to lose weight for males and females. The mean BMI is greater for those trying to lose weight compared to those not trying to lose weight, regardless of sex. The size of the difference is remarkably similar for the two sexes.</p>
+      <p><xref ref="tab-table3chp6"/> displays the mean BMI of those wanting and not wanting to lose weight for males and females. The mean BMI is greater for those trying to lose weight compared to those not trying to lose weight, regardless of sex. The size of the difference is remarkably similar for the two sexes.</p>
 
       <p>If we consider including a BMI term in our model(s), the logit should be linearly related to BMI. We can investigate this assumption by constructing an empirical logit plot. In order to calculate empirical logits, we first divide our data by sex. Within each sex, we generate 10 groups of equal sizes, the first holding the bottom 10% in BMI percentile for that sex, the second holding the next lowest 10%, etc. Within each group, we calculate the proportion, <m>\hat{p}</m> that reported wanting to lose weight, and then the empirical log odds, <m>\log\!\left(\frac{\hat{p}}{1-\hat{p}}\right)</m>, that a young person in that group wants to lose weight.</p>
 
@@ -915,6 +918,7 @@ cat(" Residual deviance = ", summary(model3)$deviance, " on ",
 ## female       1.84951   0.259514  7.1268 1.027e-12
 ## bmipct       0.04728   0.005251  9.0032 2.193e-19
 ## sportSports -0.14767   0.235101 -0.6281 5.299e-01
+
 ##  Residual deviance =  462.6  on  441 df
         </output>
       </console>
@@ -926,6 +930,27 @@ model3int &lt;- glm(lose.wt.01 ~ female + bmipct + sport +
               family = binomial, data = risk2009)
         </code>
       </program>
+
+      <console>
+        <output>
+##                     Estimate Std. Error z value
+## (Intercept)        -3.643635   0.604821  -6.024
+## female              1.451017   0.378547   3.833
+## bmipct              0.042530   0.007211   5.898
+## sportSports        -1.187199   0.893057  -1.329
+## female:sportSports  0.731516   0.523566   1.397
+## bmipct:sportSports  0.009908   0.010463   0.947
+##                     Pr(>|z|)
+## (Intercept)        1.698e-09
+## female             1.265e-04
+## bmipct             3.684e-09
+## sportSports        1.837e-01
+## female:sportSports 1.624e-01
+## bmipct:sportSports 3.436e-01
+
+##  Residual deviance =  460.5  on  439 df
+        </output>
+      </console>
 
       <p>Sports teams were not significant in any of these models, nor were interaction terms (sex by sports and bmipct by sports). As a result, sports participation was no longer considered for inclusion in the model.</p>
 
@@ -968,11 +993,21 @@ drop_in_dev
 
       <console>
         <output>
-  ResidDF ResidDev Deviance Df      pval     df   AIC
-1     443    580.3       NA NA        NA  model1 584.3
-2     442    463.0 117.3301  1 2.431e-27  model2 469.0
-3     441    462.6   0.3947  1 5.298e-01  model3 470.6
-4     441    461.1   1.5007  0        NA  model4 469.1
+  ResidDF ResidDev Deviance Df      pval
+1     443    580.3       NA NA        NA
+2     442    463.0 117.3301  1 2.431e-27
+3     441    462.6   0.3947  1 5.298e-01
+4     441    461.1   1.5007  0        NA
+        </output>
+      </console>
+
+      <console>
+        <output>
+    df   AIC
+model1 584.3
+model2 469.0
+model3 470.6
+model4 469.1
         </output>
       </console>
 
@@ -1037,7 +1072,7 @@ drop_in_dev
 
       <exercise xml:id="exer-ch6-c4">
         <statement>
-          <p>In a small pilot study, researchers compared two groups of 3 turbine wheels each under low humidity and two groups of 3 turbine wheels each under high-humidity conditions to determine if humidity is related to the number of fissures that occur. If <m>Y</m> = number of turbine wheels that develop fissures, then assume that <m>Y \sim \textrm{Binomial}(n=3, p=p_L)</m> under low humidity, and <m>Y \sim \textrm{Binomial}(n=3, p=p_H)</m> under high humidity, where <m>f(y;p)=\binom{n}{y} p^y (1-p)^{n-y}</m>. Write out the log-likelihood function <m>\textrm{logL}(p_L, p_H)</m>, using the data in Table <xref ref="tab-fissurechp6"/> and simplifying where possible.</p>
+          <p>In a small pilot study, researchers compared two groups of 3 turbine wheels each under low humidity and two groups of 3 turbine wheels each under high-humidity conditions to determine if humidity is related to the number of fissures that occur. If <m>Y</m> = number of turbine wheels that develop fissures, then assume that <m>Y \sim \textrm{Binomial}(n=3, p=p_L)</m> under low humidity, and <m>Y \sim \textrm{Binomial}(n=3, p=p_H)</m> under high humidity, where <m>f(y;p)=\binom{n}{y} p^y (1-p)^{n-y}</m>. Write out the log-likelihood function <m>\textrm{logL}(p_L, p_H)</m>, using the data in <xref ref="tab-fissurechp6"/> and simplifying where possible.</p>
 
           <table xml:id="tab-fissurechp6">
             <title>Data for Conceptual Exercise 4.</title>
@@ -1162,7 +1197,7 @@ cdplot(as.factor(rtemp1)~dtemp1)
         <title>Birdkeeping and lung cancer: a retrospective observational study</title>
         <statement>
           <p>A 1972&#8211;1981 health survey in The Hague, Netherlands, discovered an association between keeping pet birds and increased risk of lung cancer. To investigate birdkeeping as a risk factor, researchers conducted a case-control study of patients in 1985 at four hospitals in The Hague. They identified 49 cases of lung cancer among patients who were registered with a general practice, who were age 65 or younger, and who had resided in the city since 1965. Each patient (case) with cancer was matched with two control subjects (without cancer) by age and sex. Further details can be found in <xref ref="Holst1988"/>.</p>
-          <p>Age, sex, and smoking history are all known to be associated with lung cancer incidence. Thus, researchers wished to determine: after age, sex, socioeconomic status, and smoking have been controlled for, is there an additional risk associated with birdkeeping? The data <xref ref="Ramsey2002"/> is found in <c>birdkeeping.csv</c>, and the variables are listed below.</p>
+          <p>Age, sex, and smoking history are all known to be associated with lung cancer incidence. Thus, researchers wished to determine: after age, sex, socioeconomic status, and smoking have been controlled for, is there an additional risk associated with birdkeeping? The data <xref ref="Ramsey2002"/> is found in <c>birdkeeping.csv</c>, and the variables are listed below. In addition, R code at the end of the problem can be used to input the data and create additional useful variables.</p>
           <p><ul>
             <li><p><c>female</c> = sex (1 = Female, 0 = Male)</p></li>
             <li><p><c>age</c> = age, in years</p></li>
@@ -1224,8 +1259,8 @@ birds &lt;- read_csv("data/birdkeeping.csv") %&gt;%
       <exercise xml:id="exer-ch6-g5">
         <title>2016 Election</title>
         <statement>
-          <p>An award-winning student project <xref ref="Renier2018"/> examined driving forces behind Donald Trump's surprising victory in the 2016 Presidential Election, using data from nearly 40,000 voters collected as part of the 2016 Cooperative Congressional Election Survey (CCES). The student researchers investigated two theories: (1) Trump was seen as the candidate of change for voters experiencing economic hardship, and (2) Trump exploited voter fears about immigrants and minorities.</p>
-          <p>The data set <c>electiondata.csv</c> has individual level data on voters in the 2016 Presidential Election. We will focus on the following variables:</p>
+          <p>An <url href = "https://www.causeweb.org/usproc/usclap/2018/spring/winners">award-winning</url> student project <xref ref="Renier2018"/> examined driving forces behind Donald Trump's surprising victory in the 2016 Presidential Election, using data from nearly 40,000 voters collected as part of the 2016 Cooperative Congressional Election Survey (CCES). The student researchers investigated two theories: (1) Trump was seen as the candidate of change for voters experiencing economic hardship, and (2) Trump exploited voter fears about immigrants and minorities.</p>
+          <p>The data set <c>electiondata.csv</c> has individual level data on voters in the 2016 Presidential Election, collected from the CCES and subsequently tidied. We will focus on the following variables:</p>
           <p><ul>
             <li><p><c>Vote</c> = 1 if Trump; 0 if another candidate</p></li>
             <li><p><c>zfaminc</c> = family income expressed as a z-score (number of standard deviations above or below the mean)</p></li>
@@ -1243,7 +1278,7 @@ birds &lt;- read_csv("data/birdkeeping.csv") %&gt;%
             <li><p>Repeat (a) separately for Republicans and non-Republicans. Again describe what you find.</p></li>
             <li><p>Create a plot with one observation per state showing the relationship between a state's median income and the log odds of a resident of that state voting for Trump. What can you conclude from this plot?</p></li>
           </ol></p>
-          <p>Answer (d)&#8211;(f) based on <c>model1a</c> below:</p>
+          <p>Answer (a)&#8211;(c) based on <c>model1a</c> below:</p>
           <p><ol marker="a" start="4">
             <li><p>Interpret the coefficient for <c>zmedinc</c> in context.</p></li>
             <li><p>Interpret the coefficient for <c>republican</c> in context.</p></li>
