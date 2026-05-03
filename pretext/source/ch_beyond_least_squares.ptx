@@ -480,6 +480,21 @@ oLik.f &lt;- function(pb){
 optimize(oLik.f, interval=c(0,1), maximum=TRUE)
           </input>
         </program>
+
+      <console>
+        <output>
+## [1] 0.5918
+
+## [1] 0.5996
+
+## $maximum
+## [1] 0.6
+## 
+## $objective
+## [1] -33.65
+        </output>
+      </console>
+
       </subsubsection>
 
       <subsubsection xml:id="subsec-calc-sec">
