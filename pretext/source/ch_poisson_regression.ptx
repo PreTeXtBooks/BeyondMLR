@@ -730,7 +730,7 @@ c.data &lt;- c.data %&gt;%
 
       <table xml:id="tab-regions">
         <title>Proportion of colleges and universities within region in the campus crime data set.</title>
-        <tabular halign="center" top="major" bottom="major">
+        <tabular>
           <row header="yes" bottom="medium">
             <cell></cell>
             <cell>C</cell>
@@ -767,7 +767,7 @@ c.data &lt;- c.data %&gt;%
 
       <table xml:id="tab-table4ch4">
         <title>The mean and variance of the violent crime rate by region and type of institution.</title>
-        <tabular halign="center" top="major" bottom="major">
+        <tabular>
           <row header="yes" bottom="medium">
             <cell>region</cell>
             <cell>type</cell>
@@ -1201,6 +1201,18 @@ zip.data &lt;- zip.data %&gt;%
 head(zip.data)
         </code>
       </program>
+      <console>
+        <output>
+  drinks sex off.campus firstYear
+1      0   f          0      TRUE
+2      5   f          0     FALSE
+3     10   m          0     FALSE
+4      0   f          0     FALSE
+5      0   m          0     FALSE
+6      3   f          0     FALSE
+        </output>
+      </console>
+
     </subsection>
 
     <subsection xml:id="sec-drinking-eda">
@@ -1216,7 +1228,7 @@ head(zip.data)
       </ul></p>
 
       <figure xml:id="fig-obsVmodel">
-        <caption>Observed proportions of weekend drink counts (left) vs. proportions predicted by a Poisson model with mean 2.08 (right). The observed data have far more zeros than the Poisson model predicts.</caption>
+        <caption>Observed (a) versus modeled (b) number of drinks</caption>
         <image source="generated-assets/fig-obsVmodel.png" width="70%">
           <description>Two bar charts comparing observed frequencies of weekend drinks to Poisson model predictions, showing excess zeros in the observed data.</description>
         </image>
@@ -1233,6 +1245,53 @@ head(zip.data)
       <title>Modeling</title>
 
       <p>We first fit a simple Poisson model with the covariates <c>off.campus</c> and <c>sex</c>.</p>
+
+      <program language="r" xml:id="code-ch4-region-model">
+        <code>
+pois.m1 &lt;- glm(drinks ~ off.campus + sex, family = poisson,
+               data = zip.data)
+       </code>
+      </program>
+
+      <console>
+        <output>
+##             Estimate Std. Error z value  Pr(&gt;|z|)
+## (Intercept)   0.1293     0.1241   1.041 2.976e-01
+## off.campus    0.8976     0.2008   4.470 7.830e-06
+## sexm          1.1154     0.1611   6.925 4.361e-12
+
+##  Residual deviance =  230.5  on  74 df 
+##  Dispersion parameter =  1
+</output>
+      </console>
+
+      <program language="r" xml:id="code-ch4-region-model">
+        <code>
+# Exponentiated coefficients
+exp(coef(pois.m1))
+       </code>
+      </program>
+
+      <console>
+        <output>
+## (Intercept)  off.campus        sexm 
+##       1.138       2.454       3.051
+       </output>
+      </console>
+
+      <program language="r" xml:id="code-ch4-region-model">
+        <code>
+# Goodness-of-fit test
+gof.pvalue = 1 - pchisq(pois.m1$deviance, pois.m1$df.residual)
+gof.pvalue
+       </code>
+      </program>
+
+      <console>
+        <output>
+## [1] 0
+        </output>
+      </console>
 
       <p>Both covariates are statistically significant, but a goodness-of-fit test reveals that there remains significant lack-of-fit (residual deviance: 230.54 with only 74 df; p&lt;.001 based on <m>\chi^2</m> test with 74 df). In the absence of important missing covariates or extreme observations, this lack-of-fit may be explained by the presence of a group of non-drinkers.</p>
 
@@ -1264,10 +1323,6 @@ head(zip.data)
 
       <program language="r" xml:id="code-ch4-zip-fit">
         <code>
-# Ordinary Poisson model
-pois.m1 &lt;- glm(drinks ~ off.campus + sex, 
-               family = poisson, data = zip.data)
-
 # Zero-inflated Poisson model
 zip.m2 &lt;- zeroinfl(drinks ~ off.campus + sex | firstYear,
                    data = zip.data)
@@ -1276,13 +1331,41 @@ cat(" Log likelihood = ", as.numeric(logLik(zip.m2)))
         </code>
       </program>
 
-      <p>Our model uses <c>firstYear</c> to distinguish drinkers and non-drinkers (<q>Zero-inflation model coefficients</q>) and <c>off.campus</c> and <c>sex</c> to help explain the differences in the number of drinks among drinkers (<q>Count model coefficients</q>).  Again, we could have used the same covariates for the two pieces of a ZIP model, but neither <c>off.campus</c> nor <c>sex</c> proved to be a useful predictor of drinkers vs. non-drinkers after we accounted for first-year status.</p>
+      <console>
+        <output>
+## $count
+##             Estimate Std. Error z value  Pr(&gt;|z|)
+## (Intercept)   0.7543     0.1440   5.238 1.624e-07
+## off.campus    0.4159     0.2059   2.020 4.333e-02
+## sexm          1.0209     0.1752   5.827 5.634e-09
+## 
+## $zero
+##               Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)    -0.6036     0.3114  -1.938  0.05261
+## firstYearTRUE   1.1364     0.6095   1.864  0.06226
+
+##  Log likelihood =  -140.8
+</output>
+      </console>
 
       <program language="r" xml:id="code-ch4-zip-coef">
         <code>
 exp(coef(zip.m2))   # exponentiated coefficients
         </code>
       </program>
+
+      <console>
+        <output>
+##  count_(Intercept)   count_off.campus 
+##             2.1261             1.5158 
+##         count_sexm   zero_(Intercept) 
+##             2.7757             0.5468 
+## zero_firstYearTRUE 
+##             3.1155
+</output>
+      </console>
+
+      <p>Our model uses <c>firstYear</c> to distinguish drinkers and non-drinkers (<q>Zero-inflation model coefficients</q>) and <c>off.campus</c> and <c>sex</c> to help explain the differences in the number of drinks among drinkers (<q>Count model coefficients</q>).  Again, we could have used the same covariates for the two pieces of a ZIP model, but neither <c>off.campus</c> nor <c>sex</c> proved to be a useful predictor of drinkers vs. non-drinkers after we accounted for first-year status.</p>
 
       <p>We'll first consider the <q>Count model coefficients,</q> which provide information on how the sex and off-campus status of a student who is a drinker are related to the number of drinks reported by that student over a weekend. As we have done with previous Poisson regression models, we exponentiate each coefficient for ease of interpretation. Thus, for those who drink, the average number of drinks for males is <m>e^{1.0209}</m> or 2.76 times the number for females (<m>Z = 5.827</m>, p &lt; 0.001) given that you are comparing people who live in comparable settings, i.e., either both on or both off campus. Among drinkers, the mean number of drinks for students living off campus is <m>e^{0.4159}=1.52</m> times that of students living on campus for those of the same sex (<m>Z = 2.021</m>, p = 0.0433).</p>
 
@@ -1312,11 +1395,10 @@ exp(coef(zip.m2))   # exponentiated coefficients
 
     <subsection xml:id="sec-vuong-test">
       <title>The Vuong Test (optional)</title>
-
-      <p>Moving from ordinary Poisson to zero-inflated Poisson has helped us address additional research questions. While a ZIP model seems more faithful to the nature and structure of this data, can we quantitatively show that a ZIP is better than an ordinary Poisson model? We cannot use the drop-in-deviance test because these two models are not nested. <xref ref="Vuong1989"/> devised a test to compare predicted probabilities of <term>non-nested</term> models. Essentially, the <term>Vuong test</term> <idx>Vuong test</idx> can compare a zero-inflated model and an ordinary regression model.</p>
-
-      <p>We cannot use the drop-in-deviance test we discussed earlier because these two models are not nested within one another. <cite ref="Vuong1989"/> devised a test to make this comparison for the special case of comparing a zero-inflated model and ordinary regression model. Essentially, the <term>Vuong Test</term> <idx>Vuong test</idx> is able to compare predicted probabilities of <term>non-nested</term> models.</p>
-
+      <p>Moving from ordinary Poisson to zero-inflated Poisson has helped us address additional research questions: What proportion of students are non-drinkers, and what factors are associated with whether or not a student is a non-drinker? While a ZIP model seems more faithful to the nature and structure of this data, can we quantitatively show that a zero-inflated Poisson is better than an ordinary Poisson model?</p>
+      <p>We cannot use the drop-in-deviance test we discussed earlier because these two models are not nested within one another. 
+           <xref ref="Vuong1989"/> devised a test to make this comparison for the special case of comparing a zero-inflated model and ordinary regression model. 
+          Essentially, the <term>Vuong test</term> <idx>Vuong test</idx> is able to compare predicted probabilities of non-nested models.</p>
       <program language="r" xml:id="code-ch4-vuong">
         <code>
 vuong(pois.m1, zip.m2)
@@ -1431,10 +1513,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
       <exercise xml:id="exer-ch4-c10">
         <statement>
           <p>Is it possible that a predictor is significant for a model fit using Poisson regression, but not for a model for the same data fit using quasi-Poisson regression? Explain.</p>
-        </statement>
-      </exercise>
 
-      <introduction>
         <p>Complete (a)&#8211;(d) in the context of the study for Exercises 11&#8211;13.</p>
         <p><ol marker="a">
           <li><p>Define the response.</p></li>
@@ -1442,7 +1521,8 @@ ggplot(res.df, aes(x = fit, y = resid)) +
           <li><p>What does <m>\lambda</m> represent?</p></li>
           <li><p>Would a zero-inflated model be considered here? If so, what would be a <q>true zero</q>?</p></li>
         </ol></p>
-      </introduction>
+        </statement>
+      </exercise>
 
       <exercise xml:id="exer-ch4-c11">
         <title>Fish (or, as they say in French, poisson)</title>
@@ -1474,62 +1554,74 @@ ggplot(res.df, aes(x = fit, y = resid)) +
             <li><p>Describe how the assumption of linearity can be assessed in this example.</p></li>
             <li><p>Suggest a way in which to assess the equal mean and variance assumption.</p></li>
           </ul></p>
+
+<table xml:id="tab-ch4-skincancer">
+  <title>Sample data for Exercise 15.</title>
+  <tabular>
+    <row header="yes">
+      <cell>Age</cell><cell>Time Online</cell><cell>Number of Dates Arranged Online</cell>
+    </row>
+    <row><cell>19</cell><cell>35</cell><cell>3</cell></row>
+    <row><cell>29</cell><cell>20</cell><cell>5</cell></row>
+    <row><cell>38</cell><cell>15</cell><cell>0</cell></row>
+    <row><cell>55</cell><cell>10</cell><cell>0</cell></row>
+  </tabular>
+</table>
+
         </statement>
       </exercise>
 
       <exercise xml:id="exer-ch4-c15">
         <title>Dating online</title>
         <statement>
-          <p>Researchers are interested in the number of dates respondents arranged online and whether the rates differ by age group. Each survey respondent was asked how many dates they have arranged online in the past 3 months as well as the typical amount of time, <m>t</m>, in hours, they spend online weekly (source: <xref ref="Duggan2013"/>). Some rows of data appear in <xref ref="tab-ch4-dating"/>.</p>
-
-          <table xml:id="tab-ch4-dating">
-            <title>Sample data for Exercise 15 (dating online)</title>
-            <tabular halign="center" top="major" bottom="major">
-              <row header="yes" bottom="medium">
-                <cell>Age</cell>
-                <cell>Time Online (hrs)</cell>
-                <cell>Number of Dates Arranged Online</cell>
-              </row>
-              <row><cell>19</cell><cell>35</cell><cell>3</cell></row>
-              <row><cell>29</cell><cell>20</cell><cell>5</cell></row>
-              <row><cell>38</cell><cell>15</cell><cell>0</cell></row>
-              <row><cell>55</cell><cell>10</cell><cell>0</cell></row>
-            </tabular>
-          </table>
+          <p>Researchers are interested in the number of dates respondents arranged online and whether the rates differ by age group. Questions which elicit responses similar to this can be found in the Pew Survey concerning dating online and relationships
+             (<xref ref="Duggan2013"/>). Each survey respondent was asked how many dates they have arranged online in the past 3 months as well as the typical amount of time, 
+             <m>t</m>, in hours, they spend online weekly. Some rows of data appear in <xref ref="tab-ch4-dating"/>.</p>
 
           <p><ul>
             <li><p>Identify the response, predictor, and offset in this context. Does using an offset make sense?</p></li>
             <li><p>Write out a model for this data. As part of your model description, define the parameter <m>\lambda</m>.</p></li>
             <li><p>Consider a zero-inflated Poisson model for this data. Describe what the <q>true zeros</q> would be in this setting.</p></li>
           </ul></p>
+
+          <table xml:id="tab-ch4-scottoetal">
+            <title>Data from Scotto et al. (1974) on the number of cases of non-melanoma skin cancer for women by age group in two metropolitan areas (Minneapolis-St. Paul and Dallas-Ft. Worth); the year is unknown</title>
+            <tabular>
+    <row header="yes">
+      <cell>Number of Cases</cell><cell>Population</cell>
+      <cell>Age Group</cell><cell>City</cell>
+    </row>
+    <row><cell>1</cell><cell>172675</cell><cell>15-24</cell><cell>1</cell></row>
+    <row><cell>16</cell><cell>123065</cell><cell>25-34</cell><cell>1</cell></row>
+    <row><cell><m>\vdots</m></cell><cell><m>\vdots</m></cell><cell><m>\vdots</m></cell><cell><m>\vdots</m></cell></row>
+    <row><cell>226</cell><cell>29007</cell><cell>75-84</cell><cell>2</cell></row>
+    <row><cell>65</cell><cell>7538</cell><cell>85+</cell><cell>2</cell></row>
+            </tabular>
+          </table>
+          <p>The columns contain: number of cases, population size, age group, and city (1=Minneapolis-St. Paul, 2=Dallas-Ft. Worth).</p>
         </statement>
       </exercise>
 
       <exercise xml:id="exer-ch4-c16">
         <title>Poisson approximation: rare events</title>
         <statement>
-          <p>For rare diseases, the probability of a case occurring, <m>p</m>, in a very large population, <m>n</m>, is small. With a small <m>p</m> and large <m>n</m>, the random variable <m>Y</m> = the number of cases out of <m>n</m> people can be approximated using a Poisson random variable with <m>\lambda = np</m>. Poisson regression can take into account differences in population sizes, <m>n_i</m>, using as an offset <m>\log(n_i)</m>, as well as differences in a population characteristic like <m>x_i</m>. Thus the model has the form: <m>\log(\lambda_i) = \beta_0 + \beta_1 x_i + \log(n_i)</m>, where <m>Y_i \sim \textrm{Poisson}(\lambda_i = n_i p_i)</m>. If the count of those with the disease is observed in several different populations independently of one another, the <m>Y_i</m> represents the number of cases in the <m>i^{th}</m> population and can be approximated using a Poisson random variable with <m>\lambda_i = n_i p_i</m> where <m>p_i</m> is the probability of a case for the <m>i^{th}</m> population. The coefficient of the offset is set at one; it is not estimated like the other coefficients. Note that <m>\lambda_i</m> depends on <m>x_i</m> which may differ for the different populations.</p>
-
-          <p><xref ref="Scotto1974"/> wondered if skin cancer rates by age group differ by city. Based on their data in <xref ref="tab-ch4-skincancer"/>, identify and describe the following quantities:</p>
-
-          <table xml:id="tab-ch4-skincancer">
-            <title>Data on the number of cases of non-melanoma skin cancer for women by age group in two metropolitan areas (Minneapolis-St. Paul and Dallas-Ft. Worth)</title>
-            <tabular halign="center" top="major" bottom="major">
-              <row header="yes" bottom="medium">
-                <cell>Number of Cases</cell>
-                <cell>Population</cell>
-                <cell>Age Group</cell>
-                <cell>City</cell>
-              </row>
-              <row><cell>1</cell><cell>172675</cell><cell>15&#8211;24</cell><cell>1</cell></row>
-              <row><cell>16</cell><cell>123065</cell><cell>25&#8211;34</cell><cell>1</cell></row>
-              <row><cell>&#8230;</cell><cell>&#8230;</cell><cell>&#8230;</cell><cell>&#8230;</cell></row>
-              <row><cell>226</cell><cell>29007</cell><cell>75&#8211;84</cell><cell>2</cell></row>
-              <row><cell>65</cell><cell>7538</cell><cell>85+</cell><cell>2</cell></row>
-            </tabular>
-          </table>
-          <p>Note: City 1 = Minneapolis-St. Paul; City 2 = Dallas-Ft. Worth.</p>
-
+          <p>
+  For rare diseases, the probability of a case occurring, <m>p</m>, in a very large population,
+  <m>n</m>, is small. With a small <m>p</m> and large <m>n</m>, the random variable <m>Y</m> =
+  the number of cases out of <m>n</m> people can be approximated using a Poisson random variable
+  with <m>\lambda = np</m>. If the count of those with the disease is observed in several different
+  populations independently of one another, the <m>Y_i</m> represents the number of cases in the
+  <m>i</m>th population and can be approximated using a Poisson random variable with
+  <m>\lambda_i = n_i p_i</m> where <m>p_i</m> is the probability of a case for the <m>i</m>th
+  population. Poisson regression can take into account the differences in the population sizes,
+  <m>n_i</m>, using as an offset <m>\log(n_i)</m> as well as differences in a population
+  characteristic like <m>x_i</m>. The coefficient of the offset is set at one; it is not estimated
+  like the other coefficients. Thus the model statement has the form:
+  <me>\log(\lambda_i) = \beta_0 + \beta_1 x_i + \log(n_i),</me>
+  where <m>Y_i \sim \text{Poisson}(\lambda_i = n_i p_i)</m>. Note that <m>\lambda_i</m> depends
+  on <m>x_i</m> which may differ for the different populations.
+</p>
+          <p><xref ref="Scotto1974"/> wondered if skin cancer rates by age group differ by city. Based on their data in <xref ref="tab-ch4-scottoetal"/>, identify and describe the following quantities which appear in the description of the Poisson approximation for rare events:</p>
           <p><ul>
             <li><p>A case,</p></li>
             <li><p>The population size, <m>n_i</m>,</p></li>
@@ -1609,7 +1701,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
 
           <table xml:id="tab-ch4-smoking">
             <title>A small subset of hypothetical data on Minnesota workplace rules on smoking. X is 0 for home and 1 for work; Y is number of cigarettes in a 2-hour period.</title>
-            <tabular halign="center" top="major" bottom="major">
+            <tabular>
               <row header="yes" bottom="medium">
                 <cell>Subject</cell>
                 <cell>X (location)</cell>
@@ -1623,6 +1715,9 @@ ggplot(res.df, aes(x = fit, y = resid)) +
               <row><cell>6</cell><cell>0</cell><cell>1</cell></row>
             </tabular>
           </table>
+<p>X is 0 for home and 1 for work.
+Y is number of cigaretttes in a 2-hour period.</p>
+
 
           <p>Three models are defined as follows:</p>
           <p><ul>
@@ -1651,6 +1746,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
             <li><p>Find the maximum likelihood estimators for <m>\beta_0</m> and <m>\beta_1</m> in Model 3 using an optimization routine in R (but not the <c>glm()</c> function). Use R to produce a 3D plot of the log-likelihood function.</p></li>
             <li><p>Confirm your estimates for Model 1 and Model 3 using <c>glm()</c>. Then show that the MLEs for Model 3 agree with the MLEs for Model 2.</p></li>
             <li><p>State a (one-sided) hypothesis for <m>\beta_1</m> in the context of the problem. Note: we will nevertheless use two-sided tests and intervals in the following questions.</p></li>
+<p> For the remaining questions, we will focus exclusively on Model 3.</p>
             <li><p>Do we need to include an offset in our Poisson regression model? Why or why not?</p></li>
             <li><p>Give estimates of <m>\beta_0</m> and <m>\beta_1</m>, and provide interpretations for both in the context of the problem.</p></li>
             <li><p>Provide and interpret a 95% confidence interval for <m>\beta_1</m>.</p></li>
@@ -1702,7 +1798,8 @@ fit3 &lt;- glm(burg09 ~ act.comp + tuition.thous +
       <exercise xml:id="exer-ch4-g6">
         <title>U.S. National Medical Expenditure Survey</title>
         <statement>
-          <p>The data set <c>NMES1988</c> in the <c>AER</c> package contains a sample of individuals over 65 who are covered by Medicare, collected to assess the demand for health care through physician office visits, outpatient visits, ER visits, hospital stays, etc. The data can be accessed by installing and loading the <c>AER</c> package and then running <c>data(NMES1988)</c>.</p>
+          <p>The data set <c>NMES1988</c> in the <c>AER</c> package contains a sample of individuals over 65 who are covered by Medicare, collected to assess the demand for health care through physician office visits, outpatient visits, ER visits, hospital stays, etc. The data can be accessed by installing and loading the <c>AER</c> package and then running <c>data(NMES1988)</c>.
+More background information and references about the <c>NMES1988</c> data can be found in help pages for the <c>AER</c> package.</p>
           <p><ol marker="a">
             <li><p>Show through graphical means that there are more respondents with 0 <c>visits</c> than might be expected under a Poisson model.</p></li>
             <li><p>Fit a ZIP model for the number of physician office <c>visits</c> using <c>chronic</c>, <c>health</c>, and <c>insurance</c> as predictors for the Poisson count, and <c>chronic</c> and <c>insurance</c> as the predictors for the binary part of the model. Then, provide interpretations in context for the following model parameters:
@@ -1723,8 +1820,9 @@ fit3 &lt;- glm(burg09 ~ act.comp + tuition.thous +
         <statement>
           <p>In this exercise, you will use a <term>hurdle model</term> <idx>hurdle model</idx> to analyze the data. A hurdle model is similar to a zero-inflated Poisson model, but instead of assuming that <q>zeros</q> are comprised of two distinct groups (those who would always be 0 and those who happen to be 0) (e.g., non-drinkers and drinkers who had zero drinks over the weekend in Case Study <xref ref="cs-drinking"/>), the hurdle model assumes that <q>zeros</q> are a single entity. Therefore, in a hurdle model, cases are either <q>zeros</q> or <q>non-zeros</q>, where <q>non-zeros</q> <em>hurdle</em> the 0 threshold and must always have counts of 1 or above. We will use the <c>pscl</c> package and the <c>hurdle</c> function. Note that coefficients in the <q>zero hurdle model</q> section of the output relate predictors to the log-odds of being a <em>non-zero</em> (i.e., having at least one issue statement), which is opposite of the ZIP model.</p>
 
-          <p>In a 2018 study, <xref ref="Chapp2018"/> scraped every issue statement from webpages of candidates for the U.S. House of Representatives, counting the number of issues candidates commented on and scoring the level of ambiguity of each statement. The data set <c>ambiguity.csv</c> contains:</p>
-          <p><ul>
+          <p>In a 2018 study, <xref ref="Chapp2018"/> 
+scraped every issue statement from webpages of candidates for the U.S. House of Representatives, counting the number of issues candidates commented on and scoring the level of ambiguity of each statement. We will focus on the issue counts, and determining which attributes (of both the district as a whole and the candidates themselves) are associated with candidate silence (commenting on 0 issues) and a willingness to comment on a greater number of issues.
+The data set <c>ambiguity.csv</c> contains the following variables:<p><ul>
             <li><p><c>name</c>: candidate name</p></li>
             <li><p><c>distID</c>: unique identification number for Congressional district</p></li>
             <li><p><c>ideology</c>: candidate left-right orientation</p></li>
@@ -1777,8 +1875,9 @@ fit3 &lt;- glm(burg09 ~ act.comp + tuition.thous +
       <exercise xml:id="exer-ch4-oe2">
         <title>Crab satellites</title>
         <statement>
-          <p><xref ref="Brockmann1996"/> carried out a study of nesting female horseshoe crabs. Female horseshoe crabs often have male crabs attached to a female's nest, known as <term>satellites</term>. One objective of the study was to determine which characteristics of the female were associated with the number of satellites. The data can be found in <c>crab.csv</c> and includes:</p>
-          <p><ul>
+          <p><xref ref="Brockmann1996"/> carried out a study of nesting female horseshoe crabs. Female horseshoe crabs often have male crabs attached to a female’s nest known as satellites. One objective of the study was to determine which characteristics of the female were associated with the number of satellites. Of particular interest is the relationship between the width of the female carapace and satellites.
+</p>
+<p><ul>
             <li><p><c>NumSat</c>: number of satellites</p></li>
             <li><p><c>Width</c>: carapace width (cm)</p></li>
             <li><p><c>Wt</c>: weight (kg)</p></li>
