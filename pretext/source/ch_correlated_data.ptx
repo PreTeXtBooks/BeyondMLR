@@ -1038,10 +1038,9 @@ plot(p, density, type = "l")
         </statement>
       </exercise>
     </subexercises>
-
-    <subexercises xml:id="note-correlated-binary">
+  </exercises>
+    <subsection xml:id="note-correlated-binary">
       <title>Note on Correlated Binary Outcomes</title>
-
       <p>
         The correlated binomial counts simulated in the Dams and Pups Case Study are in fact
         beta-binomial random variables like those simulated in the Guided Exercises from the
@@ -1053,7 +1052,6 @@ plot(p, density, type = "l")
         however, our results may be misleading. That said, the beta-binomial structure is quite
         flexible and conforms to many situations.
       </p>
-    </subexercises>
-  </exercises>
+    </subsection>
 
 </chapter>
