@@ -1576,7 +1576,7 @@ ggplot(res.df, aes(x = fit, y = resid)) +
         <statement>
           <p>Researchers are interested in the number of dates respondents arranged online and whether the rates differ by age group. Questions which elicit responses similar to this can be found in the Pew Survey concerning dating online and relationships
              (<xref ref="Duggan2013"/>). Each survey respondent was asked how many dates they have arranged online in the past 3 months as well as the typical amount of time, 
-             <m>t</m>, in hours, they spend online weekly. Some rows of data appear in <xref ref="tab-ch4-dating"/>.</p>
+             <m>t</m>, in hours, they spend online weekly. Some rows of data appear in <xref ref="tab-ch4-scottoetal"/>.</p>
 
           <p><ul>
             <li><p>Identify the response, predictor, and offset in this context. Does using an offset make sense?</p></li>
