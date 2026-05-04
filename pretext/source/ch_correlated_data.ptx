@@ -550,6 +550,24 @@ count_2b &lt;- rbinom(24, 10, pi_2b)
         </image>
       </figure>
 
+<table xml:id="tab-summary-scenario2">
+  <title>Summary statistics of Scenario 2 by dose</title>
+  <tabular>
+    <row header="yes">
+      <cell></cell><cell colspan="4">Scenario 2a</cell><cell colspan="4">Scenario 2b</cell>
+    </row>
+    <row header="yes">
+      <cell>Dosage</cell>
+      <cell>Mean p</cell><cell>SD p</cell><cell>Mean Count</cell><cell>SD Count</cell>
+      <cell>Mean p</cell><cell>SD p</cell><cell>Mean Count</cell><cell>SD Count</cell>
+    </row>
+    <row><cell>0</cell><cell>0.119</cell><cell>0</cell><cell>1.333</cell><cell>1.366</cell><cell>0.061</cell><cell>0.069</cell><cell>0.500</cell><cell>0.837</cell></row>
+    <row><cell>1</cell><cell>0.339</cell><cell>0</cell><cell>3.167</cell><cell>1.835</cell><cell>0.239</cell><cell>0.208</cell><cell>3.500</cell><cell>2.881</cell></row>
+    <row><cell>2</cell><cell>0.661</cell><cell>0</cell><cell>5.833</cell><cell>1.472</cell><cell>0.615</cell><cell>0.195</cell><cell>5.833</cell><cell>1.941</cell></row>
+    <row><cell>3</cell><cell>0.881</cell><cell>0</cell><cell>8.833</cell><cell>1.169</cell><cell>0.872</cell><cell>0.079</cell><cell>8.833</cell><cell>1.160</cell></row>
+  </tabular>
+</table>
+
       <p>
         <alert>Thought Questions</alert>
       </p>
@@ -561,7 +579,7 @@ count_2b &lt;- rbinom(24, 10, pi_2b)
         <li><p>In Scenario 2a, dams produced 4.79 deformed pups on average, with standard
         deviation 3.20. Scenario 2b saw an average of 4.67 with standard deviation 3.58. Explain
         why comparisons by dose are more meaningful than these overall comparisons. You might
-        refer to the results in the Scenario 2 summary table.</p></li>
+        refer to the results in <xref ref = "tab-summary-scenario2"/>.</p></li>
 
         <li><p>In <xref ref="tab-simulationTableCh7"/>, predict what you'll see in the column
         headed <q>CI_odds_ratio</q>. Among the 4 entries: What can you say about the center and
