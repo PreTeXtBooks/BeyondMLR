@@ -1246,7 +1246,7 @@ head(zip.data)
 
       <p>We first fit a simple Poisson model with the covariates <c>off.campus</c> and <c>sex</c>.</p>
 
-      <program language="r" xml:id="code-ch4-region-model">
+      <program language="r" xml:id="code-ch4-region-model-1">
         <code>
 pois.m1 &lt;- glm(drinks ~ off.campus + sex, family = poisson,
                data = zip.data)
@@ -1265,7 +1265,7 @@ pois.m1 &lt;- glm(drinks ~ off.campus + sex, family = poisson,
 </output>
       </console>
 
-      <program language="r" xml:id="code-ch4-region-model">
+      <program language="r" xml:id="code-ch4-region-model-2">
         <code>
 # Exponentiated coefficients
 exp(coef(pois.m1))
@@ -1279,7 +1279,7 @@ exp(coef(pois.m1))
        </output>
       </console>
 
-      <program language="r" xml:id="code-ch4-region-model">
+      <program language="r" xml:id="code-ch4-region-model-3">
         <code>
 # Goodness-of-fit test
 gof.pvalue = 1 - pchisq(pois.m1$deviance, pois.m1$df.residual)
