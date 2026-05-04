@@ -1020,7 +1020,7 @@ drop_in_dev &lt;- anova(modeltr, modeli, test = "Chisq")
         </output>
       </console>
 
-      <p>The residual deviance (276.70 with 70 df) suggests significant lack-of-fit in the interaction model (p < .001). One possibility is that there are other important covariates that could be used to describe the differences in the violent crime rates. Without additional covariates to consider, we look for extreme observations, but we have already eliminated the most extreme of the observations.</p>
+      <p>The residual deviance (276.70 with 70 df) suggests significant lack-of-fit in the interaction model (p &lt; .001). One possibility is that there are other important covariates that could be used to describe the differences in the violent crime rates. Without additional covariates to consider, we look for extreme observations, but we have already eliminated the most extreme of the observations.</p>
 <p>In the absence of other covariates or extreme observations, we consider overdispersion as a possible explanation of the significant lack-of-fit.</p>
 
 </subsection>
