@@ -699,7 +699,7 @@ c.data &lt;- c.data %&gt;%
         <output>
 # A tibble: 10 x 6
    Enrollment type     nv nvrate enroll1000 region
-        &lt;dbl&gt;  &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt;      <dbl> &lt;chr&gt; 
+        &lt;dbl&gt;  &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt; 
  1       5590 U        30 5.37         5.59 SE    
  2        540 C         0 0            0.54 SE    
  3      35747 U        23 0.643       35.7  W     
