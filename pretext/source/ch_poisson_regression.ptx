@@ -1821,8 +1821,11 @@ More background information and references about the <c>NMES1988</c> data can be
           <p>In this exercise, you will use a <term>hurdle model</term> <idx>hurdle model</idx> to analyze the data. A hurdle model is similar to a zero-inflated Poisson model, but instead of assuming that <q>zeros</q> are comprised of two distinct groups (those who would always be 0 and those who happen to be 0) (e.g., non-drinkers and drinkers who had zero drinks over the weekend in Case Study <xref ref="cs-drinking"/>), the hurdle model assumes that <q>zeros</q> are a single entity. Therefore, in a hurdle model, cases are either <q>zeros</q> or <q>non-zeros</q>, where <q>non-zeros</q> <em>hurdle</em> the 0 threshold and must always have counts of 1 or above. We will use the <c>pscl</c> package and the <c>hurdle</c> function. Note that coefficients in the <q>zero hurdle model</q> section of the output relate predictors to the log-odds of being a <em>non-zero</em> (i.e., having at least one issue statement), which is opposite of the ZIP model.</p>
 
           <p>In a 2018 study, <xref ref="Chapp2018"/> 
-scraped every issue statement from webpages of candidates for the U.S. House of Representatives, counting the number of issues candidates commented on and scoring the level of ambiguity of each statement. We will focus on the issue counts, and determining which attributes (of both the district as a whole and the candidates themselves) are associated with candidate silence (commenting on 0 issues) and a willingness to comment on a greater number of issues.
-The data set <c>ambiguity.csv</c> contains the following variables:<p><ul>
+scraped every issue statement from webpages of candidates for the U.S. House of Representatives, counting the number of issues candidates commented on and scoring the level of ambiguity of each statement. We will focus on the issue counts, and determining which attributes
+(of both the district as a whole and the candidates themselves) are associated with candidate silence
+(commenting on 0 issues) and a willingness to comment on a greater number of issues.
+The data set <c>ambiguity.csv</c> contains the following variables:</p>
+         <p><ul>
             <li><p><c>name</c>: candidate name</p></li>
             <li><p><c>distID</c>: unique identification number for Congressional district</p></li>
             <li><p><c>ideology</c>: candidate left-right orientation</p></li>
