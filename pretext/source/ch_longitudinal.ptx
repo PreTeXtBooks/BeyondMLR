@@ -1084,7 +1084,7 @@ model.c &lt;- lmer(MathAvgScore ~ charter + year08 +
         unexplained variability in yearly improvement actually increased slightly. Obviously, it
         makes little sense that introducing an additional predictor would <em>reduce</em> the
         amount of variability in test scores explained, but this is an example of the limitations
-        in the pseudo R-squared values discussed in <xref ref="sec-pseudoR2"/>.
+        in the pseudo R-squared values discussed in <xref ref="subsubsec-pseudoR2"/>.
       </p>
     </subsection>
 
@@ -1734,7 +1734,7 @@ confint(model.f0, method = "boot", nsim = 1000, oldNames = FALSE)
         models. For example, in a two-level model for students within schools where there is
         only one observation per student per school, the within-school covariance structure
         depends on the Level Two random effects only. Consider the Music Performance Anxiety
-        case study from <xref ref="chap-multilevel-intro"/>, where performance anxiety scores
+        case study from <xref ref="ch-multilevelintro"/>, where performance anxiety scores
         are modeled for musicians across multiple performance settings. In that model, the Level
         One predictor is Large (an indicator for large ensembles), so the within-subject
         covariance between two observations <m>j</m> and <m>k</m> for subject <m>i</m> is:
