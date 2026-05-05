@@ -130,13 +130,30 @@ library(tidyverse)
       </ul>
 
       <p>
-        This data is stored in WIDE format, with one row per school. For most statistical analyses,
-        it will be advantageous to convert WIDE format to LONG format, with one row per year per
-        school. Under the LONG format, each school can have a different number of and
-        differently-spaced time points, and they can even have predictors which vary over time.
-        The resulting LONG data set uses a variable <c>year08</c> which measures the number of
-        years since 2008.
+        This data is stored in WIDE format, with one row per school, as illustrated in
+        <xref ref="tab-table1chp9"/>. For most statistical analyses, it will be advantageous
+        to convert WIDE format to LONG format, with one row per year per school. Under the LONG
+        format, each school can have a different number of and differently-spaced time points,
+        and they can even have predictors which vary over time. The resulting LONG data set uses
+        a variable <c>year08</c> which measures the number of years since 2008.
       </p>
+
+      <table xml:id="tab-table1chp9">
+        <title>The first six observations in the wide data set for the Charter Schools case study.</title>
+        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+          <row header="yes" bottom="medium">
+            <cell>schoolid</cell><cell>schoolName</cell><cell>urban</cell><cell>charter</cell>
+            <cell>schPctnonw</cell><cell>schPctsped</cell><cell>schPctfree</cell>
+            <cell>MathAvgScore.0</cell><cell>MathAvgScore.1</cell><cell>MathAvgScore.2</cell>
+          </row>
+          <row><cell>Dtype 1 Dnum 1 Snum 2</cell><cell>RIPPLESIDE ELEMENTARY</cell><cell>0</cell><cell>0</cell><cell>0.0000</cell><cell>0.1176</cell><cell>0.3627</cell><cell>652.8</cell><cell>656.6</cell><cell>652.6</cell></row>
+          <row><cell>Dtype 1 Dnum 100 Snum 1</cell><cell>WRENSHALL ELEMENTARY</cell><cell>0</cell><cell>0</cell><cell>0.0303</cell><cell>0.1515</cell><cell>0.4242</cell><cell>646.9</cell><cell>645.3</cell><cell>651.9</cell></row>
+          <row><cell>Dtype 1 Dnum 108 Snum 30</cell><cell>CENTRAL MIDDLE</cell><cell>0</cell><cell>0</cell><cell>0.0769</cell><cell>0.1231</cell><cell>0.2615</cell><cell>654.7</cell><cell>658.5</cell><cell>659.7</cell></row>
+          <row><cell>Dtype 1 Dnum 11 Snum 121</cell><cell>SANDBURG MIDDLE</cell><cell>1</cell><cell>0</cell><cell>0.0977</cell><cell>0.0827</cell><cell>0.2481</cell><cell>656.4</cell><cell>656.8</cell><cell>659.9</cell></row>
+          <row><cell>Dtype 1 Dnum 11 Snum 193</cell><cell>OAK VIEW MIDDLE</cell><cell>1</cell><cell>0</cell><cell>0.0538</cell><cell>0.0954</cell><cell>0.1418</cell><cell>657.7</cell><cell>658.2</cell><cell>659.8</cell></row>
+          <row><cell>Dtype 1 Dnum 11 Snum 195</cell><cell>ROOSEVELT MIDDLE</cell><cell>1</cell><cell>0</cell><cell>0.1234</cell><cell>0.0886</cell><cell>0.2405</cell><cell>655.9</cell><cell>659.1</cell><cell>660.3</cell></row>
+        </tabular>
+      </table>
     </subsection>
 
     <subsection xml:id="sec-lon-missing">
@@ -150,6 +167,35 @@ library(tidyverse)
         618 schools, 540 had complete data, 25 were missing a math score for 2008, 35 were missing
         math scores in both 2008 and 2009, etc.
       </p>
+
+      <p>
+        First, we must understand the extent and nature of missing data in our study.
+        <xref ref="tab-table2chp9"/> is a frequency table of missing data patterns, where 1
+        indicates presence of a variable and 0 indicates a missing value for a particular variable.
+        The number of schools with a particular missing data pattern are listed in the left column;
+        the remaining columns of 0's and 1's describe the missing data pattern, with 0 indicating
+        a missing value. Some covariates that are present for every school are not listed. The
+        bottom row gives the number of schools with missing values for specific variables; the last
+        entry indicates that 121 total observations were missing.
+      </p>
+
+      <table xml:id="tab-table2chp9">
+        <title>A frequency table of missing data patterns.</title>
+        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+          <row header="yes" bottom="medium">
+            <cell></cell><cell>charter</cell><cell>MathAvgScore.2</cell>
+            <cell>MathAvgScore.1</cell><cell>MathAvgScore.0</cell><cell></cell>
+          </row>
+          <row><cell>540</cell><cell>1</cell><cell>1</cell><cell>1</cell><cell>1</cell><cell>0</cell></row>
+          <row><cell>25</cell><cell>1</cell><cell>1</cell><cell>1</cell><cell>0</cell><cell>1</cell></row>
+          <row><cell>4</cell><cell>1</cell><cell>1</cell><cell>0</cell><cell>1</cell><cell>1</cell></row>
+          <row><cell>35</cell><cell>1</cell><cell>1</cell><cell>0</cell><cell>0</cell><cell>2</cell></row>
+          <row><cell>6</cell><cell>1</cell><cell>0</cell><cell>1</cell><cell>1</cell><cell>1</cell></row>
+          <row><cell>1</cell><cell>1</cell><cell>0</cell><cell>1</cell><cell>0</cell><cell>2</cell></row>
+          <row><cell>7</cell><cell>1</cell><cell>0</cell><cell>0</cell><cell>1</cell><cell>2</cell></row>
+          <row bottom="medium"><cell></cell><cell>0</cell><cell>14</cell><cell>46</cell><cell>61</cell><cell>121</cell></row>
+        </tabular>
+      </table>
 
       <p>
         Statisticians have devised different strategies for handling missing data:
@@ -175,6 +221,31 @@ library(tidyverse)
         depend on any unobserved predictors or the response. This is the approach we will follow
         in the remainder of the text.</p></li>
       </ul>
+
+      <p>
+        Now, we are ready to create our LONG data set. Fortunately, many packages (including R)
+        have built-in functions for easing this conversion, and the functions are improving
+        constantly. The resulting LONG data set is shown in <xref ref="tab-table3chp9"/>, where
+        <c>year08</c> measures the number of years since 2008.
+      </p>
+
+      <table xml:id="tab-table3chp9">
+        <title>The first six observations in the long data set for the Charter Schools case study;
+        these lines correspond to the first two observations from the wide data set illustrated
+        in <xref ref="tab-table1chp9"/>.</title>
+        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+          <row header="yes" bottom="medium">
+            <cell>schoolName</cell><cell>charter</cell><cell>schPctsped</cell>
+            <cell>schPctfree</cell><cell>year08</cell><cell>MathAvgScore</cell>
+          </row>
+          <row><cell>RIPPLESIDE ELEMENTARY</cell><cell>0</cell><cell>0.1176</cell><cell>0.3627</cell><cell>0</cell><cell>652.8</cell></row>
+          <row><cell>RIPPLESIDE ELEMENTARY</cell><cell>0</cell><cell>0.1176</cell><cell>0.3627</cell><cell>1</cell><cell>656.6</cell></row>
+          <row><cell>RIPPLESIDE ELEMENTARY</cell><cell>0</cell><cell>0.1176</cell><cell>0.3627</cell><cell>2</cell><cell>652.6</cell></row>
+          <row><cell>WRENSHALL ELEMENTARY</cell><cell>0</cell><cell>0.1515</cell><cell>0.4242</cell><cell>0</cell><cell>646.9</cell></row>
+          <row><cell>WRENSHALL ELEMENTARY</cell><cell>0</cell><cell>0.1515</cell><cell>0.4242</cell><cell>1</cell><cell>645.3</cell></row>
+          <row><cell>WRENSHALL ELEMENTARY</cell><cell>0</cell><cell>0.1515</cell><cell>0.4242</cell><cell>2</cell><cell>651.9</cell></row>
+        </tabular>
+      </table>
     </subsection>
 
     <subsection xml:id="sec-lon-general-eda">
@@ -247,9 +318,13 @@ library(tidyverse)
         such as <xref ref="fig-lon-spag1"/>, which overlays the individual schools' time trends on
         a single set of axes with a non-parametric
         <term>loess smoother</term><idx><h>loess smoother</h></idx> in bold. LOESS comes from
-        "locally estimated scatterplot smoother." In this case, the loess smoother follows very
-        closely to a linear trend, indicating that assuming a linear increase in test scores over
-        the three-year period is probably a reasonable simplifying assumption.
+        "locally estimated scatterplot smoother," in which a low-degree polynomial is fit to each
+        data point using weighted regression techniques, where nearby points receive greater weight.
+        LOESS is a computationally intensive method which performs especially well with larger sets
+        of data, although ideally there would be a greater diversity of x-values than the three
+        time points we have. In this case, the loess smoother follows very closely to a linear
+        trend, indicating that assuming a linear increase in test scores over the three-year period
+        is probably a reasonable simplifying assumption.
         <xref ref="fig-lon-lat2"/> shows a lattice plot containing linear fits through ordinary
         least squares to further examine linearity.
       </p>
@@ -335,7 +410,12 @@ library(tidyverse)
         was 1.30 (SD = 2.51). <xref ref="fig-lon-histmat1"/> shows histograms for intercepts,
         slopes, and R-squared values. <xref ref="fig-lon-scat5"/> shows a general decreasing
         trend between fitted intercepts and slopes (correlation <m>= -0.32</m>), suggesting that
-        schools with lower 2008 test scores tend to have greater growth.
+        schools with lower 2008 test scores tend to have greater growth. Note that, with only 3
+        or fewer observations for each school, extreme or intractable values for the slope and
+        R-squared are possible. For example, slopes cannot be estimated for those schools with
+        just a single test score, R-squared values cannot be calculated for those schools with no
+        variability in test scores between 2008 and 2010, and R-squared values must be 1 for those
+        schools with only two test scores.
       </p>
 
       <figure xml:id="fig-lon-cis1">
@@ -573,6 +653,24 @@ model.a &lt;- lmer(MathAvgScore ~ 1 + (1|schoolid),
           \begin{bmatrix} \sigma_u^2 \\ \sigma_{uv} \amp \sigma_v^2 \end{bmatrix}
         \right).
       </me>
+
+      <p>
+        In the Level One model, <m>a_i</m> represents the true math score for school <m>i</m>
+        in 2008 (the y-intercept when Year08 = 0), and <m>b_i</m> is the true annual rate of
+        change in math scores for school <m>i</m>. Then <m>\sigma^2</m> is estimated by the
+        variability in vertical distances of observed points from the true linear trends at Level
+        One. <xref ref="fig-lon-scat3"/> illustrates these parameters for Norwood Central Middle
+        School.
+      </p>
+
+      <figure xml:id="fig-lon-scat3">
+        <caption>Linear growth model for Norwood Central Middle School.</caption>
+        <image source="generated-assets/lon-scat3-1.png" width="60%">
+          <description>A scatter plot with a fitted regression line for Norwood Central Middle
+          School showing math scores by year, illustrating the a_i intercept, b_i slope, and
+          epsilon deviation parameters.</description>
+        </image>
+      </figure>
 
       <program language="r" xml:id="code-model-b">
         <input>
@@ -922,6 +1020,39 @@ model.f0 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
         </image>
       </figure>
 
+      <p>
+        To illustrate the bootstrap process for our data, consider Rippleside Elementary School
+        (<xref ref="tab-rippleside9"/>), which has complete data for all three years.
+      </p>
+
+      <table xml:id="tab-rippleside9">
+        <title>Data for Rippleside Elementary School.</title>
+        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+          <row header="yes" bottom="medium">
+            <cell>schoolName</cell><cell>urban</cell><cell>charter</cell>
+            <cell>schPctsped</cell><cell>schPctfree</cell><cell>year08</cell>
+            <cell>MathAvgScore</cell>
+          </row>
+          <row><cell>RIPPLESIDE ELEMENTARY</cell><cell>0</cell><cell>0</cell><cell>0.1176</cell><cell>0.3627</cell><cell>0</cell><cell>652.8</cell></row>
+          <row><cell>RIPPLESIDE ELEMENTARY</cell><cell>0</cell><cell>0</cell><cell>0.1176</cell><cell>0.3627</cell><cell>1</cell><cell>656.6</cell></row>
+          <row><cell>RIPPLESIDE ELEMENTARY</cell><cell>0</cell><cell>0</cell><cell>0.1176</cell><cell>0.3627</cell><cell>2</cell><cell>652.6</cell></row>
+        </tabular>
+      </table>
+
+      <p>
+        Using parameter estimates from Model F0, a new set of math scores for Rippleside would
+        be generated as follows. The Level Two model under Model F0 predicts an intercept for
+        Rippleside of:
+        <me>
+          \hat{a}_{Rippleside} = \hat{\alpha}_0 + \hat{\alpha}_2(0.3627) + \hat{u}_{Rippleside}
+        </me>
+        and a common slope of <m>\hat{\beta}_0</m> plus any applicable interaction terms.
+        A new simulated math score for Year08 = 0 would then be generated from a normal
+        distribution centered at <m>\hat{a}_{Rippleside}</m> with variance <m>\hat{\sigma}^2</m>.
+        Repeating this process for all schools and all years in the dataset produces one full
+        bootstrap sample.
+      </p>
+
       <program language="r" xml:id="code-paraboot">
         <input>
 # Generate 1 set of bootstrapped data and run chi-square test
@@ -932,6 +1063,12 @@ m1 &lt;- refit(model.f0ml, newresp = d)
 drop_in_dev &lt;- anova(m2, m1, test = "Chisq")
         </input>
       </program>
+
+      <p>
+        In this one bootstrap sample, we fit both Model F0 and Model F to the simulated data,
+        compute the likelihood ratio test statistic, and record it. By repeating this process
+        1000 times (Step 5 above), we build an empirical null distribution of the test statistic.
+      </p>
 
       <program language="r" xml:id="code-paraboot-full">
         <input>
@@ -958,6 +1095,27 @@ bootstrapAnova(mA = model.f2ml, m0 = model.f0ml, B = 1000)
           statistic (0.3376), showing most of the null distribution falls below 5.</description>
         </image>
       </figure>
+
+      <p>
+        Parametric bootstrap methods can also be used to construct confidence intervals for
+        fixed effects. For instance, the <c>confint</c> function in R with
+        <c>method = "boot"</c> will generate bootstrap confidence intervals for all model
+        parameters:
+      </p>
+
+      <program language="r" xml:id="code-paraboot-ci">
+        <input>
+# Bootstrap confidence intervals for Model F0
+confint(model.f0, method = "boot", nsim = 1000, oldNames = FALSE)
+        </input>
+      </program>
+
+      <p>
+        Bootstrap confidence intervals offer an alternative to Wald-based intervals and can be
+        especially useful for variance components, which are often non-normally distributed.
+        For parameters near a boundary (such as variance components near 0), parametric bootstrap
+        intervals tend to be more accurate than likelihood-based or Wald-based intervals.
+      </p>
     </subsection>
   </section>
 
@@ -1027,10 +1185,35 @@ bootstrapAnova(mA = model.f2ml, m0 = model.f0ml, B = 1000)
         0.826), and the variability in 2010 (52.77) is about 18% greater than the variability
         in 2008 (44.62).
       </p>
+
+      <p>
+        Some key features of the estimated covariance and correlation matrices are worth noting:
+      </p>
+
+      <ul>
+        <li><p>Correlation is consistent (approximately 0.81–0.83) between all pairs of time
+        points, regardless of whether the measurements are one or two years apart.</p></li>
+        <li><p>Variability in 2010 test scores (<m>\hat{\sigma}^2_{Y_3} = 52.77</m>) is
+        approximately 18% greater than the variability in 2008
+        (<m>\hat{\sigma}^2_{Y_1} = 44.62</m>).</p></li>
+        <li><p>There is a quadratic (non-monotone) structure in the variance over time: variance
+        increases from 2008 to 2010, but the middle year (2009) has variance between the two
+        endpoint years.</p></li>
+        <li><p>The standard covariance structure does not require evenly spaced time points —
+        it only requires that the time values be specified correctly in the model.</p></li>
+      </ul>
     </subsection>
 
     <subsection xml:id="sec-lon-alt-cov">
       <title>Alternative Covariance Structures</title>
+
+      <p>
+        The standard covariance structure derived from a two-level multilevel model is useful in
+        many situations and has the advantage of being directly interpretable in terms of the
+        model's variance components. However, in some settings — particularly with many time
+        points or when the correlation structure among observations is more complex — alternative
+        covariance structures may be worth considering.
+      </p>
 
       <p>
         Here is an outline of a few alternative error structures:
@@ -1061,6 +1244,14 @@ bootstrapAnova(mA = model.f2ml, m0 = model.f0ml, B = 1000)
         (<xref ref="Bryk2002"/>; <xref ref="Singer2003"/>; <xref ref="Faraway2005"/>). In the
         charter school example, the choice of covariance matrix does not greatly affect estimates
         of fixed effects.
+      </p>
+
+      <p>
+        Note that when comparing models that differ only in their covariance structure (with the
+        same fixed effects), the models should be fit using <term>REML</term>
+        <idx><h>REML</h></idx> (restricted maximum likelihood) rather than full maximum likelihood.
+        REML estimates of variance components are generally less biased than full ML estimates, and
+        comparisons of covariance structures should use REML-based likelihood values.
       </p>
     </subsection>
 
@@ -1093,6 +1284,49 @@ bootstrapAnova(mA = model.f2ml, m0 = model.f0ml, B = 1000)
         <mrow>\text{Cov}(Y_{ij}, Y_{ik}) \amp= \text{Cov}(u_i + v_i\;\text{Year08}_{ij} + \epsilon_{ij},\; u_i + v_i\;\text{Year08}_{ik} + \epsilon_{ik})</mrow>
         <mrow> \amp= \sigma_u^2 + t_j t_k \sigma_v^2 + (t_j + t_k) \sigma_{uv}</mrow>
       </md>
+    </subsection>
+
+    <subsection xml:id="sec-lon-nonlongitudinal">
+      <title>Non-longitudinal Multilevel Models</title>
+
+      <p>
+        The covariance structure described above also applies to non-longitudinal multilevel
+        models. For example, in a two-level model for students within schools where there is
+        only one observation per student per school, the within-school covariance structure
+        depends on the Level Two random effects only. Consider the Music Performance Anxiety
+        case study from <xref ref="chap-multilevel-intro"/>, where performance anxiety scores
+        are modeled for musicians across multiple performance settings. In that model, the Level
+        One predictor is Large (an indicator for large ensembles), so the within-subject
+        covariance between two observations <m>j</m> and <m>k</m> for subject <m>i</m> is:
+      </p>
+
+      <me>
+        \text{Var}(Y_{ij}) = \sigma_u^2 + L_j^2 \sigma_v^2 + \sigma^2 + 2L_j \sigma_{uv}
+      </me>
+
+      <me>
+        \text{Cov}(Y_{ij}, Y_{ik}) = \sigma_u^2 + L_j L_k \sigma_v^2 + (L_j + L_k) \sigma_{uv}
+      </me>
+
+      <p>
+        where <m>L_j</m> and <m>L_k</m> are the values of Large for observations <m>j</m> and
+        <m>k</m>. Just as with longitudinal models, these covariance expressions reflect the
+        shared random effects at the subject level.
+      </p>
+    </subsection>
+
+    <subsection xml:id="sec-lon-final-thoughts-cov">
+      <title>Final Thoughts Regarding Covariance Structures</title>
+
+      <p>
+        In our charter school example, the choice of covariance matrix does not greatly affect
+        estimates of fixed effects. In general, when sample sizes are large and the model is
+        specified correctly, parameter estimates will be robust to minor misspecification of the
+        covariance structure. However, standard errors and inference can be sensitive to covariance
+        misspecification, so it is worth considering alternative structures when the data warrant
+        it, especially in studies with many repeated measurements, unbalanced designs, or when
+        correlation structures are a primary research interest.
+      </p>
     </subsection>
   </section>
 
