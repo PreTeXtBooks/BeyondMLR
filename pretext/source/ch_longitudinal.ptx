@@ -481,12 +481,12 @@ library(tidyverse)
         slopes produced by fitting linear regression models at Level One, in addition to R-squared
         values which describe the strength of fit of the linear model for each school
         (<xref ref="fig-lon-histmat1"/>). For our 618 schools, the mean math score for 2008 was
-        651.4 (SD=7.28), and the mean yearly rate of change in math scores over the three-year
-        period was 1.30 (SD=2.51). We can further examine the relationship between schools'
+        651.4 (SD = 7.28), and the mean yearly rate of change in math scores over the three-year
+        period was 1.30 (SD = 2.51). We can further examine the relationship between schools'
         intercepts and slopes. <xref ref="fig-lon-scat5"/> shows a general decreasing trend,
         suggesting that schools with lower 2008 test scores tend to have greater growth in scores
         between 2008 and 2010 (potentially because those schools have more room for improvement);
-        this trend is supported with a correlation coefficient of <m>-0.32</m> between fitted
+        this trend is supported with a correlation coefficient of <m>r = -0.32</m> between fitted
         intercepts and slopes. Note that, with only 3 or fewer observations for each school,
         extreme or intractable values for the slope and R-squared are possible. For example,
         slopes cannot be estimated for those schools with just a single test score, R-squared
@@ -1371,10 +1371,12 @@ model.f0 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
       Rippleside (rural, non-charter, 11.8% special education, 36.3% free/reduced lunch) is:
       </p>
       <me>
-        a_1 = 661.03 - 3.22(0) - 1.12(0) - 0.12(11.8) - 0.15(36.3) - 5.92 = 648.2
+        a_1 = \hat{\alpha}_0 + \hat{\alpha}_3(11.8) + \hat{\alpha}_4(36.3) + u_1
+            = 661.03 - 0.12(11.8) - 0.15(36.3) + u_1
       </me>
       <p>
-        where <m>u_1 = -5.92</m> is a draw from <m>N(0, \hat{\sigma}_u^2)</m>.
+        where <m>u_1 = -5.92</m> is a draw from <m>N(0, \hat{\sigma}_u^2)</m>, giving
+        <m>a_1 \approx 648.2</m>.
       </p>
 
       <p><alert>Level One:</alert> Next, we generate three residuals <m>\epsilon_{11}, \epsilon_{12},
