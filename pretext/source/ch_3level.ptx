@@ -124,27 +124,75 @@ library(tidyverse)
       </ul>
 
       <p>
-        This data is stored in wide format, with one row per plant. As we have done in previous
-        multilevel analyses, we will convert to long format (one observation per plant-time
-        combination) after examining the missing data pattern and removing any plants with no growth
-        data. In this case, we are almost assuredly losing information by removing plants with no
-        height data at all four time points, since these plants did not germinate, and there may well
-        be differences between species, soil type, and sterilization with respect to germination
-        rates. We will handle this possibility by analyzing germination rates separately in
-        <xref ref="ch-GLMM"/>; the analysis in this chapter will focus on effects of species, soil
-        type, and sterilization on initial growth and growth rate among plants that germinate.
+        This data is stored in wide format, with one row per plant (see 12 sample plants in
+        <xref ref="tab-table1chp10"/>). As we have done in previous multilevel analyses, we will
+        convert to long format (one observation per plant-time combination) after examining the
+        missing data pattern and removing any plants with no growth data. In this case, we are
+        almost assuredly losing information by removing plants with no height data at all four time
+        points, since these plants did not germinate, and there may well be differences between
+        species, soil type, and sterilization with respect to germination rates. We will handle this
+        possibility by analyzing germination rates separately in <xref ref="ch-GLMM"/>; the
+        analysis in this chapter will focus on effects of species, soil type, and sterilization on
+        initial growth and growth rate among plants that germinate.
       </p>
+
+      <table xml:id="tab-table1chp10">
+        <title>A snapshot of data (Plants 231–246) from the Seed Germination case study in wide format.</title>
+        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+          <row header="yes" bottom="medium">
+            <cell>pot</cell><cell>plant</cell><cell>soil</cell><cell>sterile</cell>
+            <cell>species</cell><cell>germin</cell><cell>hgt13</cell><cell>hgt18</cell>
+            <cell>hgt23</cell><cell>hgt28</cell>
+          </row>
+          <row><cell>23</cell><cell>231</cell><cell>CULT</cell><cell>N</cell><cell>C</cell><cell>Y</cell><cell>1.1</cell><cell>1.4</cell><cell>1.6</cell><cell>1.7</cell></row>
+          <row><cell>23</cell><cell>232</cell><cell>CULT</cell><cell>N</cell><cell>C</cell><cell>Y</cell><cell>1.3</cell><cell>2.2</cell><cell>2.5</cell><cell>2.7</cell></row>
+          <row><cell>23</cell><cell>233</cell><cell>CULT</cell><cell>N</cell><cell>C</cell><cell>Y</cell><cell>0.5</cell><cell>1.4</cell><cell>2.0</cell><cell>2.3</cell></row>
+          <row><cell>23</cell><cell>234</cell><cell>CULT</cell><cell>N</cell><cell>C</cell><cell>Y</cell><cell>0.3</cell><cell>0.4</cell><cell>1.2</cell><cell>1.7</cell></row>
+          <row><cell>23</cell><cell>235</cell><cell>CULT</cell><cell>N</cell><cell>C</cell><cell>Y</cell><cell>0.5</cell><cell>0.5</cell><cell>0.8</cell><cell>2.0</cell></row>
+          <row><cell>23</cell><cell>236</cell><cell>CULT</cell><cell>N</cell><cell>C</cell><cell>Y</cell><cell>0.1</cell><cell>NA</cell><cell>NA</cell><cell>NA</cell></row>
+          <row><cell>24</cell><cell>241</cell><cell>STP</cell><cell>Y</cell><cell>L</cell><cell>Y</cell><cell>1.8</cell><cell>2.6</cell><cell>3.9</cell><cell>4.2</cell></row>
+          <row><cell>24</cell><cell>242</cell><cell>STP</cell><cell>Y</cell><cell>L</cell><cell>Y</cell><cell>1.3</cell><cell>1.7</cell><cell>2.8</cell><cell>3.7</cell></row>
+          <row><cell>24</cell><cell>243</cell><cell>STP</cell><cell>Y</cell><cell>L</cell><cell>Y</cell><cell>1.5</cell><cell>1.6</cell><cell>3.9</cell><cell>3.9</cell></row>
+          <row><cell>24</cell><cell>244</cell><cell>STP</cell><cell>Y</cell><cell>L</cell><cell>Y</cell><cell>NA</cell><cell>1.0</cell><cell>2.3</cell><cell>3.8</cell></row>
+          <row><cell>24</cell><cell>245</cell><cell>STP</cell><cell>Y</cell><cell>L</cell><cell>N</cell><cell>NA</cell><cell>NA</cell><cell>NA</cell><cell>NA</cell></row>
+          <row><cell>24</cell><cell>246</cell><cell>STP</cell><cell>Y</cell><cell>L</cell><cell>N</cell><cell>NA</cell><cell>NA</cell><cell>NA</cell><cell>NA</cell></row>
+        </tabular>
+      </table>
 
       <p>
         Although the experimental design called for 72×6=432 plants, the wide data set has 437
         plants because a few pots had more than six plants (likely because two of the microscopically
         small seeds stuck together when planted). Of those 437 plants, 154 had no height data (did
-        not germinate by the 28th day) and were removed from analysis. A total of 248 plants had
-        complete height data, 13 germinated later than the 13th day but had complete heights once
-        they germinated, and 22 germinated and had measurable height on the 13th day but died before
-        the 28th day. Ultimately, the long data set contains 1132 unique observations where plant
-        heights were recorded.
+        not germinate by the 28th day) and were removed from analysis (for example, see rows 245–246
+        in <xref ref="tab-table1chp10"/>). A total of 248 plants had complete height data (e.g.,
+        rows 231–235 and 241–243), 13 germinated later than the 13th day but had complete heights
+        once they germinated (e.g., row 244), and 22 germinated and had measurable height on the
+        13th day but died before the 28th day (e.g., row 236). Ultimately, the long data set
+        contains 1132 unique observations where plant heights were recorded; representation of
+        plants 236–242 in the long data set can be seen in <xref ref="tab-table2chp10"/>.
       </p>
+
+      <table xml:id="tab-table2chp10">
+        <title>A snapshot of data (Plants 236–242) from the Seed Germination case study in long format.</title>
+        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+          <row header="yes" bottom="medium">
+            <cell>pot</cell><cell>plant</cell><cell>soil</cell><cell>sterile</cell>
+            <cell>species</cell><cell>germin</cell><cell>hgt</cell><cell>time13</cell>
+          </row>
+          <row><cell>23</cell><cell>236</cell><cell>CULT</cell><cell>N</cell><cell>C</cell><cell>Y</cell><cell>0.1</cell><cell>0</cell></row>
+          <row><cell>23</cell><cell>236</cell><cell>CULT</cell><cell>N</cell><cell>C</cell><cell>Y</cell><cell>NA</cell><cell>5</cell></row>
+          <row><cell>23</cell><cell>236</cell><cell>CULT</cell><cell>N</cell><cell>C</cell><cell>Y</cell><cell>NA</cell><cell>10</cell></row>
+          <row><cell>23</cell><cell>236</cell><cell>CULT</cell><cell>N</cell><cell>C</cell><cell>Y</cell><cell>NA</cell><cell>15</cell></row>
+          <row><cell>24</cell><cell>241</cell><cell>STP</cell><cell>Y</cell><cell>L</cell><cell>Y</cell><cell>1.8</cell><cell>0</cell></row>
+          <row><cell>24</cell><cell>241</cell><cell>STP</cell><cell>Y</cell><cell>L</cell><cell>Y</cell><cell>2.6</cell><cell>5</cell></row>
+          <row><cell>24</cell><cell>241</cell><cell>STP</cell><cell>Y</cell><cell>L</cell><cell>Y</cell><cell>3.9</cell><cell>10</cell></row>
+          <row><cell>24</cell><cell>241</cell><cell>STP</cell><cell>Y</cell><cell>L</cell><cell>Y</cell><cell>4.2</cell><cell>15</cell></row>
+          <row><cell>24</cell><cell>242</cell><cell>STP</cell><cell>Y</cell><cell>L</cell><cell>Y</cell><cell>1.3</cell><cell>0</cell></row>
+          <row><cell>24</cell><cell>242</cell><cell>STP</cell><cell>Y</cell><cell>L</cell><cell>Y</cell><cell>1.7</cell><cell>5</cell></row>
+          <row><cell>24</cell><cell>242</cell><cell>STP</cell><cell>Y</cell><cell>L</cell><cell>Y</cell><cell>2.8</cell><cell>10</cell></row>
+          <row><cell>24</cell><cell>242</cell><cell>STP</cell><cell>Y</cell><cell>L</cell><cell>Y</cell><cell>3.7</cell><cell>15</cell></row>
+        </tabular>
+      </table>
 
       <p>
         Notice the <term>three-level structure</term> of this data. Treatments (levels of the three
@@ -787,15 +835,24 @@ anova(modelcl0, modelcl, test = "Chisq")
     </ol>
 
     <p>
-      To see how new plant heights are generated under the parametric bootstrap, consider Plants
-      #11 and #12 from Pot #1, which was randomly assigned to contain sterilized soil from a
-      restored prairie. Starting at Level Three, each <m>\tilde{u}_{i}</m> is sampled from a normal
-      distribution with mean 0 and SD 0.240 (estimated from Model C.1). At Level Two, for each
-      plant, deviations <m>u_{ij}</m> and <m>v_{ij}</m> are sampled from the bivariate normal
-      distribution with means 0, <m>\hat{\sigma}_u = .543</m>, <m>\hat{\sigma}_v = .036</m>, and
-      <m>\hat{\rho}_{uv} = .194</m>. At Level One, four residuals for each plant are sampled
-      independently from <m>N(0, .287^2)</m>.
+      Let's see how new plant heights are generated under the parametric bootstrap. Consider, for
+      instance, <m>i=1</m> and <m>j=1,2</m>. That is, consider Plants #11 and #12 as shown in
+      <xref ref="tab-10verb7"/>. These plants are found in Pot #1, which was randomly assigned to
+      contain sterilized soil from a restored prairie (STP):
     </p>
+
+    <table xml:id="tab-10verb7">
+      <title>Original data for Plants 11 and 12 from Pot 1.</title>
+      <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+        <row header="yes" bottom="medium">
+          <cell>pot</cell><cell>plant</cell><cell>soil</cell><cell>sterile</cell>
+          <cell>species</cell><cell>germin</cell><cell>hgt13</cell><cell>hgt18</cell>
+          <cell>hgt23</cell><cell>hgt28</cell>
+        </row>
+        <row><cell>1</cell><cell>11</cell><cell>STP</cell><cell>Y</cell><cell>L</cell><cell>Y</cell><cell>2.3</cell><cell>2.9</cell><cell>4.5</cell><cell>5.1</cell></row>
+        <row><cell>1</cell><cell>12</cell><cell>STP</cell><cell>Y</cell><cell>L</cell><cell>Y</cell><cell>1.9</cell><cell>2.0</cell><cell>2.6</cell><cell>3.5</cell></row>
+      </tabular>
+    </table>
 
     <p><term>Level Three</term></p>
 
@@ -808,13 +865,22 @@ anova(modelcl0, modelcl, test = "Chisq")
         <mrow>b_{i} \amp = \beta_{0}+\beta_{1}\textrm{strl}_{i}+\beta_{2}\textrm{cult}_{i}+\beta_{3}\textrm{rem}_{i}</mrow>
       </md>
       All the <m>\alpha</m> and <m>\beta</m> terms will be fixed at their estimated values, so the
-      one term that will change for each bootstrapped data set is <m>\tilde{u}_{i}</m>. According
-      to Model C.1, each <m>\tilde{u}_{i}</m> is sampled from a normal distribution with mean 0
-      and standard deviation .240. That is, a random component to the intercept for Pot #1
-      (<m>\tilde{u}_{1}</m>) would be sampled from a normal distribution with mean 0 and SD .240;
-      say, for instance, <m>\tilde{u}_{1}=-.192</m>. We would sample
-      <m>\tilde{u}_{2},...,\tilde{u}_{72}</m> in a similar manner. Then we can produce a
-      model-based intercept and slope for Pot #1:
+      one term that will change for each bootstrapped data set is <m>\tilde{u}_{i}</m>. As we obtain
+      a numeric value for <m>\tilde{u}_{i}</m> for each pot, we will fix the subscript. For example,
+      if <m>\tilde{u}_{i}</m> is set to <m>-.192</m> for Pot #1, then we would denote this by
+      <m>\tilde{u}_{1}=-.192</m>. Similarly, in the context of Model C.1, <m>a_{1}</m> represents
+      the mean height at Day 13 across all plants in Pot #1, where <m>\tilde{u}_{1}</m> quantifies
+      how Pot #1's Day 13 height relates to other pots with the same sterilization and soil type.
+    </p>
+
+    <p>
+      According to Model C.1, each <m>\tilde{u}_{i}</m> is sampled from a normal distribution with
+      mean 0 and standard deviation .240 (note that the standard deviation <m>\sigma_{u}</m> is also
+      fixed at its estimated value from Model C.1, given in <xref ref="sec-boundary"/>). That is, a
+      random component to the intercept for Pot #1 (<m>\tilde{u}_{1}</m>) would be sampled from a
+      normal distribution with mean 0 and SD .240; say, for instance, <m>\tilde{u}_{1}=-.192</m>.
+      We would sample <m>\tilde{u}_{2},...,\tilde{u}_{72}</m> in a similar manner. Then we can
+      produce a model-based intercept and slope for Pot #1:
       <md>
         <mrow>a_{1} \amp = 1.512-.088(1)+.133(0)+.107(0)-.192 = 1.232</mrow>
         <mrow>b_{1} \amp = .101+.059(1)-.031(0)-.036(0) = .160</mrow>
@@ -944,11 +1010,17 @@ modelcl.ml = lmer(hgt ~ time13 + strl + cult + rem +
       Another way of testing whether or not we should stick with the reduced model or reject it in
       favor of the larger model is by generating parametric bootstrap samples, and then using those
       samples to produce 95% confidence intervals for both <m>\rho_{\tilde{u}\tilde{v}}</m> and
-      <m>\sigma_{\tilde{v}}</m>. The 95% bootstrapped confidence interval for
-      <m>\rho_{\tilde{u}\tilde{v}}</m> is (−1, 1) and contains 0, and the interval for
+      <m>\sigma_{\tilde{v}}</m>. From the output below, the 95% bootstrapped confidence interval for
+      <m>\rho_{\tilde{u}\tilde{v}}</m> (−1, 1) contains 0, and the interval for
       <m>\sigma_{\tilde{v}}</m> (.00050, .0253) nearly contains 0, providing further evidence that
       the larger model is not needed.
     </p>
+
+    <program language="r" xml:id="code-confint-paraboot">
+      <input>
+confint(modelcl, method="boot", oldNames = F)
+      </input>
+    </program>
   </section>
 
   <section xml:id="sec-explodingvarcomps">
@@ -992,6 +1064,34 @@ modelcl.ml = lmer(hgt ~ time13 + strl + cult + rem +
       </md>
     </p>
 
+    <p>or as a composite model:
+      <md>
+        <mrow>Y_{ijk} \amp = [\alpha_{0}+\alpha_{1}\textrm{strl}_{i}+\alpha_{2}\textrm{cult}_{i}+\alpha_{3}\textrm{rem}_{i} +
+        \gamma_{0}\textrm{seedsize}_{ij} +</mrow>
+        <mrow>\amp \beta_{0}\textrm{time}_{ijk} + \beta_{1}\textrm{strl}_{i}\textrm{time}_{ijk}+\beta_{2}\textrm{cult}_{i}\textrm{time}_{ijk}+ \beta_{3}\textrm{rem}_{i}\textrm{time}_{ijk} +</mrow>
+        <mrow>\amp \gamma_{1}\textrm{strl}_{i}\textrm{seedsize}_{ij}+\gamma_{2}\textrm{cult}_{i}\textrm{seedsize}_{ij}+ \gamma_{3}\textrm{rem}_{i}\textrm{seedsize}_{ij} +</mrow>
+        <mrow>\amp \delta_{0}\textrm{seedsize}_{ij}\textrm{time}_{ijk} + \delta_{1}\textrm{strl}_{i}\textrm{seedsize}_{ij}\textrm{time}_{ijk} +</mrow>
+        <mrow>\amp \delta_{2}\textrm{cult}_{i}\textrm{seedsize}_{ij}\textrm{time}_{ijk} + \delta_{3}\textrm{rem}_{i}\textrm{seedsize}_{ij}\textrm{time}_{ijk}] +</mrow>
+        <mrow>\amp [\tilde{u}_{i} + u_{ij} + \epsilon_{ijk} + \tilde{w}_{i}\textrm{seedsize}_{ij} + \tilde{v}_{i}\textrm{time}_{ijk} + v_{ij}\textrm{time}_{ijk} +</mrow>
+        <mrow>\amp \tilde{z}_{i}\textrm{seedsize}_{ij}\textrm{time}_{ijk} ]</mrow>
+      </md>
+      where <m>\epsilon_{ijk}\sim N(0,\sigma^2)</m>,
+      <me>
+        \left[ \begin{array}{c} u_{ij} \\ v_{ij} \end{array} \right]
+        \sim N \left( \left[ \begin{array}{c} 0 \\ 0 \end{array} \right],
+        \left[ \begin{array}{cc} \sigma_{u}^{2} \\ \sigma_{uv} \amp \sigma_{v}^{2} \end{array} \right] \right),
+      </me>
+      and
+      <me>
+        \left[ \begin{array}{c} \tilde{u}_{i} \\ \tilde{v}_{i} \\ \tilde{w}_{i} \\ \tilde{z}_{i} \end{array} \right]
+        \sim N \left( \left[ \begin{array}{c} 0 \\ 0 \\ 0 \\ 0 \end{array} \right],
+        \left[ \begin{array}{cccc} \sigma_{\tilde{u}}^{2} \\ \sigma_{\tilde{u}\tilde{v}} \amp \sigma_{\tilde{v}}^{2} \\
+        \sigma_{\tilde{u}\tilde{w}} \amp \sigma_{\tilde{v}\tilde{w}} \amp \sigma_{\tilde{w}}^{2} \\
+        \sigma_{\tilde{u}\tilde{z}} \amp \sigma_{\tilde{v}\tilde{z}} \amp \sigma_{\tilde{w}\tilde{z}} \amp \sigma_{\tilde{z}}^{2}
+        \end{array} \right] \right).
+      </me>
+    </p>
+
     <p>
       We would have 16 fixed effects from the four equations at Level Three, each with 4 fixed
       effects to estimate. And, with four equations at Level Three, the error covariance matrix at
@@ -1003,28 +1103,28 @@ modelcl.ml = lmer(hgt ~ time13 + strl + cult + rem +
 
     <p>
       Now consider adding an extra Level One covariate to the model in the previous paragraph. How
-      many model parameters would now need to be estimated? The correct answer is 52 total
-      parameters! There are 24 fixed effects (from 6 Level Three equations) and 28 variance
-      components (1 at Level One, 6 at Level Two, and 21 at Level Three).
+      many model parameters would now need to be estimated? (Try writing out the multilevel models
+      and counting parameters.) The correct answer is 52 total parameters! There are 24 fixed
+      effects (from 6 Level Three equations) and 28 variance components (1 at Level One, 6 at
+      Level Two, and 21 at Level Three).
     </p>
 
     <p>
       Estimating even 30 parameters as in Model C_plus from a single set of data is an ambitious
-      task and computationally very challenging. Essentially we must determine which combination of
-      values for the 30 parameters would maximize the likelihood associated with our model and the
-      observed data. Even in the absolute simplest case, with only two options for each parameter,
-      there would be over one billion possible combinations to consider! But if our primary interest
-      is in fixed effects, we really only have 5 covariates (and their associated interactions) in
-      our model. What can be done to make fitting a 3-level model with 1 covariate at Level One,
-      1 at Level Two, and 3 at Level Three more manageable? Reasonable options include:
+      task and computationally very challenging. Essentially we (or the statistics package we are
+      using) must determine which combination of values for the 30 parameters would maximize the
+      likelihood associated with our model and the observed data. Even in the absolute simplest
+      case, with only two options for each parameter, there would be over one billion possible
+      combinations to consider! But if our primary interest is in fixed effects, we really only
+      have 5 covariates (and their associated interactions) in our model. What can be done to make
+      fitting a 3-level model with 1 covariate at Level One, 1 at Level Two, and 3 at Level Three
+      more manageable? Reasonable options include:
     </p>
-
-    <p>Reasonable options for managing the number of parameters include:</p>
 
     <ul>
       <li><p>Reduce the number of variance components by assuming all error terms to be independent; that is, set all correlation terms to 0.</p></li>
-      <li><p>Reduce the number of variance components by removing error terms from certain Level Two and Three equations. Often, researchers will begin with a <term>random intercepts model</term>, in which only the first (intercept) equation at Level Two and Three has an error term.</p></li>
-      <li><p>Reduce the number of fixed effects by removing interaction terms that are not expected to be meaningful.</p></li>
+      <li><p>Reduce the number of variance components by removing error terms from certain Level Two and Three equations. Often, researchers will begin with a <term>random intercepts model</term>,<idx><h>random intercepts model</h></idx> in which only the first equation at Level Two and Three has an error term. With the leadplant data, we would account for variability in Day 13 height (intercept) among plants and pots, but assume that the effects of time and seed size are constant among pots and plants.</p></li>
+      <li><p>Reduce the number of fixed effects by removing interaction terms that are not expected to be meaningful. Interaction terms between covariates at different levels can be eliminated simply by reducing the number of terms in certain equations at Levels Two and Three. There is no requirement that all equations at a certain level contain the same set of predictors. Often, researchers will not include covariates in equations beyond the intercept at a certain level unless there's a compelling reason.</p></li>
     </ul>
 
     <p>
@@ -1119,10 +1219,10 @@ summary(modeldl0)
       related to initial height. However, sterilization, remnant prairie soil, and their interaction
       appear to have significant influences on growth rate, although the effect of cultivated soil
       on growth rate did not appear significantly different from that of restored prairie soil (the
-      reference level). This means we may have a <term>three-way interaction</term> in our final
+      reference level). This means we may have a <term>three-way interaction</term><idx><h>three-way interaction</h></idx> in our final
       composite model between sterilization, remnant prairies, and time. Three-way interactions
       show that the size of an interaction between two predictors differs depending on the level of
-      a third predictor.
+      a third predictor. Whew!
     </p>
 
     <p>
@@ -1211,7 +1311,7 @@ anova(modelfl0, modeldl0, test = "Chisq")
       <li><p><m>\hat{\beta}_{0}=0.091=</m> the mean daily change in height from 13 to 28 days after planting for leadplants from reconstructed prairies or cultivated lands with no sterilization.</p></li>
       <li><p><m>\hat{\beta}_{1}=0.060=</m> the increase in mean daily change in height for leadplants from using sterilized soil instead of unsterilized soil in reconstructed prairies or cultivated lands. Thus, leadplants grown in sterilized soil from reconstructed prairies or cultivated lands have an estimated daily increase in height of 0.151 mm.</p></li>
       <li><p><m>\hat{\beta}_{2}=-0.017=</m> the decrease in mean daily change in height for leadplants from using unsterilized soil from remnant prairies, rather than unsterilized soil from reconstructed prairies or cultivated lands. Thus, leadplants grown in unsterilized soil from remnant prairies have an estimated daily increase in height of 0.074 mm.</p></li>
-      <li><p><m>\hat{\beta}_{3}=-0.039=</m> the decrease in mean daily change in height for leadplants from sterilized soil from remnant prairies, compared to the expected daily change based on <m>\hat{\beta}_{1}</m> and <m>\hat{\beta}_{2}</m>. The negative effect of remnant prairies on growth rate is larger in sterilized soil than unsterilized; in sterilized soil, plants from remnant prairie soil grow .056 mm/day slower on average than plants from other soil types (.095 vs. .151 mm/day), while in unsterilized soil, plants from remnant prairie soil grow just .017 mm/day slower than plants from other soil types (.074 vs. .091 mm/day).</p></li>
+      <li><p><m>\hat{\beta}_{3}=-0.039=</m> the decrease in mean daily change in height for leadplants from sterilized soil from remnant prairies, compared to the expected daily change based on <m>\hat{\beta}_{1}</m> and <m>\hat{\beta}_{2}</m>. In this case, we might focus on how the interaction between remnant prairies and time differs for unsterilized and sterilized soil. Specifically, the negative effect of remnant prairies on growth rate (compared to reconstructed prairies or cultivated lands) is larger in sterilized soil than unsterilized; in sterilized soil, plants from remnant prairie soil grow .056 mm/day slower on average than plants from other soil types (.095 vs. .151 mm/day), while in unsterilized soil, plants from remnant prairie soil grow just .017 mm/day slower than plants from other soil types (.074 vs. .091 mm/day). Note that the difference between .056 and .017 is our three-way interaction coefficient. Through this three-way interaction term, we also see that leadplants grown in sterilized soil from remnant prairies have an estimated daily increase in height of 0.095 mm.</p></li>
     </ul>
 
     <p>
@@ -1320,19 +1420,14 @@ anova(modelfl0, modeldl0, test = "Chisq")
     <p>
       Now that we have the general covariance structure implied by the standard multilevel model in
       place, we can examine the specific structure suggested by the estimates of variance components
-      in Model B. Restricted maximum likelihood (REML) produced the following estimates for variance
-      components: <m>\hat{\sigma}^2=.0822</m>, <m>\hat{\sigma}_{u}^{2}=.299</m>,
-      <m>\hat{\sigma}_{v}^{2}=.00119</m>,
+      in Model B. Restricted maximum likelihood (REML) in <xref ref="sec-initialmodels-3level"/>
+      produced the following estimates for variance components: <m>\hat{\sigma}^2=.0822</m>,
+      <m>\hat{\sigma}_{u}^{2}=.299</m>, <m>\hat{\sigma}_{v}^{2}=.00119</m>,
       <m>\hat{\sigma}_{uv}=\hat{\rho}_{uv}\sqrt{\hat{\sigma}_{u}^{2}\hat{\sigma}_{v}^{2}}=.00528</m>,
       <m>\hat{\sigma}_{\tilde{u}}^{2}=.0442</m>, <m>\hat{\sigma}_{\tilde{v}}^{2}=.00126</m>,
       <m>\hat{\sigma}_{\tilde{u}\tilde{v}}=\hat{\rho}_{\tilde{u}\tilde{v}}\sqrt{\hat{\sigma}_{\tilde{u}}^{2}\hat{\sigma}_{\tilde{v}}^{2}}=-.00455</m>.
       Based on these estimates and the derivations above, the within-plant correlation structure
       over time is estimated to be:
-    </p>
-
-    <p>
-      Based on the REML variance component estimates from Model B, the within-plant correlation
-      structure over time is estimated to be:
       <me>
         \operatorname{Corr}(\mathbf{Y}_{ij}) = \begin{pmatrix}
           1 \\ .76 \amp 1 \\ .65 \amp .82 \amp 1 \\ .54 \amp .77 \amp .88 \amp 1
