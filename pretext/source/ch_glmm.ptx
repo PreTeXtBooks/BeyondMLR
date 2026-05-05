@@ -326,12 +326,19 @@ library(tidyverse)
 
       <p>
         One quick and dirty approach to analysis might be to run a multiple logistic regression
-        model on the entire long data set of 4972 fouls. Output from one potential multiple
-        logistic regression model (below) shows significant evidence that referees tend to even
-        out calls after accounting for score differential and time remaining (Z = −3.078,
-        p = .002). The extent of the foul differential effect also appears to grow in a negative
-        direction as the first half proceeds, based on an interaction between time remaining and
-        foul differential (Z = −2.485, p = .013). We will compare this model with others that
+        model on the entire long data set of 4972 fouls. In fact, Anderson and Pierce
+        <xref ref="Anderson2009"/> ran such a model in their 2009 paper, using the results of
+        their multiple logistic regression model to support their primary conclusions, while
+        justifying their approach by confirming a low level of correlation within games and the
+        minimal impact on fixed effect estimates that accounting for clustering would have.
+        Output from one potential multiple logistic regression model is shown below; this initial
+        modeling attempt shows significant evidence that referees tend to even out calls (i.e.,
+        that the probability of a foul called on the home team decreases as total home fouls
+        increase compared to total visiting team fouls — that is, as <c>foul.diff</c> increases)
+        after accounting for score differential and time remaining (Z = −3.078, p = .002). The
+        extent of the effect of foul differential also appears to grow (in a negative direction)
+        as the first half goes on, based on an interaction between time remaining and foul
+        differential (Z = −2.485, p = .013). We will compare this model with others that
         formally account for clustering and correlation patterns in our data.
       </p>
 
@@ -349,12 +356,64 @@ mod0 &lt;- glm(foul.home ~ foul.diff + score.diff + lead.home +
       <title>A Two-Stage Modeling Approach</title>
 
       <p>
-        As in Section 8.3 (two-stage modeling), to avoid clustering we could consider fitting a
-        separate logistic regression model to each game. Let <m>Y_{ij}</m> be an indicator
-        variable recording if the <m>j^{th}</m> foul from Game <m>i</m> was called on the home
-        team (1) or the visiting team (0), and <m>p_{ij}</m> be the corresponding probability.
-        For instance, if we were to consider a simple model with foul differential as the sole
-        predictor, we could model the probability of a foul on the home team in Game 110 with:
+        As in <xref ref="subsec-twostage"/>, to avoid clustering we could consider fitting a separate
+        logistic regression model to each unit of observation at Level Two (each game in this
+        case). Since our primary response variable is binary (Was the foul called on the home
+        team or not?), we would fit a logistic regression model to the data from each game.
+        For example, consider the 14 fouls called during the first half of the March 3, 2010,
+        game featuring Virginia at Boston College (Game 110) in
+        <xref ref="tab-table3chp11"/>.
+      </p>
+
+      <table xml:id="tab-table3chp11">
+        <title>Key variables from the March 3, 2010, game featuring Virginia at Boston College
+        (Game 110).</title>
+        <tabular halign="center">
+          <row header="yes">
+            <cell>visitor</cell>
+            <cell>hometeam</cell>
+            <cell>foul.num</cell>
+            <cell>foul.home</cell>
+            <cell>foul.diff</cell>
+            <cell>score.diff</cell>
+            <cell>foul.type</cell>
+            <cell>time</cell>
+          </row>
+          <row><cell>VA</cell><cell>BC</cell><cell>1</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>Shooting</cell><cell>19.783</cell></row>
+          <row><cell>VA</cell><cell>BC</cell><cell>2</cell><cell>0</cell><cell>-1</cell><cell>4</cell><cell>Personal</cell><cell>18.950</cell></row>
+          <row><cell>VA</cell><cell>BC</cell><cell>3</cell><cell>0</cell><cell>-2</cell><cell>7</cell><cell>Shooting</cell><cell>16.917</cell></row>
+          <row><cell>VA</cell><cell>BC</cell><cell>4</cell><cell>0</cell><cell>-3</cell><cell>10</cell><cell>Personal</cell><cell>14.883</cell></row>
+          <row><cell>VA</cell><cell>BC</cell><cell>5</cell><cell>1</cell><cell>-4</cell><cell>10</cell><cell>Personal</cell><cell>14.600</cell></row>
+          <row><cell>VA</cell><cell>BC</cell><cell>6</cell><cell>1</cell><cell>-3</cell><cell>6</cell><cell>Offensive</cell><cell>9.750</cell></row>
+          <row><cell>VA</cell><cell>BC</cell><cell>7</cell><cell>1</cell><cell>-2</cell><cell>4</cell><cell>Shooting</cell><cell>9.367</cell></row>
+          <row><cell>VA</cell><cell>BC</cell><cell>8</cell><cell>0</cell><cell>-1</cell><cell>4</cell><cell>Personal</cell><cell>9.200</cell></row>
+          <row><cell>VA</cell><cell>BC</cell><cell>9</cell><cell>0</cell><cell>-2</cell><cell>6</cell><cell>Shooting</cell><cell>7.667</cell></row>
+          <row><cell>VA</cell><cell>BC</cell><cell>10</cell><cell>0</cell><cell>-3</cell><cell>12</cell><cell>Shooting</cell><cell>2.500</cell></row>
+          <row><cell>VA</cell><cell>BC</cell><cell>11</cell><cell>1</cell><cell>-4</cell><cell>13</cell><cell>Personal</cell><cell>2.083</cell></row>
+          <row><cell>VA</cell><cell>BC</cell><cell>12</cell><cell>1</cell><cell>-3</cell><cell>13</cell><cell>Personal</cell><cell>1.967</cell></row>
+          <row><cell>VA</cell><cell>BC</cell><cell>13</cell><cell>0</cell><cell>-2</cell><cell>12</cell><cell>Shooting</cell><cell>1.733</cell></row>
+          <row><cell>VA</cell><cell>BC</cell><cell>14</cell><cell>1</cell><cell>-3</cell><cell>14</cell><cell>Personal</cell><cell>0.700</cell></row>
+        </tabular>
+      </table>
+
+      <p>
+        Is there evidence from this game that referees tend to "even out" foul calls when one
+        team starts to accumulate more fouls? Is the score differential associated with the
+        probability of a foul on the home team? Is the effect of foul differential constant
+        across all foul types during this game? We can address these questions through multiple
+        logistic regression applied to only data from Game 110.
+      </p>
+
+      <p>
+        First, notation must be defined. Let <m>Y_{ij}</m> be an indicator variable recording if
+        the <m>j^{th}</m> foul from Game <m>i</m> was called on the home team (1) or the
+        visiting team (0). We can consider <m>Y_{ij}</m> to be a Bernoulli random variable with
+        parameter <m>p_{ij}</m>, where <m>p_{ij}</m> is the true probability that the
+        <m>j^{th}</m> foul from Game <m>i</m> was called on the home team. As in
+        <xref ref="ch-logreg"/>, we will begin by modeling the logit function of <m>p_{ij}</m>
+        for Game <m>i</m> as a linear function of Level One covariates. For instance, if we were
+        to consider a simple model with foul differential as the sole predictor, we could model
+        the probability of a foul on the home team in Game 110 with:
       </p>
 
       <men xml:id="eq-lev1glmm">
@@ -362,32 +421,57 @@ mod0 &lt;- glm(foul.home ~ foul.diff + score.diff + lead.home +
       </men>
 
       <p>
-        Note that there is no separate error term or variance parameter, since the variance is a
-        function of <m>p_{ij}</m> with a Bernoulli random variable.
+        where <m>i</m> is fixed at 110. Note that there is no separate error term or variance
+        parameter, since the variance is a function of <m>p_{ij}</m> with a Bernoulli random
+        variable.
       </p>
 
       <p>
-        For Game 110 (Virginia at Boston College, March 3, 2010), we estimate
-        <m>\hat{a}_{110} = -5.67</m> and <m>\hat{b}_{110} = -2.11</m>. Thus, the odds the
-        visiting team receives the foul when fouls are even is approximately <m>1/e^{-5.67} = 289</m>
-        times greater than the home team, and with each additional visiting-team foul the odds of
-        a visiting foul increase by a factor of more than 8 (<m>1/e^{-2.11} = 8.25</m>). This
-        trend is statistically significant at the 0.10 level (Z = −1.851, p = .0642).
+        Maximum likelihood estimators for the parameters in this model (<m>a_{110}</m> and
+        <m>b_{110}</m>) can be obtained through statistical software. <m>e^{a_{110}}</m>
+        represents the odds that a foul is called on the home team when the foul totals in Game
+        110 are even, and <m>e^{b_{110}}</m> represents the multiplicative change in the odds
+        that a foul is called on the home team for each additional foul for the home team
+        relative to the visiting team during the first half of Game 110.
       </p>
 
       <program language="r" xml:id="code-game110">
         <input>
+# Model for Game 110 only (foul.diff as sole predictor)
+game110 &lt;- refdata %&gt;% filter(game == 110)
 lreg.game110 &lt;- glm(foul.home ~ foul.diff,
                      family = binomial, data = game110)
         </input>
       </program>
 
       <p>
-        Fitting similar logistic regression models for each of the 340 games yields the
-        distributions in <xref ref="fig-gmu-histmat2"/>. The majority of intercepts are below 0
-        (median = −0.41), and almost all estimated slopes are below 0 (median = −0.89),
-        indicating that as the home team accumulates more fouls relative to the visitors, the
-        odds of a foul on the home team continues to decrease.
+        For Game 110, we estimate <m>\hat{a}_{110} = -5.67</m> and
+        <m>\hat{b}_{110} = -2.11</m>. Thus, according to our simple logistic regression model,
+        the odds that a foul is called on the home team when both teams have an equal number of
+        fouls in Game 110 is <m>e^{-5.67} = 0.0035</m>; that is, the probability that a foul is
+        called on the visiting team (0.9966) is <m>1/0.0035 = 289</m> times higher than the
+        probability a foul is called on the home team (0.0034) in that situation. While these
+        parameter estimates seem quite extreme, reliable estimates are difficult to obtain with
+        14 observations and a binary response variable, especially in a case like this where the
+        fouls were only even at the start of the game. Also, as the gap between home and visiting
+        fouls increases by 1, the odds that a foul is called on the visiting team increases by a
+        multiplicative factor of more than 8 (since <m>1/e^{-2.11} = 8.25</m>). In Game 110,
+        this trend toward referees evening out foul calls is statistically significant at the
+        0.10 level (Z = −1.851, p = .0642).
+      </p>
+
+      <p>
+        As in <xref ref="subsec-twostage"/>, we can proceed to fit similar logistic regression models
+        for each of the 339 other games in our data set. Each model will yield a new estimate of
+        the intercept and the slope from <xref ref="eq-lev1glmm"/>. These estimates are
+        summarized graphically in <xref ref="fig-gmu-histmat2"/>. There is noticeable
+        variability among the 340 games in the fitted intercepts and slopes, with an IQR for
+        intercepts ranging from −1.45 to 0.70, and an IQR for slopes ranging from −1.81 to
+        −0.51. The majority of intercepts are below 0 (median = −0.41), so that in most games a
+        foul is less likely to be called on the home team when foul totals are even. In addition,
+        almost all of the estimated slopes are below 0 (median = −0.89), indicating that as the
+        home team's foul total grows in relation to the visiting team's foul total, the odds of a
+        foul on the home team continues to decrease.
       </p>
 
       <figure xml:id="fig-gmu-histmat2">
@@ -400,14 +484,33 @@ lreg.game110 &lt;- glm(foul.home ~ foul.diff,
           foul.home on foul.diff.</description>
         </image>
       </figure>
+
+      <p>
+        At this point, you might imagine expanding model building efforts in a couple of
+        directions: (a) continue to improve the Level One model in <xref ref="eq-lev1glmm"/>
+        by controlling for covariates and adding potential interaction terms, or (b) build Level
+        Two models to explain the game-to-game variability in intercepts or slopes using
+        covariates which remain constant from foul to foul within a game (like the teams
+        playing). While we could pursue these two directions independently, we can accomplish
+        our modeling goals in a much cleaner and more powerful way by proceeding as in
+        <xref ref="ch-multilevelintro"/> and building a unified multilevel framework under which
+        all parameters are estimated simultaneously and we remain faithful to the correlation
+        structure inherent in our data.
+      </p>
     </subsection>
 
     <subsection xml:id="unified-glmm">
       <title>A Unified Multilevel Approach</title>
 
       <p>
-        As in Chapters 8 and 9, we combine Level One and Level Two models into a composite model
-        and estimate all parameters simultaneously. Our Level One model with foul differential as
+        As in <xref ref="ch-multilevelintro"/> and <xref ref="ch-lon"/>, we will write out a
+        composite model after first expressing Level One and Level Two models. That is, we will
+        create Level One and Level Two models as in <xref ref="twostage-glmm"/>, but we will
+        then combine those models into a composite model and estimate all model parameters
+        simultaneously. Once again <m>Y_{ij}</m> is an indicator variable recording if the
+        <m>j^{th}</m> foul from Game <m>i</m> was called on the home team (1) or the visiting
+        team (0), and <m>p_{ij}</m> is the true probability that the <m>j^{th}</m> foul from
+        Game <m>i</m> was called on the home team. Our Level One model with foul differential as
         the sole predictor generalizes <xref ref="eq-lev1glmm"/> to any Game <m>i</m>:
       </p>
 
@@ -452,6 +555,15 @@ lreg.game110 &lt;- glm(foul.home ~ foul.diff,
         at Level One.
       </p>
 
+      <p>
+        We can use statistical software to obtain parameter estimates for this unified multilevel
+        model using all 4972 fouls recorded from the 340 games. For example, the
+        <c>glmer()</c> function from the <c>lme4</c> package in R extends the <c>lmer()</c>
+        function to handle generalized responses and to account for the fact that fouls are not
+        independent within games. Results are given below for the two-level model with foul
+        differential as the sole covariate and Game as the Level Two observational unit.
+      </p>
+
       <program language="r" xml:id="code-model-b1">
         <input>
 # Multilevel model with only foul.diff and errors on slope
@@ -462,13 +574,23 @@ model.b1 &lt;- glmer(foul.home ~ foul.diff + (foul.diff|game),
       </program>
 
       <p>
-        Comparing the multilevel estimates to those from the naive logistic regression assuming
-        independence: the multilevel model estimates each additional visiting foul increases the
-        odds of a home foul by 33% (<m>1/e^{-.285}</m>), while the single-level model estimates
-        only 14% (<m>1/e^{-.130}</m>). Estimated standard errors for fixed effects are also
-        greater under the multilevel model, reflecting the reduced effective sample size from
-        correlated observations.
+        When parameter estimates from the multilevel model above are compared with those from the
+        naive logistic regression model assuming independence of all observations (below), there
+        are noticeable differences. For instance, each additional foul for the visiting team is
+        associated with a 33% increase (<m>1/e^{-.285}</m>) in the odds of a foul called on the
+        home team under the multilevel model, but the single level model estimates the same
+        increase as only 14% (<m>1/e^{-.130}</m>). Also, estimated standard errors for fixed
+        effects are greater under multilevel generalized linear modeling, which is not unusual
+        after accounting for correlated observations, which effectively reduces the sample size.
       </p>
+
+      <program language="r" xml:id="code-mod0a">
+        <input>
+# Logistic regression model (not multilevel) with only foul.diff
+mod0a &lt;- glm(foul.home ~ foul.diff, family = binomial,
+             data = refdata)
+        </input>
+      </program>
     </subsection>
   </section>
 
@@ -477,28 +599,99 @@ model.b1 &lt;- glmer(foul.home ~ foul.diff + (foul.diff|game),
 
     <p>
       In the College Basketball Referees case study, our two primary Level Two covariates are
-      home team and visiting team. If we were to include an indicator variable for each distinct
-      team, we would need 38 indicator variables for home teams and 38 more for visiting teams.
-      One way of accounting for teams is by treating them as
+      home team and visiting team. In <xref ref="glmm-eda"/> we showed evidence that the
+      probability a foul is called on the home team changes if we know precisely who the home
+      and visiting teams are. However, if we were to include an indicator variable for each
+      distinct team, we would need 38 indicator variables for home teams and 38 more for
+      visiting teams. That's a lot of degrees of freedom to spend! And adding those indicator
+      variables would complicate our model considerably, despite the fact that we're not very
+      interested in specific coefficient estimates for each team — we just want to control for
+      teams playing to draw stronger conclusions about referee bias (focusing on the
+      <c>foul.diff</c> variable). One way, then, of accounting for teams is by treating them as
       <term>random effects</term><idx><h>random effects</h></idx> rather than fixed effects. For
       instance, we can assume the effect that Minnesota being the home team has on the log odds
       of a foul call on the home team is drawn from a normal distribution with mean 0 and
-      variance <m>\sigma^2_v</m>. In this way, we account for the complete range of team effects
-      while only having to estimate a single parameter (<m>\sigma^2_v</m>).
+      variance <m>\sigma^2_v</m>. Maybe the estimated random effect for Minnesota as the home
+      team is −0.5, so that Minnesota is slightly less likely than the typical home team to have
+      fouls called on it, and the odds of a foul on the home team are somewhat correlated
+      whenever Minnesota is the home team. In this way, we account for the complete range of
+      team effects, while only having to estimate a single parameter (<m>\sigma^2_v</m>) rather
+      than coefficients for 38 indicator variables. The effect of visiting teams can be
+      similarly modeled.
     </p>
 
     <p>
-      Game is not the only Level Two unit we might select. If we focus on Home Team as the Level
-      Two unit, fouls called for the same home team across all games must be correlated. Since a
-      specific home team appears in several games, any effects of game, home team, and visiting
-      team are considered
+      How will treating home and visiting teams as random effects change our multilevel model?
+      Another way we might view this situation is by considering that Game is not the only Level
+      Two observational unit we might have selected. What if we instead decided to focus on Home
+      Team as the Level Two observational unit? That is, what if we assumed that fouls called on
+      the same home team across all games must be correlated? In this case, we could redefine
+      our Level One model from <xref ref="eq-lev1glmm"/>. Let <m>Y_{hj}</m> be an indicator
+      variable recording if the <m>j^{th}</m> foul from Home Team <m>h</m> was called on the
+      home team (1) or the visiting team (0), and <m>p_{hj}</m> be the true probability that
+      the <m>j^{th}</m> foul from Home Team <m>h</m> was called on the home team. Now, if we
+      were to consider a simple model with foul differential as the sole predictor, we could
+      model the probability of a foul on the home team for Home Team <m>h</m> with:
+    </p>
+
+    <me>
+      \log\!\left(\frac{p_{hj}}{1-p_{hj}}\right) = a_h + b_h\,\text{foul.diff}_{hj}
+    </me>
+
+    <p>
+      In this case, <m>e^{a_h}</m> represents the odds that a foul is called on the home team
+      when total fouls are equal between both teams in a game involving Home Team <m>h</m>, and
+      <m>e^{b_h}</m> represents the multiplicative change in the odds that a foul is called on
+      the home team for every extra foul on the home team compared to the visitors in a game
+      involving Home Team <m>h</m>. After fitting logistic regression models for each of the 39
+      teams in our data set, we see in <xref ref="fig-gmu-histmat3"/> variability in fitted
+      intercepts (mean = −0.15, sd = 0.33) and slopes (mean = −0.22, sd = 0.12) among the 39
+      teams, although much less variability than we observed from game-to-game. Of course, each
+      logistic regression model for a home team was based on about 10 times more foul calls than
+      each model for a game, so observing less variability from team-to-team was not unexpected.
+    </p>
+
+    <figure xml:id="fig-gmu-histmat3">
+      <caption>Histograms of (a) intercepts and (b) slopes from fitting simple logistic
+      regression models by home team.</caption>
+      <image source="generated-assets/fig-gmu-histmat3.png" width="60%">
+        <description>Two stacked histograms showing (a) the distribution of fitted intercepts
+        and (b) the distribution of fitted slopes from home-team-level logistic regressions of
+        foul.home on foul.diff.</description>
+      </image>
+    </figure>
+
+    <p>
+      From a modeling perspective, accounting for clustering by game and by home team (not to
+      mention by visiting team) brings up an interesting issue we have not yet considered — can
+      we handle random effects that are not nested? Since each foul called is associated with
+      only one game (or only one home team and one visiting team), foul is considered nested in
+      game (or home or visiting team). However, a specific home team is not associated with a
+      single game; that home team appears in several games. Therefore, any effects of game, home
+      team, and visiting team are considered
       <term>crossed random effects</term>.<idx><h>crossed random effects</h></idx>
     </p>
 
     <p>
-      A two-level model accounting for variability among games, home teams, and visiting teams
-      uses subscripting <m>Y_{i[gh]j}</m>, where Game <m>i</m> pitted Visiting Team <m>g</m>
-      against Home Team <m>h</m>. Level One and Level Two models (Model A3) are:
+      A two-level model which accounts for variability among games, home teams, and visiting
+      teams would take on a slightly new look. First, the full subscripting would change a bit.
+      Our primary response variable would now be written as <m>Y_{i[gh]j}</m>, an indicator
+      variable recording if the <m>j^{th}</m> foul from Game <m>i</m> was called on the home
+      team (1) or the visiting team (0), where Game <m>i</m> pitted Visiting Team <m>g</m>
+      against Home Team <m>h</m>. Square brackets are introduced since <m>g</m> and <m>h</m>
+      are essentially at the same level as <m>i</m>, whereas subscripting without square
+      brackets implies a movement to lower levels as subscripts move left to right. We can then
+      consider <m>Y_{i[gh]j}</m> to be a Bernoulli random variable with parameter
+      <m>p_{i[gh]j}</m>, where <m>p_{i[gh]j}</m> is the true probability that the
+      <m>j^{th}</m> foul from Game <m>i</m> was called on Home Team <m>h</m> rather than
+      Visiting Team <m>g</m>. We will include the crossed subscripting only where necessary.
+    </p>
+
+    <p>
+      Typically, with the addition of crossed effects, the Level One model will remain familiar
+      and changes will be seen at Level Two, especially in the equation for the intercept term.
+      In the model formulation below (Model A3) we allow, as before, the slope and intercept to
+      potentially vary by game. Level One and Level Two models are:
     </p>
 
     <p><alert>Level One:</alert></p>
@@ -513,6 +706,19 @@ model.b1 &lt;- glmer(foul.home ~ foul.diff + (foul.diff|game),
     </md>
 
     <p>
+      Therefore, at Level Two, we assume that <m>a_i</m>, the log odds of a foul on the home
+      team when the home and visiting teams in Game <m>i</m> have an equal number of fouls,
+      depends on four components:
+    </p>
+
+    <ul>
+      <li><p><m>\alpha_0</m> is the population average log odds across all games and fouls (fixed)</p></li>
+      <li><p><m>u_i</m> is the effect of Game <m>i</m> (random)</p></li>
+      <li><p><m>v_h</m> is the effect of Home Team <m>h</m> (random)</p></li>
+      <li><p><m>w_g</m> is the effect of Visiting Team <m>g</m> (random)</p></li>
+    </ul>
+
+    <p>
       where the three random effects are independent:
     </p>
 
@@ -521,6 +727,18 @@ model.b1 &lt;- glmer(foul.home ~ foul.diff + (foul.diff|game),
       <mrow>v_h \amp\sim N(0, \sigma_v^2)</mrow>
       <mrow>w_g \amp\sim N(0, \sigma_w^2).</mrow>
     </md>
+
+    <p>
+      We could include terms that vary by home or visiting team in other Level Two equations,
+      but often adjusting for these random effects on the intercept is sufficient. The advantages
+      to including additional random effects are three-fold. First, by accounting for additional
+      sources of variability, we should obtain more precise estimates of other model parameters,
+      including key fixed effects. Second, we obtain estimates of variance components, allowing
+      us to compare the relative sizes of game-to-game and team-to-team variability. Third, as
+      outlined in <xref ref="estimatedRE"/>, we can obtain estimated random effects which allow
+      us to compare the effects on the log-odds of a home foul of individual home and visiting
+      teams.
+    </p>
 
     <p>
       At Level Two, <m>\alpha_0</m> is the population average log odds (fixed), <m>u_i</m> is
@@ -533,6 +751,13 @@ model.b1 &lt;- glmer(foul.home ~ foul.diff + (foul.diff|game),
       \log\!\left(\frac{p_{i[gh]j}}{1-p_{i[gh]j}}\right)
         = [\alpha_0 + \beta_0\,\text{foul.diff}_{ij}] + [u_i + v_h + w_g].
     </me>
+
+    <p>
+      We will refer to this as Model A3, where we look at the effect of foul differential on the
+      odds a foul is called on the home team, while accounting for three crossed random effects
+      at Level Two (game, home team, and visiting team). Parameter estimates for Model A3 are
+      given below:
+    </p>
 
     <program language="r" xml:id="code-model-a3">
       <input>
@@ -548,24 +773,31 @@ model.a3 &lt;- glmer(foul.home ~ foul.diff + (1|game) +
     </p>
 
     <ul>
-      <li><p><m>\hat{\alpha}_0 = -0.188.</m> When fouls are balanced between teams, the
-      probability that a foul is called on the visiting team (0.547) is 20.7%
+      <li><p><m>\hat{\alpha}_0 = -0.188 =</m> the mean log odds of a home foul at the point
+      where total fouls are equal between teams. In other words, when fouls are balanced between
+      teams, the probability that a foul is called on the visiting team (0.547) is 20.7%
       (<m>1/e^{-.188} = 1.207</m>) higher than the probability a foul is called on the home
       team (0.453).</p></li>
-      <li><p><m>\hat{\beta}_0 = -0.264.</m> The odds the next foul is called on the visiting
-      team rather than the home team increases by 30.2% with each additional foul called on the
-      home team (<m>1/e^{-.264} = 1.302</m>).</p></li>
-      <li><p><m>\hat{\sigma}_u^2 = 0.172.</m> The variance in intercepts from game-to-game.</p></li>
-      <li><p><m>\hat{\sigma}_v^2 = 0.068.</m> The variance in intercepts among different home
+      <li><p><m>\hat{\beta}_0 = -0.264 =</m> the decrease in mean log odds of a home foul for
+      each 1 foul increase in the foul differential. More specifically, the odds the next foul
+      is called on the visiting team rather than the home team increases by 30.2% with each
+      additional foul called on the home team (<m>1/e^{-.264} = 1.302</m>).</p></li>
+      <li><p><m>\hat{\sigma}_u^2 = 0.172 =</m> the variance in intercepts from game-to-game.</p></li>
+      <li><p><m>\hat{\sigma}_v^2 = 0.068 =</m> the variance in intercepts among different home
       teams.</p></li>
-      <li><p><m>\hat{\sigma}_w^2 = 0.023.</m> The variance in intercepts among different
+      <li><p><m>\hat{\sigma}_w^2 = 0.023 =</m> the variance in intercepts among different
       visiting teams.</p></li>
     </ul>
 
     <p>
       Based on the t-value (−6.80) and p-value (<m>p \lt .001</m>) associated with foul
-      differential, we have significant evidence of a negative association between foul
-      differential and the odds of a home team foul.
+      differential in this model, we have significant evidence of a negative association between
+      foul differential and the odds of a home team foul. That is, we have significant evidence
+      that the odds that a foul is called on the home team shrinks as the home team has more
+      total fouls compared with the visiting team. Thus, there seems to be preliminary evidence
+      in the 2009–2010 data that college basketball referees tend to even out foul calls over
+      the course of the first half. Of course, we have yet to adjust for other significant
+      covariates.
     </p>
   </section>
 
@@ -573,12 +805,29 @@ model.a3 &lt;- glmer(foul.home ~ foul.diff + (1|game) +
     <title>Parametric Bootstrap for Model Comparisons</title>
 
     <p>
-      An estimated 65.4% of variability in the intercepts is due to differences from
-      game-to-game, while 25.9% is due to differences among home teams, and 8.7% is due to
-      differences among visiting teams. We could compare Model A3 to a reduced Model A1 (without
-      home/visiting team random effects) using a likelihood ratio test. The LRT provides
-      significant evidence (LRT = 16.074, df = 2, p = .0003) that accounting for home and
-      visiting team variability improves our model.
+      Our estimates of variance components provide evidence of the relative variability in the
+      different Level Two random effects. An estimated 65.4% of variability in the intercepts is
+      due to differences from game-to-game, while 25.9% is due to differences among home teams,
+      and 8.7% is due to differences among visiting teams. At this point, we could reasonably
+      ask: if we use a random effect to account for differences among games, does it really pay
+      off to also account for which team is home and which is the visitor?
+    </p>
+
+    <p>
+      To answer this, we could compare models with and without the random effects for home and
+      visiting teams (i.e., Model A3, the full model, vs. Model A1, the reduced model) using a
+      likelihood ratio test. In Model A1, Level Two now looks like:
+    </p>
+
+    <md>
+      <mrow>a_i \amp= \alpha_0 + u_i</mrow>
+      <mrow>b_i \amp= \beta_0</mrow>
+    </md>
+
+    <p>
+      The likelihood ratio test provides significant evidence (LRT = 16.074, df = 2, p = .0003)
+      that accounting for variability among home teams and among visiting teams improves our
+      model.
     </p>
 
     <program language="r" xml:id="code-lrt-a3-a1">
@@ -588,15 +837,32 @@ drop_in_dev &lt;- anova(model.a3, model.a1, test = "Chisq")
     </program>
 
     <p>
-      However, when testing random effects at the boundary (such as <m>\sigma_v^2 = 0</m>), the
-      <term>parametric bootstrap</term><idx><h>parametric bootstrap</h></idx> provides a more
-      reliable p-value than the likelihood ratio test. For testing
+      In <xref ref="subsec-multileveltechnical"/> we noted that REML estimation is typically used when
+      comparing models that differ only in random effects for multilevel models with normal
+      responses, but with multilevel generalized linear models, full maximum likelihood (ML)
+      estimation procedures are typically used regardless of the situation (including in the
+      function <c>glmer()</c> in R). So the likelihood ratio test above is based on ML methods —
+      can we trust its accuracy? In <xref ref="sec-lon-paraboot"/> we introduced the
+      <term>parametric bootstrap</term><idx><h>parametric bootstrap</h></idx> as a more reliable
+      method in many cases for conducting hypothesis tests compared to the likelihood ratio test,
+      especially when comparing full and reduced models that differ in their variance components.
+      What would a parametric bootstrap test say about testing
       <m>H_0: \sigma_v^2 = \sigma_w^2 = 0</m> vs.
-      <m>H_A:</m> at least one of <m>\sigma_v^2</m> or <m>\sigma_w^2</m> is not zero, the
-      chi-square distribution puts too much mass in the tail. <xref ref="fig-gmu-lrt1"/>
-      illustrates the null distribution of the LRT statistic from the parametric bootstrap with
-      100 samples vs. a chi-square distribution. The parametric bootstrap confirms that we should
-      retain Model A3 (<m>p \lt .001</m>).
+      <m>H_A:</m> at least one of <m>\sigma_v^2</m> or <m>\sigma_w^2</m> is not equal to 0?
+      Under the null hypothesis, since the two variance terms are being set to a value (0) on
+      the boundary constraint, we would not expect the chi-square distribution to adequately
+      approximate the behavior of the likelihood ratio test statistic.
+    </p>
+
+    <p>
+      <xref ref="fig-gmu-lrt1"/> illustrates the null distribution of the likelihood ratio test
+      statistic derived by the parametric bootstrap procedure with 100 samples as compared to a
+      chi-square distribution. As we observed in <xref ref="sec-lon-paraboot"/>, the
+      parametric bootstrap provides a more reliable p-value in this case (<m>p \lt .001</m>
+      from output below) because a chi-square distribution puts too much mass in the tail and
+      not enough near 0. However, the parametric bootstrap is computationally intensive, and it
+      can take a long time to run even with moderately complex models. With this data, we would
+      select our full Model A3 based on a parametric bootstrap test.
     </p>
 
     <program language="r" xml:id="code-paraboot-a3">
@@ -617,14 +883,42 @@ bootstrapAnova(mA = model.a3, m0 = model.a1, B = 1000)
     </figure>
 
     <p>
-      We could also ask: is it helpful to allow slopes to vary by game, home team, and visiting
-      team? Model B3 adds variance components for slopes under each of the three random effects.
-      We do not have significant evidence (LRT = 0.349, df = 3, p = .46 by parametric bootstrap)
-      of variability among slopes, so we retain only random effects for game, home team, and
-      visiting team on the intercept. <xref ref="fig-gmu-lrt3"/> illustrates the corresponding
-      null distribution. Similarly, allowing for a correlation between the error terms for
-      intercept and slope shows no significant improvement (LRT = 6.49, df = 6, p = .06 by
-      parametric bootstrap).
+      We might also reasonably ask: is it helpful to allow slopes (coefficients for foul
+      differential) to vary by game, home team, and visiting team as well? Again, since we are
+      comparing models that differ in random effects, and since the null hypothesis involves
+      setting random effects at their boundaries, we use the parametric bootstrap. Formally, we
+      are comparing Model A3 to Model B3, which has the same Level One equation as Model A3
+      (<xref ref="eq-lev1cross"/>), but 6 variance components to estimate at Level Two:
+    </p>
+
+    <md>
+      <mrow>a_i \amp= \alpha_0 + u_i + v_h + w_g</mrow>
+      <mrow>b_i \amp= \beta_0 + z_i + r_h + s_g</mrow>
+    </md>
+
+    <p>
+      where error terms (random effects) at Level Two can be assumed to follow independent
+      normal distributions:
+    </p>
+
+    <md>
+      <mrow>u_i \amp\sim N(0, \sigma_u^2)</mrow>
+      <mrow>z_i \amp\sim N(0, \sigma_z^2)</mrow>
+      <mrow>v_h \amp\sim N(0, \sigma_v^2)</mrow>
+      <mrow>r_h \amp\sim N(0, \sigma_r^2)</mrow>
+      <mrow>w_g \amp\sim N(0, \sigma_w^2)</mrow>
+      <mrow>s_g \amp\sim N(0, \sigma_s^2).</mrow>
+    </md>
+
+    <p>
+      Thus our null hypothesis for comparing Model A3 vs. Model B3 is
+      <m>H_0: \sigma_z^2 = \sigma_r^2 = \sigma_s^2 = 0</m>. We do not have significant evidence
+      (LRT = 0.349, df = 3, p = .46 by parametric bootstrap) of variability among slopes, so we
+      will only include random effects for game, home team, and visiting team for the intercept
+      going forward. <xref ref="fig-gmu-lrt3"/> illustrates the null distribution of the
+      likelihood ratio test statistic derived by the parametric bootstrap procedure as compared
+      to a chi-square distribution, again showing that the tails are too heavy in the chi-square
+      distribution.
     </p>
 
     <program language="r" xml:id="code-paraboot-b3">
@@ -643,16 +937,43 @@ bootstrapAnova(mA = model.b3, m0 = model.a3, B = 1000)
         overlaid. A vertical line marks the observed test statistic (0.349).</description>
       </image>
     </figure>
+
+    <p>
+      Note that we could also have allowed for a correlation between the error terms for the
+      intercept and slope by game, home team, or visiting team (Model B6) — i.e., assume, for
+      example:
+    </p>
+
+    <me>
+      \begin{bmatrix} u_i \\ z_i \end{bmatrix}
+      \sim N\!\left(
+        \begin{bmatrix} 0 \\ 0 \end{bmatrix},
+        \begin{bmatrix} \sigma_u^2 \\ \sigma_{uz} \amp \sigma_z^2 \end{bmatrix}
+      \right)
+    </me>
+
+    <p>
+      while error terms by game, home team, or visiting team are still independent. Here, the
+      new model would have 6 additional parameters when compared with Model A3 (3 variance terms
+      and 3 covariance terms). By the parametric bootstrap, there is no significant evidence
+      that the model with 6 additional parameters is necessary (LRT = 6.49, df = 6, p = .06 by
+      parametric bootstrap). The associated p-value based on a likelihood ratio test with
+      approximate chi-square distribution is .370, reflecting once again the overly heavy tails
+      of the chi-square distribution.
+    </p>
   </section>
 
   <section xml:id="sec-finalmodel-glmm">
     <title>A Final Model for Examining Referee Bias</title>
 
     <p>
-      In constructing a final model for this case study, we are guided by: estimating the effect
-      of foul differential after adjusting for important covariates, finding important
-      interactions with foul differential, and accounting for random effects associated with
-      game, home team, and visiting team. What follows is one potential final model (Model F):
+      In constructing a final model for this college basketball case study, we are guided by
+      several considerations. First, we want to estimate the effect of foul differential on the
+      odds of a home foul, after adjusting for important covariates. Second, we wish to find
+      important interactions with foul differential, recognizing that the effect of foul
+      differential might depend on the game situation and other covariates. Third, we want to
+      account for random effects associated with game, home team, and visiting team. What follows
+      is one potential final model that follows these guidelines:
     </p>
 
     <p><alert>Level One:</alert></p>
@@ -724,14 +1045,24 @@ model.f &lt;- glmer(foul.home ~ foul.diff + score.diff +
 
     <p>
       In general, we see a highly significant negative effect of foul differential — a strong
-      tendency for referees to even out foul calls. Important covariates to control for include
-      score differential, whether the home team held the lead, time left in the first half, and
-      the type of foul called. Furthermore, the effect of foul differential depends on foul type
-      and time left in the half: the tendency for evening out foul calls is stronger earlier in
-      the half, and when offensive and personal fouls are called instead of shooting fouls.
-      This supports the hypothesis that if referees are consciously or subconsciously evening out
-      foul calls, the behavior will be more noticeable for calls over which they have more control
-      — this evidence is called <term>dose response</term>.<idx><h>dose response</h></idx>
+      tendency for referees to even out foul calls when one team starts amassing more fouls than
+      the other. Important covariates to control for (because of their effects on the odds of a
+      home foul) include score differential, whether the home team held the lead, time left in
+      the first half, and the type of foul called.
+    </p>
+
+    <p>
+      Furthermore, we see that the effect of foul differential depends on the type of foul called
+      and time left in the half — the tendency for evening out foul calls is stronger earlier in
+      the half, and when offensive and personal fouls are called instead of shooting fouls. The
+      effect of foul type supports the hypothesis that if referees are consciously or
+      subconsciously evening out foul calls, the behavior will be more noticeable for calls over
+      which they have more control, especially offensive fouls (which are notorious judgment
+      calls) and then personal fouls (which don't affect a player's shot, and thus a referee can
+      choose to let them go uncalled). Evidence like this can be considered
+      <term>dose response</term>,<idx><h>dose response</h></idx> since higher <q>doses</q> of
+      referee control are associated with a greater effect of foul differential on their calls.
+      A dose response effect provides even stronger indication of referee bias.
     </p>
 
     <p>
@@ -757,20 +1088,30 @@ model.f &lt;- glmer(foul.home ~ foul.diff + score.diff +
       applies to shooting fouls at the end of the half, after controlling for score differential
       and whether the home team has the lead.</p></li>
       <li><p><m>\exp(\hat{\gamma}_0) = \exp(0.034) = 1.034.</m> As the score differential
-      increases by 1 (the home team accumulates another point), the odds of a home foul increase
-      by 3.4%, after controlling for foul differential, type of foul, whether the home team has
-      the lead, and time remaining.</p></li>
+      increases by 1 (the home team accumulates another point relative to the visiting team),
+      the odds of a home foul increase by 3.4%, after controlling for foul differential, type of
+      foul, whether or not the home team has the lead, and time remaining in the half. Referees
+      are more likely to call fouls on the home team when the home team is leading, and vice
+      versa. Note that a change in the score differential could result in the home team gaining
+      the lead, so that the effect of score differential experiences a non-linear <q>bump</q> at
+      0, where the size of the bump depends on the time remaining (this would involve the
+      interpretation for <m>\hat{\xi}_0</m>).</p></li>
       <li><p><m>\exp(\hat{\mu}_0) = \exp(-0.103) = 0.902.</m> Also, <m>0.902^{-1} = 1.109.</m>
       The effect of foul differential increases by 10.9% if a foul is an offensive foul rather
       than a shooting foul, after controlling for score differential, whether the home team has
-      the lead, and time remaining. For example, midway through the half (time = 10), the odds
-      that a shooting foul is on the home team increase by 29.6% for each extra visiting foul,
-      while the odds for an offensive foul increase by 43.6%.</p></li>
+      the lead, and time remaining. As hypothesized, the effect of foul differential is greater
+      for offensive fouls, over which referees have more control when compared with shooting
+      fouls. For example, midway through the half (<c>time=10</c>), the odds that a shooting
+      foul is on the home team increase by 29.6% for each extra foul on the visiting team, while
+      the odds that an offensive foul is on the home team increase by 43.6%.</p></li>
       <li><p><m>\exp(\hat{\nu}_0) = \exp(-0.056) = 0.946.</m> Also, <m>0.946^{-1} = 1.057.</m>
       The effect of foul differential increases by 5.7% if a foul is a personal foul rather than
       a shooting foul, after controlling for score differential, whether the home team has the
-      lead, and time remaining. For example, midway through the half (time = 10), the odds for a
-      personal foul increase by 36.9% for each extra visiting foul.</p></li>
+      lead, and time remaining. As hypothesized, the effect of foul differential is greater for
+      personal fouls, over which referees have more control when compared with shooting fouls.
+      For example, midway through the half (<c>time=10</c>), the odds that a shooting foul is
+      on the home team increase by 29.6% for each extra foul on the visiting team, while the
+      odds that a personal foul is on the home team increase by 36.9%.</p></li>
       <li><p><m>\exp(\hat{\omega}_0) = \exp(-0.0087) = 0.991.</m> Also, <m>0.991^{-1} = 1.009.</m>
       The effect of foul differential increases by 0.9% for each extra minute remaining in the
       half, after controlling for score differential, whether the home team has the lead, and
@@ -786,20 +1127,30 @@ model.f &lt;- glmer(foul.home ~ foul.diff + score.diff +
     <title>Estimated Random Effects</title>
 
     <p>
-      Our final model includes random effects for game, home team, and visiting team, allowing
-      different teams or games to begin with different baseline odds of a home foul. We may be
-      interested in examining the relative level of the random effects used for different teams
-      or games. The estimated random effects for home team should follow a normal distribution
-      centered at 0 with variance <m>\sigma_v^2</m>.
+      Our final model includes random effects for game, home team, and visiting team, and thus
+      our model accounts for variability due to these three factors without estimating fixed
+      effects to represent specific teams or games. However, we may be interested in examining
+      the relative level of the random effects used for different teams or games. The presence
+      of random effects allows different teams or games to begin with different baseline odds of
+      a home foul. In other words, the intercept — the log odds of a home foul at the end of
+      the first half when the score is tied, the fouls are even, and a shooting foul has been
+      called — is adjusted by a random effect specific to the two teams playing and to the game
+      itself. Together, the estimated random effects for, say, home team, should follow a normal
+      distribution as assumed: centered at 0 and with variance given by <m>\sigma_v^2</m>. It
+      is sometimes interesting to know which teams are typical (with estimated random effects
+      near 0) and which fall in the upper and lower tails of the normal distribution.
     </p>
 
     <p>
       <xref ref="fig-gmu-hist1"/> shows the 39 estimated random effects associated with each
-      home team (empirical Bayes estimates). The distribution is normal with standard deviation
-      near <m>\hat{\sigma}_v = 0.28</m>. <xref ref="fig-gmu-cis1"/> shows the estimated random
-      effect and associated prediction interval for each of the 39 home teams. We see that
-      DePaul and Seton Hall have higher baseline odds of home fouls than Purdue or Syracuse,
-      although there is a great deal of uncertainty surrounding each estimate.
+      home team (empirical Bayes estimates<idx><h>empirical Bayes estimates</h></idx>, see
+      <xref ref="ch-multilevelintro"/>). As expected, the distribution is normal with standard
+      deviation near <m>\hat{\sigma}_v = 0.28</m>. <xref ref="fig-gmu-cis1"/> shows the
+      estimated random effect and associated prediction interval for each of the 39 home teams.
+      Although there is a great deal of uncertainty surrounding each estimate, we see that, for
+      instance, DePaul and Seton Hall have higher baseline odds of home fouls than Purdue or
+      Syracuse. Similar histograms and prediction interval plots can be generated for random
+      effects due to visiting teams and specific games.
     </p>
 
     <figure xml:id="fig-gmu-hist1">
@@ -824,13 +1175,26 @@ model.f &lt;- glmer(foul.home ~ foul.diff + score.diff +
     <title>Notes on Using R (optional)</title>
 
     <p>
-      Here we discuss in more detail how to fit Model B3. In <c>glmer()</c> or <c>lmer()</c>,
-      if you have two equations at Level Two and want to fit a model with an error term for each
-      equation but assume they are independent, the error terms must be requested separately. For
-      example, <c>(1 | hometeam)</c> allows the Level One intercept to vary by home team, while
+      Here we discuss in more detail how to fit Model B3 from <xref ref="glmm-paraboot"/>. In
+      <c>glmer()</c> or <c>lmer()</c>, if you have two equations at Level Two and want to fit a
+      model with an error term for each equation, but you also want to assume that the two error
+      terms are independent, the error terms must be requested separately. For example,
+      <c>(1 | hometeam)</c> allows the Level One intercept to vary by home team, while
       <c>(0+foul.diff | hometeam)</c> allows the Level One effect of <c>foul.diff</c> to vary by
-      home team with the correlation assumed to be 0. A non-zero correlation could have been
-      specified with <c>(1+foul.diff | hometeam)</c>.
+      home team. Under this formulation, the correlation between those two error terms is assumed
+      to be 0; a non-zero correlation could have been specified with
+      <c>(1+foul.diff | hometeam)</c>.
+    </p>
+
+    <p>
+      The R code below shows how <c>fixef()</c> can be used to extract the estimated fixed
+      effects from a multilevel model. Even more, it shows how <c>ranef()</c> can be used to
+      illustrate estimated random effects by Game, Home Team, and Visiting Team, along with
+      prediction intervals for those random effects. These estimated random effects are sometimes
+      called Empirical Bayes estimators.<idx><h>Empirical Bayes estimators</h></idx> In this
+      case, random effects are placed only on the <c>[["(Intercept)"]]</c> term; the phrase
+      <q>Intercept</q> could be replaced with other Level One covariates whose values are allowed
+      to vary by game, home team, or visiting team in our model.
     </p>
 
     <program language="r" xml:id="code-ranef-model-f">
