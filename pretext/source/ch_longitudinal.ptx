@@ -1366,36 +1366,76 @@ model.f0 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
         be generated as follows.
       </p>
 
-      <p><alert>Level Two:</alert> First, we generate a random effect <m>u_i</m> for Rippleside
-      from <m>N(0, \hat{\sigma}_u^2)</m>. Using Model F0 parameters, the predicted intercept for
-      Rippleside (rural, non-charter, 11.8% special education, 36.3% free/reduced lunch) is:
-      </p>
-      <me>
-        a_1 = \hat{\alpha}_0 + \hat{\alpha}_3(11.8) + \hat{\alpha}_4(36.3) + u_1
-            = 661.03 - 0.12(11.8) - 0.15(36.3) + u_1
-      </me>
-      <p>
-        where <m>u_1 = -5.92</m> is a draw from <m>N(0, \hat{\sigma}_u^2)</m>, giving
-        <m>a_1 \approx 648.2</m>.
-      </p>
-
-      <p><alert>Level One:</alert> Next, we generate three residuals <m>\epsilon_{11}, \epsilon_{12},
-      \epsilon_{13}</m> independently from <m>N(0, \hat{\sigma}^2)</m>. Suppose these are
-      <m>(-2.1, 1.8, 0.3)</m>. Then the three simulated math scores for Rippleside are:
+      <p><alert>Level Two:</alert> One way to see the data generation process under the null
+      model (Model F0) is to start with Level Two and work backwards to Level One. Recall that
+      our Level Two models for <m>a_i</m> and <m>b_i</m>, the true intercept and slope for
+      school <m>i</m>, in Model F0 are:
       </p>
       <md>
-        <mrow>Y_{11} \amp= 648.2 + 2.14(0) - 5.92 = 648.2 + (-2.1) = 646.1</mrow>
-        <mrow>Y_{12} \amp= 648.2 + 2.14(1) - 5.92 = 650.3 + 1.8 = 652.1</mrow>
-        <mrow>Y_{13} \amp= 648.2 + 2.14(2) - 5.92 = 652.5 + 0.3 = 652.8</mrow>
+        <mrow>a_i \amp= \alpha_0 + \alpha_1\text{Charter}_i + \alpha_2\text{urban}_i
+          + \alpha_3\text{schpctsped}_i + \alpha_4\text{schpctfree}_i + u_i</mrow>
+        <mrow>b_i \amp= \beta_0 + \beta_1\text{Charter}_i + \beta_2\text{urban}_i
+          + \beta_3\text{schpctsped}_i</mrow>
+      </md>
+      <p>
+        All the <m>\alpha</m> and <m>\beta</m> terms will be fixed at their estimated values,
+        so the one term that will change for each bootstrapped data set is <m>u_i</m>. According
+        to Model F0, each <m>u_i</m> is sampled from a normal distribution with mean 0 and
+        standard deviation 4.18; say, for instance, <m>u_1 = -5.92</m>. Then we can produce a
+        model-based intercept and slope for School #1 (Rippleside):
+      </p>
+      <md>
+        <mrow>a_1 \amp= 661.03 - 3.22(0) - 1.12(0) - 0.12(11.8) - 0.15(36.3) - 5.92 = 648.2</mrow>
+        <mrow>b_1 \amp= 2.14 + 1.03(0) - 0.52(0) - 0.046(11.8) = 1.60</mrow>
+      </md>
+      <p>
+        Notice a couple of features. First, all coefficients come from the estimated fixed
+        effects from Model F0. Second, <q>public non-charter</q> is the reference level for
+        <c>charter</c> and <q>rural</q> is the reference level for <c>urban</c>, so both are 0
+        for Rippleside. Third, the mean intercept for schools like Rippleside (rural,
+        non-charter, 11.8% special education, 36.3% free/reduced lunch) is
+        <m>661.03 - 0.12(11.8) - 0.15(36.3) = 654.2</m>. The mean yearly improvement for such
+        schools is 1.60 points per year <m>(2.14 - 0.046 \times 11.8)</m>. School #1 (Rippleside)
+        has a 2008 score that is 5.92 points below the mean for all similar schools, but every
+        such school is assumed to have the same improvement rate of 1.60 points per year because
+        there is no school-to-school variability in slope (i.e., <m>v_i = 0</m>).
+      </p>
+
+      <p><alert>Level One:</alert> We next proceed to Level One, where the scores from Rippleside
+      are modeled as a linear function of year (<m>654.2 + 1.60\,\text{Year08}_{ij}</m>) with a
+      normally distributed residual <m>\epsilon_{1k}</m> at each time point <m>k</m>. Three
+      residuals are sampled independently from <m>N(0, 2.97^2)</m>. Suppose we obtain
+      <m>\epsilon_{11} = -3.11</m>, <m>\epsilon_{12} = 1.19</m>, and <m>\epsilon_{13} = 2.41</m>.
+      Then the three simulated math scores for Rippleside are:
+      </p>
+      <md>
+        <mrow>Y_{11} \amp= 654.2 + 1.60(0) - 3.11 = 651.1</mrow>
+        <mrow>Y_{12} \amp= 654.2 + 1.60(1) + 1.19 = 657.0</mrow>
+        <mrow>Y_{13} \amp= 654.2 + 1.60(2) + 2.41 = 659.8</mrow>
       </md>
 
       <p>
-        This process is repeated for all 618 schools to produce one full bootstrap sample.
-        Crucially, Model F0 is used to generate the data, while both Model F0 and Model F are fit
-        to each bootstrap sample to compute the likelihood ratio statistic. After repeating this
-        1000 times, the histogram of bootstrapped test statistics under the null hypothesis (Model
-        F0 is true) gives a better approximation to the null distribution than a chi-square, and
-        the p-value is the fraction of bootstrapped test statistics exceeding our observed
+        We would next turn to School #2 (<m>i=2</m>)—Wrenshall Elementary. Fixed effects would
+        remain the same but covariates would change, as Wrenshall has 15.2% special education
+        students and 42.4% free and reduced lunch students. We would sample a new residual
+        <m>u_2</m> at Level Two, producing a different intercept <m>a_2</m>. Three new
+        independent residuals <m>\epsilon_{2k}</m> would also be selected at Level One from the
+        same <m>N(0, 2.97^2)</m> distribution.
+      </p>
+
+      <p>
+        Once an entire set of simulated scores for every school and year have been generated based
+        on Model F0, two models are fit to this data:
+      </p>
+      <ul>
+        <li><p>Model F0 — the correct (null) model actually used to generate the responses</p></li>
+        <li><p>Model F — the full model containing two extra variance components
+        (<m>\sigma_v^2</m> and <m>\sigma_{uv}</m>) not used when generating the responses</p></li>
+      </ul>
+      <p>
+        After repeating this 1000 times, the histogram of bootstrapped test statistics under the
+        null hypothesis gives a better approximation to the null distribution than a chi-square,
+        and the p-value is the fraction of bootstrapped test statistics exceeding our observed
         statistic of 0.3376.
       </p>
 
