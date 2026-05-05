@@ -183,8 +183,8 @@ library(tidyverse)
         <title>A frequency table of missing data patterns.</title>
         <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
           <row header="yes" bottom="medium">
-            <cell></cell><cell>charter</cell><cell>MathAvgScore.2</cell>
-            <cell>MathAvgScore.1</cell><cell>MathAvgScore.0</cell><cell></cell>
+            <cell>Count</cell><cell>charter</cell><cell>MathAvgScore.2</cell>
+            <cell>MathAvgScore.1</cell><cell>MathAvgScore.0</cell><cell>Missing</cell>
           </row>
           <row><cell>540</cell><cell>1</cell><cell>1</cell><cell>1</cell><cell>1</cell><cell>0</cell></row>
           <row><cell>25</cell><cell>1</cell><cell>1</cell><cell>1</cell><cell>0</cell><cell>1</cell></row>
@@ -321,7 +321,7 @@ library(tidyverse)
         "locally estimated scatterplot smoother," in which a low-degree polynomial is fit to each
         data point using weighted regression techniques, where nearby points receive greater weight.
         LOESS is a computationally intensive method which performs especially well with larger sets
-        of data, although ideally there would be a greater diversity of x-values than the three
+        of data, although ideally there would be a greater diversity of <m>x</m>-values than the three
         time points we have. In this case, the loess smoother follows very closely to a linear
         trend, indicating that assuming a linear increase in test scores over the three-year period
         is probably a reasonable simplifying assumption.
@@ -1042,13 +1042,13 @@ model.f0 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
       <p>
         Using parameter estimates from Model F0, a new set of math scores for Rippleside would
         be generated as follows. The Level Two model under Model F0 predicts an intercept for
-        Rippleside of:
+        school <m>i</m> (here, Rippleside) as:
         <me>
-          \hat{a}_{Rippleside} = \hat{\alpha}_0 + \hat{\alpha}_2(0.3627) + \hat{u}_{Rippleside}
+          \hat{a}_i = \hat{\alpha}_0 + \hat{\alpha}_2(\text{schPctfree}_i) + \hat{u}_i
         </me>
         and a common slope of <m>\hat{\beta}_0</m> plus any applicable interaction terms.
         A new simulated math score for Year08 = 0 would then be generated from a normal
-        distribution centered at <m>\hat{a}_{Rippleside}</m> with variance <m>\hat{\sigma}^2</m>.
+        distribution centered at <m>\hat{a}_i</m> with variance <m>\hat{\sigma}^2</m>.
         Repeating this process for all schools and all years in the dataset produces one full
         bootstrap sample.
       </p>
