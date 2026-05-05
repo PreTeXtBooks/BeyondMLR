@@ -13,6 +13,20 @@
       <li><p>Understand the taxonomy of models, including why we start with an unconditional means model.</p></li>
       <li><p>Select a final model, using criteria such as AIC, BIC, and deviance.</p></li>
     </ul>
+
+      <program language="r">
+        <input>
+# Packages required for Chapter 8
+library(MASS)
+library(gridExtra)  
+library(mnormt) 
+library(lme4) 
+library(knitr) 
+library(kableExtra)
+library(tidyverse)
+</input>
+</program>
+
   </introduction>
 
   <section xml:id="cs-music">
@@ -58,7 +72,7 @@
 
       <table xml:id="tab-table1chp8">
         <title>A snapshot of selected variables from the first three and the last three observations in the Music Performance Anxiety case study.</title>
-        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+        <tabular>
           <row header="yes" bottom="medium">
             <cell>Obs</cell><cell>id</cell><cell>diary</cell><cell>perf_type</cell><cell>memory</cell>
             <cell>na</cell><cell>gender</cell><cell>instrument</cell><cell>mpqab</cell><cell>mpqpem</cell><cell>mpqnem</cell>
@@ -93,13 +107,12 @@
     <subsection xml:id="subsec-explore1">
       <title>Exploratory Analyses: Univariate Summaries</title>
       <p>
-        Because of this data structure — the assessment of some variables on a performance-by-performance basis and others on a subject-by-subject basis — we cannot treat our data set as consisting of 497 independent observations. Although negative affect measures from different subjects can reasonably be assumed to be independent (unless, perhaps, the subjects frequently perform in the same ensemble group), negative affect measures from different performances by the same subject are not likely to be independent.
+Because of this data structure—the assessment of some variables on a performance-by-performance basis and others on a subject-by-subject basis—we cannot treat our data set as consisting of 497 independent observations. Although negative affect measures from different subjects can reasonably be assumed to be independent (unless, perhaps, the subjects frequently perform in the same ensemble group), negative affect measures from different performances by the same subject are not likely to be independent. For example, some subjects tend to have relatively high performance anxiety across all performances, so that knowing their score for Performance 3 was 20 makes it more likely that their score for Performance 5 is somewhere near 20 as well. Thus, we must carefully consider our exploratory data analysis, recognizing that certain plots and summary statistics may be useful but imperfect in light of the correlated observations.      </p>
+      <p>
+First, we will examine each response variable and potential covariate individually. Continuous variables can be summarized using histograms and summaries of center and spread; categorical variables can be summarized with tables and possibly bar charts. When examining Level One covariates and responses, we will begin by considering all 497 observations, essentially treating each performance by each subject as independent even though we expect observations from the same musician to be correlated. Although these plots will contain dependent points, since each musician provides data for up to 15 performances, general patterns exhibited in these plots tend to be real. Alternatively, we can calculate mean scores across all performances for each of the 37 musicians so that we can more easily consider each plotted point to be independent. The disadvantage of this approach would be lost information which, in a study such as this with a relatively small number of musicians each being observed over many performances, could be considerable. In addition, if the sample sizes varied greatly by subject, a mean based on 1 observation would be given equal weight to a mean based on 15 observations. Nevertheless, both types of exploratory plots typically illustrate similar relationships.
       </p>
       <p>
-        First, we will examine each response variable and potential covariate individually. When examining Level One covariates and responses, we will begin by considering all 497 observations, essentially treating each performance by each subject as independent even though we expect observations from the same musician to be correlated. Alternatively, we can calculate mean scores across all performances for each of the 37 musicians so that we can more easily consider each plotted point to be independent.
-      </p>
-      <p>
-        In <xref ref="fig-mli-hist1"/> we see histograms for the primary response (negative affect); plot (a) shows all 497 (dependent) observations, while plot (b) shows the mean negative affect for each of the 37 musicians across all their performances. Through plot (a), we see that performance anxiety (negative affect) across all performances follows a right-skewed distribution with a lower bound of 10. Plot (b) shows that mean negative affect is also right-skewed, with range 12 to 23.
+        In <xref ref="fig-mli-hist1"/> we see histograms for the primary response (negative affect); plot (a) shows all 497 (dependent) observations, while plot (b) shows the mean negative affect for each of the 37 musicians across all their performances. Through plot (a), we see that performance anxiety (negative affect) across all performances follows a right-skewed distribution with a lower bound of 10 (achieved when all 10 questions are answered with a 1). Plot (b) shows that mean negative affect is also right-skewed (although not as smoothly decreasing in frequency), with range 12 to 23.
       </p>
 
       <figure xml:id="fig-mli-hist1">
@@ -135,8 +148,10 @@
       </figure>
 
       <p>
-        To avoid the issue of dependent observations, we can generate separate plots for each subject and examine trends within and across subjects. These <term>lattice plots</term> are illustrated in <xref ref="fig-mli-lattice1"/>, <xref ref="fig-mli-lattice2"/>, and <xref ref="fig-mli-lattice3"/>; we discuss such plots more thoroughly in <xref ref="ch-lon"/>. While general trends are difficult to discern from these lattice plots, we can see the variety in subjects in sample size distributions and overall level of performance anxiety.
-      </p>
+        To avoid the issue of dependent observations in our three plots from <xref ref = "fig-mli-boxscatmat1"/>, we could generate separate plots for each subject and examine trends within and across subjects. 
+        These <term>lattice plots</term> are illustrated in <xref ref="fig-mli-lattice1"/>, <xref ref="fig-mli-lattice2"/>, and <xref ref="fig-mli-lattice3"/>; we discuss such plots more thoroughly in <xref ref="ch-lon"/>. While general trends are difficult to discern from these lattice plots, we can see the variety in subjects in sample size distributions and overall level of performance anxiety.
+        In particular, in <xref ref="fig-mli-lattice3"/>, we notice that linear fits for many subjects illustrate the same slight downward trend displayed in the overall scatterplot in <xref ref = "fig-mli-boxscatmat1"/>, although some subjects experience increasing anxiety and others exhibit non-linear trends. Having an idea of the range of individual trends will be important when we begin to draw overall conclusions from this study.
+</p>
 
       <figure xml:id="fig-mli-lattice1">
         <caption>Lattice plot of performance type vs. negative affect, with separate dotplots by subject.</caption>
@@ -154,17 +169,16 @@
       </figure>
 
       <p>
-        In <xref ref="fig-mli-boxmat1"/>, we use boxplots to examine the relationship between our primary categorical Level Two covariate (instrument) and our continuous model response. Plot (a) uses all 497 performances, while plot (b) uses one observation per subject (the mean performance anxiety across all performances). Both plots seem to support the notion that performance anxiety is slightly lower for vocalists and maybe a bit higher for keyboardists.
-      </p>
+        In <xref ref="fig-mli-boxmat1"/>, we use boxplots to examine the relationship between our primary categorical Level Two covariate (instrument) and our continuous model response. Plot (a) uses all 497 performances, while plot (b) uses one observation per subject (the mean performance anxiety across all performances) regardless of how many performances that subject had. Naturally, plot (b) has a more condensed range of values, but both plots seem to support the notion that performance anxiety is slightly lower for vocalists and maybe a bit higher for keyboardists.      </p>
 
       <figure xml:id="fig-mli-boxmat1">
         <caption>Boxplots of the categorical Level Two covariate (instrument) vs. model response (negative affect). Plot (a) is based on all 497 observations from all 37 subjects, while plot (b) uses only one observation per subject.</caption>
         <image source="generated-assets/mli-boxmat1.png" width="60%"/>
       </figure>
 
-      <p>
-        In <xref ref="fig-mli-scatmat1"/>, we use scatterplots to examine the relationships between continuous Level Two covariates and our model response. Performance anxiety appears to vary little with a subject's positive emotionality, but there is some evidence to suggest that performance anxiety increases with increasing negative emotionality and absorption level.
-      </p>
+<p>
+In <xref ref="fig-mli-scatmat1"/>, we use scatterplots to examine the relationships between continuous Level Two covariates and our model response. Performance anxiety appears to vary little with a subject’s positive emotionality, but there is some evidence to suggest that performance anxiety increases with increasing negative emotionality and absorption level. Plots based on mean negative affect, with one observation per subject, support conclusions based on plots with all observations from all subjects; indeed the overall relationships are in the same direction and of the same magnitude.
+</p>
 
       <figure xml:id="fig-mli-scatmat1">
         <caption>Scatterplots of continuous Level Two covariates (positive emotionality (PEM), negative emotionality (NEM), and absorption) vs. model response (negative affect). The top plots (a1, b1, c1) are based on all 497 observations from all 37 subjects, while the bottom plots (a2, b2, c2) use only one observation per subject.</caption>
