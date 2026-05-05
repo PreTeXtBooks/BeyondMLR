@@ -1096,7 +1096,7 @@ model.f &lt;- glmer(foul.home ~ foul.diff + score.diff +
       the lead, so that the effect of score differential experiences a non-linear <q>bump</q> at
       0, where the size of the bump depends on the time remaining (this would involve the
       interpretation for <m>\hat{\xi}_0</m>).</p></li>
-      <li><p><m>\exp(\hat{\mu}_0) = \exp(-0.103) = 0.902.</m> Also, <m>0.842^{-1} = 1.109.</m>
+      <li><p><m>\exp(\hat{\mu}_0) = \exp(-0.103) = 0.902.</m> Also, <m>0.902^{-1} = 1.109.</m>
       The effect of foul differential increases by 10.9% if a foul is an offensive foul rather
       than a shooting foul, after controlling for score differential, whether the home team has
       the lead, and time remaining. As hypothesized, the effect of foul differential is greater
