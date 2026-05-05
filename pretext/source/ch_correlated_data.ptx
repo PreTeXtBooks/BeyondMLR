@@ -718,6 +718,28 @@ count_2b &lt;- rbinom(24, 10, pi_2b)
         <li><p><c>growth_yr1</c> = height91 - height90, in meters</p></li>
       </ul>
 
+<p>A sample of 10 observations are displayed in <xref ref = "tab-sample10trees"/></p>
+
+<table xml:id="tab-sample10trees">
+  <title>A sample of 10 trees and their growth from 1990 to 1991</title>
+  <tabular>
+    <row header="yes">
+      <cell>id</cell><cell>transect</cell><cell>species</cell>
+      <cell>tubes</cell><cell>height91</cell><cell>height90</cell><cell>growth_yr1</cell>
+    </row>
+    <row><cell>398</cell><cell>14</cell><cell>Black Walnut</cell><cell>0</cell><cell>0.332</cell><cell>0.200</cell><cell>0.132</cell></row>
+    <row><cell>402</cell><cell>14</cell><cell>Black Walnut</cell><cell>0</cell><cell>0.354</cell><cell>0.330</cell><cell>0.024</cell></row>
+    <row><cell>450</cell><cell>18</cell><cell>Black Walnut</cell><cell>1</cell><cell>0.214</cell><cell>0.174</cell><cell>0.040</cell></row>
+    <row><cell>451</cell><cell>18</cell><cell>Black Walnut</cell><cell>1</cell><cell>0.342</cell><cell>0.289</cell><cell>0.053</cell></row>
+    <row><cell>453</cell><cell>18</cell><cell>Black Walnut</cell><cell>1</cell><cell>0.395</cell><cell>0.205</cell><cell>0.190</cell></row>
+    <row><cell>458</cell><cell>18</cell><cell>Black Walnut</cell><cell>1</cell><cell>0.420</cell><cell>0.290</cell><cell>0.130</cell></row>
+    <row><cell>560</cell><cell>22</cell><cell>Black Walnut</cell><cell>0</cell><cell>0.400</cell><cell>0.295</cell><cell>0.105</cell></row>
+    <row><cell>564</cell><cell>22</cell><cell>Black Walnut</cell><cell>0</cell><cell>0.549</cell><cell>0.390</cell><cell>0.159</cell></row>
+    <row><cell>569</cell><cell>22</cell><cell>Black Walnut</cell><cell>0</cell><cell>0.340</cell><cell>0.270</cell><cell>0.070</cell></row>
+    <row><cell>571</cell><cell>22</cell><cell>Black Walnut</cell><cell>0</cell><cell>0.394</cell><cell>0.271</cell><cell>0.123</cell></row>
+  </tabular>
+</table>
+
       <p>
         This portion of the data indicates that the four trees in transect 18 have tubes, while
         the other 6 trees listed do not. The concern with this kind of data structure is that
@@ -980,7 +1002,7 @@ print(VCrandom, comp = c("Variance", "Std.Dev."))
           <p>
             In the Dams and Pups Case Study, we use the beta distribution to randomly select the
             probability that a dam produces a defective pup. While the beta distribution is
-            described in an earlier chapter, it can be valuable to play with the parameters
+            described in Chapter 3, it can be valuable to play with the parameters
             <m>\alpha</m> and <m>\beta</m> to see what distribution ranges and shapes are
             possible. Some basic R code for plotting a beta density curve can be found at the end
             of this problem.
@@ -1039,7 +1061,7 @@ plot(p, density, type = "l")
       </exercise>
     </subexercises>
   </exercises>
-    <subsection xml:id="note-correlated-binary">
+    <section xml:id="note-correlated-binary">
       <title>Note on Correlated Binary Outcomes</title>
       <p>
         The correlated binomial counts simulated in the Dams and Pups Case Study are in fact
@@ -1052,6 +1074,6 @@ plot(p, density, type = "l")
         however, our results may be misleading. That said, the beta-binomial structure is quite
         flexible and conforms to many situations.
       </p>
-    </subsection>
+    </section>
 
 </chapter>
