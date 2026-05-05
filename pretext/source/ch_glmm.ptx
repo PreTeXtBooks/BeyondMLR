@@ -356,7 +356,7 @@ mod0 &lt;- glm(foul.home ~ foul.diff + score.diff + lead.home +
       <title>A Two-Stage Modeling Approach</title>
 
       <p>
-        As in <xref ref="twostage"/>, to avoid clustering we could consider fitting a separate
+        As in <xref ref="subsec-twostage"/>, to avoid clustering we could consider fitting a separate
         logistic regression model to each unit of observation at Level Two (each game in this
         case). Since our primary response variable is binary (Was the foul called on the home
         team or not?), we would fit a logistic regression model to the data from each game.
@@ -461,7 +461,7 @@ lreg.game110 &lt;- glm(foul.home ~ foul.diff,
       </p>
 
       <p>
-        As in <xref ref="twostage"/>, we can proceed to fit similar logistic regression models
+        As in <xref ref="subsec-twostage"/>, we can proceed to fit similar logistic regression models
         for each of the 339 other games in our data set. Each model will yield a new estimate of
         the intercept and the slope from <xref ref="eq-lev1glmm"/>. These estimates are
         summarized graphically in <xref ref="fig-gmu-histmat2"/>. There is noticeable
@@ -837,12 +837,12 @@ drop_in_dev &lt;- anova(model.a3, model.a1, test = "Chisq")
     </program>
 
     <p>
-      In <xref ref="multileveltechnical"/> we noted that REML estimation is typically used when
+      In <xref ref="subsec-multileveltechnical"/> we noted that REML estimation is typically used when
       comparing models that differ only in random effects for multilevel models with normal
       responses, but with multilevel generalized linear models, full maximum likelihood (ML)
       estimation procedures are typically used regardless of the situation (including in the
       function <c>glmer()</c> in R). So the likelihood ratio test above is based on ML methods —
-      can we trust its accuracy? In <xref ref="longitudinal-paraboot"/> we introduced the
+      can we trust its accuracy? In <xref ref="sec-lon-paraboot"/> we introduced the
       <term>parametric bootstrap</term><idx><h>parametric bootstrap</h></idx> as a more reliable
       method in many cases for conducting hypothesis tests compared to the likelihood ratio test,
       especially when comparing full and reduced models that differ in their variance components.
@@ -857,7 +857,7 @@ drop_in_dev &lt;- anova(model.a3, model.a1, test = "Chisq")
     <p>
       <xref ref="fig-gmu-lrt1"/> illustrates the null distribution of the likelihood ratio test
       statistic derived by the parametric bootstrap procedure with 100 samples as compared to a
-      chi-square distribution. As we observed in <xref ref="longitudinal-paraboot"/>, the
+      chi-square distribution. As we observed in <xref ref="sec-lon-paraboot"/>, the
       parametric bootstrap provides a more reliable p-value in this case (<m>p \lt .001</m>
       from output below) because a chi-square distribution puts too much mass in the tail and
       not enough near 0. However, the parametric bootstrap is computationally intensive, and it
