@@ -1321,16 +1321,107 @@ summary(model0)
       <title>Open-Ended Exercises</title>
 
       <exercise>
-        <p><term>Political ambiguity.</term> <xref ref="Chapp2018"/> explored 2014 congressional candidates' ambiguity on political issues in their paper, <em>Going Vague: Ambiguity and Avoidance in Online Political Messaging</em>. They hand-coded a random sample of 2012 congressional candidates' websites, assigning an ambiguity score. A total of 870 websites from 2014 were then automatically scored using Wordscores, a program designed for political textual analysis. Some of their hypotheses include that incumbents' issue statements will be clearer, that ideological distance from district residents will be associated with greater ambiguity, and that more heterogeneous districts will correspond to higher degrees of ambiguity. Their data can be found in <c>ambiguity.csv</c>. With this in mind, fit your own models to address these hypotheses from <xref ref="Chapp2018"/>. Be sure to use a two-level structure to account for variables at both the candidate and district levels.</p>
-      </exercise>
+        <p><term>Political ambiguity.</term> <xref ref="Chapp2018"/>
+  explored 2014 congressional candidates' ambiguity on political issues in their paper,
+  <pubtitle>Going Vague: Ambiguity and Avoidance in Online Political Messaging</pubtitle>.
+  They hand-coded a random sample of 2012 congressional candidates' websites, assigning an
+  ambiguity score. A total of 870 websites from 2014 were then automatically scored using
+  Wordscores, a program designed for political textual analysis. In their paper, they fit a
+  multilevel model for candidates' ambiguities with predictors at both the candidate and district
+  levels. Some of their hypotheses include that:
+</p>
+<p>
+  <ul>
+    <li><q>when incumbents do hazard issue statements, these statements will be marked by a higher
+    degree of clarity.</q> (Hypothesis 1b)</li>
+    <li><q>ideological distance [from district residents] will be associated with greater
+    ambiguity.</q> (Hypothesis 2a)</li>
+    <li><q>controlling for ideological distance, ideological extremity [of the candidate] should
+    correspond to less ambiguity.</q> (Hypothesis 2b)</li>
+    <li><q>more variance in attitudes [among district residents] will correspond to a higher degree
+    of ambiguity in rhetoric</q> (Hypothesis 3a)</li>
+    <li><q>a more heterogeneous mix of subgroups [among district residents] will also correspond
+    to a higher degree of ambiguity in rhetoric</q> (Hypothesis 3b)</li>
+  </ul>
+</p>
+<p>
+  Their data can be found in <c>ambiguity.csv</c>. Variables of interest include:
+</p>
+<p>
+  <ul>
+    <li><c>ambiguity</c> = assigned ambiguity score. Higher scores indicate greater clarity
+    (less ambiguity)</li>
+    <li><c>democrat</c> = 1 if a Democrat, 0 otherwise (Republican)</li>
+    <li><c>incumbent</c> = 1 if an incumbent, 0 otherwise</li>
+    <li><c>ideology</c> = a measure of the candidate's left-right orientation. Higher (positive)
+    scores indicate more conservative candidates and lower (negative) scores indicate more liberal
+    candidates.</li>
+    <li><c>mismatch</c> = the distance between the candidate's ideology and the district's
+    ideology (candidate ideology scores were regressed against district ideology scores; mismatch
+    values represent the absolute value of the residual associated with each candidate)</li>
+    <li><c>distID</c> = the congressional district's unique ID</li>
+    <li><c>distLean</c> = the district's political leaning. Higher scores imply more conservative
+    districts.</li>
+    <li><c>attHeterogeneity</c> = a measure of the variability of ideologies within the district.
+    Higher scores imply more attitudinal heterogeneity among voters.</li>
+    <li><c>demHeterogeneity</c> = a measure of the demographic variability within the district.
+    Higher scores imply more demographic heterogeneity among voters.</li>
+  </ul>
+</p>
+<p>
+  With this in mind, fit your own models to address these hypotheses from Chapp et al.
+  <xref ref="Chapp2018"/>. Be sure to use a two-level structure to account for variables at
+  both the candidate and district levels.
+</p>
+</exercise>
 
       <exercise>
-        <p><term>Airbnb in Chicago.</term> <xref ref="Trinh2018"/> collected data on 1561 Airbnb listings in Chicago from August 2016, and then they merged in information from the neighborhood (out of 43 in Chicago) where the listing was located. We can examine traits that are associated with listings that command a higher price. Conduct an EDA, build a multilevel model, and interpret model coefficients to answer questions such as: What are characteristics of a higher priced listing? Are the most influential traits associated with individual listings or entire neighborhoods? Are there intriguing interactions where the effect of one variable depends on levels of another? The data can be found in <c>airbnb.csv</c>.</p>
-      </exercise>
+        <p><term>Airbnb in Chicago.</term> <xref ref="Trinh2018"/> 
+  collected data on 1561 Airbnb listings in Chicago from August 2016, and then they merged in
+  information from the neighborhood (out of 43 in Chicago) where the listing was located. We can
+  examine traits that are associated with listings that command a higher price. Conduct an EDA,
+  build a multilevel model, and interpret model coefficients to answer questions such as: What are
+  characteristics of a higher priced listing? Are the most influential traits associated with
+  individual listings or entire neighborhoods? Are there intriguing interactions where the effect
+  of one variable depends on levels of another?
+</p>
+<p>
+  The following variables can be found in <c>airbnb.csv</c> or derived from the variables found
+  there:
+  <ul>
+    <li><c>overall_satisfaction</c> = rating on a 0-5 scale.</li>
+    <li><c>satisfaction</c> = 1 if overall_satisfaction is 5, 0 otherwise</li>
+    <li><c>price</c> = price for one night (in dollars)</li>
+    <li><c>reviews</c> = number of reviews posted</li>
+    <li><c>room_type</c> = Entire home/apt, Private room, or Shared room</li>
+    <li><c>accommodates</c> = number of people the unit can hold</li>
+    <li><c>bedrooms</c> = number of bedrooms</li>
+    <li><c>minstay</c> = minimum length of stay (in days)</li>
+    <li><c>neighborhood</c> = neighborhood where unit is located (1 of 43)</li>
+    <li><c>district</c> = district where unit is located (1 of 9)</li>
+    <li><c>WalkScore</c> = quality of the neighborhood for walking (0-100)</li>
+    <li><c>TransitScore</c> = quality of the neighborhood for public transit (0-100)</li>
+    <li><c>BikeScore</c> = quality of the neighborhood for biking (0-100)</li>
+    <li><c>PctBlack</c> = proportion of black residents in a neighborhood</li>
+    <li><c>HighBlack</c> = 1 if PctBlack above .60, 0 otherwise</li>
+  </ul>
+</p>
+</exercise>
 
       <exercise>
-        <p><term>Project 5183.</term> The Colorado Rockies, a Major League Baseball team, decided on June 20th, 2012 to limit their starting pitchers to 75 pitches with the hope of improving a struggling starting rotation and conserving young arms. A team of students collected 2012 data on Rockies pitchers from FanGraphs to evaluate Project 5183 <xref ref="Strutz2013"/>. The data set <c>FinalRockiesdata.csv</c> contains information for 7 starting pitchers who started at least one game before June 20th (without a pitch limit) and at least one game after June 20th (with a limit of 75 pitches). Key response variables include <c>vFA</c> (average fastball velocity), <c>K.9</c> (strikeouts per nine innings), <c>ERA</c> (earned runs per nine innings), and <c>Pitpct</c> (percentage of strikes thrown). The primary explanatory variable of interest is <c>PCL</c> (an indicator variable for if a pitch count limit is in effect). Write a short report summarizing the results of Project 5183.</p>
-      </exercise>
+        <p><term>Project 5183.</term> 
+The Colorado Rockies, a Major League Baseball team, instigated a radical
+  experiment on June 20th, 2012. Hopelessly out of contention for the playoffs and struggling
+  again with their pitching, the Rockies decided to limit their starting pitchers to 75 pitches
+  from June 20th until the end of the year with the hope of improving a struggling starting
+  rotation, teaching pitchers how to pitch to contact (which results in low pitch counts), and
+  at the same time trying to conserve young arms. Data has shown that, as a game progresses,
+  fatigue becomes a big factor in a pitcher's performance; if a pitcher has to tweak his mechanics
+  to try to make up for a fatigued body, injuries can often occur. In addition, pitchers often
+  struggle as they begin facing the same batters over again later in games. The Rockies called
+  their experiment <q>Project 5183</q> to acknowledge the altitude at Coors Field, their home
+  ballpark, and the havoc that high altitude can wreak on pitchers.
+     </exercise>
 
       <exercise>
         <p><term>Replicate the Sadler and Miller paper.</term> Try to replicate Models 1 and 2 presented in Table 2 of <xref ref="Miller2010"/>. We expect small differences in parameter estimates, since they use SAS (with an unstructured covariance structure) instead of R.</p>
