@@ -117,58 +117,60 @@ library(tidyverse)
 
       <table xml:id="tab-table1chp11">
         <title>Key variables from the first 10 rows of data from the College Basketball Referees
-        case study. Each row represents a different foul called; rows 1–8 are fouls from Game 1
-        and rows 9–10 are from Game 2.</title>
+        Case Study. Each row represents a different foul called; we see all 8 first-half fouls
+        from Game 1 followed by the first 2 fouls called in Game 2.</title>
         <tabular halign="center">
           <row header="yes">
             <cell>game</cell>
+            <cell>visitor</cell>
+            <cell>hometeam</cell>
+            <cell>foul.num</cell>
             <cell>foul.home</cell>
             <cell>foul.diff</cell>
             <cell>score.diff</cell>
-            <cell>time</cell>
-            <cell>visitor</cell>
-            <cell>hometeam</cell>
+            <cell>lead.home</cell>
             <cell>foul.type</cell>
+            <cell>time</cell>
           </row>
           <row>
-            <cell>1</cell><cell>0</cell><cell>0</cell><cell>0</cell>
-            <cell>19.08</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+            <cell>1</cell><cell>IA</cell><cell>MN</cell><cell>1</cell><cell>0</cell>
+            <cell>0</cell><cell>7</cell><cell>1</cell><cell>Personal</cell><cell>14.167</cell>
           </row>
           <row>
-            <cell>1</cell><cell>1</cell><cell>-1</cell><cell>0</cell>
-            <cell>18.78</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+            <cell>1</cell><cell>IA</cell><cell>MN</cell><cell>2</cell><cell>1</cell>
+            <cell>-1</cell><cell>10</cell><cell>1</cell><cell>Personal</cell><cell>11.433</cell>
           </row>
           <row>
-            <cell>1</cell><cell>0</cell><cell>1</cell><cell>2</cell>
-            <cell>16.25</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+            <cell>1</cell><cell>IA</cell><cell>MN</cell><cell>3</cell><cell>1</cell>
+            <cell>0</cell><cell>11</cell><cell>1</cell><cell>Personal</cell><cell>10.233</cell>
           </row>
           <row>
-            <cell>1</cell><cell>0</cell><cell>0</cell><cell>2</cell>
-            <cell>15.10</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+            <cell>1</cell><cell>IA</cell><cell>MN</cell><cell>4</cell><cell>0</cell>
+            <cell>1</cell><cell>11</cell><cell>1</cell><cell>Personal</cell><cell>9.733</cell>
           </row>
           <row>
-            <cell>1</cell><cell>1</cell><cell>-1</cell><cell>2</cell>
-            <cell>14.00</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+            <cell>1</cell><cell>IA</cell><cell>MN</cell><cell>5</cell><cell>0</cell>
+            <cell>0</cell><cell>14</cell><cell>1</cell><cell>Shooting</cell><cell>7.767</cell>
           </row>
           <row>
-            <cell>1</cell><cell>1</cell><cell>0</cell><cell>2</cell>
-            <cell>13.12</cell><cell>Indiana</cell><cell>Duke</cell><cell>shooting</cell>
+            <cell>1</cell><cell>IA</cell><cell>MN</cell><cell>6</cell><cell>0</cell>
+            <cell>-1</cell><cell>22</cell><cell>1</cell><cell>Shooting</cell><cell>5.567</cell>
           </row>
           <row>
-            <cell>1</cell><cell>0</cell><cell>1</cell><cell>0</cell>
-            <cell>12.33</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+            <cell>1</cell><cell>IA</cell><cell>MN</cell><cell>7</cell><cell>1</cell>
+            <cell>-2</cell><cell>25</cell><cell>1</cell><cell>Shooting</cell><cell>2.433</cell>
           </row>
           <row>
-            <cell>1</cell><cell>1</cell><cell>0</cell><cell>0</cell>
-            <cell>11.83</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+            <cell>1</cell><cell>IA</cell><cell>MN</cell><cell>8</cell><cell>1</cell>
+            <cell>-1</cell><cell>23</cell><cell>1</cell><cell>Offensive</cell><cell>1.000</cell>
           </row>
           <row>
-            <cell>2</cell><cell>0</cell><cell>0</cell><cell>0</cell>
-            <cell>19.58</cell><cell>Maryland</cell><cell>Virginia</cell><cell>personal</cell>
+            <cell>2</cell><cell>MI</cell><cell>MIST</cell><cell>1</cell><cell>0</cell>
+            <cell>0</cell><cell>2</cell><cell>1</cell><cell>Shooting</cell><cell>18.983</cell>
           </row>
           <row>
-            <cell>2</cell><cell>1</cell><cell>-1</cell><cell>0</cell>
-            <cell>18.90</cell><cell>Maryland</cell><cell>Virginia</cell><cell>personal</cell>
+            <cell>2</cell><cell>MI</cell><cell>MIST</cell><cell>2</cell><cell>1</cell>
+            <cell>-1</cell><cell>2</cell><cell>1</cell><cell>Personal</cell><cell>17.200</cell>
           </row>
         </tabular>
       </table>
@@ -621,8 +623,9 @@ lreg.game110 &lt;- glm(foul.home ~ foul.diff,
       </me>
 
       <p>
-        At Level Two, with no fixed covariates but error terms allowing the intercept and slope
-        to vary by game:
+        Then we include no fixed covariates at Level Two, but we include error terms to allow
+        the intercept and slope from Level One to vary by game, and we allow these errors to be
+        correlated:
       </p>
 
       <md>
@@ -631,25 +634,33 @@ lreg.game110 &lt;- glm(foul.home ~ foul.diff,
       </md>
 
       <p>
-        where
+        where the error terms at Level Two can be assumed to follow a multivariate normal
+        distribution:
       </p>
 
       <me>
-        \begin{bmatrix} u_i \\ v_i \end{bmatrix}
+        \begin{bmatrix} a_i \\ b_i \end{bmatrix}
         \sim N\!\left(
           \begin{bmatrix} 0 \\ 0 \end{bmatrix},
           \begin{bmatrix} \sigma_u^2 \\ \sigma_{uv} \amp \sigma_v^2 \end{bmatrix}
-        \right).
+        \right)
       </me>
 
       <p>
-        The composite model is:
+        Our composite model then looks like:
       </p>
 
-      <me>
-        \log\!\left(\frac{p_{ij}}{1-p_{ij}}\right)
-          = [\alpha_0 + \beta_0\,\text{foul.diff}_{ij}] + [u_i + v_i\,\text{foul.diff}_{ij}].
-      </me>
+      <md>
+        <mrow>
+          \log\!\left(\frac{p_{ij}}{1-p_{ij}}\right) \amp= a_i + b_i\,\text{foul.diff}_{ij}
+        </mrow>
+        <mrow>
+          \amp= (\alpha_0 + u_i) + (\beta_0 + v_i)\,\text{foul.diff}_{ij}
+        </mrow>
+        <mrow>
+          \amp= [\alpha_0 + \beta_0\,\text{foul.diff}_{ij}] + [u_i + v_i\,\text{foul.diff}_{ij}]
+        </mrow>
+      </md>
 
       <p>
         The major changes when moving from a normally distributed response to a binary response
@@ -658,7 +669,7 @@ lreg.game110 &lt;- glm(foul.home ~ foul.diff,
       </p>
 
       <p>
-        We can use statistical software to obtain parameter estimates for this unified multilevel
+        Again, we can use statistical software to obtain parameter estimates for this unified multilevel
         model using all 4972 fouls recorded from the 340 games. For example, the
         <c>glmer()</c> function from the <c>lme4</c> package in R extends the <c>lmer()</c>
         function to handle generalized responses and to account for the fact that fouls are not
@@ -781,9 +792,11 @@ mod0a &lt;- glm(foul.home ~ foul.diff, family = binomial,
       variable recording if the <m>j^{th}</m> foul from Game <m>i</m> was called on the home
       team (1) or the visiting team (0), where Game <m>i</m> pitted Visiting Team <m>g</m>
       against Home Team <m>h</m>. Square brackets are introduced since <m>g</m> and <m>h</m>
-      are essentially at the same level as <m>i</m>, whereas subscripting without square
-      brackets implies a movement to lower levels as subscripts move left to right. We can then
-      consider <m>Y_{i[gh]j}</m> to be a Bernoulli random variable with parameter
+      are essentially at the same level as <m>i</m>, we have assumed (without stating so)
+      throughout this book that subscripting without square brackets implies a movement to lower
+      levels as the subscripts move left to right (e.g., <m>ij</m> indicates <m>i</m> units are
+      at Level Two, while <m>j</m> units are at Level One, nested inside Level Two units). We
+      can then consider <m>Y_{i[gh]j}</m> to be a Bernoulli random variable with parameter
       <m>p_{i[gh]j}</m>, where <m>p_{i[gh]j}</m> is the true probability that the
       <m>j^{th}</m> foul from Game <m>i</m> was called on Home Team <m>h</m> rather than
       Visiting Team <m>g</m>. We will include the crossed subscripting only where necessary.
@@ -792,7 +805,7 @@ mod0a &lt;- glm(foul.home ~ foul.diff, family = binomial,
     <p>
       Typically, with the addition of crossed effects, the Level One model will remain familiar
       and changes will be seen at Level Two, especially in the equation for the intercept term.
-      In the model formulation below (Model A3) we allow, as before, the slope and intercept to
+      In the model formulation below we allow, as before, the slope and intercept to
       potentially vary by game. Level One and Level Two models are:
     </p>
 
@@ -821,7 +834,8 @@ mod0a &lt;- glm(foul.home ~ foul.diff, family = binomial,
     </ul>
 
     <p>
-      where the three random effects are independent:
+      where error terms (random effects) at Level Two can be assumed to follow independent
+      normal distributions:
     </p>
 
     <md>
@@ -843,10 +857,7 @@ mod0a &lt;- glm(foul.home ~ foul.diff, family = binomial,
     </p>
 
     <p>
-      At Level Two, <m>\alpha_0</m> is the population average log odds (fixed), <m>u_i</m> is
-      the effect of Game <m>i</m> (random), <m>v_h</m> is the effect of Home Team <m>h</m>
-      (random), and <m>w_g</m> is the effect of Visiting Team <m>g</m> (random). The composite
-      model is:
+      Our composite model then looks like:
     </p>
 
     <me>
@@ -908,7 +919,7 @@ model.a3 &lt;- glmer(foul.home ~ foul.diff + (1|game) +
 
     <p>
       Our estimates of variance components provide evidence of the relative variability in the
-      different Level Two random effects. An estimated 65.4% of variability in the intercepts is
+      different Level Two random effects. For example, an estimated 65.4% of variability in the intercepts is
       due to differences from game-to-game, while 25.9% is due to differences among home teams,
       and 8.7% is due to differences among visiting teams. At this point, we could reasonably
       ask: if we use a random effect to account for differences among games, does it really pay
@@ -1041,7 +1052,7 @@ bootstrapAnova(mA = model.b3, m0 = model.a3, B = 1000)
     </figure>
 
     <p>
-      Note that we could also have allowed for a correlation between the error terms for the
+      Note that we could have also allowed for a correlation between the error terms for the
       intercept and slope by game, home team, or visiting team (Model B6) — i.e., assume, for
       example:
     </p>
@@ -1060,7 +1071,7 @@ bootstrapAnova(mA = model.b3, m0 = model.a3, B = 1000)
       and 3 covariance terms). By the parametric bootstrap, there is no significant evidence
       that the model with 6 additional parameters is necessary (LRT = 6.49, df = 6, p = .06 by
       parametric bootstrap). The associated p-value based on a likelihood ratio test with
-      approximate chi-square distribution is .370, reflecting once again the overly heavy tails
+      approximate chi-square distribution (and restricted maximum likelihood estimation) is .370, reflecting once again the overly heavy tails
       of the chi-square distribution.
     </p>
   </section>
@@ -1383,7 +1394,7 @@ print(ranef1[[1]], more = TRUE)
       <exercise xml:id="exercise-ch11-6">
         <statement>
           <p>
-            In the context of the Charter Schools Case Study (Chapter 9), describe a situation
+            In the context of Case Study <xref ref="cs-charter"/>, describe a situation
             in which crossed random effects would be needed.
           </p>
         </statement>
@@ -1521,8 +1532,8 @@ print(ranef1[[1]], more = TRUE)
             Aboriginal and non-Aboriginal Australians: Roles of age, gender, geography and
             area-level disadvantage." They used multilevel Poisson models to compare rates of
             acute myocardial infarction (AMI) in the 199 Statistical Local Areas (SLAs) in New
-            South Wales. Within SLA, AMI rates were summarized by subgroups determined by year
-            (2002–2007), age (in 10-year groupings), sex, and Aboriginal status; these are Level
+            South Wales. Within SLA, AMI rates (number of events over population count) were summarized by subgroups determined by year
+            (2002–2007), age (in 10-year groupings), sex, and Aboriginal status; these are then our Level
             One variables. Analyses also incorporated remoteness (classified by quartiles) and
             socio-economic status (classified by quintiles) assessed at the SLA level (Level
             Two). For this study, give the observational units at Levels One and Two.
@@ -1533,10 +1544,11 @@ print(ranef1[[1]], more = TRUE)
       <exercise xml:id="exercise-ch11-20">
         <statement>
           <p>
-            From the <xref ref="Randall2014"/> study described in the previous problem, let
-            <m>Y_{ij}</m> be the number of acute myocardial infarctions in subgroup <m>j</m>
-            from SLA <m>i</m>. Write out the multilevel model that likely produced their Table 2.
-            How many fixed effects and variance components must be estimated?
+            <xref ref="tab-table4chp11"/> shows Table 2 from <xref ref="Randall2014"/>.
+            Let <m>Y_{ij}</m> be the number of acute myocardial infarctions in subgroup <m>j</m>
+            from SLA <m>i</m>; write out the multilevel model that likely produced
+            <xref ref="tab-table4chp11"/>. How many fixed effects and variance components must be
+            estimated?
           </p>
         </statement>
       </exercise>
@@ -1587,10 +1599,9 @@ print(ranef1[[1]], more = TRUE)
       <exercise xml:id="exercise-ch11-25">
         <statement>
           <p>
-            <xref ref="Randall2014"/> also present Table 3, showing adjusted rate ratios for
-            area-level variables (remoteness and SES quintile) from a multilevel Poisson model
-            with random intercept for area. Describe the changes to the multilevel model for
-            Table 2 that likely produced this new table.
+            <xref ref="tab-table5chp11"/> shows Table 3 from <xref ref="Randall2014"/>.
+            Describe the changes to the multilevel model for <xref ref="tab-table4chp11"/> that
+            likely produced this new table.
           </p>
         </statement>
       </exercise>
@@ -1638,19 +1649,32 @@ print(ranef1[[1]], more = TRUE)
         <statement>
           <p>
             <xref ref="Trinh2018"/> collected data on 1561 Airbnb listings in Chicago from
-            August 2016, merging in information from the neighborhood where each listing was
-            located. Treat overall satisfaction as a binary variable (5 out of 5 vs. not). Conduct
-            an EDA, build a multilevel generalized model, and interpret model coefficients to
-            answer: What are characteristics of a higher rated listing? Are the most influential
-            traits associated with individual listings or entire neighborhoods? Are there intriguing
-            interactions? Variables in <c>airbnb.csv</c> include:
+            August 2016, and then they merged in information from the neighborhood (out of 43
+            in Chicago) where the listing was located.  We can examine traits that are associated
+            with listings that achieve an overall satisfaction of 5 out of 5 vs. those that do not
+            (i.e., treat satisfaction as a binary variable).  Conduct an EDA, build a multilevel
+            generalized model, and interpret model coefficients to answer questions such as: What
+            are characteristics of a higher rated listing?  Are the most influential traits
+            associated with individual listings or entire neighborhoods?  Are there intriguing
+            interactions where the effect of one variable depends on levels of another?
           </p>
+          <p>The following variables can be found in <c>airbnb.csv</c> or derived from the variables found there:</p>
           <ul>
-            <li><p><c>overall_satisfaction</c>, <c>satisfaction</c> (binary 5 vs. not),
-            <c>price</c>, <c>reviews</c>, <c>room_type</c>, <c>accommodates</c>,
-            <c>bedrooms</c>, <c>minstay</c>, <c>neighborhood</c>, <c>district</c>,
-            <c>WalkScore</c>, <c>TransitScore</c>, <c>BikeScore</c>, <c>PctBlack</c>,
-            <c>HighBlack</c></p></li>
+            <li><p><c>overall_satisfaction</c> = rating on a 0-5 scale.</p></li>
+            <li><p><c>satisfaction</c> = 1 if <c>overall_satisfaction</c> is 5, 0 otherwise</p></li>
+            <li><p><c>price</c> = price for one night (in dollars)</p></li>
+            <li><p><c>reviews</c> = number of reviews posted</p></li>
+            <li><p><c>room_type</c> = Entire home/apt., Private room, or Shared room</p></li>
+            <li><p><c>accommodates</c> = number of people the unit can hold</p></li>
+            <li><p><c>bedrooms</c> = number of bedrooms</p></li>
+            <li><p><c>minstay</c> = minimum length of stay (in days)</p></li>
+            <li><p><c>neighborhood</c> = neighborhood where unit is located (1 of 43)</p></li>
+            <li><p><c>district</c> = district where unit is located (1 of 9)</p></li>
+            <li><p><c>WalkScore</c> = quality of the neighborhood for walking (0-100)</p></li>
+            <li><p><c>TransitScore</c> = quality of the neighborhood for public transit (0-100)</p></li>
+            <li><p><c>BikeScore</c> = quality of the neighborhood for biking (0-100)</p></li>
+            <li><p><c>PctBlack</c> = proportion of black residents in a neighborhood</p></li>
+            <li><p><c>HighBlack</c> = 1 if <c>PctBlack</c> above .60, 0 otherwise</p></li>
           </ul>
         </statement>
       </exercise>
@@ -1659,10 +1683,11 @@ print(ranef1[[1]], more = TRUE)
         <title>Seed germination</title>
         <statement>
           <p>
-            We will return to the data from <xref ref="Angell2010"/> used in Case Study 7.3
-            (seeds), but whether or not a seed germinated will be considered the response variable
+            We will return to the data from <xref ref="Angell2010"/> used in <xref ref="cs-seeds"/>,
+            but whether or not a seed germinated will be considered the response variable
             rather than the heights of germinated plants. We will use the wide data set (one row
-            per plant) <c>seeds2.csv</c> and ignore plant heights over time, focusing solely on if
+            per plant) <c>seeds2.csv</c> for this analysis as described in Chapter 7, although we
+            will ignore plant heights over time, focusing solely on if
             the plant germinated at any time. Use multilevel generalized linear models to determine
             the effects of soil type and sterilization on germination rates; perform separate
             analyses for coneflowers and leadplants, and describe differences between the two
@@ -1680,22 +1705,57 @@ print(ranef1[[1]], more = TRUE)
             to be for reasons relating to obscenity and child protection rather than overt
             political and religious objections <xref ref="Jenkins2006"/>. Many past studies have
             addressed chiefly the reasons listed by those who challenge a book, but few examine
-            the overall context in which books are banned.
+            the overall context in which books are banned&#x2014;for example, the characteristics
+            of the states in which they occur.
           </p>
           <p>
-            A team of students assembled a data set from book challenges from the American Library
-            Society <xref ref="Fast2011"/> occurring in U.S. States between January 2000 and
-            November 2010, with state-level demographic information from the U.S. Census Bureau
-            and the Political Value Index (PVI). All book challenges are included except those
-            from Texas. Variables in <c>bookbanningNoTex.csv</c> include <c>book</c>,
-            <c>booktitle</c>, <c>author</c>, <c>state</c>, <c>removed</c> (primary response: 1
-            if book was removed), <c>pvi2</c>, <c>cperhs</c>, <c>cmedin</c>, <c>cperba</c>,
-            <c>days2000</c>, <c>obama</c>, <c>freqchal</c>, <c>sexexp</c>, <c>antifamily</c>,
-            <c>occult</c>, <c>language</c>, <c>homosexuality</c>, and <c>violence</c>.
+            A team of students assembled a data set by starting with information on book
+            challenges from the American Library Society <xref ref="Fast2011"/>. These book
+            challenges&#x2014;an initiation of the formal procedure for book
+            censorship&#x2014;occurred in U.S. States between January 2000 and November 2010.
+            In addition, state-level demographic information was obtained from the U.S. Census
+            Bureau and the Political Value Index (PVI) was obtained from the Cook Political
+            Report.
+          </p>
+          <p>
+            We will consider a data set with 931 challenges and 18 variables.  All book
+            challenges over the nearly 11-year period are included except those from the State
+            of Texas; Texas featured 683 challenges over this timeframe, nearly 5 times the
+            number in the next largest state.  Thus, the challenges from Texas have been removed
+            and could be analyzed separately.  Here, then, is a description of available
+            variables in <c>bookbanningNoTex.csv</c>:
+          </p>
+          <ul>
+            <li><p><c>book</c> = unique book ID number</p></li>
+            <li><p><c>booktitle</c> = name of book</p></li>
+            <li><p><c>author</c> = name of author</p></li>
+            <li><p><c>state</c> = state where challenge made</p></li>
+            <li><p><c>removed</c> = 1 if book was removed (challenge was successful); 0 otherwise</p></li>
+            <li><p><c>pvi2</c> = state score on the Political Value Index, where positive indicates a Democratic leaning, negative indicates a Republican leaning, and 0 is neutral</p></li>
+            <li><p><c>cperhs</c> = percentage of high school graduates in a state (grand mean centered)</p></li>
+            <li><p><c>cmedin</c> = median state income (grand median centered)</p></li>
+            <li><p><c>cperba</c> = percentage of college graduates in a state (grand mean centered)</p></li>
+            <li><p><c>days2000</c> = date challenge was made, measured by number of days after January 1, 2000</p></li>
+            <li><p><c>obama</c> = 1 if challenge was made while Barack Obama was president; 0 otherwise</p></li>
+            <li><p><c>freqchal</c> = 1 if book was written by a frequently challenged author (10 or more challenges across the country); 0 otherwise</p></li>
+            <li><p><c>sexexp</c> = 1 if reason for challenge was sexually explicit material; 0 otherwise</p></li>
+            <li><p><c>antifamily</c> = 1 if reason for challenge was antifamily material; 0 otherwise</p></li>
+            <li><p><c>occult</c> = 1 if reason for challenge was material about the occult; 0 otherwise</p></li>
+            <li><p><c>language</c> = 1 if reason for challenge was inappropriate language; 0 otherwise</p></li>
+            <li><p><c>homosexuality</c> = 1 if reason for challenge was material about homosexuality; 0 otherwise</p></li>
+            <li><p><c>violence</c> = 1 if reason for challenge was violent material; 0 otherwise</p></li>
+          </ul>
+          <p>
+            The primary response variable is <c>removed</c>.  Certain potential predictors are
+            measured at the state level (e.g., <c>pvi2</c> and <c>cperhs</c>), at least one is
+            at the book level (<c>freqchal</c>), and several are specific to an individual
+            challenge (e.g., <c>obama</c> and <c>sexexp</c>).  In addition, note that the same
+            book can be challenged for more than one reason, in different states, or even at
+            different times in the same state.
           </p>
           <p>
             Perform exploratory analyses and then run multilevel models to examine significant
-            determinants of successful challenges. Write a short report comparing specific
+            determinants of successful challenges.  Write a short report comparing specific
             reasons for the challenge to the greater context in which a challenge was made.
           </p>
         </statement>
@@ -1713,13 +1773,20 @@ print(ranef1[[1]], more = TRUE)
             text).
           </p>
           <p>
-            Possible questions to pursue: How can we model number of stars in the rating, or
-            whether or not the rating was 5 stars? How can we model whether or not at least one
-            person thought the review was useful or cool? Note that user and restaurant can be
-            considered crossed random effects, and convergence may be an issue; a random sample
-            of reviews or a targeted sample of frequently appearing users and/or restaurants may
-            be needed.
+            There are various questions that could be pursued with this data.  Here are just a
+            few ideas:
           </p>
+          <ul>
+            <li><p>how can we model number of stars in the rating, or whether or not the rating was 5 stars?</p></li>
+            <li><p>how can we model whether or not at least one person thought the review was useful?</p></li>
+            <li><p>how can we model whether or not at least one person thought the review was cool?</p></li>
+          </ul>
+          <p>
+            A few things to keep in mind while building models to answer your questions:
+          </p>
+          <ul>
+            <li><p>user and restaurant can be considered crossed random effects</p></li>
+          </ul>
         </statement>
       </exercise>
     </subexercises>
