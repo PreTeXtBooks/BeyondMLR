@@ -226,7 +226,7 @@ library(tidyverse)
         each foul within a game as independent even though we expect them to be correlated, but
         they provide a sense for the overall patterns.  We see that time remaining is reasonably
         uniform.  Score differential and foul differential are both bell-shaped, with a mean
-        slightly favoring the home team — on average, the home team leads by 2.04 points (SD
+        slightly favoring the home team in both cases &#x2014; on average, the home team leads by 2.04 points (SD
         7.24) and has 0.36 fewer previous fouls (SD 2.05) at the time a foul is called.
       </p>
 
@@ -337,7 +337,7 @@ library(tidyverse)
         support for our primary hypothesis about evening out foul calls, indicating a very strong
         trend for fouls to be more often called on the home team at points in the game when more
         fouls had previously been called on the visiting team.
-        <xref ref="fig-gmu-cdelogitmat1"/>b and <xref ref="fig-gmu-cdelogitmat1"/>c show that
+        <xref ref="fig-gmu-cdelogitmat1"/>b and <xref ref="fig-gmu-cdelogitmat1"/>c then show that
         fouls were somewhat more likely to be called on the home team when the home team's lead
         was greater and (very slightly) later in the half. Conclusions from the conditional
         density plots in <xref ref="fig-gmu-cdelogitmat1"/>a–c are supported with associated
@@ -792,8 +792,8 @@ mod0a &lt;- glm(foul.home ~ foul.diff, family = binomial,
       variable recording if the <m>j^{th}</m> foul from Game <m>i</m> was called on the home
       team (1) or the visiting team (0), where Game <m>i</m> pitted Visiting Team <m>g</m>
       against Home Team <m>h</m>. Square brackets are introduced since <m>g</m> and <m>h</m>
-      are essentially at the same level as <m>i</m>, we have assumed (without stating so)
-      throughout this book that subscripting without square brackets implies a movement to lower
+      are essentially at the same level as <m>i</m>, whereas we have assumed (without stating
+      so) throughout this book that subscripting without square brackets implies a movement to lower
       levels as the subscripts move left to right (e.g., <m>ij</m> indicates <m>i</m> units are
       at Level Two, while <m>j</m> units are at Level One, nested inside Level Two units). We
       can then consider <m>Y_{i[gh]j}</m> to be a Bernoulli random variable with parameter
@@ -806,7 +806,7 @@ mod0a &lt;- glm(foul.home ~ foul.diff, family = binomial,
       Typically, with the addition of crossed effects, the Level One model will remain familiar
       and changes will be seen at Level Two, especially in the equation for the intercept term.
       In the model formulation below we allow, as before, the slope and intercept to
-      potentially vary by game. Level One and Level Two models are:
+      potentially vary by game:
     </p>
 
     <p><alert>Level One:</alert></p>
@@ -919,11 +919,11 @@ model.a3 &lt;- glmer(foul.home ~ foul.diff + (1|game) +
 
     <p>
       Our estimates of variance components provide evidence of the relative variability in the
-      different Level Two random effects. For example, an estimated 65.4% of variability in the intercepts is
-      due to differences from game-to-game, while 25.9% is due to differences among home teams,
-      and 8.7% is due to differences among visiting teams. At this point, we could reasonably
-      ask: if we use a random effect to account for differences among games, does it really pay
-      off to also account for which team is home and which is the visitor?
+      different Level Two random effects.  For example, an estimated 65.4% of variability in
+      the intercepts is due to differences from game-to-game, while 25.9% is due to differences
+      among home teams, and 8.7% is due to differences among visiting teams. At this point, we
+      could reasonably ask: if we use a random effect to account for differences among games,
+      does it really pay off to also account for which team is home and which is the visitor?
     </p>
 
     <p>
@@ -1071,8 +1071,8 @@ bootstrapAnova(mA = model.b3, m0 = model.a3, B = 1000)
       and 3 covariance terms). By the parametric bootstrap, there is no significant evidence
       that the model with 6 additional parameters is necessary (LRT = 6.49, df = 6, p = .06 by
       parametric bootstrap). The associated p-value based on a likelihood ratio test with
-      approximate chi-square distribution (and restricted maximum likelihood estimation) is .370, reflecting once again the overly heavy tails
-      of the chi-square distribution.
+      approximate chi-square distribution (and restricted maximum likelihood estimation) is .370,
+      reflecting once again the overly heavy tails of the chi-square distribution.
     </p>
   </section>
 
@@ -1198,8 +1198,8 @@ model.f &lt;- glmer(foul.home ~ foul.diff + score.diff +
       <li><p><m>\exp(\hat{\beta}_0) = \exp(-0.172) = 0.842.</m> Also, <m>0.842^{-1} = 1.188.</m>
       As the foul differential decreases by 1 (the visiting team accumulates another foul
       relative to the home team), the odds of a home foul increase by 18.8%. This interpretation
-      applies to shooting fouls at the end of the half, after controlling for score differential
-      and whether the home team has the lead.</p></li>
+      applies to shooting fouls at the end of the half, after controlling for the effects of score
+      differential and whether the home team has the lead.</p></li>
       <li><p><m>\exp(\hat{\gamma}_0) = \exp(0.034) = 1.034.</m> As the score differential
       increases by 1 (the home team accumulates another point relative to the visiting team),
       the odds of a home foul increase by 3.4%, after controlling for foul differential, type of
@@ -1226,11 +1226,13 @@ model.f &lt;- glmer(foul.home ~ foul.diff + score.diff +
       on the home team increase by 29.6% for each extra foul on the visiting team, while the
       odds that a personal foul is on the home team increase by 36.9%.</p></li>
       <li><p><m>\exp(\hat{\omega}_0) = \exp(-0.0087) = 0.991.</m> Also, <m>0.991^{-1} = 1.009.</m>
-      The effect of foul differential increases by 0.9% for each extra minute remaining in the
-      half, after controlling for score differential, whether the home team has the lead, and
-      type of foul. Thus, the tendency to even out foul calls is strongest earlier in the game.
-      At the end of the half (time = 0), the odds increase by 18.8% for each extra visiting
-      foul; midway (time = 10), they increase by 29.6%.</p></li>
+      The effect of foul differential increases by 0.9% for each extra minute that is remaining
+      in the half, after controlling for foul differential, score differential, whether the home
+      team has the lead, and type of foul. Thus, the tendency to even out foul calls is strongest
+      earlier in the game. For example, midway through the half (<c>time=10</c>), the odds that
+      a shooting foul is on the home team increase by 29.6% for each extra foul on the visiting
+      team, while at the end of the half (<c>time=0</c>) the odds increase by 18.8% for each
+      extra visiting foul.</p></li>
       <li><p><m>\hat{\sigma}_u^2 = 0.185.</m> The variance in log-odds intercepts from
       game-to-game after controlling for all other covariates.</p></li>
     </ul>
@@ -1249,8 +1251,8 @@ model.f &lt;- glmer(foul.home ~ foul.diff + score.diff +
       the first half when the score is tied, the fouls are even, and a shooting foul has been
       called — is adjusted by a random effect specific to the two teams playing and to the game
       itself. Together, the estimated random effects for, say, home team, should follow a normal
-      distribution as assumed: centered at 0 and with variance given by <m>\sigma_v^2</m>. It
-      is sometimes interesting to know which teams are typical (with estimated random effects
+      distribution as we assumed: centered at 0 and with variance given by <m>\sigma_v^2</m>. It
+      is sometimes interesting to know, then, which teams are typical (with estimated random effects
       near 0) and which fall in the upper and lower tails of the normal distribution.
     </p>
 
@@ -1532,9 +1534,10 @@ print(ranef1[[1]], more = TRUE)
             Aboriginal and non-Aboriginal Australians: Roles of age, gender, geography and
             area-level disadvantage." They used multilevel Poisson models to compare rates of
             acute myocardial infarction (AMI) in the 199 Statistical Local Areas (SLAs) in New
-            South Wales. Within SLA, AMI rates (number of events over population count) were summarized by subgroups determined by year
-            (2002–2007), age (in 10-year groupings), sex, and Aboriginal status; these are then our Level
-            One variables. Analyses also incorporated remoteness (classified by quartiles) and
+            South Wales. Within SLA, AMI rates (number of events over population count) were
+            summarized by subgroups determined by year (2002–2007), age (in 10-year groupings),
+            sex, and Aboriginal status; these are then our Level One variables. Analyses also
+            incorporated remoteness (classified by quartiles) and
             socio-economic status (classified by quintiles) assessed at the SLA level (Level
             Two). For this study, give the observational units at Levels One and Two.
           </p>
@@ -1686,12 +1689,14 @@ print(ranef1[[1]], more = TRUE)
             We will return to the data from <xref ref="Angell2010"/> used in <xref ref="cs-seeds"/>,
             but whether or not a seed germinated will be considered the response variable
             rather than the heights of germinated plants. We will use the wide data set (one row
-            per plant) <c>seeds2.csv</c> for this analysis as described in Chapter 7, although we
+            per plant) <c>seeds2.csv</c> for this analysis as described in
+            <xref ref="sec-organizedata3"/>, although we
             will ignore plant heights over time, focusing solely on if
             the plant germinated at any time. Use multilevel generalized linear models to determine
             the effects of soil type and sterilization on germination rates; perform separate
             analyses for coneflowers and leadplants, and describe differences between the two
-            species.
+            species.  Support your conclusions with well-interpreted model coefficients and
+            insightful graphical summaries.
           </p>
         </statement>
       </exercise>
@@ -1766,8 +1771,10 @@ print(ranef1[[1]], more = TRUE)
         <statement>
           <p>
             <xref ref="Mohr2018"/> assembled a data set of Yelp restaurant reviews in Madison,
-            WI, from 2005 through 2017. The data in <c>yelp.csv</c> contains almost 60,000
-            reviews on 888 restaurants from over 20,000 reviewers, with variables on the reviewer
+            WI, from 2005 through 2017 based on the Yelp Dataset Challenge on Kaggle.
+            The data in <c>yelp.csv</c> contains almost 60,000
+            reviews on 888 restaurants from over 20,000 reviewers, and it contains a selection of
+            variables on the reviewer
             (e.g., total reviews, average stars), the restaurant (e.g., neighborhood, average
             stars, category), and the review itself (e.g., stars, year, useful ratings, actual
             text).
@@ -1786,6 +1793,8 @@ print(ranef1[[1]], more = TRUE)
           </p>
           <ul>
             <li><p>user and restaurant can be considered crossed random effects</p></li>
+            <li><p>convergence may be an issue.  You may have to take a random sample of reviews,
+            or a targeted sample of more frequently appearing users and/or restaurants.</p></li>
           </ul>
         </statement>
       </exercise>
