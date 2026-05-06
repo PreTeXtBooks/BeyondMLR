@@ -243,26 +243,27 @@ cat(" R squared = ", summary(modelc0)$r.squared, "\n",
 
       <table xml:id="tab-table2chp8">
         <title>Data from the 15 performances of Musician #22.</title>
-        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
-          <row header="yes" bottom="medium">
-            <cell>id</cell><cell>diary</cell><cell>perform_type</cell><cell>audience</cell><cell>na</cell><cell>instrument</cell>
-          </row>
-          <row><cell>22</cell><cell>1</cell><cell>Solo</cell><cell>Juried Recital</cell><cell>16</cell><cell>orchestral instrument</cell></row>
-          <row><cell>22</cell><cell>2</cell><cell>Solo</cell><cell>Juried Recital</cell><cell>28</cell><cell>orchestral instrument</cell></row>
-          <row><cell>22</cell><cell>3</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>15</cell><cell>orchestral instrument</cell></row>
-          <row><cell>22</cell><cell>4</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>19</cell><cell>orchestral instrument</cell></row>
-          <row><cell>22</cell><cell>5</cell><cell>Solo</cell><cell>Public Performance</cell><cell>25</cell><cell>orchestral instrument</cell></row>
-          <row><cell>22</cell><cell>6</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>17</cell><cell>orchestral instrument</cell></row>
-          <row><cell>22</cell><cell>7</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>11</cell><cell>orchestral instrument</cell></row>
-          <row><cell>22</cell><cell>8</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>18</cell><cell>orchestral instrument</cell></row>
-          <row><cell>22</cell><cell>9</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>11</cell><cell>orchestral instrument</cell></row>
-          <row><cell>22</cell><cell>10</cell><cell>Solo</cell><cell>Instructor</cell><cell>22</cell><cell>orchestral instrument</cell></row>
-          <row><cell>22</cell><cell>11</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>17</cell><cell>orchestral instrument</cell></row>
-          <row><cell>22</cell><cell>12</cell><cell>Solo</cell><cell>Public Performance</cell><cell>27</cell><cell>orchestral instrument</cell></row>
-          <row><cell>22</cell><cell>13</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>15</cell><cell>orchestral instrument</cell></row>
-          <row><cell>22</cell><cell>14</cell><cell>Solo</cell><cell>Juried Recital</cell><cell>27</cell><cell>orchestral instrument</cell></row>
-          <row><cell>22</cell><cell>15</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>17</cell><cell>orchestral instrument</cell></row>
-        </tabular>
+  <tabular>
+    <row header="yes">
+      <cell>id</cell><cell>diary</cell><cell>perform_type</cell>
+      <cell>audience</cell><cell>na</cell><cell>instrument</cell>
+    </row>
+    <row><cell>240</cell><cell>22</cell><cell>1</cell><cell>Solo</cell><cell>Instructor</cell><cell>24</cell><cell>orchestral instrument</cell></row>
+    <row><cell>241</cell><cell>22</cell><cell>2</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>21</cell><cell>orchestral instrument</cell></row>
+    <row><cell>242</cell><cell>22</cell><cell>3</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>14</cell><cell>orchestral instrument</cell></row>
+    <row><cell>243</cell<cell>22</cell><cell>4</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>15</cell><cell>orchestral instrument</cell></row>
+    <row><cell>244</cell><cell>22</cell><cell>5</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>10</cell><cell>orchestral instrument</cell></row>
+    <row><cell>245</cell><cell>22</cell><cell>6</cell><cell>Solo</cell><cell>Instructor</cell><cell>24</cell><cell>orchestral instrument</cell></row>
+    <row><cell>246</cell><cell>22</cell><cell>7</cell><cell>Solo</cell><cell>Student(s)</cell><cell>24</cell><cell>orchestral instrument</cell></row>
+    <row><cell>247</cell><cell>22</cell><cell>8</cell><cell>Solo</cell><cell>Instructor</cell><cell>16</cell><cell>orchestral instrument</cell></row>
+    <row><cell>248</cell><cell>22</cell><cell>9</cell><cell>Small Ensemble</cell><cell>Public Performance</cell><cell>34</cell><cell>orchestral instrument</cell></row>
+    <row><cell>249</cell><cell>22</cell><cell>10</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>22</cell><cell>orchestral instrument</cell></row>
+    <row><cell>250</cell><cell>22</cell><cell>11</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>19</cell><cell>orchestral instrument</cell></row>
+    <row><cell>251</cell><cell>22</cell><cell>12</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>18</cell><cell>orchestral instrument</cell></row>
+    <row><cell>252</cell><cell>22</cell><cell>13</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>12</cell><cell>orchestral instrument</cell></row>
+    <row><cell>253</cell><cell>22</cell><cell>14</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>19</cell><cell>orchestral instrument</cell></row>
+    <row><cell>254</cell><cell>22</cell><cell>15</cell><cell>Solo</cell><cell>Instructor</cell><cell>25</cell><cell>orchestral instrument</cell></row>
+  </tabular>
       </table>
 
       <p>
@@ -425,7 +426,9 @@ cat(" R squared = ", summary(regr.id22)$r.squared, "\n",
         \rho_{uv}\sigma_{u}\sigma_v \amp \sigma_{v}^{2} \end{array} \right] \right)
       </me>
       <p>
-        where <m>\sigma_{u}^{2}</m> is the variance of the <m>u_{i}</m> terms, <m>\sigma_{v}^{2}</m> is the variance of the <m>v_{i}</m> terms, and <m>\sigma_{uv} = \rho_{uv}\sigma_{u}\sigma_v</m> is the covariance between the <m>u_{i}</m> and the <m>v_{i}</m> terms. The correlation <m>\rho_{uv}</m> is simply the covariance converted to a <m>[-1,1]</m> scale:
+        where <m>\sigma_{u}^{2}</m> is the variance of the <m>u_{i}</m> terms, <m>\sigma_{v}^{2}</m> is the variance of the <m>v_{i}</m> terms, and <m>\sigma_{uv} = \rho_{uv}\sigma_{u}\sigma_v</m> is the covariance between the <m>u_{i}</m> and the <m>v_{i}</m> terms (i.e., how those two terms vary together).
+        Note that the correlation <m>\rho_{uv}</m> between the error terms is simply the covariance  <m>\sigma_{uv} = \rho_{uv}\sigma_{u}\sigma_{v}</m>
+        converted to a <m>[-1,1]</m> scale through the relationship:
       </p>
       <me>\rho_{uv} = \frac{\sigma_{uv}}{\sigma_{u}\sigma_{v}}</me>
       <p>
@@ -523,7 +526,7 @@ summary(model0)
 
       <table xml:id="tab-table3chp8">
         <title>Comparison of estimated coefficients and standard errors from the approaches mentioned in this section.</title>
-        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+        <tabular>
           <row header="yes" bottom="medium">
             <cell>Variable</cell><cell>Independence</cell><cell>Two-Stage</cell><cell>LVCF</cell><cell>Multilevel</cell>
           </row>
@@ -585,10 +588,15 @@ coef(summary(model.a))
       </program>
       <console>
         <output>
+#Model A (Unconditional means model)
+model.a &lt;- lmer(na ~ 1 + (1 | id), REML = T, data = music)
+
 ##  Groups   Name        Variance Std.Dev.
 ##  id       (Intercept)  4.95    2.22    
 ##  Residual             22.46    4.74
+
 ##  Number of Level Two groups =  37
+
 ##             Estimate Std. Error t value
 ## (Intercept)    16.24     0.4279   37.94
         </output>
@@ -659,11 +667,16 @@ coef(summary(model.b))
         </program>
         <console>
           <output>
+#Model B (Add large as Level 1 covariate)
+model.b &lt;- lmer(na ~ large +  (large | id), data = music)
+
 ##  Groups   Name        Variance Std.Dev. Corr 
 ##  id       (Intercept)  6.333   2.517         
 ##           large        0.743   0.862    -0.76
 ##  Residual             21.771   4.666
+
 ##  Number of Level Two groups =  37
+
 ##             Estimate Std. Error t value
 ## (Intercept)   16.730     0.4908   34.09
 ## large         -1.676     0.5425   -3.09
@@ -696,7 +709,7 @@ coef(summary(model.b))
         </figure>
 
         <p>
-          Figures <xref ref="fig-mli-spag1"/> and <xref ref="fig-mli-spag0"/> use <term>empirical Bayes estimates</term> for the intercepts (<m>a_{i}</m>) and slopes (<m>b_{i}</m>) of individual subjects. Empirical Bayes estimates are sometimes called <q>shrinkage estimates</q> since they combine individual-specific information with information from all subjects, thus <q>shrinking</q> the individual estimates toward the group averages. Empirical Bayes estimates are often used when a term such as <m>a_{i}</m> involves both fixed and random components; further detail can be found in <xref ref="Bryk2002"/> and <xref ref="Singer2003"/>.
+          <xref ref="fig-mli-spag1"/> and <xref ref="fig-mli-spag0"/> use <term>empirical Bayes estimates</term> for the intercepts (<m>a_{i}</m>) and slopes (<m>b_{i}</m>) of individual subjects. Empirical Bayes estimates are sometimes called <q>shrinkage estimates</q> since they combine individual-specific information with information from all subjects, thus <q>shrinking</q> the individual estimates toward the group averages. Empirical Bayes estimates are often used when a term such as <m>a_{i}</m> involves both fixed and random components; further detail can be found in <xref ref="Bryk2002"/> and <xref ref="Singer2003"/>.
         </p>
       </subsubsection>
 
@@ -747,7 +760,10 @@ coef(summary(model.b))
         <me>
           \text{Pseudo }R^2_{L2_v} = \frac{\hat{\sigma}_{v}^{2}(\text{Model B})-\hat{\sigma}_{v}^{2}(\text{Model C})}{\hat{\sigma}_{v}^{2}(\text{Model B})} = \frac{0.74-0.45}{0.74} = 0.392
         </me>
-        <p>
+<p>
+  <m>R^2_{L2u}</m> describes the improvement in Model C over Model B in explaining
+  subject-to-subject variability in intercepts, and <m>R^2_{L2v}</m> describes the improvement
+  in Model C over Model B in explaining subject-to-subject variability in slopes.
           Thus, the addition of instrument at Level Two has decreased the between-person variability in mean performance anxiety before solos and small ensembles by 10.6%, and it has decreased the between-person variability in the effect of large ensembles on performance anxiety by 39.2%.
         </p>
         <p>
@@ -780,18 +796,26 @@ BIC(model.c, model.c2)
         </program>
         <console>
           <output>
+#Model C2 (Run as random intercepts model)
+model.c2 &lt;- lmer(na ~ orch + large + orch:large +
+  (1|id), data = music)
+
 ##  Groups   Name        Variance Std.Dev.
 ##  id       (Intercept)  5.13    2.27    
 ##  Residual             21.88    4.68
+
 ##  Number of Level Two groups =  37
+
 ##             Estimate Std. Error t value
 ## (Intercept)  15.9026     0.6187  25.703
 ## orch          1.7100     0.9131   1.873
 ## large        -0.8918     0.8415  -1.060
 ## orch:large   -1.4650     1.0880  -1.347
+
          df  AIC
 model.c   8 3003
 model.c2  6 2999
+
          df  BIC
 model.c   8 3037
 model.c2  6 3025
@@ -840,11 +864,17 @@ coef(summary(model.d))
     </program>
     <console>
       <output>
+# Model D (Add negative emotionality as second L2 covariate)
+model.d &lt;- lmer(na ~ orch + mpqnem + large + orch:large + 
+  mpqnem:large + (large | id), data = music)
+
 ##  Groups   Name        Variance Std.Dev. Corr 
 ##  id       (Intercept)  3.286   1.813         
 ##           large        0.557   0.746    -0.38
+
 ##  Residual             21.811   4.670
 ##  Number of Level Two groups =  37
+
 ##              Estimate Std. Error t value
 ## (Intercept)  11.56801    1.22057  9.4775
 ## orch          1.00069    0.81713  1.2246
@@ -913,6 +943,9 @@ drop_in_dev &lt;- anova(model.d, model.c, test = "Chisq")
       </program>
       <console>
         <output>
+# anova() automatically uses ML for LRT tests
+drop_in_dev <- anova(model.d, model.c, test = "Chisq")
+
         npar  AIC  BIC logLik  dev Chisq Df      pval
 model.c    8 3007 3041  -1496 2991    NA NA        NA
 model.d   10 2996 3039  -1488 2976 14.73  2 0.0006319
@@ -968,7 +1001,9 @@ coef(summary(model.e))
 ##  id       (Intercept)  3.286   1.813         
 ##           large        0.557   0.746    -0.38
 ##  Residual             21.811   4.670
+
 ##  Number of Level Two groups =  37
+
 ##               Estimate Std. Error t value
 ## (Intercept)   16.25679    0.54756 29.6893
 ## orch           1.00069    0.81713  1.2246
@@ -1037,12 +1072,31 @@ coef(summary(model.e))
         \sigma_{uz} \amp \sigma_{vz} \amp \sigma_{wz} \amp \sigma_{xz} \amp \sigma_{yz} \amp \sigma_{z}^{2}
       \end{array} \right] \right).
     </me>
-    <p>
-      Being able to write out these variance-covariance matrices is less important than recognizing the number of variance components that must be estimated by our intended model. In this case, we must use likelihood-based methods to obtain estimates for 6 variance terms and 15 correlation terms at Level Two, along with 1 variance term at Level One. Note that the number of correlation terms is equal to the number of unique pairs among Level Two random effects. In cases where the number of terms is exploding, or the statistical software is struggling to simultaneously find estimates for all model parameters to maximize the likelihood function, we will consider ways to reduce the number of variance components in later sections.
-    </p>
-    <p>
-      From the signs of fixed effects estimates in the R output below, we see that performance anxiety is higher when a musician is performing in front of students, a jury, or the general public rather than their instructor, and it is lower for each additional diary the musician previously filled out. In addition, musicians with lower levels of positive emotionality and higher levels of absorption tend to experience greater performance anxiety. Addressing the researchers' primary hypothesis, after controlling for all these factors, we have significant evidence that musicians with higher levels of negative emotionality experience higher levels of performance anxiety, and that this association is even more pronounced when musicians are performing solos rather than as part of an ensemble group.
-    </p>
+<p>
+  Being able to write out these mammoth variance-covariance matrices is less important than
+  recognizing the number of variance components that must be estimated by our intended model.
+  In this case, we must use likelihood-based methods to obtain estimates for 6 variance terms
+  and 15 correlation terms at Level Two, along with 1 variance term at Level One. Note that
+  the number of correlation terms is equal to the number of unique pairs among Level Two random
+  effects. In later sections we will consider ways to reduce the number of variance components
+  in cases where the number of terms is exploding, or the statistical software is struggling to
+  simultaneously find estimates for all model parameters to maximize the likelihood function.
+</p>
+<p>
+  From the signs of fixed effects estimates in the R output below, we see that performance
+  anxiety is higher when a musician is performing in front of students, a jury, or the general
+  public rather than their instructor, and it is lower for each additional diary the musician
+  previously filled out. In addition, musicians with lower levels of positive emotionality and
+  higher levels of absorption tend to experience greater performance anxiety, and those who play
+  orchestral instruments experience more performance anxiety than those who play keyboards or
+  sing. Addressing the researchers' primary hypothesis, after controlling for all these factors,
+  we have significant evidence that musicians with higher levels of negative emotionality
+  experience higher levels of performance anxiety, and that this association is even more
+  pronounced when musicians are performing solos rather than as part of an ensemble group.
+</p>
+<p>
+From the signs of fixed effects estimates in the R output below, we see that performance anxiety is higher when a musician is performing in front of students, a jury, or the general public rather than their instructor, and it is lower for each additional diary the musician previously filled out. In addition, musicians with lower levels of positive emotionality and higher levels of absorption tend to experience greater performance anxiety, and those who play orchestral instruments experience more performance anxiety than those who play keyboards or sing. Addressing the researchers’ primary hypothesis, after controlling for all these factors, we have significant evidence that musicians with higher levels of negative emotionality experience higher levels of performance anxiety, and that this association is even more pronounced when musicians are performing solos rather than as part of an ensemble group.
+</p>
     <p>Key interpretations from Model F:</p>
     <ul>
       <li><p><m>\hat{\alpha}_{4} = 0.11</m>. A one-point increase in baseline level of negative emotionality is associated with an estimated 0.11 mean increase in performance anxiety for musicians performing in an ensemble group (<c>solo=0</c>), after controlling for previous diary entries, audience, positive emotionality, absorption, and instrument.</p></li>
