@@ -59,8 +59,7 @@ library(tidyverse)
       in 2010 as it did in 2005?</p></li>
       <li><p>How do results change if our analysis accounts for the correlation in calls from the
       same game and the same teams?</p></li>
-      <li><p>Is the tendency to even out calls stronger for fouls over which the referee generally
-      has greater control? Fouls are divided into offensive, personal, and shooting fouls.</p></li>
+      <li><p>Is the tendency to even out calls stronger for fouls over which the referee generally has greater control? Fouls are divided into offensive, personal, and shooting fouls, and one could argue that referees have the most control over offensive fouls (for example, where the player with the ball knocks over a stationary defender) and the least control over shooting fouls (where an offensive player is fouled in the act of shooting).</p></li>
       <li><p>Are the actions of referees associated with the score of the game?</p></li>
     </ul>
   </section>
