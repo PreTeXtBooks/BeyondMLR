@@ -41,12 +41,14 @@ library(tidyverse)
       that officials in NCAA men's college basketball tend to "even out" foul calls over the course
       of a game, based on data collected in 2004–2005. Using logistic regression to model the
       effect of foul differential on the probability that the next foul called would be on the home
-      team, Anderson and Pierce found that "the probability of the next foul being called on the
-      visiting team can reach as high as 0.70." More recently, Moskowitz and Wertheim argue that
-      the number one reason for the home field advantage in sports is referee bias. Specifically,
-      in basketball, they demonstrate that calls over which referees have greater control were more
-      likely to benefit the home team, especially in crucial situations
-      <xref ref="Moskowitz2011"/>.
+      team (controlling for score differential, conference, and whether or not the home team had
+      the lead), Anderson and Pierce found that "the probability of the next foul being called on
+      the visiting team can reach as high as 0.70." More recently, Moskowitz and Wertheim, in
+      their book <em>Scorecasting</em>, argue that the number one reason for the home field
+      advantage in sports is referee bias. Specifically, in basketball, they demonstrate that calls
+      over which referees have greater control&#x2014;offensive fouls, loose ball fouls, ambiguous
+      turnovers such as palming and traveling&#x2014;were more likely to benefit the home team than
+      more clearcut calls, especially in crucial situations <xref ref="Moskowitz2011"/>.
     </p>
 
     <p>
@@ -59,7 +61,11 @@ library(tidyverse)
       in 2010 as it did in 2005?</p></li>
       <li><p>How do results change if our analysis accounts for the correlation in calls from the
       same game and the same teams?</p></li>
-      <li><p>Is the tendency to even out calls stronger for fouls over which the referee generally has greater control? Fouls are divided into offensive, personal, and shooting fouls, and one could argue that referees have the most control over offensive fouls (for example, where the player with the ball knocks over a stationary defender) and the least control over shooting fouls (where an offensive player is fouled in the act of shooting).</p></li>
+      <li><p>Is the tendency to even out calls stronger for fouls over which the referee generally
+      has greater control?  Fouls are divided into offensive, personal, and shooting fouls, and
+      one could argue that referees have the most control over offensive fouls (for example, where
+      the player with the ball knocks over a stationary defender) and the least control over
+      shooting fouls (where an offensive player is fouled in the act of shooting).</p></li>
       <li><p>Are the actions of referees associated with the score of the game?</p></li>
     </ul>
   </section>
@@ -71,7 +77,8 @@ library(tidyverse)
       <title>Data Organization</title>
 
       <p>
-        Key variables in <c>basketball0910.csv</c> are:
+        Examination of data for Case Study <xref ref="cs-refs"/> reveals the following key
+        variables in <c>basketball0910.csv</c>:
       </p>
 
       <ul>
@@ -94,8 +101,9 @@ library(tidyverse)
         team</p></li>
         <li><p><c>foul.type</c> = categorical variable if current foul was offensive, personal,
         or shooting</p></li>
-        <li><p><c>shooting</c>, <c>personal</c>, <c>offensive</c> = indicators for foul
-        type</p></li>
+        <li><p><c>shooting</c> = indicator if foul was a shooting foul</p></li>
+        <li><p><c>personal</c> = indicator if foul was a personal foul</p></li>
+        <li><p><c>offensive</c> = indicator if foul was an offensive foul</p></li>
         <li><p><c>time</c> = number of minutes left in the first half when foul called</p></li>
       </ul>
 
@@ -109,58 +117,60 @@ library(tidyverse)
 
       <table xml:id="tab-table1chp11">
         <title>Key variables from the first 10 rows of data from the College Basketball Referees
-        case study. Each row represents a different foul called; rows 1–8 are fouls from Game 1
-        and rows 9–10 are from Game 2.</title>
+        Case Study. Each row represents a different foul called; we see all 8 first-half fouls
+        from Game 1 followed by the first 2 fouls called in Game 2.</title>
         <tabular halign="center">
           <row header="yes">
             <cell>game</cell>
+            <cell>visitor</cell>
+            <cell>hometeam</cell>
+            <cell>foul.num</cell>
             <cell>foul.home</cell>
             <cell>foul.diff</cell>
             <cell>score.diff</cell>
-            <cell>time</cell>
-            <cell>visitor</cell>
-            <cell>hometeam</cell>
+            <cell>lead.home</cell>
             <cell>foul.type</cell>
+            <cell>time</cell>
           </row>
           <row>
-            <cell>1</cell><cell>0</cell><cell>0</cell><cell>0</cell>
-            <cell>19.08</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+            <cell>1</cell><cell>IA</cell><cell>MN</cell><cell>1</cell><cell>0</cell>
+            <cell>0</cell><cell>7</cell><cell>1</cell><cell>Personal</cell><cell>14.167</cell>
           </row>
           <row>
-            <cell>1</cell><cell>1</cell><cell>-1</cell><cell>0</cell>
-            <cell>18.78</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+            <cell>1</cell><cell>IA</cell><cell>MN</cell><cell>2</cell><cell>1</cell>
+            <cell>-1</cell><cell>10</cell><cell>1</cell><cell>Personal</cell><cell>11.433</cell>
           </row>
           <row>
-            <cell>1</cell><cell>0</cell><cell>1</cell><cell>2</cell>
-            <cell>16.25</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+            <cell>1</cell><cell>IA</cell><cell>MN</cell><cell>3</cell><cell>1</cell>
+            <cell>0</cell><cell>11</cell><cell>1</cell><cell>Personal</cell><cell>10.233</cell>
           </row>
           <row>
-            <cell>1</cell><cell>0</cell><cell>0</cell><cell>2</cell>
-            <cell>15.10</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+            <cell>1</cell><cell>IA</cell><cell>MN</cell><cell>4</cell><cell>0</cell>
+            <cell>1</cell><cell>11</cell><cell>1</cell><cell>Personal</cell><cell>9.733</cell>
           </row>
           <row>
-            <cell>1</cell><cell>1</cell><cell>-1</cell><cell>2</cell>
-            <cell>14.00</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+            <cell>1</cell><cell>IA</cell><cell>MN</cell><cell>5</cell><cell>0</cell>
+            <cell>0</cell><cell>14</cell><cell>1</cell><cell>Shooting</cell><cell>7.767</cell>
           </row>
           <row>
-            <cell>1</cell><cell>1</cell><cell>0</cell><cell>2</cell>
-            <cell>13.12</cell><cell>Indiana</cell><cell>Duke</cell><cell>shooting</cell>
+            <cell>1</cell><cell>IA</cell><cell>MN</cell><cell>6</cell><cell>0</cell>
+            <cell>-1</cell><cell>22</cell><cell>1</cell><cell>Shooting</cell><cell>5.567</cell>
           </row>
           <row>
-            <cell>1</cell><cell>0</cell><cell>1</cell><cell>0</cell>
-            <cell>12.33</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+            <cell>1</cell><cell>IA</cell><cell>MN</cell><cell>7</cell><cell>1</cell>
+            <cell>-2</cell><cell>25</cell><cell>1</cell><cell>Shooting</cell><cell>2.433</cell>
           </row>
           <row>
-            <cell>1</cell><cell>1</cell><cell>0</cell><cell>0</cell>
-            <cell>11.83</cell><cell>Indiana</cell><cell>Duke</cell><cell>personal</cell>
+            <cell>1</cell><cell>IA</cell><cell>MN</cell><cell>8</cell><cell>1</cell>
+            <cell>-1</cell><cell>23</cell><cell>1</cell><cell>Offensive</cell><cell>1.000</cell>
           </row>
           <row>
-            <cell>2</cell><cell>0</cell><cell>0</cell><cell>0</cell>
-            <cell>19.58</cell><cell>Maryland</cell><cell>Virginia</cell><cell>personal</cell>
+            <cell>2</cell><cell>MI</cell><cell>MIST</cell><cell>1</cell><cell>0</cell>
+            <cell>0</cell><cell>2</cell><cell>1</cell><cell>Shooting</cell><cell>18.983</cell>
           </row>
           <row>
-            <cell>2</cell><cell>1</cell><cell>-1</cell><cell>0</cell>
-            <cell>18.90</cell><cell>Maryland</cell><cell>Virginia</cell><cell>personal</cell>
+            <cell>2</cell><cell>MI</cell><cell>MIST</cell><cell>2</cell><cell>1</cell>
+            <cell>-1</cell><cell>2</cell><cell>1</cell><cell>Personal</cell><cell>17.200</cell>
           </row>
         </tabular>
       </table>
@@ -176,20 +186,34 @@ library(tidyverse)
       <p>
         The structure of this data suggests a couple of familiar attributes combined in an
         unfamiliar way. With a binary response variable, a generalized linear model is typically
-        applied, especially one with a logit link function (logistic regression). But with
-        covariates at multiple levels — some at the individual foul level and others at the game
-        level — a multilevel model would also be sensible. So what we need is a multilevel model
-        with a non-normal response; in other words, a
+        applied, especially one with a logit link function (indicating logistic regression). But
+        with covariates at multiple levels&#x2014;some at the individual foul level and others at
+        the game level&#x2014;a multilevel model would also be sensible. So what we need is a
+        multilevel model with a non-normal response; in other words, a
         <term>multilevel generalized linear model (multilevel GLM)</term>.
         <idx><h>multilevel GLM</h></idx>
+        We will investigate what such a model might look like in the next section, but we will
+        still begin by exploring the data with initial graphical and numerical summaries.
       </p>
 
       <p>
-        Level One variables (varying with each foul called) include: whether or not the foul was
-        called on the home team (the response), the game situation at the time (time remaining,
-        who is leading and by how many points, the foul differential, and who the previous foul
-        was called on), and the type of foul. Level Two variables (unchanged for a particular
-        game) include only the home and visiting teams.
+        As with other multilevel situations, we will begin with broad summaries across all 4972
+        foul calls from all 340 games.  Most of the variables we have collected can vary with
+        each foul called; these Level One variables include:
+      </p>
+
+      <ul>
+        <li><p>whether or not the foul was called on the home team (our response variable),</p></li>
+        <li><p>the game situation at the time the foul was called (the time remaining in the first
+        half, who is leading and by how many points, the foul differential between the home and
+        visiting team, and who the previous foul was called on), and</p></li>
+        <li><p>the type of foul called (offensive, personal, or shooting).</p></li>
+      </ul>
+
+      <p>
+        Level Two variables, those that remain unchanged for a particular game, then include only
+        the home and visiting teams, although we might consider attributes such as attendance,
+        team rankings, etc.
       </p>
     </subsection>
 
@@ -197,10 +221,12 @@ library(tidyverse)
       <title>Exploratory Analyses</title>
 
       <p>
-        <xref ref="fig-gmu-histmat1"/> shows histograms for the continuous Level One covariates
-        (time remaining, foul differential, and score differential). Time remaining is reasonably
-        uniform. Score differential and foul differential are both bell-shaped, with a mean
-        slightly favoring the home team — on average, the home team leads by 2.04 points (SD
+        In <xref ref="fig-gmu-histmat1"/>, we see histograms for the continuous Level One
+        covariates (time remaining, foul differential, and score differential).  These plots treat
+        each foul within a game as independent even though we expect them to be correlated, but
+        they provide a sense for the overall patterns.  We see that time remaining is reasonably
+        uniform.  Score differential and foul differential are both bell-shaped, with a mean
+        slightly favoring the home team in both cases &#x2014; on average, the home team leads by 2.04 points (SD
         7.24) and has 0.36 fewer previous fouls (SD 2.05) at the time a foul is called.
       </p>
 
@@ -215,71 +241,130 @@ library(tidyverse)
       </figure>
 
       <p>
-        More fouls are called on visiting teams (52.1%) than home teams, the home team is more
-        likely to hold a lead (57.1%), and personal fouls are most likely to be called (51.6%),
-        followed by shooting fouls (38.7%) and then offensive fouls (9.7%).
+        Summaries of the categorical response (whether the foul was called on the home team) and
+        categorical Level One covariates (whether the home team has the lead and what type of
+        foul was called) can be provided through tables of proportions.  More fouls are called on
+        visiting teams (52.1%) than home teams, the home team is more likely to hold a lead
+        (57.1%), and personal fouls are most likely to be called (51.6%), followed by shooting
+        fouls (38.7%) and then offensive fouls (9.7%).
       </p>
 
       <p>
-        For an initial examination of Level Two covariates (the home and visiting teams),
-        <xref ref="tab-table2chp11"/> shows that Minnesota is among the bottom three teams in
-        the average total number of fouls in first halves of home games (12.1), while Duke is
-        at the top (20.0). This suggests that accounting for the effect of home and visiting
-        team will be an important part of our model.
+        For an initial examination of Level Two covariates (the home and visiting teams), we can
+        take the number of times, for instance, Minnesota (MN) appears in the long data set (with
+        one row per foul called as illustrated in <xref ref="tab-table1chp11"/>) as the home team
+        and divide by the number of unique games in which Minnesota is the home team.  This ratio
+        (12.1), found in <xref ref="tab-table2chp11"/>, shows that Minnesota is among the bottom
+        three teams in the average total number of fouls in the first halves of games in which it
+        is the home team.  That is, games at Minnesota have few total fouls relative to games
+        played elsewhere.  Accounting for the effect of home and visiting team will likely be an
+        important part of our model, since some teams tend to play in games with twice as many
+        fouls called as others, and other teams see a noticeable disparity in the total number of
+        fouls depending on if they are home or away.
       </p>
 
       <table xml:id="tab-table2chp11">
         <title>Average total number of fouls in the first half over all games in which a
-        particular team is home or visitor. Shown are the top 3 and bottom 3 teams by total fouls
-        in home games (left columns) and the top 3 and bottom 3 by total fouls in away games
-        (right columns).</title>
+        particular team is home or visitor.  The left columns show the top 3 and bottom 3 teams
+        according to total number of fouls (on both teams) in first halves of games in which they
+        are the home team.  The middle columns correspond to games in which the listed teams are
+        the visitors, and the right columns show the largest differences (in both directions)
+        between total fouls in games in which a team is home or visitor.</title>
         <tabular halign="center">
+          <col/><col/><col/><col/><col/><col/><col/>
           <row header="yes">
-            <cell>Home Rank</cell>
-            <cell>Home Team</cell>
-            <cell>Avg Fouls (Home)</cell>
-            <cell>Visitor Rank</cell>
-            <cell>Visitor Team</cell>
-            <cell>Avg Fouls (Away)</cell>
+            <cell></cell>
+            <cell colspan="2">Home</cell>
+            <cell colspan="2">Visitor</cell>
+            <cell colspan="2">Difference</cell>
+          </row>
+          <row header="yes">
+            <cell></cell>
+            <cell>Team</cell><cell>Fouls</cell>
+            <cell>Team</cell><cell>Fouls</cell>
+            <cell>Team</cell><cell>Fouls</cell>
           </row>
           <row>
-            <cell>1 (highest)</cell><cell>Duke</cell><cell>20.0</cell>
-            <cell>1 (highest)</cell><cell>Maryland</cell><cell>21.2</cell>
+            <cell></cell><cell>Top 3</cell><cell></cell>
+            <cell></cell><cell></cell>
+            <cell>Bottom 3</cell><cell></cell>
           </row>
           <row>
-            <cell>2</cell><cell>Ohio State</cell><cell>19.5</cell>
-            <cell>2</cell><cell>Duke</cell><cell>20.3</cell>
+            <cell></cell><cell>Duke</cell><cell>20.0</cell>
+            <cell>WVa</cell><cell>21.4</cell>
+            <cell>Duke</cell><cell>4.0</cell>
           </row>
           <row>
-            <cell>3</cell><cell>Maryland</cell><cell>18.9</cell>
-            <cell>3</cell><cell>Ohio State</cell><cell>19.8</cell>
+            <cell></cell><cell>VaTech</cell><cell>19.4</cell>
+            <cell>Nova</cell><cell>19.0</cell>
+            <cell>Wisc</cell><cell>2.6</cell>
           </row>
           <row>
-            <cell>37 (lowest)</cell><cell>Minnesota</cell><cell>12.1</cell>
-            <cell>37 (lowest)</cell><cell>Minnesota</cell><cell>13.4</cell>
+            <cell></cell><cell>Nova</cell><cell>19.1</cell>
+            <cell>Wake</cell><cell>18.6</cell>
+            <cell>Pitt</cell><cell>2.3</cell>
           </row>
           <row>
-            <cell>38</cell><cell>Virginia</cell><cell>11.8</cell>
-            <cell>38</cell><cell>Wisconsin</cell><cell>13.1</cell>
+            <cell></cell><cell>Bottom 3</cell><cell></cell>
+            <cell></cell><cell></cell>
+            <cell>Top 3</cell><cell></cell>
           </row>
           <row>
-            <cell>39</cell><cell>Wisconsin</cell><cell>11.4</cell>
-            <cell>39</cell><cell>Virginia</cell><cell>12.9</cell>
+            <cell></cell><cell>Mich</cell><cell>10.6</cell>
+            <cell>Wisc</cell><cell>10.4</cell>
+            <cell>WVa</cell><cell>&#x2212;6.9</cell>
+          </row>
+          <row>
+            <cell></cell><cell>Ill</cell><cell>11.6</cell>
+            <cell>Mich</cell><cell>11.1</cell>
+            <cell>Mia</cell><cell>&#x2212;2.7</cell>
+          </row>
+          <row>
+            <cell></cell><cell>MN</cell><cell>12.1</cell>
+            <cell>PSU</cell><cell>11.3</cell>
+            <cell>Clem</cell><cell>&#x2212;2.6</cell>
           </row>
         </tabular>
       </table>
 
       <p>
-        The conditional density plots in the first row of <xref ref="fig-gmu-cdelogitmat1"/>
+        Next, we inspect numerical and graphical summaries of relationships between Level One
+        model covariates and our binary model response.  As with other multilevel analyses, we
+        will begin by observing broad trends involving all 4972 fouls called, even though fouls
+        from the same game may be correlated.  The conditional density plots in the first row of
+        <xref ref="fig-gmu-cdelogitmat1"/>
         examine continuous Level One covariates. <xref ref="fig-gmu-cdelogitmat1"/>a provides
-        support for our primary hypothesis: there is a very strong trend for fouls to be more
-        often called on the home team when more fouls had previously been called on the visiting
-        team. <xref ref="fig-gmu-cdelogitmat1"/>b and <xref ref="fig-gmu-cdelogitmat1"/>c show
-        that fouls were somewhat more likely on the home team when the home team's lead was
-        greater and slightly later in the half. The associated empirical logit plots in
-        <xref ref="fig-gmu-cdelogitmat1"/>d–f confirm these findings. The home team having 0.64
-        additional fouls (vs. 0.10) on the visitor at the time a home foul is called also
-        supports the foul differential pattern.
+        support for our primary hypothesis about evening out foul calls, indicating a very strong
+        trend for fouls to be more often called on the home team at points in the game when more
+        fouls had previously been called on the visiting team.
+        <xref ref="fig-gmu-cdelogitmat1"/>b and <xref ref="fig-gmu-cdelogitmat1"/>c then show that
+        fouls were somewhat more likely to be called on the home team when the home team's lead
+        was greater and (very slightly) later in the half. Conclusions from the conditional
+        density plots in <xref ref="fig-gmu-cdelogitmat1"/>a–c are supported with associated
+        empirical logit plots in <xref ref="fig-gmu-cdelogitmat1"/>d–f.  If a logistic link
+        function is appropriate, these plots should be linear, and the stronger the linear
+        association, the more promising the predictor.  We see in
+        <xref ref="fig-gmu-cdelogitmat1"/>d further confirmation of our primary hypothesis, with
+        lower log-odds of a foul called on the home team associated with a greater number of
+        previous fouls the home team had accumulated compared to the visiting team.
+        <xref ref="fig-gmu-cdelogitmat1"/>e shows that game score may play a role in foul trends,
+        as the log-odds of a foul on the home team grows as the home team accumulates a bigger
+        lead on the scoreboard, and <xref ref="fig-gmu-cdelogitmat1"/>f shows a very slight
+        tendency for greater log-odds of a foul called on the home team as the half proceeds
+        (since points on the right are closer to the beginning of the game).
+      </p>
+
+      <p>
+        Conclusions about continuous Level One covariates are further supported by summary
+        statistics calculated separately for fouls called on the home team and those called on
+        the visiting team.  For instance, when a foul is called on the home team, there is an
+        average of 0.64 additional fouls on the visitors at that point in the game, compared to
+        an average of 0.10 additional fouls on the visitors when a foul is called on the visiting
+        team.  Similarly, when a foul is called on the home team, they are in the lead by an
+        average of 2.7 points, compared to an average home lead of 1.4 points when a foul is
+        called on the visiting team.  As expected, the average time remaining in the first half
+        at the time of the foul is very similar for home teams and visitors (9.2 vs. 9.5 minutes,
+        respectively).
       </p>
 
       <figure xml:id="fig-gmu-cdelogitmat1">
@@ -297,10 +382,18 @@ library(tidyverse)
 
       <p>
         The mosaic plots in <xref ref="fig-gmu-barmat1"/> examine categorical Level One
-        covariates, indicating that fouls were more likely on the home team when the home team
-        was leading (51.8% vs. 42.9%), when the previous foul was on the visiting team (51.3%
-        vs. 43.8%), and when the foul was a personal foul (49.2%) rather than an offensive
-        (45.7%) or shooting foul (46.9%).
+        covariates, indicating that fouls were more likely to be called on the home team when the
+        home team was leading, when the previous foul was on the visiting team, and when the foul
+        was a personal foul rather than a shooting foul or an offensive foul.  A total of 51.8%
+        of calls go against the home team when it is leading the game, compared to only 42.9% of
+        calls when it is behind; 51.3% of calls go against the home team when the previous foul
+        went against the visitors, compared to only 43.8% of calls when the previous foul went
+        against the home team; and, 49.2% of personal fouls are called against the home team,
+        compared to only 46.9% of shooting fouls and 45.7% of offensive fouls.  Eventually we
+        will want to examine the relationship between foul type (personal, shooting, or offensive)
+        and foul differential, examining our hypothesis that the tendency to even out calls will
+        be even stronger for calls over which the referees have greater control (personal fouls
+        and especially offensive fouls).
       </p>
 
       <figure xml:id="fig-gmu-barmat1">
@@ -314,6 +407,18 @@ library(tidyverse)
           and (c) whether the previous foul was called on the home team.</description>
         </image>
       </figure>
+
+      <p>
+        The exploratory analyses presented above are an essential first step in understanding our
+        data, seeing univariate trends, and noting bivariate relationships between variable pairs.
+        However, our important research questions (a) involve the effect of foul differential
+        after adjusting for other significant predictors of which team is called for a foul,
+        (b) account for potential correlation between foul calls within a game (or within a
+        particular home or visiting team), and (c) determine if the effect of foul differential
+        is constant across game conditions.  In order to address research questions such as
+        these, we need to consider multilevel, multivariate statistical models for a binary
+        response variable.
+      </p>
     </subsection>
   </section>
 
@@ -518,8 +623,9 @@ lreg.game110 &lt;- glm(foul.home ~ foul.diff,
       </me>
 
       <p>
-        At Level Two, with no fixed covariates but error terms allowing the intercept and slope
-        to vary by game:
+        Then we include no fixed covariates at Level Two, but we include error terms to allow
+        the intercept and slope from Level One to vary by game, and we allow these errors to be
+        correlated:
       </p>
 
       <md>
@@ -528,25 +634,33 @@ lreg.game110 &lt;- glm(foul.home ~ foul.diff,
       </md>
 
       <p>
-        where
+        where the error terms at Level Two can be assumed to follow a multivariate normal
+        distribution:
       </p>
 
       <me>
-        \begin{bmatrix} u_i \\ v_i \end{bmatrix}
+        \begin{bmatrix} a_i \\ b_i \end{bmatrix}
         \sim N\!\left(
           \begin{bmatrix} 0 \\ 0 \end{bmatrix},
           \begin{bmatrix} \sigma_u^2 \\ \sigma_{uv} \amp \sigma_v^2 \end{bmatrix}
-        \right).
+        \right)
       </me>
 
       <p>
-        The composite model is:
+        Our composite model then looks like:
       </p>
 
-      <me>
-        \log\!\left(\frac{p_{ij}}{1-p_{ij}}\right)
-          = [\alpha_0 + \beta_0\,\text{foul.diff}_{ij}] + [u_i + v_i\,\text{foul.diff}_{ij}].
-      </me>
+      <md>
+        <mrow>
+          \log\!\left(\frac{p_{ij}}{1-p_{ij}}\right) \amp= a_i + b_i\,\text{foul.diff}_{ij}
+        </mrow>
+        <mrow>
+          \amp= (\alpha_0 + u_i) + (\beta_0 + v_i)\,\text{foul.diff}_{ij}
+        </mrow>
+        <mrow>
+          \amp= [\alpha_0 + \beta_0\,\text{foul.diff}_{ij}] + [u_i + v_i\,\text{foul.diff}_{ij}]
+        </mrow>
+      </md>
 
       <p>
         The major changes when moving from a normally distributed response to a binary response
@@ -555,7 +669,7 @@ lreg.game110 &lt;- glm(foul.home ~ foul.diff,
       </p>
 
       <p>
-        We can use statistical software to obtain parameter estimates for this unified multilevel
+        Again, we can use statistical software to obtain parameter estimates for this unified multilevel
         model using all 4972 fouls recorded from the 340 games. For example, the
         <c>glmer()</c> function from the <c>lme4</c> package in R extends the <c>lmer()</c>
         function to handle generalized responses and to account for the fact that fouls are not
@@ -678,9 +792,11 @@ mod0a &lt;- glm(foul.home ~ foul.diff, family = binomial,
       variable recording if the <m>j^{th}</m> foul from Game <m>i</m> was called on the home
       team (1) or the visiting team (0), where Game <m>i</m> pitted Visiting Team <m>g</m>
       against Home Team <m>h</m>. Square brackets are introduced since <m>g</m> and <m>h</m>
-      are essentially at the same level as <m>i</m>, whereas subscripting without square
-      brackets implies a movement to lower levels as subscripts move left to right. We can then
-      consider <m>Y_{i[gh]j}</m> to be a Bernoulli random variable with parameter
+      are essentially at the same level as <m>i</m>, whereas we have assumed (without stating
+      so) throughout this book that subscripting without square brackets implies a movement to lower
+      levels as the subscripts move left to right (e.g., <m>ij</m> indicates <m>i</m> units are
+      at Level Two, while <m>j</m> units are at Level One, nested inside Level Two units). We
+      can then consider <m>Y_{i[gh]j}</m> to be a Bernoulli random variable with parameter
       <m>p_{i[gh]j}</m>, where <m>p_{i[gh]j}</m> is the true probability that the
       <m>j^{th}</m> foul from Game <m>i</m> was called on Home Team <m>h</m> rather than
       Visiting Team <m>g</m>. We will include the crossed subscripting only where necessary.
@@ -689,8 +805,8 @@ mod0a &lt;- glm(foul.home ~ foul.diff, family = binomial,
     <p>
       Typically, with the addition of crossed effects, the Level One model will remain familiar
       and changes will be seen at Level Two, especially in the equation for the intercept term.
-      In the model formulation below (Model A3) we allow, as before, the slope and intercept to
-      potentially vary by game. Level One and Level Two models are:
+      In the model formulation below we allow, as before, the slope and intercept to
+      potentially vary by game:
     </p>
 
     <p><alert>Level One:</alert></p>
@@ -718,7 +834,8 @@ mod0a &lt;- glm(foul.home ~ foul.diff, family = binomial,
     </ul>
 
     <p>
-      where the three random effects are independent:
+      where error terms (random effects) at Level Two can be assumed to follow independent
+      normal distributions:
     </p>
 
     <md>
@@ -740,10 +857,7 @@ mod0a &lt;- glm(foul.home ~ foul.diff, family = binomial,
     </p>
 
     <p>
-      At Level Two, <m>\alpha_0</m> is the population average log odds (fixed), <m>u_i</m> is
-      the effect of Game <m>i</m> (random), <m>v_h</m> is the effect of Home Team <m>h</m>
-      (random), and <m>w_g</m> is the effect of Visiting Team <m>g</m> (random). The composite
-      model is:
+      Our composite model then looks like:
     </p>
 
     <me>
@@ -805,11 +919,11 @@ model.a3 &lt;- glmer(foul.home ~ foul.diff + (1|game) +
 
     <p>
       Our estimates of variance components provide evidence of the relative variability in the
-      different Level Two random effects. An estimated 65.4% of variability in the intercepts is
-      due to differences from game-to-game, while 25.9% is due to differences among home teams,
-      and 8.7% is due to differences among visiting teams. At this point, we could reasonably
-      ask: if we use a random effect to account for differences among games, does it really pay
-      off to also account for which team is home and which is the visitor?
+      different Level Two random effects.  For example, an estimated 65.4% of variability in
+      the intercepts is due to differences from game-to-game, while 25.9% is due to differences
+      among home teams, and 8.7% is due to differences among visiting teams. At this point, we
+      could reasonably ask: if we use a random effect to account for differences among games,
+      does it really pay off to also account for which team is home and which is the visitor?
     </p>
 
     <p>
@@ -938,7 +1052,7 @@ bootstrapAnova(mA = model.b3, m0 = model.a3, B = 1000)
     </figure>
 
     <p>
-      Note that we could also have allowed for a correlation between the error terms for the
+      Note that we could have also allowed for a correlation between the error terms for the
       intercept and slope by game, home team, or visiting team (Model B6) — i.e., assume, for
       example:
     </p>
@@ -957,8 +1071,8 @@ bootstrapAnova(mA = model.b3, m0 = model.a3, B = 1000)
       and 3 covariance terms). By the parametric bootstrap, there is no significant evidence
       that the model with 6 additional parameters is necessary (LRT = 6.49, df = 6, p = .06 by
       parametric bootstrap). The associated p-value based on a likelihood ratio test with
-      approximate chi-square distribution is .370, reflecting once again the overly heavy tails
-      of the chi-square distribution.
+      approximate chi-square distribution (and restricted maximum likelihood estimation) is .370,
+      reflecting once again the overly heavy tails of the chi-square distribution.
     </p>
   </section>
 
@@ -1084,8 +1198,8 @@ model.f &lt;- glmer(foul.home ~ foul.diff + score.diff +
       <li><p><m>\exp(\hat{\beta}_0) = \exp(-0.172) = 0.842.</m> Also, <m>0.842^{-1} = 1.188.</m>
       As the foul differential decreases by 1 (the visiting team accumulates another foul
       relative to the home team), the odds of a home foul increase by 18.8%. This interpretation
-      applies to shooting fouls at the end of the half, after controlling for score differential
-      and whether the home team has the lead.</p></li>
+      applies to shooting fouls at the end of the half, after controlling for the effects of score
+      differential and whether the home team has the lead.</p></li>
       <li><p><m>\exp(\hat{\gamma}_0) = \exp(0.034) = 1.034.</m> As the score differential
       increases by 1 (the home team accumulates another point relative to the visiting team),
       the odds of a home foul increase by 3.4%, after controlling for foul differential, type of
@@ -1112,11 +1226,13 @@ model.f &lt;- glmer(foul.home ~ foul.diff + score.diff +
       on the home team increase by 29.6% for each extra foul on the visiting team, while the
       odds that a personal foul is on the home team increase by 36.9%.</p></li>
       <li><p><m>\exp(\hat{\omega}_0) = \exp(-0.0087) = 0.991.</m> Also, <m>0.991^{-1} = 1.009.</m>
-      The effect of foul differential increases by 0.9% for each extra minute remaining in the
-      half, after controlling for score differential, whether the home team has the lead, and
-      type of foul. Thus, the tendency to even out foul calls is strongest earlier in the game.
-      At the end of the half (time = 0), the odds increase by 18.8% for each extra visiting
-      foul; midway (time = 10), they increase by 29.6%.</p></li>
+      The effect of foul differential increases by 0.9% for each extra minute that is remaining
+      in the half, after controlling for foul differential, score differential, whether the home
+      team has the lead, and type of foul. Thus, the tendency to even out foul calls is strongest
+      earlier in the game. For example, midway through the half (<c>time=10</c>), the odds that
+      a shooting foul is on the home team increase by 29.6% for each extra foul on the visiting
+      team, while at the end of the half (<c>time=0</c>) the odds increase by 18.8% for each
+      extra visiting foul.</p></li>
       <li><p><m>\hat{\sigma}_u^2 = 0.185.</m> The variance in log-odds intercepts from
       game-to-game after controlling for all other covariates.</p></li>
     </ul>
@@ -1135,8 +1251,8 @@ model.f &lt;- glmer(foul.home ~ foul.diff + score.diff +
       the first half when the score is tied, the fouls are even, and a shooting foul has been
       called — is adjusted by a random effect specific to the two teams playing and to the game
       itself. Together, the estimated random effects for, say, home team, should follow a normal
-      distribution as assumed: centered at 0 and with variance given by <m>\sigma_v^2</m>. It
-      is sometimes interesting to know which teams are typical (with estimated random effects
+      distribution as we assumed: centered at 0 and with variance given by <m>\sigma_v^2</m>. It
+      is sometimes interesting to know, then, which teams are typical (with estimated random effects
       near 0) and which fall in the upper and lower tails of the normal distribution.
     </p>
 
@@ -1280,7 +1396,7 @@ print(ranef1[[1]], more = TRUE)
       <exercise xml:id="exercise-ch11-6">
         <statement>
           <p>
-            In the context of the Charter Schools Case Study (Chapter 9), describe a situation
+            In the context of Case Study <xref ref="cs-charter"/>, describe a situation
             in which crossed random effects would be needed.
           </p>
         </statement>
@@ -1418,9 +1534,10 @@ print(ranef1[[1]], more = TRUE)
             Aboriginal and non-Aboriginal Australians: Roles of age, gender, geography and
             area-level disadvantage." They used multilevel Poisson models to compare rates of
             acute myocardial infarction (AMI) in the 199 Statistical Local Areas (SLAs) in New
-            South Wales. Within SLA, AMI rates were summarized by subgroups determined by year
-            (2002–2007), age (in 10-year groupings), sex, and Aboriginal status; these are Level
-            One variables. Analyses also incorporated remoteness (classified by quartiles) and
+            South Wales. Within SLA, AMI rates (number of events over population count) were
+            summarized by subgroups determined by year (2002–2007), age (in 10-year groupings),
+            sex, and Aboriginal status; these are then our Level One variables. Analyses also
+            incorporated remoteness (classified by quartiles) and
             socio-economic status (classified by quintiles) assessed at the SLA level (Level
             Two). For this study, give the observational units at Levels One and Two.
           </p>
@@ -1430,10 +1547,11 @@ print(ranef1[[1]], more = TRUE)
       <exercise xml:id="exercise-ch11-20">
         <statement>
           <p>
-            From the <xref ref="Randall2014"/> study described in the previous problem, let
-            <m>Y_{ij}</m> be the number of acute myocardial infarctions in subgroup <m>j</m>
-            from SLA <m>i</m>. Write out the multilevel model that likely produced their Table 2.
-            How many fixed effects and variance components must be estimated?
+            <xref ref="tab-table4chp11"/> shows Table 2 from <xref ref="Randall2014"/>.
+            Let <m>Y_{ij}</m> be the number of acute myocardial infarctions in subgroup <m>j</m>
+            from SLA <m>i</m>; write out the multilevel model that likely produced
+            <xref ref="tab-table4chp11"/>. How many fixed effects and variance components must be
+            estimated?
           </p>
         </statement>
       </exercise>
@@ -1484,10 +1602,9 @@ print(ranef1[[1]], more = TRUE)
       <exercise xml:id="exercise-ch11-25">
         <statement>
           <p>
-            <xref ref="Randall2014"/> also present Table 3, showing adjusted rate ratios for
-            area-level variables (remoteness and SES quintile) from a multilevel Poisson model
-            with random intercept for area. Describe the changes to the multilevel model for
-            Table 2 that likely produced this new table.
+            <xref ref="tab-table5chp11"/> shows Table 3 from <xref ref="Randall2014"/>.
+            Describe the changes to the multilevel model for <xref ref="tab-table4chp11"/> that
+            likely produced this new table.
           </p>
         </statement>
       </exercise>
@@ -1535,19 +1652,32 @@ print(ranef1[[1]], more = TRUE)
         <statement>
           <p>
             <xref ref="Trinh2018"/> collected data on 1561 Airbnb listings in Chicago from
-            August 2016, merging in information from the neighborhood where each listing was
-            located. Treat overall satisfaction as a binary variable (5 out of 5 vs. not). Conduct
-            an EDA, build a multilevel generalized model, and interpret model coefficients to
-            answer: What are characteristics of a higher rated listing? Are the most influential
-            traits associated with individual listings or entire neighborhoods? Are there intriguing
-            interactions? Variables in <c>airbnb.csv</c> include:
+            August 2016, and then they merged in information from the neighborhood (out of 43
+            in Chicago) where the listing was located.  We can examine traits that are associated
+            with listings that achieve an overall satisfaction of 5 out of 5 vs. those that do not
+            (i.e., treat satisfaction as a binary variable).  Conduct an EDA, build a multilevel
+            generalized model, and interpret model coefficients to answer questions such as: What
+            are characteristics of a higher rated listing?  Are the most influential traits
+            associated with individual listings or entire neighborhoods?  Are there intriguing
+            interactions where the effect of one variable depends on levels of another?
           </p>
+          <p>The following variables can be found in <c>airbnb.csv</c> or derived from the variables found there:</p>
           <ul>
-            <li><p><c>overall_satisfaction</c>, <c>satisfaction</c> (binary 5 vs. not),
-            <c>price</c>, <c>reviews</c>, <c>room_type</c>, <c>accommodates</c>,
-            <c>bedrooms</c>, <c>minstay</c>, <c>neighborhood</c>, <c>district</c>,
-            <c>WalkScore</c>, <c>TransitScore</c>, <c>BikeScore</c>, <c>PctBlack</c>,
-            <c>HighBlack</c></p></li>
+            <li><p><c>overall_satisfaction</c> = rating on a 0-5 scale.</p></li>
+            <li><p><c>satisfaction</c> = 1 if <c>overall_satisfaction</c> is 5, 0 otherwise</p></li>
+            <li><p><c>price</c> = price for one night (in dollars)</p></li>
+            <li><p><c>reviews</c> = number of reviews posted</p></li>
+            <li><p><c>room_type</c> = Entire home/apt., Private room, or Shared room</p></li>
+            <li><p><c>accommodates</c> = number of people the unit can hold</p></li>
+            <li><p><c>bedrooms</c> = number of bedrooms</p></li>
+            <li><p><c>minstay</c> = minimum length of stay (in days)</p></li>
+            <li><p><c>neighborhood</c> = neighborhood where unit is located (1 of 43)</p></li>
+            <li><p><c>district</c> = district where unit is located (1 of 9)</p></li>
+            <li><p><c>WalkScore</c> = quality of the neighborhood for walking (0-100)</p></li>
+            <li><p><c>TransitScore</c> = quality of the neighborhood for public transit (0-100)</p></li>
+            <li><p><c>BikeScore</c> = quality of the neighborhood for biking (0-100)</p></li>
+            <li><p><c>PctBlack</c> = proportion of black residents in a neighborhood</p></li>
+            <li><p><c>HighBlack</c> = 1 if <c>PctBlack</c> above .60, 0 otherwise</p></li>
           </ul>
         </statement>
       </exercise>
@@ -1556,14 +1686,17 @@ print(ranef1[[1]], more = TRUE)
         <title>Seed germination</title>
         <statement>
           <p>
-            We will return to the data from <xref ref="Angell2010"/> used in Case Study 7.3
-            (seeds), but whether or not a seed germinated will be considered the response variable
+            We will return to the data from <xref ref="Angell2010"/> used in <xref ref="cs-seeds"/>,
+            but whether or not a seed germinated will be considered the response variable
             rather than the heights of germinated plants. We will use the wide data set (one row
-            per plant) <c>seeds2.csv</c> and ignore plant heights over time, focusing solely on if
+            per plant) <c>seeds2.csv</c> for this analysis as described in
+            <xref ref="sec-organizedata3"/>, although we
+            will ignore plant heights over time, focusing solely on if
             the plant germinated at any time. Use multilevel generalized linear models to determine
             the effects of soil type and sterilization on germination rates; perform separate
             analyses for coneflowers and leadplants, and describe differences between the two
-            species.
+            species.  Support your conclusions with well-interpreted model coefficients and
+            insightful graphical summaries.
           </p>
         </statement>
       </exercise>
@@ -1577,22 +1710,57 @@ print(ranef1[[1]], more = TRUE)
             to be for reasons relating to obscenity and child protection rather than overt
             political and religious objections <xref ref="Jenkins2006"/>. Many past studies have
             addressed chiefly the reasons listed by those who challenge a book, but few examine
-            the overall context in which books are banned.
+            the overall context in which books are banned&#x2014;for example, the characteristics
+            of the states in which they occur.
           </p>
           <p>
-            A team of students assembled a data set from book challenges from the American Library
-            Society <xref ref="Fast2011"/> occurring in U.S. States between January 2000 and
-            November 2010, with state-level demographic information from the U.S. Census Bureau
-            and the Political Value Index (PVI). All book challenges are included except those
-            from Texas. Variables in <c>bookbanningNoTex.csv</c> include <c>book</c>,
-            <c>booktitle</c>, <c>author</c>, <c>state</c>, <c>removed</c> (primary response: 1
-            if book was removed), <c>pvi2</c>, <c>cperhs</c>, <c>cmedin</c>, <c>cperba</c>,
-            <c>days2000</c>, <c>obama</c>, <c>freqchal</c>, <c>sexexp</c>, <c>antifamily</c>,
-            <c>occult</c>, <c>language</c>, <c>homosexuality</c>, and <c>violence</c>.
+            A team of students assembled a data set by starting with information on book
+            challenges from the American Library Society <xref ref="Fast2011"/>. These book
+            challenges&#x2014;an initiation of the formal procedure for book
+            censorship&#x2014;occurred in U.S. States between January 2000 and November 2010.
+            In addition, state-level demographic information was obtained from the U.S. Census
+            Bureau and the Political Value Index (PVI) was obtained from the Cook Political
+            Report.
+          </p>
+          <p>
+            We will consider a data set with 931 challenges and 18 variables.  All book
+            challenges over the nearly 11-year period are included except those from the State
+            of Texas; Texas featured 683 challenges over this timeframe, nearly 5 times the
+            number in the next largest state.  Thus, the challenges from Texas have been removed
+            and could be analyzed separately.  Here, then, is a description of available
+            variables in <c>bookbanningNoTex.csv</c>:
+          </p>
+          <ul>
+            <li><p><c>book</c> = unique book ID number</p></li>
+            <li><p><c>booktitle</c> = name of book</p></li>
+            <li><p><c>author</c> = name of author</p></li>
+            <li><p><c>state</c> = state where challenge made</p></li>
+            <li><p><c>removed</c> = 1 if book was removed (challenge was successful); 0 otherwise</p></li>
+            <li><p><c>pvi2</c> = state score on the Political Value Index, where positive indicates a Democratic leaning, negative indicates a Republican leaning, and 0 is neutral</p></li>
+            <li><p><c>cperhs</c> = percentage of high school graduates in a state (grand mean centered)</p></li>
+            <li><p><c>cmedin</c> = median state income (grand median centered)</p></li>
+            <li><p><c>cperba</c> = percentage of college graduates in a state (grand mean centered)</p></li>
+            <li><p><c>days2000</c> = date challenge was made, measured by number of days after January 1, 2000</p></li>
+            <li><p><c>obama</c> = 1 if challenge was made while Barack Obama was president; 0 otherwise</p></li>
+            <li><p><c>freqchal</c> = 1 if book was written by a frequently challenged author (10 or more challenges across the country); 0 otherwise</p></li>
+            <li><p><c>sexexp</c> = 1 if reason for challenge was sexually explicit material; 0 otherwise</p></li>
+            <li><p><c>antifamily</c> = 1 if reason for challenge was antifamily material; 0 otherwise</p></li>
+            <li><p><c>occult</c> = 1 if reason for challenge was material about the occult; 0 otherwise</p></li>
+            <li><p><c>language</c> = 1 if reason for challenge was inappropriate language; 0 otherwise</p></li>
+            <li><p><c>homosexuality</c> = 1 if reason for challenge was material about homosexuality; 0 otherwise</p></li>
+            <li><p><c>violence</c> = 1 if reason for challenge was violent material; 0 otherwise</p></li>
+          </ul>
+          <p>
+            The primary response variable is <c>removed</c>.  Certain potential predictors are
+            measured at the state level (e.g., <c>pvi2</c> and <c>cperhs</c>), at least one is
+            at the book level (<c>freqchal</c>), and several are specific to an individual
+            challenge (e.g., <c>obama</c> and <c>sexexp</c>).  In addition, note that the same
+            book can be challenged for more than one reason, in different states, or even at
+            different times in the same state.
           </p>
           <p>
             Perform exploratory analyses and then run multilevel models to examine significant
-            determinants of successful challenges. Write a short report comparing specific
+            determinants of successful challenges.  Write a short report comparing specific
             reasons for the challenge to the greater context in which a challenge was made.
           </p>
         </statement>
@@ -1603,20 +1771,31 @@ print(ranef1[[1]], more = TRUE)
         <statement>
           <p>
             <xref ref="Mohr2018"/> assembled a data set of Yelp restaurant reviews in Madison,
-            WI, from 2005 through 2017. The data in <c>yelp.csv</c> contains almost 60,000
-            reviews on 888 restaurants from over 20,000 reviewers, with variables on the reviewer
+            WI, from 2005 through 2017 based on the Yelp Dataset Challenge on Kaggle.
+            The data in <c>yelp.csv</c> contains almost 60,000
+            reviews on 888 restaurants from over 20,000 reviewers, and it contains a selection of
+            variables on the reviewer
             (e.g., total reviews, average stars), the restaurant (e.g., neighborhood, average
             stars, category), and the review itself (e.g., stars, year, useful ratings, actual
             text).
           </p>
           <p>
-            Possible questions to pursue: How can we model number of stars in the rating, or
-            whether or not the rating was 5 stars? How can we model whether or not at least one
-            person thought the review was useful or cool? Note that user and restaurant can be
-            considered crossed random effects, and convergence may be an issue; a random sample
-            of reviews or a targeted sample of frequently appearing users and/or restaurants may
-            be needed.
+            There are various questions that could be pursued with this data.  Here are just a
+            few ideas:
           </p>
+          <ul>
+            <li><p>how can we model number of stars in the rating, or whether or not the rating was 5 stars?</p></li>
+            <li><p>how can we model whether or not at least one person thought the review was useful?</p></li>
+            <li><p>how can we model whether or not at least one person thought the review was cool?</p></li>
+          </ul>
+          <p>
+            A few things to keep in mind while building models to answer your questions:
+          </p>
+          <ul>
+            <li><p>user and restaurant can be considered crossed random effects</p></li>
+            <li><p>convergence may be an issue.  You may have to take a random sample of reviews,
+            or a targeted sample of more frequently appearing users and/or restaurants.</p></li>
+          </ul>
         </statement>
       </exercise>
     </subexercises>
