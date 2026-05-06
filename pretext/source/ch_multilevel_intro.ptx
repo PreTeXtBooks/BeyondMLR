@@ -251,7 +251,7 @@ cat(" R squared = ", summary(modelc0)$r.squared, "\n",
     <row><cell>240</cell><cell>22</cell><cell>1</cell><cell>Solo</cell><cell>Instructor</cell><cell>24</cell><cell>orchestral instrument</cell></row>
     <row><cell>241</cell><cell>22</cell><cell>2</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>21</cell><cell>orchestral instrument</cell></row>
     <row><cell>242</cell><cell>22</cell><cell>3</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>14</cell><cell>orchestral instrument</cell></row>
-    <row><cell>243</cell<cell>22</cell><cell>4</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>15</cell><cell>orchestral instrument</cell></row>
+    <row><cell>243</cell><cell>22</cell><cell>4</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>15</cell><cell>orchestral instrument</cell></row>
     <row><cell>244</cell><cell>22</cell><cell>5</cell><cell>Large Ensemble</cell><cell>Public Performance</cell><cell>10</cell><cell>orchestral instrument</cell></row>
     <row><cell>245</cell><cell>22</cell><cell>6</cell><cell>Solo</cell><cell>Instructor</cell><cell>24</cell><cell>orchestral instrument</cell></row>
     <row><cell>246</cell><cell>22</cell><cell>7</cell><cell>Solo</cell><cell>Student(s)</cell><cell>24</cell><cell>orchestral instrument</cell></row>
@@ -944,7 +944,7 @@ drop_in_dev &lt;- anova(model.d, model.c, test = "Chisq")
       <console>
         <output>
 # anova() automatically uses ML for LRT tests
-drop_in_dev <- anova(model.d, model.c, test = "Chisq")
+drop_in_dev &lt;- anova(model.d, model.c, test = "Chisq")
 
         npar  AIC  BIC logLik  dev Chisq Df      pval
 model.c    8 3007 3041  -1496 2991    NA NA        NA
