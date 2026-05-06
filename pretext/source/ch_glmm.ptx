@@ -1546,6 +1546,79 @@ print(ranef1[[1]], more = TRUE)
 
       <exercise xml:id="exercise-ch11-20">
         <statement>
+          <table xml:id="tab-table4chp11">
+            <title>Adjusted rate ratios for individual-level variables from the multilevel
+            Poisson regression model with random intercept for area from Table 2 in
+            Randall et al. (2014).</title>
+            <tabular halign="center">
+              <row header="yes">
+                <cell></cell>
+                <cell>RR</cell>
+                <cell>95% CI</cell>
+                <cell>p-Value</cell>
+              </row>
+              <row>
+                <cell colspan="4"><em>Aboriginal</em></cell>
+              </row>
+              <row>
+                <cell>No (ref)</cell><cell>1.00</cell><cell></cell><cell><m>\lt 0.01</m></cell>
+              </row>
+              <row>
+                <cell>Yes</cell><cell>2.10</cell><cell>1.98–2.23</cell><cell></cell>
+              </row>
+              <row>
+                <cell colspan="4"><em>Age Group</em></cell>
+              </row>
+              <row>
+                <cell>25–34 (ref)</cell><cell>1.00</cell><cell></cell><cell><m>\lt 0.01</m></cell>
+              </row>
+              <row>
+                <cell>35–44</cell><cell>6.01</cell><cell>5.44–6.64</cell><cell></cell>
+              </row>
+              <row>
+                <cell>45–54</cell><cell>19.36</cell><cell>17.58–21.31</cell><cell></cell>
+              </row>
+              <row>
+                <cell>55–64</cell><cell>40.29</cell><cell>36.67–44.26</cell><cell></cell>
+              </row>
+              <row>
+                <cell>65–74</cell><cell>79.92</cell><cell>72.74–87.80</cell><cell></cell>
+              </row>
+              <row>
+                <cell>75–84</cell><cell>178.75</cell><cell>162.70–196.39</cell><cell></cell>
+              </row>
+              <row>
+                <cell colspan="4"><em>Sex</em></cell>
+              </row>
+              <row>
+                <cell>Male (ref)</cell><cell>1.00</cell><cell></cell><cell><m>\lt 0.01</m></cell>
+              </row>
+              <row>
+                <cell>Female</cell><cell>0.45</cell><cell>0.44–0.45</cell><cell></cell>
+              </row>
+              <row>
+                <cell colspan="4"><em>Year</em></cell>
+              </row>
+              <row>
+                <cell>2002 (ref)</cell><cell>1.00</cell><cell></cell><cell><m>\lt 0.01</m></cell>
+              </row>
+              <row>
+                <cell>2003</cell><cell>1.00</cell><cell>0.98–1.03</cell><cell></cell>
+              </row>
+              <row>
+                <cell>2004</cell><cell>0.97</cell><cell>0.95–0.99</cell><cell></cell>
+              </row>
+              <row>
+                <cell>2005</cell><cell>0.91</cell><cell>0.89–0.94</cell><cell></cell>
+              </row>
+              <row>
+                <cell>2006</cell><cell>0.88</cell><cell>0.86–0.91</cell><cell></cell>
+              </row>
+              <row>
+                <cell>2007</cell><cell>0.88</cell><cell>0.86–0.91</cell><cell></cell>
+              </row>
+            </tabular>
+          </table>
           <p>
             <xref ref="tab-table4chp11"/> shows Table 2 from <xref ref="Randall2014"/>.
             Let <m>Y_{ij}</m> be the number of acute myocardial infarctions in subgroup <m>j</m>
@@ -1601,6 +1674,54 @@ print(ranef1[[1]], more = TRUE)
 
       <exercise xml:id="exercise-ch11-25">
         <statement>
+          <table xml:id="tab-table5chp11">
+            <title>Adjusted rate ratios for area-level variables from the multilevel Poisson
+            regression model with random intercept for area from Table 3 in Randall et al.
+            (2014). Area-level factors added one at a time to the fully adjusted
+            individual-level model (adjusted for Aboriginal status, age, sex and year) due
+            to being highly associated.</title>
+            <tabular halign="center">
+              <row header="yes">
+                <cell></cell>
+                <cell>RR</cell>
+                <cell>95% CI</cell>
+                <cell>p-Value</cell>
+              </row>
+              <row>
+                <cell colspan="4"><em>Remoteness of Residence</em></cell>
+              </row>
+              <row>
+                <cell>Major City</cell><cell>1.00</cell><cell></cell><cell><m>\lt 0.01</m></cell>
+              </row>
+              <row>
+                <cell>Inner Regional</cell><cell>1.16</cell><cell>1.04–1.28</cell><cell></cell>
+              </row>
+              <row>
+                <cell>Outer Regional</cell><cell>1.11</cell><cell>1.01–1.23</cell><cell></cell>
+              </row>
+              <row>
+                <cell>Remote/very remote</cell><cell>1.22</cell><cell>1.02–1.45</cell><cell></cell>
+              </row>
+              <row>
+                <cell colspan="4"><em>SES quintile</em></cell>
+              </row>
+              <row>
+                <cell>1 least disadvantaged</cell><cell>1.00</cell><cell></cell><cell><m>\lt 0.01</m></cell>
+              </row>
+              <row>
+                <cell>2</cell><cell>1.26</cell><cell>1.11–1.43</cell><cell></cell>
+              </row>
+              <row>
+                <cell>3</cell><cell>1.40</cell><cell>1.24–1.58</cell><cell></cell>
+              </row>
+              <row>
+                <cell>4</cell><cell>1.46</cell><cell>1.30–1.64</cell><cell></cell>
+              </row>
+              <row>
+                <cell>5 most disadvantaged</cell><cell>1.70</cell><cell>1.52–1.91</cell><cell></cell>
+              </row>
+            </tabular>
+          </table>
           <p>
             <xref ref="tab-table5chp11"/> shows Table 3 from <xref ref="Randall2014"/>.
             Describe the changes to the multilevel model for <xref ref="tab-table4chp11"/> that
