@@ -1410,17 +1410,47 @@ summary(model0)
 
       <exercise>
         <p><term>Project 5183.</term> 
-The Colorado Rockies, a Major League Baseball team, instigated a radical
-  experiment on June 20th, 2012. Hopelessly out of contention for the playoffs and struggling
-  again with their pitching, the Rockies decided to limit their starting pitchers to 75 pitches
-  from June 20th until the end of the year with the hope of improving a struggling starting
-  rotation, teaching pitchers how to pitch to contact (which results in low pitch counts), and
-  at the same time trying to conserve young arms. Data has shown that, as a game progresses,
-  fatigue becomes a big factor in a pitcher's performance; if a pitcher has to tweak his mechanics
-  to try to make up for a fatigued body, injuries can often occur. In addition, pitchers often
-  struggle as they begin facing the same batters over again later in games. The Rockies called
-  their experiment <q>Project 5183</q> to acknowledge the altitude at Coors Field, their home
-  ballpark, and the havoc that high altitude can wreak on pitchers.</p>
+      The Colorado Rockies, a Major League Baseball team, instigated a radical experiment on
+      June 20th, 2012. Hopelessly out of contention for the playoffs and struggling again with
+      their pitching, the Rockies decided to limit their starting pitchers to 75 pitches from
+      June 20th until the end of the year with the hope of improving a struggling starting
+      rotation, teaching pitchers how to pitch to contact (which results in low pitch counts),
+      and at the same time trying to conserve young arms. Data has shown that, as a game
+      progresses, fatigue becomes a big factor in a pitcher's performance; if a pitcher has to
+      tweak his mechanics to try to make up for a fatigued body, injuries can often occur. In
+      addition, pitchers often struggle as they begin facing the same batters over again later
+      in games. The Rockies called their experiment <q>Project 5183</q> to acknowledge the
+      altitude at Coors Field, their home ballpark, and the havoc that high altitude can wreak
+      on pitchers.</p>
+      <p>A team of students collected 2012 data on Rockies pitchers from FanGraphs to evaluate
+      Project 5183 <xref ref="Strutz2013"/>. In a successful experiment, Colorado pitchers on a
+      strict limit of 75 pitches would throw more strikes and yet record fewer strikeouts
+      (pitching to contact rather than throwing more pitches to attempt to strike batters out).
+      Different theories explain whether these pitchers would throw harder (since they don't have
+      to save themselves) or throw slower (in order to throw more strikes). But the end result
+      the Rockies hoped to observe was that their pitchers pitch better (allow fewer runs to the
+      opponent) with a pitch limit.</p>
+      <p>The data set <c>FinalRockiesdata.csv</c> contains information for 7 starting pitchers
+      who started at least one game before June 20th (without a pitch limit) and at least one
+      game after June 20th (with a limit of 75 pitches). Key response variables include:
+        <ul>
+          <li><c>vFA</c> = average fastball velocity</li>
+          <li><c>K.9</c> = strikeouts per nine innings</li>
+          <li><c>ERA</c> = earned runs per nine innings</li>
+          <li><c>Pitpct</c> = percentage of strikes thrown</li>
+        </ul>
+      </p>
+      <p>The primary explanatory variable of interest is <c>PCL</c> (an indicator variable for
+      if a pitch count limit is in effect). Other potential confounding variables that may be
+      important to control for include <c>Coors</c> (whether or not the game was played in Coors
+      Field, where more runs are often scored because of the high altitude and thin air) and
+      <c>Age</c> of the pitcher.</p>
+      <p>Write a short report summarizing the results of Project 5183. (You may notice a few
+      variance components with unusual estimates, such as an estimated variance of 0 or an
+      estimated correlation of 1. These estimates have encountered boundary constraints; we will
+      learn how to deal with these situations in <xref ref="sec-boundary"/>. For now ignore these
+      variance components; the fixed effects coefficients are still reliable and their
+      interpretations valid.)</p>
      </exercise>
 
       <exercise>
