@@ -41,12 +41,14 @@ library(tidyverse)
       that officials in NCAA men's college basketball tend to "even out" foul calls over the course
       of a game, based on data collected in 2004–2005. Using logistic regression to model the
       effect of foul differential on the probability that the next foul called would be on the home
-      team, Anderson and Pierce found that "the probability of the next foul being called on the
-      visiting team can reach as high as 0.70." More recently, Moskowitz and Wertheim argue that
-      the number one reason for the home field advantage in sports is referee bias. Specifically,
-      in basketball, they demonstrate that calls over which referees have greater control were more
-      likely to benefit the home team, especially in crucial situations
-      <xref ref="Moskowitz2011"/>.
+      team (controlling for score differential, conference, and whether or not the home team had
+      the lead), Anderson and Pierce found that "the probability of the next foul being called on
+      the visiting team can reach as high as 0.70." More recently, Moskowitz and Wertheim, in
+      their book <em>Scorecasting</em>, argue that the number one reason for the home field
+      advantage in sports is referee bias. Specifically, in basketball, they demonstrate that calls
+      over which referees have greater control&#x2014;offensive fouls, loose ball fouls, ambiguous
+      turnovers such as palming and traveling&#x2014;were more likely to benefit the home team than
+      more clearcut calls, especially in crucial situations <xref ref="Moskowitz2011"/>.
     </p>
 
     <p>
@@ -60,7 +62,10 @@ library(tidyverse)
       <li><p>How do results change if our analysis accounts for the correlation in calls from the
       same game and the same teams?</p></li>
       <li><p>Is the tendency to even out calls stronger for fouls over which the referee generally
-      has greater control? Fouls are divided into offensive, personal, and shooting fouls.</p></li>
+      has greater control?  Fouls are divided into offensive, personal, and shooting fouls, and
+      one could argue that referees have the most control over offensive fouls (for example, where
+      the player with the ball knocks over a stationary defender) and the least control over
+      shooting fouls (where an offensive player is fouled in the act of shooting).</p></li>
       <li><p>Are the actions of referees associated with the score of the game?</p></li>
     </ul>
   </section>
@@ -72,7 +77,8 @@ library(tidyverse)
       <title>Data Organization</title>
 
       <p>
-        Key variables in <c>basketball0910.csv</c> are:
+        Examination of data for Case Study <xref ref="cs-refs"/> reveals the following key
+        variables in <c>basketball0910.csv</c>:
       </p>
 
       <ul>
@@ -95,8 +101,9 @@ library(tidyverse)
         team</p></li>
         <li><p><c>foul.type</c> = categorical variable if current foul was offensive, personal,
         or shooting</p></li>
-        <li><p><c>shooting</c>, <c>personal</c>, <c>offensive</c> = indicators for foul
-        type</p></li>
+        <li><p><c>shooting</c> = indicator if foul was a shooting foul</p></li>
+        <li><p><c>personal</c> = indicator if foul was a personal foul</p></li>
+        <li><p><c>offensive</c> = indicator if foul was an offensive foul</p></li>
         <li><p><c>time</c> = number of minutes left in the first half when foul called</p></li>
       </ul>
 
@@ -177,20 +184,34 @@ library(tidyverse)
       <p>
         The structure of this data suggests a couple of familiar attributes combined in an
         unfamiliar way. With a binary response variable, a generalized linear model is typically
-        applied, especially one with a logit link function (logistic regression). But with
-        covariates at multiple levels — some at the individual foul level and others at the game
-        level — a multilevel model would also be sensible. So what we need is a multilevel model
-        with a non-normal response; in other words, a
+        applied, especially one with a logit link function (indicating logistic regression). But
+        with covariates at multiple levels&#x2014;some at the individual foul level and others at
+        the game level&#x2014;a multilevel model would also be sensible. So what we need is a
+        multilevel model with a non-normal response; in other words, a
         <term>multilevel generalized linear model (multilevel GLM)</term>.
         <idx><h>multilevel GLM</h></idx>
+        We will investigate what such a model might look like in the next section, but we will
+        still begin by exploring the data with initial graphical and numerical summaries.
       </p>
 
       <p>
-        Level One variables (varying with each foul called) include: whether or not the foul was
-        called on the home team (the response), the game situation at the time (time remaining,
-        who is leading and by how many points, the foul differential, and who the previous foul
-        was called on), and the type of foul. Level Two variables (unchanged for a particular
-        game) include only the home and visiting teams.
+        As with other multilevel situations, we will begin with broad summaries across all 4972
+        foul calls from all 340 games.  Most of the variables we have collected can vary with
+        each foul called; these Level One variables include:
+      </p>
+
+      <ul>
+        <li><p>whether or not the foul was called on the home team (our response variable),</p></li>
+        <li><p>the game situation at the time the foul was called (the time remaining in the first
+        half, who is leading and by how many points, the foul differential between the home and
+        visiting team, and who the previous foul was called on), and</p></li>
+        <li><p>the type of foul called (offensive, personal, or shooting).</p></li>
+      </ul>
+
+      <p>
+        Level Two variables, those that remain unchanged for a particular game, then include only
+        the home and visiting teams, although we might consider attributes such as attendance,
+        team rankings, etc.
       </p>
     </subsection>
 
@@ -198,9 +219,11 @@ library(tidyverse)
       <title>Exploratory Analyses</title>
 
       <p>
-        <xref ref="fig-gmu-histmat1"/> shows histograms for the continuous Level One covariates
-        (time remaining, foul differential, and score differential). Time remaining is reasonably
-        uniform. Score differential and foul differential are both bell-shaped, with a mean
+        In <xref ref="fig-gmu-histmat1"/>, we see histograms for the continuous Level One
+        covariates (time remaining, foul differential, and score differential).  These plots treat
+        each foul within a game as independent even though we expect them to be correlated, but
+        they provide a sense for the overall patterns.  We see that time remaining is reasonably
+        uniform.  Score differential and foul differential are both bell-shaped, with a mean
         slightly favoring the home team — on average, the home team leads by 2.04 points (SD
         7.24) and has 0.36 fewer previous fouls (SD 2.05) at the time a foul is called.
       </p>
@@ -216,71 +239,130 @@ library(tidyverse)
       </figure>
 
       <p>
-        More fouls are called on visiting teams (52.1%) than home teams, the home team is more
-        likely to hold a lead (57.1%), and personal fouls are most likely to be called (51.6%),
-        followed by shooting fouls (38.7%) and then offensive fouls (9.7%).
+        Summaries of the categorical response (whether the foul was called on the home team) and
+        categorical Level One covariates (whether the home team has the lead and what type of
+        foul was called) can be provided through tables of proportions.  More fouls are called on
+        visiting teams (52.1%) than home teams, the home team is more likely to hold a lead
+        (57.1%), and personal fouls are most likely to be called (51.6%), followed by shooting
+        fouls (38.7%) and then offensive fouls (9.7%).
       </p>
 
       <p>
-        For an initial examination of Level Two covariates (the home and visiting teams),
-        <xref ref="tab-table2chp11"/> shows that Minnesota is among the bottom three teams in
-        the average total number of fouls in first halves of home games (12.1), while Duke is
-        at the top (20.0). This suggests that accounting for the effect of home and visiting
-        team will be an important part of our model.
+        For an initial examination of Level Two covariates (the home and visiting teams), we can
+        take the number of times, for instance, Minnesota (MN) appears in the long data set (with
+        one row per foul called as illustrated in <xref ref="tab-table1chp11"/>) as the home team
+        and divide by the number of unique games in which Minnesota is the home team.  This ratio
+        (12.1), found in <xref ref="tab-table2chp11"/>, shows that Minnesota is among the bottom
+        three teams in the average total number of fouls in the first halves of games in which it
+        is the home team.  That is, games at Minnesota have few total fouls relative to games
+        played elsewhere.  Accounting for the effect of home and visiting team will likely be an
+        important part of our model, since some teams tend to play in games with twice as many
+        fouls called as others, and other teams see a noticeable disparity in the total number of
+        fouls depending on if they are home or away.
       </p>
 
       <table xml:id="tab-table2chp11">
         <title>Average total number of fouls in the first half over all games in which a
-        particular team is home or visitor. Shown are the top 3 and bottom 3 teams by total fouls
-        in home games (left columns) and the top 3 and bottom 3 by total fouls in away games
-        (right columns).</title>
+        particular team is home or visitor.  The left columns show the top 3 and bottom 3 teams
+        according to total number of fouls (on both teams) in first halves of games in which they
+        are the home team.  The middle columns correspond to games in which the listed teams are
+        the visitors, and the right columns show the largest differences (in both directions)
+        between total fouls in games in which a team is home or visitor.</title>
         <tabular halign="center">
+          <col/><col/><col/><col/><col/><col/><col/>
           <row header="yes">
-            <cell>Home Rank</cell>
-            <cell>Home Team</cell>
-            <cell>Avg Fouls (Home)</cell>
-            <cell>Visitor Rank</cell>
-            <cell>Visitor Team</cell>
-            <cell>Avg Fouls (Away)</cell>
+            <cell></cell>
+            <cell colspan="2">Home</cell>
+            <cell colspan="2">Visitor</cell>
+            <cell colspan="2">Difference</cell>
+          </row>
+          <row header="yes">
+            <cell></cell>
+            <cell>Team</cell><cell>Fouls</cell>
+            <cell>Team</cell><cell>Fouls</cell>
+            <cell>Team</cell><cell>Fouls</cell>
           </row>
           <row>
-            <cell>1 (highest)</cell><cell>Duke</cell><cell>20.0</cell>
-            <cell>1 (highest)</cell><cell>Maryland</cell><cell>21.2</cell>
+            <cell></cell><cell>Top 3</cell><cell></cell>
+            <cell></cell><cell></cell>
+            <cell>Bottom 3</cell><cell></cell>
           </row>
           <row>
-            <cell>2</cell><cell>Ohio State</cell><cell>19.5</cell>
-            <cell>2</cell><cell>Duke</cell><cell>20.3</cell>
+            <cell></cell><cell>Duke</cell><cell>20.0</cell>
+            <cell>WVa</cell><cell>21.4</cell>
+            <cell>Duke</cell><cell>4.0</cell>
           </row>
           <row>
-            <cell>3</cell><cell>Maryland</cell><cell>18.9</cell>
-            <cell>3</cell><cell>Ohio State</cell><cell>19.8</cell>
+            <cell></cell><cell>VaTech</cell><cell>19.4</cell>
+            <cell>Nova</cell><cell>19.0</cell>
+            <cell>Wisc</cell><cell>2.6</cell>
           </row>
           <row>
-            <cell>37 (lowest)</cell><cell>Minnesota</cell><cell>12.1</cell>
-            <cell>37 (lowest)</cell><cell>Minnesota</cell><cell>13.4</cell>
+            <cell></cell><cell>Nova</cell><cell>19.1</cell>
+            <cell>Wake</cell><cell>18.6</cell>
+            <cell>Pitt</cell><cell>2.3</cell>
           </row>
           <row>
-            <cell>38</cell><cell>Virginia</cell><cell>11.8</cell>
-            <cell>38</cell><cell>Wisconsin</cell><cell>13.1</cell>
+            <cell></cell><cell>Bottom 3</cell><cell></cell>
+            <cell></cell><cell></cell>
+            <cell>Top 3</cell><cell></cell>
           </row>
           <row>
-            <cell>39</cell><cell>Wisconsin</cell><cell>11.4</cell>
-            <cell>39</cell><cell>Virginia</cell><cell>12.9</cell>
+            <cell></cell><cell>Mich</cell><cell>10.6</cell>
+            <cell>Wisc</cell><cell>10.4</cell>
+            <cell>WVa</cell><cell>&#x2212;6.9</cell>
+          </row>
+          <row>
+            <cell></cell><cell>Ill</cell><cell>11.6</cell>
+            <cell>Mich</cell><cell>11.1</cell>
+            <cell>Mia</cell><cell>&#x2212;2.7</cell>
+          </row>
+          <row>
+            <cell></cell><cell>MN</cell><cell>12.1</cell>
+            <cell>PSU</cell><cell>11.3</cell>
+            <cell>Clem</cell><cell>&#x2212;2.6</cell>
           </row>
         </tabular>
       </table>
 
       <p>
-        The conditional density plots in the first row of <xref ref="fig-gmu-cdelogitmat1"/>
+        Next, we inspect numerical and graphical summaries of relationships between Level One
+        model covariates and our binary model response.  As with other multilevel analyses, we
+        will begin by observing broad trends involving all 4972 fouls called, even though fouls
+        from the same game may be correlated.  The conditional density plots in the first row of
+        <xref ref="fig-gmu-cdelogitmat1"/>
         examine continuous Level One covariates. <xref ref="fig-gmu-cdelogitmat1"/>a provides
-        support for our primary hypothesis: there is a very strong trend for fouls to be more
-        often called on the home team when more fouls had previously been called on the visiting
-        team. <xref ref="fig-gmu-cdelogitmat1"/>b and <xref ref="fig-gmu-cdelogitmat1"/>c show
-        that fouls were somewhat more likely on the home team when the home team's lead was
-        greater and slightly later in the half. The associated empirical logit plots in
-        <xref ref="fig-gmu-cdelogitmat1"/>d–f confirm these findings. The home team having 0.64
-        additional fouls (vs. 0.10) on the visitor at the time a home foul is called also
-        supports the foul differential pattern.
+        support for our primary hypothesis about evening out foul calls, indicating a very strong
+        trend for fouls to be more often called on the home team at points in the game when more
+        fouls had previously been called on the visiting team.
+        <xref ref="fig-gmu-cdelogitmat1"/>b and <xref ref="fig-gmu-cdelogitmat1"/>c show that
+        fouls were somewhat more likely to be called on the home team when the home team's lead
+        was greater and (very slightly) later in the half. Conclusions from the conditional
+        density plots in <xref ref="fig-gmu-cdelogitmat1"/>a–c are supported with associated
+        empirical logit plots in <xref ref="fig-gmu-cdelogitmat1"/>d–f.  If a logistic link
+        function is appropriate, these plots should be linear, and the stronger the linear
+        association, the more promising the predictor.  We see in
+        <xref ref="fig-gmu-cdelogitmat1"/>d further confirmation of our primary hypothesis, with
+        lower log-odds of a foul called on the home team associated with a greater number of
+        previous fouls the home team had accumulated compared to the visiting team.
+        <xref ref="fig-gmu-cdelogitmat1"/>e shows that game score may play a role in foul trends,
+        as the log-odds of a foul on the home team grows as the home team accumulates a bigger
+        lead on the scoreboard, and <xref ref="fig-gmu-cdelogitmat1"/>f shows a very slight
+        tendency for greater log-odds of a foul called on the home team as the half proceeds
+        (since points on the right are closer to the beginning of the game).
+      </p>
+
+      <p>
+        Conclusions about continuous Level One covariates are further supported by summary
+        statistics calculated separately for fouls called on the home team and those called on
+        the visiting team.  For instance, when a foul is called on the home team, there is an
+        average of 0.64 additional fouls on the visitors at that point in the game, compared to
+        an average of 0.10 additional fouls on the visitors when a foul is called on the visiting
+        team.  Similarly, when a foul is called on the home team, they are in the lead by an
+        average of 2.7 points, compared to an average home lead of 1.4 points when a foul is
+        called on the visiting team.  As expected, the average time remaining in the first half
+        at the time of the foul is very similar for home teams and visitors (9.2 vs. 9.5 minutes,
+        respectively).
       </p>
 
       <figure xml:id="fig-gmu-cdelogitmat1">
@@ -298,10 +380,18 @@ library(tidyverse)
 
       <p>
         The mosaic plots in <xref ref="fig-gmu-barmat1"/> examine categorical Level One
-        covariates, indicating that fouls were more likely on the home team when the home team
-        was leading (51.8% vs. 42.9%), when the previous foul was on the visiting team (51.3%
-        vs. 43.8%), and when the foul was a personal foul (49.2%) rather than an offensive
-        (45.7%) or shooting foul (46.9%).
+        covariates, indicating that fouls were more likely to be called on the home team when the
+        home team was leading, when the previous foul was on the visiting team, and when the foul
+        was a personal foul rather than a shooting foul or an offensive foul.  A total of 51.8%
+        of calls go against the home team when it is leading the game, compared to only 42.9% of
+        calls when it is behind; 51.3% of calls go against the home team when the previous foul
+        went against the visitors, compared to only 43.8% of calls when the previous foul went
+        against the home team; and, 49.2% of personal fouls are called against the home team,
+        compared to only 46.9% of shooting fouls and 45.7% of offensive fouls.  Eventually we
+        will want to examine the relationship between foul type (personal, shooting, or offensive)
+        and foul differential, examining our hypothesis that the tendency to even out calls will
+        be even stronger for calls over which the referees have greater control (personal fouls
+        and especially offensive fouls).
       </p>
 
       <figure xml:id="fig-gmu-barmat1">
@@ -315,6 +405,18 @@ library(tidyverse)
           and (c) whether the previous foul was called on the home team.</description>
         </image>
       </figure>
+
+      <p>
+        The exploratory analyses presented above are an essential first step in understanding our
+        data, seeing univariate trends, and noting bivariate relationships between variable pairs.
+        However, our important research questions (a) involve the effect of foul differential
+        after adjusting for other significant predictors of which team is called for a foul,
+        (b) account for potential correlation between foul calls within a game (or within a
+        particular home or visiting team), and (c) determine if the effect of foul differential
+        is constant across game conditions.  In order to address research questions such as
+        these, we need to consider multilevel, multivariate statistical models for a binary
+        response variable.
+      </p>
     </subsection>
   </section>
 
