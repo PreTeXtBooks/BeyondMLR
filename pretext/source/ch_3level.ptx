@@ -1290,7 +1290,7 @@ m2   15 591.1 651.4 -280.5 561.1 1.405  2 0.4953
   evidence to favor the more complex model.
 </p>
 
-    <program language="r" xml:id="code-paraboot-function-3level">
+    <program language="r" xml:id="code-paraboot-function-3level-1">
       <input>
 bootstrapAnova(mA=modelcl.ml, m0=modelcl0.ml, B=1000)
       </input>
