@@ -91,6 +91,7 @@ library(tidyverse)
       pot (although a few pots had 7 or 8 seeds), and initially student researchers recorded days to
       germination (defined as when two leaves are visible), if germination occurred. In addition, the
       height of each germinated plant (in mm) was measured at 13, 18, 23, and 28 days after planting.
+      The study design is illustrated in Figure <xref ref="fig-seedstudy"/>.
     </p>
 
     <figure xml:id="fig-seedstudy">
@@ -106,7 +107,7 @@ library(tidyverse)
       <title>Data Organization</title>
 
       <p>
-        Data for the Seed Germination case study in <c>seeds2.csv</c> contains the following
+        Data for Case Study <xref ref="cs-seeds"/> in <c>seeds2.csv</c> contains the following
         variables:
       </p>
 
@@ -1281,7 +1282,10 @@ anova(modelfl0, modeldl0, test = "Chisq")
     <p>
       A likelihood ratio test shows no significant difference between Models D and F (chi-square
       test statistic = 11.15 on 7 df, p=.1323), supporting the use of simplified Model F. The
-      parametric bootstrap provides a p-value of .201, confirming that Model F is the better choice.
+      parametric bootstrap provides a p-value of .201, confirming that Model F is the better
+      choice. In Figure <xref ref="fig-parabootDF"/>, we see that the chi-square distribution has
+      too much area in the peak and too little area in the tails, although in general it
+      approximates the parametric bootstrap distribution of the likelihood ratio pretty nicely.
     </p>
 
     <figure xml:id="fig-parabootDF">
