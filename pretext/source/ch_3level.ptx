@@ -268,7 +268,8 @@ seedlg &lt;- seedwd %&gt;%
         similar average heights 13 days after planting, coneflowers appear to have faster early
         growth which slows later, while leadplants have a more linear growth rate which culminates
         in greater average heights 28 days after planting. Coneflowers also appear to have greater
-        variability in initial height and growth rate.
+        variability in initial height and growth rate, although there are more coneflowers with
+        height data.
       </p>
 
       <figure xml:id="fig-spagbyspec">
@@ -336,16 +337,24 @@ seedlg &lt;- seedwd %&gt;%
       </figure>
 
       <p>
-        We can further explore variability in linear growth among plants and among pots by fitting
-        regression lines and examining the estimated intercepts, slopes, and <m>R^2</m> values.
-        Figure <xref ref="fig-intrateplant"/> shows results of fitting lines by plant, and Figure
-        <xref ref="fig-intratepot"/> shows results of fitting lines by pot. When fitting regression
-        lines by plant, we see a mean intercept of 1.52 (SD=0.66), indicating an estimated average
-        height at 13 days of 1.5 mm, and a mean slope of 0.114 mm per day of growth from Days 13 to
-        28 (SD=0.059). Most R-squared values were strong (e.g., 84% were above 0.8). Summaries of
-        fitted regression lines by pot show similar mean intercepts (1.50) and slopes (0.107), but
-        somewhat less variability pot-to-pot than we observed plant-to-plant (SD=0.46 for intercepts
-        and SD=0.050 for slopes).
+        We can further explore the variability in linear growth among plants and among pots by
+        fitting regression lines and examining the estimated intercepts and slopes, as well as the
+        corresponding <m>R^2</m> values. Figures <xref ref="fig-intrateplant"/> and
+        <xref ref="fig-intratepot"/> provide just such an analysis, where Figure
+        <xref ref="fig-intrateplant"/> shows results of fitting lines by plant, and Figure
+        <xref ref="fig-intratepot"/> shows results of fitting lines by pot. Certain caveats
+        accompany these summaries. In the case of fitted lines by plant, each plant is given equal
+        weight regardless of the number of observations (2-4) for a given plant, and in the case of
+        fitted lines by pot, a line is estimated by simply pooling all observations from a given
+        pot, ignoring the plant from which the observations came, and equally weighting pots
+        regardless of how many plants germinated and survived to Day 28. Nevertheless, the summaries
+        of fitted lines provide useful information. When fitting regression lines by plant, we see a
+        mean intercept of 1.52 (SD=0.66), indicating an estimated average height at 13 days of 1.5
+        mm, and a mean slope of 0.114 mm per day of growth from Days 13 to 28 (SD=0.059). Most
+        R-squared values were strong (e.g., 84% were above 0.8). Summaries of fitted regression
+        lines by pot show similar mean intercepts (1.50) and slopes (0.107), but somewhat less
+        variability pot-to-pot than we observed plant-to-plant (SD=0.46 for intercepts and SD=0.050
+        for slopes).
       </p>
 
       <p>
@@ -430,11 +439,12 @@ seedlg &lt;- seedwd %&gt;%
 
     <p>
       The structure and notation for three-level models will closely resemble the structure and
-      notation for two-level models, just with extra subscripts. Extensions are relatively easy and
-      allow you to control for many sources of variability, obtaining more precise estimates of
-      important parameters. However, the number of variance component parameters to estimate can
-      quickly mushroom as covariates are added at lower levels, so implementing simplifying
-      restrictions will often become necessary (see <xref ref="sec-explodingvarcomps"/>).
+      notation for two-level models, just with extra subscripts. Therein lies some of the power of
+      multilevel models — extensions are relatively easy and allow you to control for many sources
+      of variability, obtaining more precise estimates of important parameters. However, the number
+      of variance component parameters to estimate can quickly mushroom as covariates are added at
+      lower levels, so implementing simplifying restrictions will often become necessary (see
+      <xref ref="sec-explodingvarcomps"/>).
     </p>
 
     <subsection xml:id="sec-unconditional-means-3level">
@@ -462,8 +472,13 @@ seedlg &lt;- seedwd %&gt;%
 
       <p>
         where the heights of plants from different pots are considered independent, but plants from
-        the same pot are correlated, as well as measurements at different times from the same plant.
-        Here is a quick guide to the meaning of terms:
+        the same pot are correlated as well as measurements at different times from the same plant.
+      </p>
+
+      <p>
+        Keeping track of all the model terms, especially with three subscripts, is not a trivial
+        task, but it's worth spending time thinking it through. Here is a quick guide to the meaning
+        of terms found in our three-level model:
       </p>
 
       <ul>
@@ -500,10 +515,10 @@ summary(modelal)
 
       <p>
         From the estimates of variance components, 69.0% of total variability in height measurements
-        is due to differences over time for each plant, 26.4% is due to differences between plants
-        from the same pot, and only 4.6% is due to differences between pots. Accordingly, we will
-        next explore whether the incorporation of time as a linear predictor at Level One can reduce
-        the unexplained variability within plant.
+        is due to differences over time for each plant, 26.4% of total variability is due to
+        differences between plants from the same pot, and only 4.6% of total variability is due to
+        difference between pots. Accordingly, we will next explore whether the incorporation of time
+        as a linear predictor at Level One can reduce the unexplained variability within plant.
       </p>
     </subsection>
 
@@ -513,12 +528,16 @@ summary(modelal)
       <p>
         The <term>unconditional growth model</term> introduces time as a predictor at Level One, but
         there are still no predictors at Levels Two or Three. The unconditional growth model allows
-        us to assess how much of the within-plant variability can be attributed to linear changes
-        over time, while also determining how much variability we see in the intercept (Day 13
-        height) and slope (daily growth rate) from plant-to-plant and pot-to-pot.
+        us to assess how much of the within-plant variability (the variability among height
+        measurements from the same plant at different time points) can be attributed to linear
+        changes over time, while also determining how much variability we see in the intercept (Day
+        13 height) and slope (daily growth rate) from plant-to-plant and pot-to-pot. Later, we can
+        model plant-to-plant and pot-to-pot differences in intercepts and slopes with Level Two and
+        Three covariates.
       </p>
 
-      <p>The three-level unconditional growth model (Model B) at each level:</p>
+      <p>The three-level unconditional growth model (Model B) can be specified either using
+      formulations at each level:</p>
 
       <p>Level One (timepoint within plant):
         <me>Y_{ijk} = a_{ij}+b_{ij}\textrm{time}_{ijk}+\epsilon_{ijk}</me>
@@ -574,6 +593,11 @@ summary(modelal)
         rates of change (<m>\sigma_{v}^{2}</m> and <m>\sigma_{\tilde{v}}^{2}</m>).
       </p>
 
+      <p>
+        Using the composite model specification, the unconditional growth model can be fit to the
+        seed germination data:
+      </p>
+
       <program language="r" xml:id="code-model-b-3level">
         <input>
 # Model B - unconditional growth
@@ -602,12 +626,8 @@ summary(modelbl)
         (pooled across pots and treatment groups), and their heights tend to grow by 0.11 mm per
         day, producing an average height at the end of the study (Day 28) of 3.22 mm. According to
         the t-values listed in R, both the Day 13 height and the growth rate are statistically
-        significant.
-      </p>
-
-      <p>
-        The estimated within-plant variance <m>\hat{\sigma}^2</m> decreased by 88.7% from the
-        unconditional means model (from 0.728 to 0.082), implying that 88.7% of within-plant
+        significant. The estimated within-plant variance <m>\hat{\sigma}^2</m> decreased by 88.7%
+        from the unconditional means model (from 0.728 to 0.082), implying that 88.7% of within-plant
         variability in height can be explained by linear growth over time.
       </p>
     </subsection>
@@ -1187,9 +1207,9 @@ confint(modelcl, method="boot", oldNames = F)
       According to the second option, we have built a random intercepts model with error terms only
       at the first (intercept) equation at each level. Not only does this eliminate variance terms
       associated with the missing error terms, but it also eliminates correlation terms between
-      errors since there are no pairs of error terms that can be formed at any level. In addition,
-      we have eliminated predictors (and their fixed effects coefficients) at every equation other
-      than the intercept at each level.
+      errors (as suggested by Option 1) since there are no pairs of error terms that can be formed
+      at any level. In addition, as suggested by Option 3, we have eliminated predictors (and their
+      fixed effects coefficients) at every equation other than the intercept at each level.
     </p>
 
     <p>
@@ -1228,7 +1248,7 @@ confint(modelcl, method="boot", oldNames = F)
       </md>
     </p>
 
-    <p>Level Three (pot):
+    <p>Level Three:
       <md>
         <mrow>a_{i} \amp = \alpha_{0} + \alpha_{1}\textrm{strl}_{i} + \alpha_{2}\textrm{cult}_{i} + \alpha_{3}\textrm{rem}_{i} + \alpha_{4}\textrm{strl}_{i}\textrm{rem}_{i} + \alpha_{5}\textrm{strl}_{i}\textrm{cult}_{i} + \tilde{u}_{i}</mrow>
         <mrow>b_{i} \amp = \beta_{0}+\beta_{1}\textrm{strl}_{i}+\beta_{2}\textrm{cult}_{i}+\beta_{3}\textrm{rem}_{i} + \beta_{4}\textrm{strl}_{i}\textrm{rem}_{i} + \beta_{5}\textrm{strl}_{i}\textrm{cult}_{i}</mrow>
@@ -1283,7 +1303,7 @@ summary(modeldl0)
       </md>
     </p>
 
-    <p>Level Three (pot):
+    <p>Level Three:
       <md>
         <mrow>a_{i} \amp = \alpha_{0} + \tilde{u}_{i}</mrow>
         <mrow>b_{i} \amp = \beta_{0}+\beta_{1}\textrm{strl}_{i}+\beta_{2}\textrm{rem}_{i} + \beta_{3}\textrm{strl}_{i}\textrm{rem}_{i}</mrow>
@@ -1300,7 +1320,7 @@ summary(modeldl0)
       and <m>\tilde{u}_{i}\sim N(0,\sigma_{\tilde{u}}^{2})</m>.
     </p>
 
-    <p>In composite form, Model F is:
+    <p>In composite form, we have:
       <md>
         <mrow>Y_{ijk} \amp = [\alpha_{0}+ \beta_{0}\textrm{time}_{ijk} + \beta_{1}\textrm{strl}_{i}\textrm{time}_{ijk} + \beta_{2}\textrm{rem}_{i}\textrm{time}_{ijk}</mrow>
         <mrow>\amp + \beta_{3}\textrm{strl}_{i}\textrm{rem}_{i}\textrm{time}_{ijk}] + [\tilde{u}_{i}+u_{ij}+ \epsilon_{ijk}+ v_{ij}\textrm{time}_{ijk}]</mrow>
@@ -1322,8 +1342,9 @@ anova(modelfl0, modeldl0, test = "Chisq")
 
     <p>
       A likelihood ratio test shows no significant difference between Models D and F (chi-square
-      test statistic = 11.15 on 7 df, p=.1323), supporting the use of simplified Model F. The
-      parametric bootstrap provides a p-value of .201, confirming that Model F is the better choice.
+      test statistic = 11.15 on 7 df, p=.1323), supporting the use of simplified Model F. A
+      parametric bootstrap comparing Models D and F (Figure <xref ref="fig-parabootDF"/>) provides
+      a p-value of .201 (see code below), confirming that Model F is the better choice.
     </p>
 
     <figure xml:id="fig-parabootDF">
