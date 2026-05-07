@@ -1924,32 +1924,146 @@ anova(modelfl0, modeldl0, test = "Chisq")
       <table xml:id="tab-table4chp10">
         <title>Correlates of collective efficacy from Table 3 of Sampson et al. (1997).</title>
         <tabular>
-          <row header="yes" bottom="medium">
-            <cell>Variable</cell><cell>Coefficient</cell><cell>SE</cell><cell>t ratio</cell>
-          </row>
-          <row><cell>Intercept</cell><cell>3.523</cell><cell>0.013</cell><cell>263.20</cell></row>
-          <row bottom="medium" header="yes"><cell colspan="4">Person-level predictors</cell></row>
-          <row><cell>Female</cell><cell>−0.012</cell><cell>0.015</cell><cell>−0.76</cell></row>
-          <row><cell>Married</cell><cell>−0.005</cell><cell>0.021</cell><cell>−0.25</cell></row>
-          <row><cell>Separated or divorced</cell><cell>−0.045</cell><cell>0.026</cell><cell>−1.72</cell></row>
-          <row><cell>Single</cell><cell>−0.026</cell><cell>0.024</cell><cell>−1.05</cell></row>
-          <row><cell>Homeowner</cell><cell><alert>0.122</alert></cell><cell>0.020</cell><cell>6.04</cell></row>
-          <row><cell>Latino</cell><cell>0.042</cell><cell>0.028</cell><cell>1.52</cell></row>
-          <row><cell>Black</cell><cell>−0.029</cell><cell>0.030</cell><cell>−0.98</cell></row>
-          <row><cell>Mobility</cell><cell>−0.025</cell><cell>0.007</cell><cell>−3.71</cell></row>
-          <row><cell>Age</cell><cell><alert>0.0021</alert></cell><cell>0.0006</cell><cell>3.47</cell></row>
-          <row><cell>Years in neighborhood</cell><cell>0.0006</cell><cell>0.0008</cell><cell>0.78</cell></row>
-          <row><cell>SES</cell><cell><alert>0.035</alert></cell><cell>0.008</cell><cell>4.64</cell></row>
-          <row bottom="medium" header="yes"><cell colspan="4">Neighborhood-level predictors</cell></row>
-          <row><cell>Concentrated disadvantage</cell><cell><alert>−0.172</alert></cell><cell>0.016</cell><cell>−10.74</cell></row>
-          <row><cell>Immigrant concentration</cell><cell><alert>−0.037</alert></cell><cell>0.014</cell><cell>−2.66</cell></row>
-          <row><cell>Residential stability</cell><cell><alert>0.074</alert></cell><cell>0.013</cell><cell>5.61</cell></row>
-          <row bottom="medium" header="yes"><cell colspan="4">Variance components</cell></row>
-          <row><cell>Within neighborhoods</cell><cell>0.320</cell><cell></cell><cell></cell></row>
-          <row><cell>Between neighborhoods</cell><cell>0.026</cell><cell></cell><cell></cell></row>
-          <row bottom="medium" header="yes"><cell colspan="4">Percent of variance explained</cell></row>
-          <row><cell>Within neighborhoods</cell><cell>3.2</cell><cell></cell><cell></cell></row>
-          <row><cell>Between neighborhoods</cell><cell>70.3</cell><cell></cell><cell></cell></row>
+    <row header="yes">
+      <cell>Variable</cell>
+      <cell>Coefficient</cell>
+      <cell>SE</cell>
+      <cell>t ratio</cell>
+    </row>
+
+    <row>
+      <cell colspan="4"><em>Intercept</em></cell>
+    </row>
+    <row>
+      <cell>Intercept</cell>
+      <cell>3.523</cell>
+      <cell>0.013</cell>
+      <cell>263.20</cell>
+    </row>
+
+    <row>
+      <cell colspan="4"><em>Person-level predictors</em></cell>
+    </row>
+    <row>
+      <cell>Female</cell>
+      <cell>-0.012</cell>
+      <cell>0.015</cell>
+      <cell>-0.76</cell>
+    </row>
+    <row>
+      <cell>Married</cell>
+      <cell>-0.005</cell>
+      <cell>0.021</cell>
+      <cell>-0.25</cell>
+    </row>
+    <row>
+      <cell>Separated or divorced</cell>
+      <cell>-0.045</cell>
+      <cell>0.026</cell>
+      <cell>-1.72</cell>
+    </row>
+    <row>
+      <cell>Single</cell>
+      <cell>-0.026</cell>
+      <cell>0.024</cell>
+      <cell>-1.05</cell>
+    </row>
+    <row>
+      <cell>Homeowner</cell>
+      <cell></cell>
+      <cell>0.020</cell>
+      <cell>6.04</cell>
+    </row>
+    <row>
+      <cell>Latino</cell>
+      <cell>0.042</cell>
+      <cell>0.028</cell>
+      <cell>1.52</cell>
+    </row>
+    <row>
+      <cell>Black</cell>
+      <cell>-0.029</cell>
+      <cell>0.030</cell>
+      <cell>-0.98</cell>
+    </row>
+    <row>
+      <cell>Mobility</cell>
+      <cell>-0.025</cell>
+      <cell>0.007</cell>
+      <cell>-3.71</cell>
+    </row>
+    <row>
+      <cell>Age</cell>
+      <cell></cell>
+      <cell>0.0006</cell>
+      <cell>3.47</cell>
+    </row>
+    <row>
+      <cell>Years in neighborhood</cell>
+      <cell><m>6 \times 10^{-4}</m></cell>
+      <cell>0.0008</cell>
+      <cell>0.78</cell>
+    </row>
+    <row>
+      <cell>SES</cell>
+      <cell></cell>
+      <cell>0.008</cell>
+      <cell>4.64</cell>
+    </row>
+
+    <row>
+      <cell colspan="4"><em>Neighborhood-level predictors</em></cell>
+    </row>
+    <row>
+      <cell>Concentrated disadvantage</cell>
+      <cell>-0.172</cell>
+      <cell>0.016</cell>
+      <cell>-10.74</cell>
+    </row>
+    <row>
+      <cell>Immigrant concentration</cell>
+      <cell></cell>
+      <cell>0.014</cell>
+      <cell>-2.66</cell>
+    </row>
+    <row>
+      <cell>Residential stability</cell>
+      <cell></cell>
+      <cell>0.013</cell>
+      <cell>5.61</cell>
+    </row>
+
+    <row>
+      <cell colspan="4"><em>Variance components</em></cell>
+    </row>
+    <row>
+      <cell>Within neighborhoods</cell>
+      <cell>0.32</cell>
+      <cell></cell>
+      <cell></cell>
+    </row>
+    <row>
+      <cell>Between neighborhoods</cell>
+      <cell>0.026</cell>
+      <cell></cell>
+      <cell></cell>
+    </row>
+
+    <row>
+      <cell colspan="4"><em>Percent of variance explained</em></cell>
+    </row>
+    <row>
+      <cell>Within neighborhoods</cell>
+      <cell>3.2</cell>
+      <cell></cell>
+      <cell></cell>
+    </row>
+    <row>
+      <cell>Between neighborhoods</cell>
+      <cell>70.3</cell>
+      <cell></cell>
+      <cell></cell>
+    </row>
         </tabular>
       </table>
 
@@ -2080,42 +2194,136 @@ anova(modelfl0, modeldl0, test = "Chisq")
         </statement>
       </exercise>
 
-      <exercise xml:id="exer-kentucky-math">
-        <statement>
+<exercise xml:id="exer-kentucky-math">
+  <statement>
+    <p>
+      <term>Kentucky math scores.</term> Data was collected from 48,058 eighth graders from
+      Kentucky who took the California Basic Educational Skills Test <xref ref="Bickel2007"/>. These students attended
+      235 different middle schools from 132 different districts, and the following variables
+      can be found in <c>kentucky.csv</c>:
+    </p>
+    <ul>
+      <li><p><c>dis_id</c> = District Identifier</p></li>
+      <li><p><c>sch_id</c> = School Identifier</p></li>
+      <li><p><c>stud_nm</c> = Student Identifier</p></li>
+      <li><p><c>female</c> = Coded 1 if Female and 0 if Male</p></li>
+      <li><p><c>nonwhite</c> = Coded 0 if White and 1 otherwise</p></li>
+      <li><p><c>readn</c> = California Test of Basic Skills Reading Score</p></li>
+      <li><p><c>mathn</c> = California Test of Basic Skills Math Score</p></li>
+      <li><p><c>sch_size</c> = School-Level Size (centered natural log)</p></li>
+      <li><p><c>sch_ses</c> = School-Level SES (socio-economic status, centered)</p></li>
+      <li><p><c>dis_size</c> = District-Level Size (centered natural log)</p></li>
+      <li><p><c>dis_ses</c> = District-Level SES (socio-economic status, centered)</p></li>
+    </ul>
+
+    <task>
+      <statement>
+        <p>
+          Conduct a short exploratory data analysis. Which variables are most strongly 
+          related to <c>mathn</c>? Illustrate with summary statistics and plots.
+        </p>
+        <hint>
           <p>
-            <term>Kentucky math scores.</term> Data was collected from 48,058 eighth graders from
-            Kentucky who took the California Basic Educational Skills Test <xref ref="Bickel2007"/>. These students attended
-            235 different middle schools from 132 different districts, and the following variables
-            can be found in <c>kentucky.csv</c>:
+            Your plots should accommodate the large number of observations in the data, 
+            and your summary statistics will have to handle occasional missing values.
           </p>
-          <ul>
-            <li><p><c>dis_id</c> = District Identifier</p></li>
-            <li><p><c>sch_id</c> = School Identifier</p></li>
-            <li><p><c>stud_nm</c> = Student Identifier</p></li>
-            <li><p><c>female</c> = Coded 1 if Female and 0 if Male</p></li>
-            <li><p><c>nonwhite</c> = Coded 0 if White and 1 otherwise</p></li>
-            <li><p><c>readn</c> = California Test of Basic Skills Reading Score</p></li>
-            <li><p><c>mathn</c> = California Test of Basic Skills Math Score</p></li>
-            <li><p><c>sch_size</c> = School-Level Size (centered natural log)</p></li>
-            <li><p><c>sch_ses</c> = School-Level SES (socio-economic status, centered)</p></li>
-            <li><p><c>dis_size</c> = District-Level Size (centered natural log)</p></li>
-            <li><p><c>dis_ses</c> = District-Level SES (socio-economic status, centered)</p></li>
-          </ul>
-          <p>
-            The primary research questions are whether or not math scores of eighth graders in
-            Kentucky differ based on gender or ethnicity, and if any gender gap differs by
-            ethnicity, or if any ethnicity gap differs by gender. Researchers wanted to be sure to
-            adjust for important covariates at the school and district levels.
-          </p>
-          <ol marker="a">
-            <li><p>Conduct a short exploratory data analysis. Which variables are most strongly related to <c>mathn</c>? Illustrate with summary statistics and plots.</p></li>
-            <li><p>(Model A) Run an unconditional means model with 3 levels and report the percentage of variability in math scores that can be explained at each level.</p></li>
-            <li><p>(Model B) Add <c>female</c>, <c>nonwhite</c>, and their interaction at Level One. Write out the complete three-level model. How many parameters must be estimated? Run the model. Report and interpret a relevant pseudo R-squared value. Is there evidence (based on the t-value) of a significant interaction?</p></li>
-            <li><p>(Model C) Subtract the <c>female</c>-by-<c>nonwhite</c> interaction from Model B and add <c>sch_ses</c>, where <c>sch_ses</c> is a predictor in all Level Two equations. How many parameters must be estimated? Break your count down into variance components at Level One + varcomps at Level Two + fixed effects + varcomps at Level Three.</p></li>
-            <li><p>(Model D) Subtract <c>nonwhite</c> from Model C and add <c>dis_size</c>, where <c>dis_size</c> is a predictor in all Level Three equations. Write out the complete three-level model. Also write out the composite model. How many parameters must be estimated? Run the model and then re-run it with an error term only on the intercept equation at Level Three. What are the implications of using this error structure? Does it change any conclusions about fixed effects? Which of the two models would you choose and why?</p></li>
-          </ol>
-        </statement>
-      </exercise>
+        </hint>
+      </statement>
+    </task>
+
+    <task>
+      <statement>
+        <p>
+          (Model A) Run an unconditional means model with 3 levels and report the 
+          percentage of variability in math scores that can be explained at each level.
+        </p>
+      </statement>
+    </task>
+
+    <task>
+      <statement>
+        <p>
+          (Model B) Add <c>female</c>, <c>nonwhite</c>, and their interaction at Level One.
+        </p>
+        <ul>
+          <li>
+            <p>
+              Write out the complete three-level model. How many parameters must be estimated?
+            </p>
+          </li>
+          <li>
+            <p>
+              Run the model (be patient <mdash/> it may take a few minutes!). Report and 
+              interpret a relevant pseudo <m>R^2</m> value. Is there evidence (based on the 
+              <m>t</m>-value) of a significant interaction? In layman's terms, what can you 
+              conclude based on the test for interaction?
+            </p>
+          </li>
+        </ul>
+      </statement>
+    </task>
+
+    <task>
+      <statement>
+        <p>
+          (Model C) Subtract the <c>female</c>-by-<c>nonwhite</c> interaction from Model B 
+          and add <c>sch_ses</c>, where <c>sch_ses</c> is a predictor in all Level Two 
+          equations. How many parameters must be estimated? Break your count down into 
+          variance components at Level One + variance components at Level Two + fixed 
+          effects + variance components at Level Three. No need to write out the model 
+          or run the model unless you want to.
+        </p>
+      </statement>
+    </task>
+
+    <task>
+      <statement>
+        <p>
+          (Model D) Subtract <c>nonwhite</c> from Model C and add <c>dis_size</c>, 
+          where <c>dis_size</c> is a predictor in all Level Three equations.
+        </p>
+        <ul>
+          <li>
+            <p>
+              Write out the complete three-level model. Also write out the composite model. 
+              How many parameters must be estimated?
+            </p>
+          </li>
+          <li>
+            <p>
+              Run the model (be patient!) and then re-run it with an error term only on the 
+              intercept equation at Level Three. What are the implications of using this error 
+              structure? Does it change any conclusions about fixed effects? Which of the two 
+              models would you choose and why?
+            </p>
+          </li>
+          <li>
+            <p>
+              <em>(Optional)</em> Explore the nature of the 3-way interaction between 
+              <c>female</c>, <c>sch_ses</c>, and <c>dis_size</c> by finding the predicted 
+              math score for 5 cases based on Model D with an error term only on the intercept 
+              equation at Level Three. Comment on trends you observe.
+            </p>
+            <ul>
+              <li><p>Female vs. male with average <c>sch_ses</c> and <c>dis_size</c></p></li>
+              <li><p>Female vs. male with <c>sch_ses</c> at Q1 and <c>dis_size</c> at Q1</p></li>
+              <li><p>Female vs. male with <c>sch_ses</c> at Q1 and <c>dis_size</c> at Q3</p></li>
+              <li><p>Female vs. male with <c>sch_ses</c> at Q3 and <c>dis_size</c> at Q1</p></li>
+              <li><p>Female vs. male with <c>sch_ses</c> at Q3 and <c>dis_size</c> at Q3</p></li>
+            </ul>
+          </li>
+          <li>
+            <p>
+              <em>(Optional)</em> Create two scatterplots to illustrate the 3-way interaction 
+              between <c>female</c>, <c>sch_ses</c>, and <c>dis_size</c>.
+            </p>
+          </li>
+        </ul>
+      </statement>
+    </task>
+
+  </statement>
+</exercise>
     </subexercises>
 
     <subexercises xml:id="exer-openended-ch-3level">
@@ -2141,13 +2349,7 @@ anova(modelfl0, modeldl0, test = "Chisq")
             between plant growth and its environment."
           </p>
           <p>
-            Study researchers collected 1,960 leaves from 45 different trees (5 trees from each of
-            3 species within each of 3 climate zones). Within each tree, 3 branches were randomly
-            chosen from each of 3 strata (high, medium, and low), and 5 leaves were randomly
-            selected from each branch. Three climate zones were chosen for analysis — dry thorn, dry
-            deciduous, and moist deciduous — and three species were analyzed —
-            <em>Cassia fistula</em> (golden shower tree), <em>Anogeissus latifolia</em> (axlewood
-            tree), and <em>Diospyros montana</em> (mountain ebony).
+            Study researchers collected 1,960 leaves from 45 different trees (5 trees from each of 3 species within each of 3 climate zones). Within each tree, 3 branches were randomly chosen from each of 3 strata (high, medium, and low), and 5 leaves were randomly selected from each branch. Three different descriptive climatic zones were chosen for analysis—dry thorn, dry deciduous, and moist deciduous—and three different species of trees were analyzed—Cassia fistula (golden shower tree), Anogeissus latifolia (axlewood tree), and Diospyros montana (mountain ebony). Height and girth were measured for each tree, and length was assessed for each branch. Measurements taken on each leaf included length, width, surface area (determined carefully for 25 leaves per species and then by linear regression using length and width as predictors for the rest), pedial length (the length of the stem), pedial width, and percent herbivory (an eyeball estimate of the percent of each leaf that had been removed or eaten by herbivores). In addition, stomata density was measured using a compound scope to examine nail polish impressions of leaves for each strata of each tree (135 measurements).
           </p>
           <p>Here is a description of available variables in <c>mudamalai.csv</c>:</p>
           <ul>
