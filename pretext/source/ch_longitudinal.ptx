@@ -899,6 +899,8 @@ model.a &lt;- lmer(MathAvgScore ~ 1 + (1|schoolid),
 #Model B (Unconditional growth)
 model.b &lt;- lmer(MathAvgScore ~ year08 + (year08|schoolid),
                 REML = T, data = chart.long)
+
+drop_in_dev &lt;- anova(model.d2, model.c, test = "Chisq")
         </input>
       </program>
 
@@ -1540,6 +1542,9 @@ model.f0 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
                    SchPctSped + charter:year08 + urban:year08 +
                    SchPctSped:year08 + year08 +
                    (1|schoolid), REML = T, data = chart.long)
+
+drop_in_dev &lt;- anova(model.f2, model.f0, test = "Chisq")
+
         </input>
       </program>
 
