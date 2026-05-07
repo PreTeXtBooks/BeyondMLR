@@ -1643,8 +1643,8 @@ bootciF
       </p>
 
       <md>
-        <mrow>\text{Var}(Y_{ij}) \amp= \sigma_u^2 + t_{j}^2 \sigma_v^2 + \sigma^2 + 2t_{j}\sigma_{uv}</mrow>
-        <mrow>\text{Cov}(Y_{ij}, Y_{ik}) \amp= \sigma_u^2 + t_{j}t_{k} \sigma_v^2 + (t_{j} + t_{k})\sigma_{uv}</mrow>
+        <mrow>\text{Var}(Y_{ij}) \amp= \sigma_u^2 + t_{ij}^2 \sigma_v^2 + \sigma^2 + 2t_{ij}\sigma_{uv}</mrow>
+        <mrow>\text{Cov}(Y_{ij}, Y_{ik}) \amp= \sigma_u^2 + t_{ij}t_{ik} \sigma_v^2 + (t_{ij} + t_{ik})\sigma_{uv}</mrow>
       </md>
 
       <p>
