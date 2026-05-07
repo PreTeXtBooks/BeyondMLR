@@ -1001,7 +1001,7 @@ bootstrapAnova(mA = model.a3, m0 = model.a1, B = 1000)
       comparing models that differ in random effects, and since the null hypothesis involves
       setting random effects at their boundaries, we use the parametric bootstrap. Formally, we
       are comparing Model A3 to Model B3, which has the same Level One equation as Model A3
-      (<xref ref="eq-lev1cross"/>), but 6 variance components to estimate at Level Two:
+      <xref ref="eq-lev1cross"/>, but 6 variance components to estimate at Level Two:
     </p>
 
     <md>
@@ -1119,8 +1119,10 @@ bootstrapAnova(mA = model.b3, m0 = model.a3, B = 1000)
     </md>
 
     <p>
-      with <m>u_i \sim N(0, \sigma_u^2)</m>, <m>v_h \sim N(0, \sigma_v^2)</m>,
-      <m>w_g \sim N(0, \sigma_w^2)</m>. The composite model:
+      where error terms at Level Two can be assumed to follow independent normal distributions:
+      <me>u_i \sim N(0, \sigma_u^2)</me>, <me>v_h \sim N(0, \sigma_v^2)</me>,
+      <me>w_g \sim N(0, \sigma_w^2)</me>.
+  The composite model:
     </p>
 
     <md>
@@ -1144,6 +1146,7 @@ bootstrapAnova(mA = model.b3, m0 = model.a3, B = 1000)
       </mrow>
     </md>
 
+<p>Using the composite form of this multilevel generalized linear model, the parameter estimates for our 11 fixed effects and 3 variance components are given in the output below:</p>
     <program language="r" xml:id="code-model-f">
       <input>
 # Model F (potential final model)
