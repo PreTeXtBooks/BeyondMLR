@@ -491,15 +491,73 @@ seedlg &lt;- seedwd %&gt;%
         of terms found in our three-level model:
       </p>
 
-      <ul>
-        <li><p><m>Y_{ijk}</m> is the height (in mm) of plant <m>j</m> from pot <m>i</m> at time <m>k</m>.</p></li>
-        <li><p><m>a_{ij}</m> is the true mean height for plant <m>j</m> from pot <m>i</m> across all time points.</p></li>
-        <li><p><m>a_{i}</m> is the true mean height for pot <m>i</m> across all plants and all time points.</p></li>
-        <li><p><m>\alpha_{0}</m> is the true mean height across all pots, plants, and time points.</p></li>
-        <li><p><m>\sigma^2</m> is the variance component describing within-plant variability over time.</p></li>
-        <li><p><m>\sigma_{u}^{2}</m> is the variance component describing plant-to-plant variability within pot.</p></li>
-        <li><p><m>\sigma_{\tilde{u}}^{2}</m> is the variance component describing pot-to-pot variability.</p></li>
-      </ul>
+<ul>
+  <li>
+    <p>
+      <m>Y_{ijk}</m> is the height (in mm) of plant <m>j</m> from pot <m>i</m> 
+      at time <m>k</m>.
+    </p>
+  </li>
+  <li>
+    <p>
+      <m>a_{ij}</m> is the true mean height for plant <m>j</m> from pot <m>i</m> 
+      across all time points. This is not considered a model parameter, since we 
+      further model <m>a_{ij}</m> at Level Two.
+    </p>
+  </li>
+  <li>
+    <p>
+      <m>a_i</m> is the true mean height for pot <m>i</m> across all plants from 
+      that pot and all time points. This is also not considered a model parameter, 
+      since we further model <m>a_i</m> at Level Three.
+    </p>
+  </li>
+  <li>
+    <p>
+      <m>\alpha_0</m> is a fixed effects model parameter representing the true mean 
+      height across all pots, plants, and time points.
+    </p>
+  </li>
+  <li>
+    <p>
+      <m>\epsilon_{ijk}</m> describes how far an observed height <m>Y_{ijk}</m> is 
+      from the mean height for plant <m>j</m> from pot <m>i</m>.
+    </p>
+  </li>
+  <li>
+    <p>
+      <m>u_{ij}</m> describes how far the mean height of plant <m>j</m> from pot 
+      <m>i</m> is from the mean height of all plants from pot <m>i</m>.
+    </p>
+  </li>
+  <li>
+    <p>
+      <m>\tilde{u}_i</m> describes how far the mean height of all observations from 
+      pot <m>i</m> is from the overall mean height across all pots, plants, and time 
+      points. None of the error terms (<m>\epsilon</m>, <m>u</m>, <m>\tilde{u}</m>) 
+      are considered model parameters; they simply account for differences between 
+      the observed data and expected values under our model.
+    </p>
+  </li>
+  <li>
+    <p>
+      <m>\sigma^2</m> is a variance component (random effects model parameter) that 
+      describes within-plant variability over time.
+    </p>
+  </li>
+  <li>
+    <p>
+      <m>\sigma^2_u</m> is the variance component describing plant-to-plant 
+      variability within pot.
+    </p>
+  </li>
+  <li>
+    <p>
+      <m>\sigma^2_{\tilde{u}}</m> is the variance component describing pot-to-pot 
+      variability.
+    </p>
+  </li>
+</ul>
 
       <p>The three-level unconditional means model can also be expressed as a composite model:
         <me>Y_{ijk}=\alpha_{0}+\tilde{u}_{i}+u_{ij}+\epsilon_{ijk}</me>
@@ -887,7 +945,7 @@ anova(modelcl0, modelcl, test = "Chisq")
 
     <table xml:id="tab-10verb7">
       <title>Original data for Plants 11 and 12 from Pot 1.</title>
-      <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+      <tabular>
         <row header="yes" bottom="medium">
           <cell>pot</cell><cell>plant</cell><cell>soil</cell><cell>sterile</cell>
           <cell>species</cell><cell>germin</cell><cell>hgt13</cell><cell>hgt18</cell>
@@ -1865,7 +1923,7 @@ anova(modelfl0, modeldl0, test = "Chisq")
 
       <table xml:id="tab-table4chp10">
         <title>Correlates of collective efficacy from Table 3 of Sampson et al. (1997).</title>
-        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+        <tabular>
           <row header="yes" bottom="medium">
             <cell>Variable</cell><cell>Coefficient</cell><cell>SE</cell><cell>t ratio</cell>
           </row>
@@ -1947,7 +2005,7 @@ anova(modelfl0, modeldl0, test = "Chisq")
 
       <table xml:id="tab-table5chp10">
         <title>Neighborhood correlates of perceived neighborhood violence from a portion of Table 4 from Sampson et al. (1997).</title>
-        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+        <tabular>
           <row header="yes" bottom="none">
             <cell></cell><cell colspan="3">Model 1</cell><cell colspan="3">Model 2</cell>
           </row>
