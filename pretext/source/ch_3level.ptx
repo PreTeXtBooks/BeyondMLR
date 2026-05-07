@@ -138,7 +138,7 @@ library(tidyverse)
 
       <table xml:id="tab-table1chp10">
         <title>A snapshot of data (Plants 231–246) from the Seed Germination case study in wide format.</title>
-        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+        <tabular>
           <row header="yes" bottom="medium">
             <cell>pot</cell><cell>plant</cell><cell>soil</cell><cell>sterile</cell>
             <cell>species</cell><cell>germin</cell><cell>hgt13</cell><cell>hgt18</cell>
@@ -174,7 +174,7 @@ library(tidyverse)
 
       <table xml:id="tab-table2chp10">
         <title>A snapshot of data (Plants 236–242) from the Seed Germination case study in long format.</title>
-        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+        <tabular>
           <row header="yes" bottom="medium">
             <cell>pot</cell><cell>plant</cell><cell>soil</cell><cell>sterile</cell>
             <cell>species</cell><cell>germin</cell><cell>hgt</cell><cell>time13</cell>
