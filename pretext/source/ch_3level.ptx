@@ -680,12 +680,21 @@ summary(modelcl)
     </p>
 
     <p>
-      Boundary constraints occur when the maximum likelihood estimator of at least one model
-      parameter occurs at the limits of allowable values (such as estimated correlation coefficients
-      of −1 or 1, or estimated variances of 0). Maximum likelihood estimates at the boundary tend to
-      indicate that the likelihood function would be maximized at non-allowable values if an
-      unconstrained search for MLEs was conducted. Figure <xref ref="fig-boundary"/> illustrates this
-      concept with a simple two-parameter example.
+      Consider a model in which we have two parameters that must be estimated: <m>\beta_0</m> and
+      <m>\sigma^2</m>. As the intercept, <m>\beta_0</m> can take on any value; any real number is
+      "allowable." But, by definition, variance terms such as <m>\sigma^2</m> must be non-negative;
+      that is, <m>\sigma^2 \geq 0</m>. Under the Principle of Maximum Likelihood, maximum likelihood
+      estimators for <m>\beta_0</m> and <m>\sigma^2</m> will be chosen to maximize the likelihood of
+      observing our given data. The left plot in Figure <xref ref="fig-boundary"/> shows hypothetical
+      contours of the likelihood function <m>L(\beta_0, \sigma^2)</m>; the likelihood is clearly
+      maximized at <m>(\hat{\beta}_0, \hat{\sigma}^2)=(4,-2)</m>. However, variance terms cannot be
+      negative! A more sensible approach would have been to perform a constrained search for MLEs,
+      considering any potential values for <m>\beta_0</m> but only non-negative values for
+      <m>\sigma^2</m>. This constrained search is illustrated in the right plot in Figure
+      <xref ref="fig-boundary"/>. In this case, the likelihood is maximized at
+      <m>(\hat{\beta}_0, \hat{\sigma}^2)=(4,0)</m>. Note that the estimated intercept did not change,
+      but the estimated variance is simply set at the smallest allowable value — at the
+      <term>boundary constraint</term>.
     </p>
 
     <figure xml:id="fig-boundary">
@@ -716,26 +725,27 @@ summary(modelcl)
       values. Therefore, boundary constraints would ideally be avoided, if possible.
     </p>
 
-    <p>What should you do if you encounter boundary constraints? Often, boundary constraints signal that your model needs to be reparameterized. This can be accomplished in several ways:</p>
+    <p>What should you do if you encounter boundary constraints? Often, boundary constraints signal that your model needs to be reparameterized, i.e., you should alter your model to feature different parameters or ones that are interpreted differently. This can be accomplished in several ways:</p>
 
     <ul>
-      <li><p>Remove parameters, especially variance and correlation terms which are being estimated on their boundaries.</p></li>
-      <li><p>Fix the values of certain parameters; for instance, set two variance terms equal to each other, thereby reducing the number of unknown parameters.</p></li>
-      <li><p>Transform covariates. Centering, standardizing, or changing units can all help stabilize a model.</p></li>
+      <li><p>Remove parameters, especially those variance and correlation terms which are being estimated on their boundaries.</p></li>
+      <li><p>Fix the values of certain parameters; for instance, you could set two variance terms equal to each other, thereby reducing the number of unknown parameters to estimate by one.</p></li>
+      <li><p>Transform covariates. Centering variables, standardizing variables, or changing units can all help stabilize a model. Numerical procedures for searching for and finding maximum likelihood estimates can encounter difficulties when variables have very high or low values, extreme ranges, outliers, or are highly correlated.</p></li>
     </ul>
 
     <p>
       Although it is worthwhile attempting to reparameterize models to remove boundary constraints,
       sometimes they can be tolerated if (a) you are not interested in estimates of those parameters
       encountering boundary issues, and (b) removing those parameters does not affect conclusions
-      about parameters of interest. In the output below, we explore the implications of simply
-      removing the correlation between error terms at the pot level (i.e., assume
-      <m>\rho_{\tilde{u}\tilde{v}}=0</m>).
+      about parameters of interest. For example, in the output below we explore the implications of
+      simply removing the correlation between error terms at the pot level (i.e., assume
+      <m>\rho_{\tilde{u}\tilde{v}}=0</m> rather than accepting the (constrained) maximum likelihood
+      estimate of <m>\hat{\rho}_{\tilde{u}\tilde{v}}=-1</m> that we saw in Model C).
     </p>
 
     <program language="r" xml:id="code-model-c-noL2corr">
       <input>
-# Try Model C without correlation between Level 3 errors
+# Try Model C without correlation between L2 errors
 modelcl.noL2corr &lt;- lmer(hgt ~ time13 + strl + cult + rem +
     time13:strl + time13:cult + time13:rem + (time13|plant) +
     (1|pot) + (0+time13|pot), REML=T, data=leaddata)
@@ -745,7 +755,7 @@ summary(modelcl.noL2corr)
 
     <p>
       Note that the estimated variance components are all very similar to Model C, and the estimated
-      fixed effects and their associated t-statistics are also very similar. Therefore, in this case
+      fixed effects and their associated t-statistics are also very similar to Model C. Therefore, in this case
       we could consider simply reporting the results of Model C despite the boundary constraint.
     </p>
 
@@ -801,9 +811,11 @@ anova(modelcl0, modelcl, test = "Chisq")
     </program>
 
     <p>
-      We now have a more stable model, free of boundary constraints. Based on a likelihood ratio
-      test (chi-square test statistic=2.089 on 2 df, p=0.3519) we do not have significant evidence
-      that <m>\sigma_{\tilde{v}}^{2}</m> or <m>\sigma_{\tilde{u}\tilde{v}}</m> is non-zero, so it
+      We now have a more stable model, free of boundary constraints. In fact, we can attempt to
+      determine whether or not removing the two variance component parameters for Model C.1 provides
+      a significant reduction in performance. Based on a likelihood ratio test (see below), we do
+      not have significant evidence (chi-square test statistic=2.089 on 2 df, p=0.3519) that
+      <m>\sigma_{\tilde{v}}^{2}</m> or <m>\sigma_{\tilde{u}\tilde{v}}</m> is non-zero, so it
       is advisable to use the simpler Model C.1. However, the next section describes why this test
       may be misleading and prescribes a potentially better approach.
     </p>
@@ -821,15 +833,16 @@ anova(modelcl0, modelcl, test = "Chisq")
 
     <p>
       Under the parametric bootstrap, we must simulate data under the null hypothesis many times.
-      Here are the basic steps for comparing Model C.1 with Model C:
+      Here are the basic steps for running a parametric bootstrap procedure to compare Model C.1
+      with Model C:
     </p>
 
     <ol>
-      <li><p>Fit Model C.1 (the null model) to obtain estimated fixed effects and variance components.</p></li>
-      <li><p>Use the estimated parameters from the null model to regenerate a new set of plant heights with the same sample size (<m>n=413</m>) and associated covariates as the original data.</p></li>
+      <li><p>Fit Model C.1 (the null model) to obtain estimated fixed effects and variance components (this is the "parametric" part).</p></li>
+      <li><p>Use the estimated fixed effects and variance components from the null model to regenerate a new set of plant heights with the same sample size (<m>n=413</m>) and associated covariates for each observation as the original data (this is the "bootstrap" part).</p></li>
       <li><p>Fit both Model C.1 (the reduced model) and Model C (the full model) to the new data.</p></li>
       <li><p>Compute a likelihood ratio statistic comparing Models C.1 and C.</p></li>
-      <li><p>Repeat the previous three steps many times (e.g., 1000).</p></li>
+      <li><p>Repeat the previous 3 steps many times (e.g., 1000).</p></li>
       <li><p>Produce a histogram of likelihood ratio statistics to illustrate its behavior when the null hypothesis is true.</p></li>
       <li><p>Calculate a p-value by finding the proportion of times the bootstrapped test statistic is greater than our observed test statistic.</p></li>
     </ol>
@@ -904,11 +917,17 @@ anova(modelcl0, modelcl, test = "Chisq")
         <mrow>a_{ij} \amp = a_{i}+u_{ij}</mrow>
         <mrow>b_{ij} \amp = b_{i}+v_{ij}</mrow>
       </md>
-      We will initially focus on Plant #11 from Pot #1. At this point we need to find the two
-      error terms for Plant #11: <m>u_{11}</m> and <m>v_{11}</m>. According to our multilevel
-      model, we can sample <m>u_{11}</m> and <m>v_{11}</m> from a bivariate normal distribution
-      with means both equal to 0, standard deviation for the intercept of .543, standard deviation
-      for the slope of .036, and correlation between the intercept and slope of .194.
+      We will initially focus on Plant #11 from Pot #1. Notice that the intercept (Day 13 height =
+      <m>a_{11}</m>) for Plant #11 has two components: the mean Day 13 height for Pot #1
+      (<m>a_{1}</m>) which we specified at Level Three, and an error term (<m>u_{11}</m>) which
+      indicates how the Day 13 height for Plant #11 differs from the overall average for all plants
+      from Pot #1. The slope (daily growth rate = <m>b_{11}</m>) for Plant #11 similarly has two
+      components. Since both <m>a_{1}</m> and <m>b_{1}</m> were determined at Level Three, at this
+      point we need to find the two error terms for Plant #11: <m>u_{11}</m> and <m>v_{11}</m>.
+      According to our multilevel model, we can sample <m>u_{11}</m> and <m>v_{11}</m> from a
+      bivariate normal distribution with means both equal to 0, standard deviation for the intercept
+      of .543, standard deviation for the slope of .036, and correlation between the intercept and
+      slope of .194.
     </p>
 
     <p>
@@ -920,7 +939,8 @@ anova(modelcl0, modelcl, test = "Chisq")
       </md>
       Although plants from Pot #1 have a mean Day 13 height of 1.232 mm, Plant #11's mean Day 13
       height is .336 mm above that. Similarly, although plants from Pot #1 have a mean growth rate
-      of .160 mm/day, Plant #11's growth rate is .029 mm/day faster.
+      of .160 mm/day (just like every other pot with sterilized restored prairie soil), Plant #11's
+      growth rate is .029 mm/day faster.
     </p>
 
     <p><term>Level One</term></p>
@@ -930,8 +950,10 @@ anova(modelcl0, modelcl, test = "Chisq")
       function of time (<m>1.568 + .189\textrm{time}_{11k}</m>) with a normally distributed
       residual <m>\epsilon_{11k}</m> at each time point <m>k</m>. Four residuals (one for each
       time point) are sampled independently from a normal distribution with mean 0 and standard
-      deviation .287. Suppose we obtain residuals of <m>\epsilon_{111}=-.311</m>,
-      <m>\epsilon_{112}=.119</m>, <m>\epsilon_{113}=.241</m>, and <m>\epsilon_{114}=-.066</m>. In
+      deviation .287 — the standard deviation again coming from parameter estimates from fitting
+      Model C.1 to the actual data as reported in <xref ref="sec-boundary"/>. Suppose we obtain
+      residuals of <m>\epsilon_{111}=-.311</m>, <m>\epsilon_{112}=.119</m>,
+      <m>\epsilon_{113}=.241</m>, and <m>\epsilon_{114}=-.066</m>. In
       that case, our parametrically generated data for Plant #11 from Pot #1 would look like:
       <md>
         <mrow>Y_{111} \amp = 1.568+.189(0)-.311 = 1.257</mrow>
@@ -939,12 +961,13 @@ anova(modelcl0, modelcl, test = "Chisq")
         <mrow>Y_{113} \amp = 1.568+.189(10)+.241 = 3.699</mrow>
         <mrow>Y_{114} \amp = 1.568+.189(15)-.066 = 4.337</mrow>
       </md>
-      We would next turn to Plant #12 from Pot #1. Fixed effects would remain the same, as would
-      coefficients for Pot #1, <m>a_{1} = 1.232</m> and <m>b_{1} = .160</m>, at Level Three. We
-      would, however, sample new residuals <m>u_{12}</m> and <m>v_{12}</m> at Level Two, producing
-      a different intercept <m>a_{12}</m> and slope <m>b_{12}</m> than those observed for Plant
-      #11. Four new independent residuals <m>\epsilon_{12k}</m> would also be selected at Level
-      One, from the same normal distribution as before with mean 0 and standard deviation .287.
+      We would next turn to Plant #12 from Pot #1 (<m>i=1</m> and <m>j=2</m>). Fixed effects would
+      remain the same, as would coefficients for Pot #1, <m>a_{1} = 1.232</m> and
+      <m>b_{1} = .160</m>, at Level Three. We would, however, sample new residuals <m>u_{12}</m>
+      and <m>v_{12}</m> at Level Two, producing a different intercept <m>a_{12}</m> and slope
+      <m>b_{12}</m> than those observed for Plant #11. Four new independent residuals
+      <m>\epsilon_{12k}</m> would also be selected at Level One, from the same normal distribution
+      as before with mean 0 and standard deviation .287.
     </p>
 
     <p>
@@ -1128,17 +1151,36 @@ confint(modelcl, method="boot", oldNames = F)
     </ul>
 
     <p>
-      By following the options above, the potential 30-parameter model (C_plus) can be simplified to
-      a 9-parameter model (composite form):
+      By following the options above, our potential 30-parameter model (C_plus) can be simplified to
+      this 9-parameter model:
+    </p>
+
+    <p>Level One:
+      <me>Y_{ijk} = a_{ij}+b_{ij}\textrm{time}_{ijk}+\epsilon_{ijk}</me>
+    </p>
+
+    <p>Level Two:
+      <md>
+        <mrow>a_{ij} \amp = a_{i}+c_{i}\textrm{seedsize}_{ij}+u_{ij}</mrow>
+        <mrow>b_{ij} \amp = b_{i}</mrow>
+      </md>
+    </p>
+
+    <p>Level Three:
+      <md>
+        <mrow>a_{i} \amp = \alpha_{0}+\alpha_{1}\textrm{strl}_{i}+\alpha_{2}\textrm{cult}_{i}+\alpha_{3}\textrm{rem}_{i}+\tilde{u}_{i}</mrow>
+        <mrow>b_{i} \amp = \beta_{0}</mrow>
+        <mrow>c_{i} \amp = \gamma_{0}</mrow>
+      </md>
+    </p>
+
+    <p>where <m>\epsilon_{ijk}\sim N(0,\sigma^2)</m>, <m>u_{ij}\sim N(0,\sigma_{u}^{2})</m>, and
+      <m>\tilde{u}_{i}\sim N(0,\sigma_{\tilde{u}}^{2})</m>. Or, in terms of a composite model:
       <md>
         <mrow>Y_{ijk} \amp = [\alpha_{0}+\alpha_{1}\textrm{strl}_{i}+\alpha_{2}\textrm{cult}_{i}+\alpha_{3}\textrm{rem}_{i} +
         \gamma_{0}\textrm{seedsize}_{ij} + \beta_{0}\textrm{time}_{ijk}] +</mrow>
         <mrow>\amp [\tilde{u}_{i}+u_{ij}+\epsilon_{ijk}]</mrow>
       </md>
-      where <m>\epsilon_{ijk}\sim N(0,\sigma^2)</m>, <m>u_{ij}\sim N(0,\sigma_{u}^{2})</m>, and
-      <m>\tilde{u}_{i}\sim N(0,\sigma_{\tilde{u}}^{2})</m>. This
-      <term>random intercepts model</term> assumes that the effect of time is the same for all
-      plants and pots, and the effect of seed size is the same for each pot.
     </p>
 
     <p>
@@ -1412,9 +1454,14 @@ anova(modelfl0, modeldl0, test = "Chisq")
         \end{pmatrix}
       </me>
       where <m>\tilde{\tau}_{kk}=\operatorname{Cov}(Y_{ijk},Y_{ij'k})=\sigma_{\tilde{u}}^{2}+2\sigma_{\tilde{u}\tilde{v}}t_{k}+\sigma_{\tilde{v}}^{2}t_{k}^{2}</m>
-      and <m>\tilde{\tau}_{kk'}=\operatorname{Cov}(Y_{ijk},Y_{ij'k'})</m> as derived above. Any
-      pair of plants from the same pot will have the same correlations between heights at any two
-      timepoints.
+      and <m>\tilde{\tau}_{kk'}=\operatorname{Cov}(Y_{ijk},Y_{ij'k'})</m> as derived above. As we
+      saw with <m>\operatorname{Cov}(\mathbf{Y}_{ij})</m>, <m>\tilde{\tau}_{kk}</m> and
+      <m>\tilde{\tau}_{kk'}</m> are both independent of <m>i</m> and <m>j</m> so that
+      <m>\operatorname{Cov}(\mathbf{Y}_{ij},\mathbf{Y}_{ij'})</m> will be constant for all pairs
+      of plants from all pots. That is, any pair of plants from the same pot will have the same
+      correlations between heights at any two timepoints. As with any covariance matrix, we can
+      convert <m>\operatorname{Cov}(\mathbf{Y}_{ij},\mathbf{Y}_{ij'})</m> into a correlation
+      matrix if desired.
     </p>
 
     <p>
@@ -1433,22 +1480,22 @@ anova(modelfl0, modeldl0, test = "Chisq")
           1 \\ .76 \amp 1 \\ .65 \amp .82 \amp 1 \\ .54 \amp .77 \amp .88 \amp 1
         \end{pmatrix}
       </me>
-      for all plants <m>j</m> and all pots <m>i</m>. The within-plant correlation structure suggests
-      that measurements taken closer in time tend to be more highly correlated than those with more
-      separation in time, and later measurements tend to be more highly correlated than earlier
-      measurements. Examination of standard deviation terms by timepoint suggests that variability
-      increases over time within a plant (estimated SDs of .652, .703, .828, and .999 for Days 13,
-      18, 23, and 28, respectively).
-    </p>
-
-    <p>
-      The correlation structure between different plants from the same pot is estimated to be:
+      for all plants <m>j</m> and all pots <m>i</m>, and the correlation structure between
+      different plants from the same pot is estimated to be:
       <me>
         \operatorname{Corr}(\mathbf{Y}_{ij},\mathbf{Y}_{ij'}) = \begin{pmatrix}
           .104 \\ .047 \amp .061 \\ -.002 \amp .067 \amp .116 \\ -.037 \amp .068 \amp .144 \amp .191
         \end{pmatrix}
       </me>
-      depicting a fairly low level of correlation between plants from the same pot; even for
+    </p>
+
+    <p>
+      The within-plant correlation structure suggests that measurements taken closer in time tend
+      to be more highly correlated than those with more separation in time, and later measurements
+      tend to be more highly correlated than earlier measurements. Examination of standard deviation
+      terms by timepoint suggests that variability increases over time within a plant (estimated SDs
+      of .652, .703, .828, and .999 for Days 13, 18, 23, and 28, respectively). The correlation
+      structure between plants from the same pot depicts a fairly low level of correlation; even for
       measurements taken at the same timepoint, the largest correlation between plants from the same
       pot occurs on Day 28 (r=.191) while the smallest correlation occurs on Day 18 (r=.061).
     </p>
@@ -1457,8 +1504,10 @@ anova(modelfl0, modeldl0, test = "Chisq")
       We can use these results to estimate within-plant and within-pot correlation structure after
       imposing the same constraints on Model B that we did on Model F (i.e.,
       <m>\sigma_{\tilde{v}}^{2}=\sigma_{\tilde{u}\tilde{v}}=0</m>). Using the same REML variance
-      component estimates as above except that <m>\hat{\sigma}_{\tilde{v}}^{2}=0</m> and
-      <m>\hat{\sigma}_{\tilde{u}\tilde{v}}=0</m>, the within-plant correlation structure is
+      components estimates as above except that <m>\hat{\sigma}_{\tilde{v}}^{2}=0</m> rather than
+      <m>.00126</m> and
+      <m>\hat{\sigma}_{\tilde{u}\tilde{v}}=\hat{\rho}_{\tilde{u}\tilde{v}}\sqrt{\hat{\sigma}_{\tilde{u}}^{2}\hat{\sigma}_{\tilde{v}}^{2}}=0</m>
+      rather than <m>-.00455</m>, the within-plant correlation structure is
       estimated to be:
       <me>
         \operatorname{Corr}(\mathbf{Y}_{ij}) = \begin{pmatrix}
@@ -1480,15 +1529,17 @@ anova(modelfl0, modeldl0, test = "Chisq")
       very similar (estimated SDs of .652, .713, .806, and .923 for Days 13, 18, 23, and 28,
       respectively). In terms of the relationship between heights of different plants from the same
       pot, our model restrictions produced slightly higher correlation estimates with Day 13 height,
-      but slightly lower correlation estimates associated with heights at Days 23 and 28. None of the
-      differences in the covariance structure, however, should have a large impact on final
-      conclusions, especially regarding fixed effects, so our strategy for dealing with boundary
+      but slightly lower correlation estimates associated with heights at Days 23 and 28. For
+      measurements taken at the same timepoint, the largest correlation between plants from the same
+      pot now occurs on Day 13 (r=.104) while the smallest correlation now occurs on Day 28 (r=.052).
+      None of the differences in the covariance structure, however, should have a large impact on
+      final conclusions, especially regarding fixed effects, so our strategy for dealing with boundary
       constraints appears very reasonable. In addition, the covariance structure implied by our
       standard 3-level model appears to model the correlation structure we observed in Figure
-      <xref ref="fig-corrstruct"/> during our exploratory analyses very nicely. In all cases, the
-      AIC and BIC from the standard model are considerably lower than from models with alternative
-      covariance structures (heterogeneous compound symmetry, heterogeneous AR(1), Toeplitz),
-      justifying our use of the standard covariance structure.
+      <xref ref="fig-corrstruct"/> during our exploratory analyses very nicely. Even the variability
+      over time implied by the standard model matches well with the raw observed variability in height
+      by time period (respective standard deviations of .64, .64, .86, and .91). Thus, we feel well
+      justified in fitting models based on the standard covariance structure.
     </p>
 
     <subsection xml:id="sec-optionalerror">
@@ -1526,20 +1577,59 @@ anova(modelfl0, modeldl0, test = "Chisq")
       <p>
         Based on these variances and covariances and the expressions for
         <m>\operatorname{Cov}(\mathbf{Y}_{ij})</m> and
-        <m>\operatorname{Cov}(\mathbf{Y}_{ij},\mathbf{Y}_{ij'})</m>, the complete covariance matrix
-        for observations from pot <m>i</m> can be expressed as a block diagonal matrix (assuming 4
-        observations over time for each of 6 plants), with
-        <m>\operatorname{Cov}(\mathbf{Y}_i)</m> matrices along the diagonal reflecting within-pot
-        correlation and 0's off-diagonal reflecting the assumed independence of observations from
-        plants from different pots. In addition, we can compare the implied covariance structure
-        with those from alternative covariance structures. A couple of natural covariance structures
-        to fit in the Seed Germination case study, given the observed structure in our data, are the
-        heterogeneous compound symmetry and heterogeneous AR(1) models. We fit both structures, along
-        with the toeplitz structure, and compared the resulting models with our standard three-level
-        model. In all cases, the AIC and BIC from the standard model (615.2 and 651.4, respectively)
-        are considerably lower than the corresponding performance measures from the models with
-        alternative covariance structures. Thus, we feel justified in fitting models based on the
-        standard covariance structure.
+        <m>\operatorname{Cov}(\mathbf{Y}_{ij},\mathbf{Y}_{ij'})</m> in
+        <xref ref="sec-error-3level"/>, the complete covariance matrix for observations from pot
+        <m>i</m> can be expressed as the following 24x24 matrix (assuming 4 observations over time
+        for each of 6 plants):
+        <md>
+          <mrow>\operatorname{Cov}(\mathbf{Y}_{i}) \amp = \left[
+            \begin{array}{cccc}
+              \operatorname{Cov}(\mathbf{Y}_{i1}) \amp \amp \amp \\
+              \operatorname{Cov}(\mathbf{Y}_{i1},\mathbf{Y}_{i2}) \amp \operatorname{Cov}(\mathbf{Y}_{i2}) \amp \amp \\
+              \operatorname{Cov}(\mathbf{Y}_{i1},\mathbf{Y}_{i3}) \amp \operatorname{Cov}(\mathbf{Y}_{i2},\mathbf{Y}_{i3}) \amp \operatorname{Cov}(\mathbf{Y}_{i3}) \amp \\
+              \operatorname{Cov}(\mathbf{Y}_{i1},\mathbf{Y}_{i4}) \amp \operatorname{Cov}(\mathbf{Y}_{i2},\mathbf{Y}_{i4}) \amp \operatorname{Cov}(\mathbf{Y}_{i3},\mathbf{Y}_{i4}) \amp \cdots \\
+              \operatorname{Cov}(\mathbf{Y}_{i1},\mathbf{Y}_{i5}) \amp \operatorname{Cov}(\mathbf{Y}_{i2},\mathbf{Y}_{i5}) \amp \operatorname{Cov}(\mathbf{Y}_{i3},\mathbf{Y}_{i5}) \amp \cdots \\
+              \operatorname{Cov}(\mathbf{Y}_{i1},\mathbf{Y}_{i6}) \amp \operatorname{Cov}(\mathbf{Y}_{i2},\mathbf{Y}_{i6}) \amp \operatorname{Cov}(\mathbf{Y}_{i3},\mathbf{Y}_{i6}) \amp \cdots
+            \end{array} \right.</mrow>
+          <mrow>\amp \left.
+            \begin{array}{ccc}
+              \amp \amp \\
+              \amp \amp \\
+              \amp \amp \\
+              \operatorname{Cov}(\mathbf{Y}_{i4}) \amp \amp \\
+              \operatorname{Cov}(\mathbf{Y}_{i4},\mathbf{Y}_{i5}) \amp \operatorname{Cov}(\mathbf{Y}_{i5}) \amp \\
+              \operatorname{Cov}(\mathbf{Y}_{i4},\mathbf{Y}_{i6}) \amp \operatorname{Cov}(\mathbf{Y}_{i5},\mathbf{Y}_{i6}) \amp \operatorname{Cov}(\mathbf{Y}_{i6})
+            \end{array} \right]</mrow>
+        </md>
+      </p>
+
+      <p>
+        A covariance matrix for our entire data set, therefore, would be block diagonal, with
+        <m>\operatorname{Cov}(\mathbf{Y}_{i})</m> matrices along the diagonal reflecting within
+        pot correlation and 0's off-diagonal reflecting the assumed independence of observations
+        from plants from different pots. As with any covariance matrix, we can convert the
+        <m>\operatorname{Cov}(\mathbf{Y}_{ij},\mathbf{Y}_{ij'})</m> blocks for two different
+        plants from the same pot into correlation matrices by dividing covariance terms by the
+        product of corresponding standard deviations. Specifically, for
+        <m>\operatorname{Cov}(\mathbf{Y}_{ij},\mathbf{Y}_{ij'})</m>, the diagonal terms in a
+        correlation matrix are formed by
+        <m>\operatorname{Corr}(Y_{ijk},Y_{ij'k})=\frac{\tilde{\tau}_{kk}}{\sqrt{\operatorname{Var}(Y_{ijk})\operatorname{Var}(Y_{ij'k})}}=\frac{\tilde{\tau}_{kk}}{\tau_{k}^{2}}</m>
+        and the off-diagonal terms are formed by
+        <m>\operatorname{Corr}(Y_{ijk},Y_{ij'k'})=\frac{\tilde{\tau}_{kk'}}{\sqrt{\operatorname{Var}(Y_{ijk})\operatorname{Var}(Y_{ij'k'})}}=\frac{\tilde{\tau}_{kk'}}{\tau_{k}\tau_{k'}}</m>.
+      </p>
+
+      <p>
+        We calculated estimated covariance and correlation matrices within plant and between plants
+        in <xref ref="sec-error-3level"/> based on the standard covariance structure for
+        three-level models. However, it can sometimes be helpful to consider alternative covariance
+        structures and evaluate the robustness of results to changes in assumptions. A couple of
+        natural covariance structures to fit in the Seed Germination case study, given the observed
+        structure in our data, are the heterogeneous compound symmetry and heterogeneous AR(1)
+        models. We fit both structures, along with the toeplitz structure, and compared the
+        resulting models with our standard three-level model. In all cases, the AIC and BIC from
+        the standard model (615.2 and 651.4, respectively) are considerably lower than the
+        corresponding performance measures from the models with alternative covariance structures.
+        Thus, we feel justified in fitting models based on the standard covariance structure.
       </p>
     </subsection>
   </section>
@@ -1554,14 +1644,15 @@ anova(modelfl0, modeldl0, test = "Chisq")
       separately in Model A through <c>(1 | plant)</c> and <c>(1 | pot)</c>. Specifying
       <c>(time13 | plant)</c> in Model B is equivalent to specifying
       <c>(1+time13 | plant)</c> and produces a total of 3 variance components to estimate: variances
-      for error terms associated with the intercept and slope at the plant level, along with a
-      covariance or correlation between those two error terms. To restrict
-      <m>\sigma_{uv} = \rho_{uv} = 0</m>, you could specify each error term separately:
-      <c>(1 | plant) + (0+time13 | plant)</c>.
+      for error terms associated with the intercept (<m>\sigma_{u}^{2}</m> comes for "free") and
+      slope (<m>\sigma_{v}^{2}</m> comes from the <c>time13</c> term) at the plant level, along
+      with a covariance or correlation (<m>\sigma_{uv}</m> or <m>\rho_{uv}</m>) between those two
+      error terms. To restrict <m>\sigma_{uv} = \rho_{uv} = 0</m>, you could specify each error
+      term separately: <c>(1 | plant) + (0+time13 | plant)</c>.
     </p>
 
     <p>
-      To fit Model C.1 in R, the random error components are written as
+      Also note that to fit Model C.1 in R, the random error components are written as
       <c>(time13 | plant) + (1 | pot)</c>, indicating you'd like error terms associated with the
       intercept and slope at the plant level, but only for the intercept term at the pot level. The
       fixed effects in Model C.1 just reflect all fixed effects in the composite model.
@@ -1570,13 +1661,14 @@ anova(modelfl0, modeldl0, test = "Chisq")
     <p>
       In <xref ref="sec-threelevel-paraboot"/> we sought to perform a significance test comparing
       Models C and C.1, where Model C.1 restricted two variance components from Model C to be 0.
-      Our initial attempt using the <c>anova()</c> function created two problems: (a) the
-      <c>anova()</c> function uses full maximum likelihood estimates rather than REML estimates,
-      which is fine when two models differ in fixed effects but not when two models differ only in
-      random effects; and, (b) the likelihood ratio test statistic is often not well approximated by
-      a chi-square distribution. Therefore, we implemented the parametric bootstrap method to
-      simulate the distribution of the likelihood ratio test statistic and obtain a more reliable
-      p-value.
+      Our initial attempt used the <c>anova()</c> function in R, which created two problems: (a)
+      the <c>anova()</c> function uses full maximum likelihood estimates rather than REML estimates
+      of model parameters and performance, which is fine when two models differ in fixed effects
+      but not, as in this case, when two models differ only in random effects; and, (b) the
+      likelihood ratio test statistic is often not well approximated by a chi-square distribution.
+      Therefore, we implemented the parametric bootstrap method to simulate the distribution of the
+      likelihood ratio test statistic and obtain a more reliable p-value, also illustrating that
+      the chi-square distribution would produce an artificially large p-value.
     </p>
   </section>
 
