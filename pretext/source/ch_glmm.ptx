@@ -454,6 +454,19 @@ mod0 &lt;- glm(foul.home ~ foul.diff + score.diff + lead.home +
             family = binomial, data = refdata)
         </input>
       </program>
+      <console>
+        <output>
+##                 Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)    -0.103416   0.101056 -1.0234 0.306138
+## foul.diff      -0.076599   0.024888 -3.0777 0.002086
+## score.diff      0.020062   0.006660  3.0123 0.002593
+## lead.home      -0.093227   0.160082 -0.5824 0.560318
+## time           -0.013141   0.007948 -1.6533 0.098271
+## foul.diff:time -0.007492   0.003014 -2.4855 0.012938
+## lead.home:time  0.021837   0.011161  1.9565 0.050404
+##  Residual deviance =  6748  on  4965 df
+        </output>
+      </console>
     </subsection>
 
     <subsection xml:id="twostage-glmm">
@@ -547,6 +560,14 @@ lreg.game110 &lt;- glm(foul.home ~ foul.diff,
                      family = binomial, data = game110)
         </input>
       </program>
+      <console>
+        <output>
+##             Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)   -5.668      3.131  -1.810  0.07030
+## foul.diff     -2.110      1.140  -1.851  0.06415
+##  Residual deviance =  11.75  on  12 df
+        </output>
+      </console>
 
       <p>
         For Game 110, we estimate <m>\hat{a}_{110} = -5.67</m> and
@@ -685,6 +706,18 @@ model.b1 &lt;- glmer(foul.home ~ foul.diff + (foul.diff|game),
                    family = binomial, data = refdata)
         </input>
       </program>
+      <console>
+        <output>
+##  Groups Name        Variance Std.Dev. Corr
+##  game   (Intercept) 0.29414  0.5424
+##         foul.diff   0.00124  0.0351   -1.00
+##  Number of Level Two groups =  340
+##             Estimate Std. Error z value  Pr(&gt;|z|)
+## (Intercept)  -0.1568    0.04637  -3.382 7.190e-04
+## foul.diff    -0.2853    0.03835  -7.440 1.006e-13
+##  AIC =  6791 ;  BIC =  6824
+        </output>
+      </console>
 
       <p>
         When parameter estimates from the multilevel model above are compared with those from the
@@ -704,6 +737,14 @@ mod0a &lt;- glm(foul.home ~ foul.diff, family = binomial,
              data = refdata)
         </input>
       </program>
+      <console>
+        <output>
+##             Estimate Std. Error z value  Pr(&gt;|z|)
+## (Intercept)  -0.1300    0.02912  -4.466 7.983e-06
+## foul.diff    -0.1305    0.01426  -9.148 5.804e-20
+##  Residual deviance =  6798  on  4970 df
+        </output>
+      </console>
     </subsection>
   </section>
 
@@ -880,6 +921,21 @@ model.a3 &lt;- glmer(foul.home ~ foul.diff + (1|game) +
                   family = binomial, data = refdata)
       </input>
     </program>
+    <console>
+      <output>
+##  Groups   Name        Variance Std.Dev.
+##  game     (Intercept) 0.1716   0.414
+##  hometeam (Intercept) 0.0681   0.261
+##  visitor  (Intercept) 0.0232   0.152
+##  Number of games =  340
+##  Number of hometeams =  39
+##  Number of visitors =  39
+##             Estimate Std. Error z value  Pr(&gt;|z|)
+## (Intercept)  -0.1878    0.06331  -2.967 3.011e-03
+## foul.diff    -0.2638    0.03883  -6.795 1.085e-11
+##  AIC =  6780 ;  BIC =  6813
+      </output>
+    </console>
 
     <p>
       From this output, we obtain estimates of our five model parameters:
@@ -948,6 +1004,13 @@ model.a3 &lt;- glmer(foul.home ~ foul.diff + (1|game) +
 drop_in_dev &lt;- anova(model.a3, model.a1, test = "Chisq")
       </input>
     </program>
+    <console>
+      <output>
+         npar  AIC  BIC logLik  dev Chisq Df      pval
+model.a1    3 6793 6812  -3393 6787    NA NA        NA
+model.a3    5 6780 6813  -3385 6770 16.07  2 0.0003233
+      </output>
+    </console>
 
     <p>
       In <xref ref="subsec-multileveltechnical"/> we noted that REML estimation is typically used when
@@ -983,6 +1046,13 @@ drop_in_dev &lt;- anova(model.a3, model.a1, test = "Chisq")
 bootstrapAnova(mA = model.a3, m0 = model.a1, B = 1000)
       </input>
     </program>
+    <console>
+      <output>
+   Df logLik  dev Chisq ChiDf pval_boot
+m0  3  -3393 6787    NA    NA        NA
+mA  5  -3385 6770 16.07     2         0
+      </output>
+    </console>
 
     <figure xml:id="fig-gmu-lrt1">
       <caption>Null distribution of likelihood ratio test statistic comparing Models A3 and A1
@@ -1039,6 +1109,13 @@ bootstrapAnova(mA = model.a3, m0 = model.a1, B = 1000)
 bootstrapAnova(mA = model.b3, m0 = model.a3, B = 1000)
       </input>
     </program>
+    <console>
+      <output>
+   Df logLik  dev Chisq ChiDf pval_boot
+m0  5  -3385 6770    NA    NA        NA
+mA  8  -3385 6770 0.349     3      0.46
+      </output>
+    </console>
 
     <figure xml:id="fig-gmu-lrt3">
       <caption>Null distribution of likelihood ratio test statistic comparing Models A3 and B3
@@ -1158,6 +1235,30 @@ model.f &lt;- glmer(foul.home ~ foul.diff + score.diff +
                  family = binomial, data = refdata)
       </input>
     </program>
+    <console>
+      <output>
+##  Groups   Name        Variance Std.Dev.
+##  game     (Intercept) 0.1846   0.430
+##  hometeam (Intercept) 0.0783   0.280
+##  visitor  (Intercept) 0.0431   0.208
+##  Number of games =  340
+##  Number of hometeams =  39
+##  Number of visitors =  39
+##                      Estimate Std. Error z value  Pr(&gt;|z|)
+## (Intercept)         -0.246475   0.133956 -1.8400 6.577e-02
+## foul.diff           -0.171469   0.045363 -3.7800 1.569e-04
+## score.diff           0.033522   0.008236  4.0702 4.697e-05
+## lead.home           -0.150619   0.177204 -0.8500 3.953e-01
+## time                -0.008747   0.008560 -1.0218 3.069e-01
+## offensive           -0.080795   0.111232 -0.7264 4.676e-01
+## personal             0.067200   0.065397  1.0276 3.041e-01
+## foul.diff:offensive -0.103574   0.053869 -1.9227 5.452e-02
+## foul.diff:personal  -0.055634   0.031948 -1.7414 8.161e-02
+## foul.diff:time      -0.008689   0.003274 -2.6540 7.955e-03
+## lead.home:time       0.026007   0.012171  2.1368 3.262e-02
+##  AIC =  6731 ;  BIC =  6822
+      </output>
+    </console>
 
     <p>
       In general, we see a highly significant negative effect of foul differential — a strong
