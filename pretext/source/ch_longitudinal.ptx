@@ -349,7 +349,7 @@ The number of schools with a particular missing data pattern are listed in the l
       <title>Exploratory Analyses for Longitudinal Data</title>
 
       <p>
-In addition to the initial exploratory analyses above, longitudinal data—multilevel data with time at Level One—calls for further plots and summaries that describe time trends within and across individuals. For example, we can examine trends over time within individual schools. xref ref="fig-lon-lat2"/> provides a lattice plot illustrating trends over time for the first 24 schools in the data set. We note differences among schools in starting point (test scores in 2008), slope (change in test scores over the three-year period), and form of the relationship. These differences among schools are nicely illustrated in so-called spaghetti plots such as xref ref="fig-lon-spag1"/>, which overlays the individual schools’ time trends (for the math test scores) from xref ref="fig-lon-lat2"/> on a single set of axes. In order to illustrate the overall time trend without making global assumptions about the form of the relationship, we overlaid in bold a non-parametric fitted curve through a loess smoother. LOESS comes from “locally estimated scatterplot smoother”, in which a low-degree polynomial is fit to each data point using weighted regression techniques, where nearby points receive greater weight. LOESS is a computationally intensive method which performs especially well with larger sets of data, although ideally there would be a greater diversity of x-values than the three time points we have. In this case, the loess smoother follows very closely to a linear trend, indicating that assuming a linear increase in test scores over the three-year period is probably a reasonable simplifying assumption. To further examine the hypothesis that linearity would provide a reasonable approximation to the form of the individual time trends in most cases, xref ref="fig-lon-lat2"/> shows a lattice plot containing linear fits through ordinary least squares rather than connected time points as in xref ref="fig-lon-lat2"/>.
+In addition to the initial exploratory analyses above, longitudinal data—multilevel data with time at Level One—calls for further plots and summaries that describe time trends within and across individuals. For example, we can examine trends over time within individual schools. <xref ref="fig-lon-lat1"/> provides a lattice plot illustrating trends over time for the first 24 schools in the data set. We note differences among schools in starting point (test scores in 2008), slope (change in test scores over the three-year period), and form of the relationship. These differences among schools are nicely illustrated in so-called spaghetti plots such as <xref ref="fig-lon-spag1"/>, which overlays the individual schools’ time trends (for the math test scores) from <xref ref="fig-lon-lat1"/> on a single set of axes. In order to illustrate the overall time trend without making global assumptions about the form of the relationship, we overlaid in bold a non-parametric fitted curve through a loess smoother. LOESS comes from “locally estimated scatterplot smoother”, in which a low-degree polynomial is fit to each data point using weighted regression techniques, where nearby points receive greater weight. LOESS is a computationally intensive method which performs especially well with larger sets of data, although ideally there would be a greater diversity of x-values than the three time points we have. In this case, the loess smoother follows very closely to a linear trend, indicating that assuming a linear increase in test scores over the three-year period is probably a reasonable simplifying assumption. To further examine the hypothesis that linearity would provide a reasonable approximation to the form of the individual time trends in most cases, <xref ref="fig-lon-lat2"/> shows a lattice plot containing linear fits through ordinary least squares rather than connected time points as in <xref ref="fig-lon-lat1"/>.
       </p>
 
       <figure xml:id="fig-lon-lat1">
@@ -381,6 +381,9 @@ In addition to the initial exploratory analyses above, longitudinal data—multi
       </figure>
 
       <p>
+        Just as we explored the relationship between our response (average math scores) and
+        important covariates in <xref ref="sec-lon-general-eda"/>, we can now examine the
+        relationships between time trends by school and important covariates. For instance,
         <xref ref="fig-lon-spag3"/> shows that charter schools had math scores that were lower on
         average than public non-charter schools and more variable. This type of plot is sometimes
         called a <term>trellis graph</term>,<idx><h>trellis graph</h></idx> since it displays a
@@ -388,16 +391,13 @@ In addition to the initial exploratory analyses above, longitudinal data—multi
         condition — an item in a category. Trends over time by school type are denoted by bold
         loess curves. Public non-charter schools have higher scores across all years; both school
         types show little growth between 2008 and 2009, but greater growth between 2009 and 2010,
-        especially charter schools.
-      </p>
-
-      <p>
-        Exploratory analyses like this can be repeated for other covariates, such as percent free
-        and reduced lunch in <xref ref="fig-lon-spagmat1"/>. The trellis plot automatically divides
-        schools into four groups based on quartiles of their percent free and reduced lunch, and we
-        see that schools with lower percentages of free and reduced lunch students tend to have
-        higher math scores and less variability. Across all levels of free and reduced lunch, we
-        see greater gains between 2009 and 2010 than between 2008 and 2009.
+        especially charter schools. Exploratory analyses like this can be repeated for other
+        covariates, such as percent free and reduced lunch in <xref ref="fig-lon-spagmat1"/>. The
+        trellis plot automatically divides schools into four groups based on quartiles of their
+        percent free and reduced lunch, and we see that schools with lower percentages of free and
+        reduced lunch students tend to have higher math scores and less variability. Across all
+        levels of free and reduced lunch, we see greater gains between 2009 and 2010 than between
+        2008 and 2009.
       </p>
 
       <figure xml:id="fig-lon-spag3">
