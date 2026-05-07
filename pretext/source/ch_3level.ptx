@@ -706,7 +706,8 @@ summary(modelcl)
       correlation between the intercept and slope error terms of −1. "Allowable" values of
       correlation coefficients run from −1 to 1; by definition, it is impossible to have a
       correlation between two error terms below −1. Thus, our estimate of −1 is right on the
-      boundary of the allowable values.
+      boundary of the allowable values. But how did this happen, and why is it potentially
+      problematic?
     </p>
 
     <p>
