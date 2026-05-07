@@ -1394,9 +1394,12 @@ model.f0 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
       <p><alert>Level One:</alert> We next proceed to Level One, where the scores from Rippleside
       are modeled as a linear function of year (<m>654.2 + 1.60\,\text{Year08}_{ij}</m>) with a
       normally distributed residual <m>\epsilon_{1k}</m> at each time point <m>k</m>. Three
-      residuals are sampled independently from <m>N(0, 2.97^2)</m>. Suppose we obtain
+      residuals (one for each year) are sampled independently from a normal distribution with mean
+      0 and standard deviation 2.97 — the standard deviation again coming from parameter estimates
+      from fitting Model F0 to the actual data. Suppose we obtain residuals of
       <m>\epsilon_{11} = -3.11</m>, <m>\epsilon_{12} = 1.19</m>, and <m>\epsilon_{13} = 2.41</m>.
-      Then the three simulated math scores for Rippleside are:
+      In that case, our parametrically generated data for Rippleside Elementary (School #1) would
+      look like:
       </p>
       <md>
         <mrow>Y_{11} \amp= 654.2 + 1.60(0) - 3.11 = 651.1</mrow>
@@ -1407,10 +1410,11 @@ model.f0 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
       <p>
         We would next turn to School #2 (<m>i=2</m>)—Wrenshall Elementary. Fixed effects would
         remain the same but covariates would change, as Wrenshall has 15.2% special education
-        students and 42.4% free and reduced lunch students. We would sample a new residual
-        <m>u_2</m> at Level Two, producing a different intercept <m>a_2</m>. Three new
-        independent residuals <m>\epsilon_{2k}</m> would also be selected at Level One from the
-        same <m>N(0, 2.97^2)</m> distribution.
+        students and 42.4% free and reduced lunch students. We would, however, sample a new
+        residual <m>u_2</m> at Level Two, producing a different intercept <m>a_2</m> than
+        observed for School #1. Three new independent residuals <m>\epsilon_{2k}</m> would also
+        be selected at Level One, from the same normal distribution as before with mean 0 and
+        standard deviation 2.97.
       </p>
 
       <p>
@@ -1418,9 +1422,11 @@ model.f0 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
         on Model F0, two models are fit to this data:
       </p>
       <ul>
-        <li><p>Model F0 — the correct (null) model actually used to generate the responses</p></li>
-        <li><p>Model F — the full model containing two extra variance components
-        (<m>\sigma_v^2</m> and <m>\sigma_{uv}</m>) not used when generating the responses</p></li>
+        <li><p>Model F0 — the correct (null) model that was actually used to generate the
+        responses</p></li>
+        <li><p>Model F — the incorrect (full) model that contains two extra variance components
+        — <m>\sigma_v^2</m> and <m>\sigma_{uv}</m> — that were not actually used when generating
+        the responses</p></li>
       </ul>
       <p>
         After repeating this 1000 times, the histogram of bootstrapped test statistics under the
