@@ -1018,11 +1018,15 @@ anova(modelcl0, modelcl, test = "Chisq")
 
     <p>
       Once an entire set of simulated heights for every pot, plant, and time point have been
-      generated based on Model C.1, two models are fit to this data: Model C.1 (the correct null
-      model that was used to generate the responses) and Model C (the incorrect full model that
-      contains two extra variance components, <m>\sigma_{\tilde{v}}^{2}</m> and
-      <m>\sigma_{\tilde{u}\tilde{v}}</m>, that were not used when generating the responses).
+      generated based on Model C.1, two models are fit to this data:
     </p>
+
+    <ul>
+      <li><p>Model C.1 — the correct (null) model that was actually used to generate the responses</p></li>
+      <li><p>Model C — the incorrect (full) model that contains two extra variance components,
+      <m>\sigma_{\tilde{v}}^{2}</m> and <m>\sigma_{\tilde{u}\tilde{v}}</m>, that were not actually
+      used when generating the responses</p></li>
+    </ul>
 
     <program language="r" xml:id="code-paraboot-function-3level">
       <input>
