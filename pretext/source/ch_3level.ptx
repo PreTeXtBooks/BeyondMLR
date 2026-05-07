@@ -92,7 +92,7 @@ library(tidyverse)
       initially student researchers recorded days to germination (defined as when two leaves are
       visible), if germination occurred. In addition, the height of each germinated plant (in mm)
       was measured at 13, 18, 23, and 28 days after planting. The study design is illustrated in
-      Figure <xref ref="fig-seedstudy"/>.
+      <xref ref="fig-seedstudy"/>.
     </p>
 
     <figure xml:id="fig-seedstudy">
@@ -298,13 +298,13 @@ seedlg &lt;- seedwd %&gt;%
       <p>
         Lattice plots, illustrating several observational units simultaneously, each with fitted
         lines where appropriate, are also valuable to examine during the exploratory analysis phase.
-        Figure <xref ref="fig-lattlpall"/> shows height over time for 24 randomly selected
+        <xref ref="fig-lattlpall"/> shows height over time for 24 randomly selected
         leadplants that germinated in this study, with a fitted linear regression line. Linearity
         appears reasonable in most cases, although there is some variability in the intercepts and a
         good deal of variability in the slopes of the fitted lines. These intercepts and slopes by
         plant, of course, will be potential parameters in a multilevel model which we will fit to
         this data. Given the three-level nature of this data, it is also useful to examine a
-        spaghetti plot by pot (Figure <xref ref="fig-spaglppot"/>). While linearity appears to
+        spaghetti plot by pot (<xref ref="fig-spaglppot"/>). While linearity appears to
         reasonably model the average trend over time within pot, we see differences in the
         plant-to-plant variability within pot, but some consistency in intercept and slope from
         pot to pot.
@@ -324,7 +324,7 @@ seedlg &lt;- seedwd %&gt;%
       <p>
         Spaghetti plots can also be an effective tool for examining the potential effects of soil
         type and sterilization on growth patterns of leadplants. Figure
-        <xref ref="fig-spaglpsoil"/> and Figure <xref ref="fig-spaglpster"/> illustrate how the
+        <xref ref="fig-spaglpsoil"/> and <xref ref="fig-spaglpster"/> illustrate how the
         growth patterns of leadplants depend on soil type and sterilization. In general, we observe
         slower growth in soil from remnant prairies and soil that has not been sterilized.
       </p>
@@ -395,13 +395,13 @@ seedlg &lt;- seedwd %&gt;%
       <p>
         Fitted intercepts and slopes by plant can be used for an additional exploratory examination
         of factor effects to complement those from the earlier spaghetti plots. Figure
-        <xref ref="fig-irboxbyspec"/> complements Figure <xref ref="fig-spagbyspec"/>, again
+        <xref ref="fig-irboxbyspec"/> complements <xref ref="fig-spagbyspec"/>, again
         showing differences between species — coneflowers tend to start smaller and have slower
         growth rates, although they have much more variability in growth patterns than leadplants.
-        Returning to our focus on leadplants, Figure <xref ref="fig-irboxbysoil"/> shows that
+        Returning to our focus on leadplants, <xref ref="fig-irboxbysoil"/> shows that
         plants grown in soil from cultivated fields tend to be taller at Day 13, and plants grown in
         soil from remnant prairies tend to grow more slowly than plants grown in other soil types.
-        Figure <xref ref="fig-irboxbyster"/> shows the strong tendency for plants grown in sterilized
+        <xref ref="fig-irboxbyster"/> shows the strong tendency for plants grown in sterilized
         soil to grow faster than plants grown in non-sterilized soil. We will soon see if our fitted
         multilevel models support these observed trends.
       </p>
@@ -716,7 +716,7 @@ summary(modelcl)
       "allowable." But, by definition, variance terms such as <m>\sigma^2</m> must be non-negative;
       that is, <m>\sigma^2 \geq 0</m>. Under the Principle of Maximum Likelihood, maximum likelihood
       estimators for <m>\beta_0</m> and <m>\sigma^2</m> will be chosen to maximize the likelihood of
-      observing our given data. The left plot in Figure <xref ref="fig-boundary"/> shows hypothetical
+      observing our given data. The left plot in <xref ref="fig-boundary"/> shows hypothetical
       contours of the likelihood function <m>L(\beta_0, \sigma^2)</m>; the likelihood is clearly
       maximized at <m>(\hat{\beta}_0, \hat{\sigma}^2)=(4,-2)</m>. However, variance terms cannot be
       negative! A more sensible approach would have been to perform a constrained search for MLEs,
@@ -740,7 +740,7 @@ summary(modelcl)
 
     <p>
       Graphically, in this simple illustration, the effect of the boundary constraint is to alter
-      the likelihood function from a nice hill (in the left plot in Figure <xref ref="fig-boundary"/>)
+      the likelihood function from a nice hill (in the left plot in <xref ref="fig-boundary"/>)
       with a single peak at <m>(4,-2)</m>, to a hill with a huge cliff face where <m>\sigma^2=0</m>.
       The highest point overlooking this cliff is at <m>(4,0)</m>, straight down the hill from the
       original peak.
@@ -1045,7 +1045,7 @@ modelcl.ml = lmer(hgt ~ time13 + strl + cult + rem +
     </program>
 
     <p>
-      Figure <xref ref="fig-paraboot10"/> illustrates the null distribution of the likelihood ratio
+      <xref ref="fig-paraboot10"/> illustrates the null distribution of the likelihood ratio
       test statistic derived by the parametric bootstrap procedure as compared to a chi-square
       distribution. The parametric bootstrap provides a more reliable p-value in this case (.088);
       a chi-square distribution puts too much mass in the tail and not enough near 0, leading to
@@ -1358,7 +1358,7 @@ anova(modelfl0, modeldl0, test = "Chisq")
       using the chi-square approximation (.1323) may be a slight under-estimate of the true p-value,
       but probably in the ballpark. In fact, when we generated 1000 bootstrapped samples of plant
       heights under Model F, and produced 1000 simulated likelihood ratios comparing Models D and F,
-      we produced a p-value of .201. In Figure <xref ref="fig-parabootDF"/>, we see that the
+      we produced a p-value of .201. In <xref ref="fig-parabootDF"/>, we see that the
       chi-square distribution has too much area in the peak and too little area in the tails,
       although in general it approximates the parametric bootstrap distribution of the likelihood
       ratio pretty nicely.
@@ -1736,8 +1736,8 @@ anova(modelfl0, modeldl0, test = "Chisq")
       <exercise xml:id="exer-mean-height-pot">
         <statement>
           <p>
-            In Figure <xref ref="fig-boxbyspec"/>, would using mean heights by pot be reasonable as
-            well? How about for Figure <xref ref="fig-spagbyspec"/>?
+            In <xref ref="fig-boxbyspec"/>, would using mean heights by pot be reasonable as
+            well? How about for <xref ref="fig-spagbyspec"/>?
           </p>
         </statement>
       </exercise>
@@ -1810,7 +1810,7 @@ anova(modelfl0, modeldl0, test = "Chisq")
 
       <exercise xml:id="exer-paraboot-biased">
         <statement>
-          <p>How does Figure <xref ref="fig-paraboot10"/> show that a likelihood ratio test using a chi-square distribution would be biased?</p>
+          <p>How does <xref ref="fig-paraboot10"/> show that a likelihood ratio test using a chi-square distribution would be biased?</p>
         </statement>
       </exercise>
 
