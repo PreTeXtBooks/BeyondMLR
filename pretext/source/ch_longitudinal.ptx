@@ -807,7 +807,7 @@ model.a &lt;- lmer(MathAvgScore ~ 1 + (1|schoolid),
       </me>
 
       <p>
-        The parameters in this model <m>(a_i, b_i,</m> and <m>\sigma^2)</m> can be estimated through
+        The parameters in this model, <m>(a_i, b_i,</m> and <m>\sigma^2)</m>, can be estimated through
         LLSR methods. <m>a_i</m> represents the true intercept for School <m>i</m>---i.e., the
         expected test score level for School <m>i</m> when time is zero (2008)---while <m>b_i</m>
         represents the true slope for School <m>i</m>---i.e., the expected yearly rate of change in
@@ -2523,7 +2523,7 @@ model.f2ml  0.6367
             <li><p><c>coa</c> = 1 if the teen is a child of an alcoholic parent; 0 otherwise</p></li>
             <li><p><c>male</c> = 1 if male; 0 if female</p></li>
             <li><p><c>peer</c> = a measure of peer alcohol use, taken when each subject was 14. This is the square root of the sum of two 6-point items about the proportion of friends who drink occasionally or regularly.</p></li>
-            <li><p><c>alcuse</c> = the primary response. Four items---(a) drank beer or wine, (b) drank hard liquor, (c) 5 or more drinks in a row, and (d) got drunk---were each scored on an 8-point scale, from 0="not at all" to 7="every day". Then <c>alcuse</c> is the square root of the sum of these four items.</p></li>
+            <li><p><c>alcuse</c> = the primary response. Four items---(a) drank beer or wine, (b) drank hard liquor, (c) 5 or more drinks in a row, and (d) got drunk---were each scored on an 8-point scale, from 0=&quot;not at all&quot; to 7=&quot;every day&quot;. Then <c>alcuse</c> is the square root of the sum of these four items.</p></li>
           </ul>
           <p>
             Primary research questions included: Do trajectories of alcohol use differ by parental
@@ -2642,7 +2642,7 @@ modelG &lt;- lmer(diverthours ~ year2013 + totalvisits1 +
             <li><p><c>SYS</c>: systolic blood pressure (mmHg)</p></li>
             <li><p><c>DIA</c>: diastolic blood pressure (mmHg)</p></li>
             <li><p><c>HRT</c>: heart rate (beats per minute)</p></li>
-            <li><p><c>MNACT5</c>: activity level (frequency of movements in 1-minute intervals, over a 10-minute period )</p></li>
+            <li><p><c>MNACT5</c>: activity level (frequency of movements in 1-minute intervals, over a 10-minute period)</p></li>
             <li><p><c>PHASE</c>: menstrual phase (follicular---beginning with the end of menstruation and ending with ovulation, or luteal---beginning with ovulation and ending with pregnancy or menstruation)</p></li>
             <li><p><c>DAY</c>: workday or non-workday</p></li>
             <li><p><c>POSTURE</c>: position during BP measurement---either sitting, standing, or reclining</p></li>
