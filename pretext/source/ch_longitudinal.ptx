@@ -151,7 +151,7 @@ library(tidyverse)
 
       <table xml:id="tab-table1chp9">
         <title>The first six observations in the wide data set for the Charter Schools case study.</title>
-        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+        <tabular>
           <row header="yes" bottom="medium">
             <cell>schoolid</cell><cell>schoolName</cell><cell>urban</cell><cell>charter</cell>
             <cell>schPctnonw</cell><cell>schPctsped</cell><cell>schPctfree</cell>
@@ -171,28 +171,23 @@ library(tidyverse)
       <title>Missing Data</title>
 
       <p>
-        Before converting to LONG form, we should address problems with missing data.
-        <term>Missing data</term><idx><h>missing data</h></idx> is a common phenomenon in
-        longitudinal studies. It could arise if a new school was started during the observation
-        period, a school was shut down, or no results were reported in a given year. Among our
-        618 schools, 540 had complete data, 25 were missing a math score for 2008, 35 were missing
-        math scores in both 2008 and 2009, etc.
+        In this case, before we convert our data to LONG form, we should first address problems with missing data. Missing data is a common phenomenon in longitudinal studies. For instance, it could arise if a new school was started during the observation period, a school was shut down during the observation period, or no results were reported in a given year. Dealing with missing data in a statistical analysis is not trivial, but fortunately many multilevel packages (including the lme4 package in R) are adept at handling missing data.
       </p>
 
       <p>
         First, we must understand the extent and nature of missing data in our study.
         <xref ref="tab-table2chp9"/> is a frequency table of missing data patterns, where 1
-        indicates presence of a variable and 0 indicates a missing value for a particular variable.
-        The number of schools with a particular missing data pattern are listed in the left column;
-        the remaining columns of 0's and 1's describe the missing data pattern, with 0 indicating
-        a missing value. Some covariates that are present for every school are not listed. The
-        bottom row gives the number of schools with missing values for specific variables; the last
-        entry indicates that 121 total observations were missing.
+        indicates presence of a variable and 0 indicates a missing value for a particular variable;
+this table is a helpful starting point. Among our 618 schools, 540 had complete data (all covariates and math scores for all three years), 25 were missing a math score for 2008, 35 were missing math scores in both 2008 and 2009, etc.
       </p>
+
+<p>
+The number of schools with a particular missing data pattern are listed in the left column; the remaining columns of 0’s and 1’s describe the missing data pattern, with 0 indicating a missing value. Some covariates that are present for every school are not listed. The bottom row gives the number of schools with missing values for specific variables; the last entry indicates that 121 total observations were missing.
+</p>
 
       <table xml:id="tab-table2chp9">
         <title>A frequency table of missing data patterns.</title>
-        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+        <tabular>
           <row header="yes" bottom="medium">
             <cell>Count</cell><cell>charter</cell><cell>MathAvgScore.2</cell>
             <cell>MathAvgScore.1</cell><cell>MathAvgScore.0</cell><cell>Missing</cell>
@@ -254,7 +249,7 @@ library(tidyverse)
         <title>The first six observations in the long data set for the Charter Schools case study;
         these lines correspond to the first two observations from the wide data set illustrated
         in <xref ref="tab-table1chp9"/>.</title>
-        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+        <tabular>
           <row header="yes" bottom="medium">
             <cell>schoolName</cell><cell>charter</cell><cell>schPctsped</cell>
             <cell>schPctfree</cell><cell>year08</cell><cell>MathAvgScore</cell>
@@ -313,14 +308,10 @@ library(tidyverse)
       </p>
 
       <p>
-        <xref ref="fig-lon-hist1"/> shows the distribution of MCA math test scores as somewhat
-        left-skewed. MCA test scores for sixth graders are scaled to fall between 600 and 700,
-        where scores above 650 for individual students indicate "meeting standards." In
-        <xref ref="fig-lon-box1"/>, we see that test scores are generally higher for both schools
-        in rural areas and for public non-charter schools (237 rural, 381 urban; 545 non-charter,
-        73 charter). In <xref ref="fig-lon-scat1"/>, schools tend to have lower math scores if
-        they have higher percentages of students with free and reduced lunch, with special
-        education needs, or who are non-white.
+        <xref ref="fig-lon-hist1"/> shows the distribution of MCA math test scores as somewhat left-skewed. MCA test scores for sixth graders are scaled to fall between 600 and 700, where scores above 650 for individual students indicate “meeting standards”. Thus, schools with averages below 650 will often have increased incentive to improve their scores the following year. When we refer to the “math score” for a particular school in a particular year, we will assume that score represents the average for all sixth graders at that school. 
+        In <xref ref="fig-lon-box1"/>, we see that test scores are generally higher for both schools in rural areas and for public non-charter schools. Note that in this data set there are 237 schools in rural areas and 381 schools in urban areas, as well as 545 public non-charter schools and 73 charter schools.
+        In addition, we can see in <xref ref="fig-lon-scat1"/>, 
+        that schools tend to have lower math scores if they have higher percentages of students with free and reduced lunch, with special education needs, or who are non-white.
       </p>
 
       <figure xml:id="fig-lon-hist1">
@@ -358,26 +349,7 @@ library(tidyverse)
       <title>Exploratory Analyses for Longitudinal Data</title>
 
       <p>
-        In addition to the initial exploratory analyses above, longitudinal data calls for further
-        plots and summaries that describe time trends within and across individuals. For example,
-        we can examine trends over time within individual schools.
-        <xref ref="fig-lon-lat1"/> provides a <term>lattice plot</term><idx><h>lattice plot</h></idx>
-        illustrating trends over time for the first 24 schools in the data set. We note differences
-        among schools in starting point (test scores in 2008), slope (change in test scores over
-        the three-year period), and form of the relationship. These differences among schools are
-        nicely illustrated in <term>spaghetti plots</term><idx><h>spaghetti plot</h></idx>
-        such as <xref ref="fig-lon-spag1"/>, which overlays the individual schools' time trends on
-        a single set of axes with a non-parametric
-        <term>loess smoother</term><idx><h>loess smoother</h></idx> in bold. LOESS comes from
-        "locally estimated scatterplot smoother," in which a low-degree polynomial is fit to each
-        data point using weighted regression techniques, where nearby points receive greater weight.
-        LOESS is a computationally intensive method which performs especially well with larger sets
-        of data, although ideally there would be a greater diversity of <m>x</m>-values than the three
-        time points we have. In this case, the loess smoother follows very closely to a linear
-        trend, indicating that assuming a linear increase in test scores over the three-year period
-        is probably a reasonable simplifying assumption.
-        <xref ref="fig-lon-lat2"/> shows a lattice plot containing linear fits through ordinary
-        least squares to further examine linearity.
+In addition to the initial exploratory analyses above, longitudinal data—multilevel data with time at Level One—calls for further plots and summaries that describe time trends within and across individuals. For example, we can examine trends over time within individual schools. xref ref="fig-lon-lat2"/> provides a lattice plot illustrating trends over time for the first 24 schools in the data set. We note differences among schools in starting point (test scores in 2008), slope (change in test scores over the three-year period), and form of the relationship. These differences among schools are nicely illustrated in so-called spaghetti plots such as xref ref="fig-lon-spag1"/>, which overlays the individual schools’ time trends (for the math test scores) from xref ref="fig-lon-lat2"/> on a single set of axes. In order to illustrate the overall time trend without making global assumptions about the form of the relationship, we overlaid in bold a non-parametric fitted curve through a loess smoother. LOESS comes from “locally estimated scatterplot smoother”, in which a low-degree polynomial is fit to each data point using weighted regression techniques, where nearby points receive greater weight. LOESS is a computationally intensive method which performs especially well with larger sets of data, although ideally there would be a greater diversity of x-values than the three time points we have. In this case, the loess smoother follows very closely to a linear trend, indicating that assuming a linear increase in test scores over the three-year period is probably a reasonable simplifying assumption. To further examine the hypothesis that linearity would provide a reasonable approximation to the form of the individual time trends in most cases, xref ref="fig-lon-lat2"/> shows a lattice plot containing linear fits through ordinary least squares rather than connected time points as in xref ref="fig-lon-lat2"/>.
       </p>
 
       <figure xml:id="fig-lon-lat1">
@@ -1349,7 +1321,7 @@ model.f0 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
 
       <table xml:id="tab-rippleside9">
         <title>Data for Rippleside Elementary School.</title>
-        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+        <tabular>
           <row header="yes" bottom="medium">
             <cell>schoolName</cell><cell>urban</cell><cell>charter</cell>
             <cell>schPctsped</cell><cell>schPctfree</cell><cell>year08</cell>
