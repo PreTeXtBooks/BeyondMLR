@@ -2509,7 +2509,7 @@ modelfl0 0.009091
       <li><p><c>dis_size</c> = District-Level Size (centered natural log)</p></li>
       <li><p><c>dis_ses</c> = District-Level SES (socio-economic status, centered)</p></li>
     </ul>
-
+<p>The primary research questions are whether or not math scores of eighth graders in Kentucky differ based on gender or ethnicity, and if any gender gap differs by ethnicity, or if any ethnicity gap differs by gender. Researchers wanted to be sure to adjust for important covariates at the school and district levels (e.g., school/district size and socio-economic status).</p>
     <task>
       <statement>
         <p>
