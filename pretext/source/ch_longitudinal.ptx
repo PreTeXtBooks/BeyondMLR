@@ -790,73 +790,39 @@ model.a &lt;- lmer(MathAvgScore ~ 1 + (1|schoolid),
         growth curves. Based on our initial exploratory analyses, assuming that an individual
         school's MCA-II math scores follow a linear trend seems like a reasonable starting point.
         Under the assumption of linearity, we must estimate an intercept and a slope for each
-        school, based on their 1–3 test scores over a period of three years. Compared to time
+        school, based on their 1-3 test scores over a period of three years. Compared to time
         series analyses of economic data, most longitudinal data analyses have relatively few time
         periods for each subject (or school), and the basic patterns within subject are often
         reasonably described by simpler functional forms.
       </p>
 
       <p>
-        Let <m>Y_{ij}</m> be the math score of the <m>i^{th}</m> school in year <m>j</m>. Using
-        both-level and composite formulations:
-      </p>
-
-      <p><alert>Level One:</alert></p>
-      <me>
-        Y_{ij} = a_i + b_i\;\text{Year08}_{ij} + \epsilon_{ij}
-      </me>
-
-      <p><alert>Level Two:</alert></p>
-      <md>
-        <mrow>a_i \amp= \alpha_0 + u_i</mrow>
-        <mrow>b_i \amp= \beta_0 + v_i</mrow>
-      </md>
-
-      <p><alert>Composite model:</alert></p>
-      <me>
-        Y_{ij} = \alpha_0 + \beta_0\;\text{Year08}_{ij} + u_i + v_i\;\text{Year08}_{ij} + \epsilon_{ij}
-      </me>
-
-      <p>
-        where <m>\epsilon_{ij} \sim N(0, \sigma^2)</m> and
+        Let <m>Y_{ij}</m> be the math score of the <m>i^{th}</m> school in year <m>j</m>. Then we
+        can model the linear change in math test scores over time for School <m>i</m> according to
+        Model B:
       </p>
 
       <me>
-        \begin{bmatrix} u_i \\ v_i \end{bmatrix}
-        \sim N\!\left(
-          \begin{bmatrix} 0 \\ 0 \end{bmatrix},
-          \begin{bmatrix} \sigma_u^2 \\ \sigma_{uv} \amp \sigma_v^2 \end{bmatrix}
-        \right).
+        Y_{ij} = a_i + b_i\textrm{Year08}_{ij} + \epsilon_{ij} \textrm{ where } \epsilon_{ij} \sim N(0, \sigma^2)
       </me>
 
       <p>
-        In the Level One model, <m>a_i</m> represents the true intercept for School <m>i</m> —
-        i.e., the expected test score level for School <m>i</m> when time is zero (2008) — while
-        <m>b_i</m> represents the true slope for School <m>i</m> — i.e., the expected yearly rate
-        of change in math score for School <m>i</m> over the three-year observation period. Here
-        we use Roman letters rather than Greek for model parameters since models by school will
-        eventually be a conceptual first step in a multilevel model. The <m>\epsilon_{ij}</m>
-        terms represent the deviation of School <m>i</m>'s actual test scores from the expected
-        results under linear growth. The variability in these deviations from the linear model is
-        given by <m>\sigma^2</m>. In <xref ref="fig-lon-scat3"/>, which illustrates a linear
-        growth model for Norwood Central Middle School, <m>a_i</m> is estimated by the
-        <m>y</m>-intercept of the fitted regression line, <m>b_i</m> is estimated by the slope
-        of the fitted regression line, and <m>\sigma^2</m> is estimated by the variability in the
-        vertical distances between each point (the actual math score in year <m>j</m>) and the
-        line (the predicted math score in year <m>j</m>).
-      </p>
-
-      <p>
-        In a multilevel model, we let intercepts (<m>a_i</m>) and slopes (<m>b_i</m>) vary by
-        school and build models for these intercepts and slopes using school-level variables at
-        Level Two. An unconditional growth model features no predictors at Level Two. The Level
-        Two equations show that each school's true intercept (<m>a_i</m>) and slope (<m>b_i</m>)
-        are modeled as a function of mean intercept (<m>\alpha_0</m>) and mean slope
-        (<m>\beta_0</m>) plus individual school-level deviations from those means (<m>u_i</m> and
-        <m>v_i</m>). The error terms <m>u_i</m> and <m>v_i</m> at Level Two are often assumed to
-        follow a bivariate normal distribution, allowing for a possible correlation between a
-        school's intercept and slope, as captured by <m>\sigma_{uv}</m> or equivalently the
-        correlation <m>\rho_{uv}</m>.
+        The parameters in this model <m>(a_i, b_i,</m> and <m>\sigma^2)</m> can be estimated through
+        LLSR methods. <m>a_i</m> represents the true intercept for School <m>i</m>---i.e., the
+        expected test score level for School <m>i</m> when time is zero (2008)---while <m>b_i</m>
+        represents the true slope for School <m>i</m>---i.e., the expected yearly rate of change in
+        math score for School <m>i</m> over the three-year observation period. Here we use Roman
+        letters rather than Greek for model parameters since models by school will eventually be a
+        conceptual first step in a multilevel model. The <m>\epsilon_{ij}</m> terms represent the
+        deviation of School <m>i</m>'s actual test scores from the expected results under linear
+        growth---the part of school <m>i</m>'s test score at time <m>j</m> that is not explained by
+        linear changes over time. The variability in these deviations from the linear model is
+        given by <m>\sigma^2</m>. In <xref ref="fig-lon-scat3"/>, which illustrates a linear growth
+        model for Norwood Central Middle School, <m>a_i</m> is estimated by the <m>y</m>-intercept
+        of the fitted regression line, <m>b_i</m> is estimated by the slope of the fitted
+        regression line, and <m>\sigma^2</m> is estimated by the variability in the vertical
+        distances between each point (the actual math score in year <m>j</m>) and the line (the
+        predicted math score in year <m>j</m>).
       </p>
 
       <figure xml:id="fig-lon-scat3">
@@ -867,6 +833,66 @@ model.a &lt;- lmer(MathAvgScore ~ 1 + (1|schoolid),
           epsilon deviation parameters.</description>
         </image>
       </figure>
+
+      <p>
+        In a multilevel model, we let intercepts (<m>a_i</m>) and slopes (<m>b_i</m>) vary by
+        school and build models for these intercepts and slopes using school-level variables at
+        Level Two. An unconditional growth model features no predictors at Level Two and can be
+        specified either using formulations at both levels:
+      </p>
+
+      <ul>
+        <li>
+          <p>Level One:</p>
+          <me>
+            Y_{ij}=a_{i}+b_{i}\textrm{Year08}_{ij} + \epsilon_{ij}
+          </me>
+        </li>
+        <li>
+          <p>Level Two:</p>
+          <md>
+            <mrow>a_{i}\amp=\alpha_{0} + u_{i}</mrow>
+            <mrow>b_{i}\amp=\beta_{0} + v_{i}</mrow>
+          </md>
+        </li>
+      </ul>
+
+      <p>
+        or as a composite model:
+      </p>
+
+      <me>
+        Y_{ij}=\alpha_{0} + \beta_{0}\textrm{Year08}_{ij}+u_{i}+v_{i}\textrm{Year08}_{ij} + \epsilon_{ij}
+      </me>
+
+      <p>
+        where <m>\epsilon_{ij}\sim N(0,\sigma^2)</m> and
+      </p>
+
+      <me>
+        \left[ \begin{array}{c}
+                    u_{i} \\ v_{i}
+                  \end{array}  \right] \sim N \left( \left[
+                  \begin{array}{c}
+                    0 \\ 0
+                  \end{array} \right], \left[
+                  \begin{array}{cc}
+                    \sigma_{u}^{2} \amp \\
+                    \sigma_{uv} \amp \sigma_{v}^{2}
+                  \end{array} \right] \right) .
+      </me>
+
+      <p>
+        As before, <m>\sigma^2</m> quantifies the within-school variability (the scatter of points
+        around schools' linear growth trajectories), while now the between-school variability is
+        partitioned into variability in initial status <m>(\sigma^2_u)</m> and variability in rates
+        of change <m>(\sigma^2_v)</m>.
+      </p>
+
+      <p>
+        Using the composite model specification, the unconditional growth model can be fit to the
+        MCA-II test data:
+      </p>
 
       <program language="r" xml:id="code-model-b">
         <input>
@@ -2230,15 +2256,17 @@ model.f2ml  0.6367
         <title>Parenting and gang activity</title>
         <statement>
           <p>
-            <xref ref="Walker-Barnes2001"/> and Mason describe a longitudinal study in which 300 ninth graders from
-            one high school in an urban southeastern city were assessed at the beginning of the
-            school year about their gang activity, the gang activity of their peers, behavior of
-            their parents, and their ethnic and cultural heritage. Then, information about their
-            gang activity was collected at 7 additional occasions during the school year.
+            <xref ref="Walker-Barnes2001"/> describe, "Ethnic differences in the effect of parenting on
+            gang involvement and gang delinquency: a longitudinal, hierarchical linear modeling
+            perspective". In this study, 300 ninth graders from one high school in an urban
+            southeastern city were assessed at the beginning of the school year about their gang
+            activity, the gang activity of their peers, behavior of their parents, and their ethnic
+            and cultural heritage. Then, information about their gang activity was collected at 7
+            additional occasions during the school year. For this study:
           </p>
           <ol marker="a">
-            <li><p>Give the observational units at Level One and Level Two.</p></li>
-            <li><p>List potential explanatory variables at both Level One and Level Two.</p></li>
+            <li><p>give the observational units at Level One and Level Two, and</p></li>
+            <li><p>list potential explanatory variables at both Level One and Level Two.</p></li>
           </ol>
         </statement>
       </exercise>
@@ -2246,8 +2274,8 @@ model.f2ml  0.6367
       <exercise xml:id="exercise-ch9-2">
         <statement>
           <p>
-            Describe the difference between the wide and long formats for longitudinal data in
-            this study.
+            Describe the difference between the wide and long formats for longitudinal data in this
+            study.
           </p>
         </statement>
       </exercise>
@@ -2256,8 +2284,8 @@ model.f2ml  0.6367
         <statement>
           <p>
             Describe scenarios or research questions in which a lattice plot would be more
-            informative than a spaghetti plot, and other scenarios or research questions in which
-            a spaghetti plot would be preferable to a lattice plot.
+            informative than a spaghetti plot, and other scenarios or research questions in which a
+            spaghetti plot would be preferable to a lattice plot.
           </p>
         </statement>
       </exercise>
@@ -2265,24 +2293,36 @@ model.f2ml  0.6367
       <exercise xml:id="exercise-ch9-4">
         <statement>
           <p>
-            Walker-Barnes and Mason summarize their analytic approach as follows. The first series
-            of analyses tested whether there was overall change and/or significant individual
-            variability in gang activity over time. Second, analyses were conducted examining the
-            effect of peer gang activity on initial gang activity and changes in gang activity over
-            time. Finally, four pairs of analyses examined the role of each of the four parenting
-            variables.
+            Walker-Barnes and Mason summarize their analytic approach in the following way, where
+            HLM = hierarchical linear models, a synonym for multilevel models:
+          </p>
+          <blockquote>
+            <p>
+              The first series [of analyses] tested whether there was overall change and/or
+              significant individual variability in gang [activity] over time, regardless of
+              parenting behavior, peer behavior, or ethnic and cultural heritage. Second, given the
+              well documented relation between peer and adolescent behavior . . . HLM analyses were
+              conducted examining the effect of peer gang [activity] on [initial gang activity and]
+              changes in gang [activity] over time. Finally, four pairs of analyses were conducted
+              examining the role of each of the four parenting variables on [initial gang activity
+              and] changes in gang [activity].
+            </p>
+          </blockquote>
+          <p>
+            The last series of analyses controlled for peer gang activity and ethnic and cultural
+            heritage, in addition to examining interactions between parenting and ethnic and
+            cultural heritage.
           </p>
           <p>
-            Although the authors examined four parenting behaviors — behavioral control, lax
-            control, psychological control, and parental warmth — they did so one at a time, using
+            Although the authors examined four parenting behaviors---behavioral control, lax
+            control, psychological control, and parental warmth---they did so one at a time, using
             four separate multilevel models. Based on their description, write out a sample model
             from each of the three steps in the series. For each model:
           </p>
           <ol marker="a">
-            <li><p>Write out the two-level model for predicting gang activity.</p></li>
-            <li><p>Write out the corresponding composite model.</p></li>
-            <li><p>Determine how many model parameters (fixed effects and variance components)
-            must be estimated.</p></li>
+            <li><p>write out the two-level model for predicting gang activity,</p></li>
+            <li><p>write out the corresponding composite model, and</p></li>
+            <li><p>determine how many model parameters (fixed effects and variance components) must be estimated.</p></li>
           </ol>
         </statement>
       </exercise>
@@ -2290,9 +2330,38 @@ model.f2ml  0.6367
       <exercise xml:id="exercise-ch9-5">
         <statement>
           <p>
-            Provide interpretations of significant coefficients in context from the Walker-Barnes
-            and Mason <xref ref="Walker-Barnes2001"/> Table 2 results of hierarchical linear modeling analyses modeling gang
-            involvement (psychological control parenting behavior).
+            Table <xref ref="tab-table4chp9"/> shows a portion of Table 2: Results of Hierarchical
+            Linear Modeling Analyses Modeling Gang Involvement from <xref ref="Walker-Barnes2001"/>.
+            Provide interpretations of significant coefficients in context.
+          </p>
+          <table xml:id="tab-table4chp9">
+            <title>A portion of Table 2: Results of Hierarchical Linear Modeling Analyses Modeling Gang Involvement from Walker-Barnes and Mason (2001).</title>
+            <tabular>
+              <row header="yes" bottom="medium">
+                <cell>Predictor</cell><cell>Coefficient</cell><cell>SE</cell>
+              </row>
+              <row><cell>Intercept (initial status)</cell><cell> </cell><cell> </cell></row>
+              <row><cell>Base (intercept for predicting int term)</cell><cell>-.219</cell><cell>.160</cell></row>
+              <row><cell>Peer behavior</cell><cell>.252**</cell><cell>.026</cell></row>
+              <row><cell>Black ethnicity</cell><cell>.671*</cell><cell>.289</cell></row>
+              <row><cell>White/Other ethnicity</cell><cell>.149</cell><cell>.252</cell></row>
+              <row><cell>Parenting</cell><cell>.076</cell><cell>.050</cell></row>
+              <row><cell>Black ethnicity X parenting</cell><cell>-.161+</cell><cell>.088</cell></row>
+              <row><cell>White/Other ethnicity X parenting</cell><cell>-.026</cell><cell>.082</cell></row>
+              <row><cell>Slope (change)</cell><cell> </cell><cell> </cell></row>
+              <row><cell>Base (intercept for predicting slope term)</cell><cell>.028</cell><cell>.030</cell></row>
+              <row><cell>Peer behavior</cell><cell>-.011*</cell><cell>.005</cell></row>
+              <row><cell>Black ethnicity</cell><cell>-.132*</cell><cell>.054</cell></row>
+              <row><cell>White/Other ethnicity</cell><cell>-.059</cell><cell>.046</cell></row>
+              <row><cell>Parenting</cell><cell>-.015+</cell><cell>.009</cell></row>
+              <row><cell>Black ethnicity X parenting</cell><cell>.048**</cell><cell>.017</cell></row>
+              <row><cell>White/Other ethnicity X parenting</cell><cell>.016</cell><cell>.015</cell></row>
+            </tabular>
+          </table>
+          <p>
+            These columns focus on the parenting behavior of psychological control. Table reports
+            values for coefficients in the final model with all variables entered. * p&lt;.05; **
+            p&lt;.01; + p&lt;.10.
           </p>
         </statement>
       </exercise>
@@ -2301,8 +2370,8 @@ model.f2ml  0.6367
         <title>Charter schools</title>
         <statement>
           <p>
-            Differences exist in both sets of boxplots in <xref ref="fig-lon-box2"/>. What do
-            these differences imply for multilevel modeling?
+            Differences exist in both sets of boxplots in <xref ref="fig-lon-box2"/>. What do these
+            differences imply for multilevel modeling?
           </p>
         </statement>
       </exercise>
@@ -2348,9 +2417,9 @@ model.f2ml  0.6367
       <exercise xml:id="exercise-ch9-11">
         <statement>
           <p>
-            In the previous chapter, Model B is called the "random slopes and intercepts model",
-            while in this chapter Model B is called the "unconditional growth model". Are these
-            models essentially the same or systematically different? Explain.
+            In Chapter <xref ref="ch-multilevelintro"/> Model B is called the "random slopes and
+            intercepts model", while in this chapter Model B is called the "unconditional growth
+            model". Are these models essentially the same or systematically different? Explain.
           </p>
         </statement>
       </exercise>
@@ -2358,8 +2427,8 @@ model.f2ml  0.6367
       <exercise xml:id="exercise-ch9-12">
         <statement>
           <p>
-            In <xref ref="sec-lon-model-b"/>, why don't we examine the pseudo R-squared value for
-            Level Two?
+            In Section <xref ref="sec-lon-model-b"/>, why don't we examine the pseudo R-squared
+            value for Level Two?
           </p>
         </statement>
       </exercise>
@@ -2367,8 +2436,8 @@ model.f2ml  0.6367
       <exercise xml:id="exercise-ch9-13">
         <statement>
           <p>
-            If we have test score data from 2001–2010, explain how we'd create new variables to
-            fit a piecewise model.
+            If we have test score data from 2001-2010, explain how we'd create new variables to fit
+            a piecewise model.
           </p>
         </statement>
       </exercise>
@@ -2376,11 +2445,12 @@ model.f2ml  0.6367
       <exercise xml:id="exercise-ch9-14">
         <statement>
           <p>
-            In <xref ref="sec-lon-model-d"/>, could we have used percent free and reduced lunch
-            as a Level One covariate rather than 2010 percent free and reduced lunch as a Level
-            Two covariate? If so, explain how interpretations would have changed. What if we had
-            used average percent free and reduced lunch over all three years or 2008 percent free
-            and reduced lunch instead of 2010 percent free and reduced lunch?
+            In Section <xref ref="sec-lon-model-d"/>, could we have used percent free and reduced
+            lunch as a Level One covariate rather than 2010 percent free and reduced lunch as a
+            Level Two covariate? If so, explain how interpretations would have changed. What if we
+            had used average percent free and reduced lunch over all three years or 2008 percent
+            free and reduced lunch instead of 2010 percent free and reduced lunch. How would this
+            have changed the interpretation of this term?
           </p>
         </statement>
       </exercise>
@@ -2388,9 +2458,9 @@ model.f2ml  0.6367
       <exercise xml:id="exercise-ch9-15">
         <statement>
           <p>
-            In <xref ref="sec-lon-model-d"/>, why do we look at a 10% increase in the percentage
-            of students receiving free and reduced lunch when interpreting
-            <m>\hat{\alpha}_2</m>?
+            In Section <xref ref="sec-lon-model-d"/>, why do we look at a 10% increase in the
+            percentage of students receiving free and reduced lunch when interpreting
+            <m>\hat{\alpha}_{2}</m>?
           </p>
         </statement>
       </exercise>
@@ -2398,9 +2468,9 @@ model.f2ml  0.6367
       <exercise xml:id="exercise-ch9-16">
         <statement>
           <p>
-            In <xref ref="sec-lon-model-f"/>, if the gap in 2008 math scores between charter and
-            non-charter schools differed for schools of different poverty levels (as measured by
-            percent free and reduced lunch), how would the final model have differed?
+            In Section <xref ref="sec-lon-model-f"/>, if the gap in 2008 math scores between
+            charter and non-charter schools differed for schools of different poverty levels (as
+            measured by percent free and reduced lunch), how would the final model have differed?
           </p>
         </statement>
       </exercise>
@@ -2408,8 +2478,8 @@ model.f2ml  0.6367
       <exercise xml:id="exercise-ch9-17">
         <statement>
           <p>
-            Explain in your own words why "the error structure at Level Two is <em>not</em> the
-            same as the within-school covariance structure among observations."
+            Explain in your own words why "the error structure at Level Two is <em>not</em> the same
+            as the within-school covariance structure among observations".
           </p>
         </statement>
       </exercise>
@@ -2420,12 +2490,12 @@ model.f2ml  0.6367
             Here is the estimated unstructured covariance matrix for Model C:
           </p>
           <me>
-            \text{Cov}(\mathbf{Y}_i) =
-            \begin{bmatrix}
-              41.87 \amp \amp \\
-              36.46 \amp 48.18 \amp \\
-              35.20 \amp 39.84 \amp 45.77
-            \end{bmatrix}
+            \text{Cov}(\mathbf{Y}_i) =  \left[
+                  \begin{array}{cccc}
+                    41.87 \amp \amp   \\
+                    36.46 \amp 48.18 \amp  \\
+                    35.20 \amp 39.84 \amp 45.77
+                  \end{array} \right]
           </me>
           <p>
             Explain why this matrix cannot represent an estimated covariance matrix with a compound
@@ -2443,60 +2513,34 @@ model.f2ml  0.6367
         <title>Teen alcohol use</title>
         <statement>
           <p>
-            <xref ref="Curran1997"/> collected data on 82 adolescents at three time points starting at age
-            14 to assess factors that affect teen drinking behavior. Key variables in
-            <c>alcohol.csv</c> (source: <xref ref="Singer2003"/>) are as follows:
+            <xref ref="Curran1997"/> collected data on 82 adolescents at three time points starting at age 14 to
+            assess factors that affect teen drinking behavior. Key variables in the data set
+            <c>alcohol.csv</c> (accessed via <xref ref="Singer2003"/>) are as follows:
           </p>
           <ul>
             <li><p><c>id</c> = numerical identifier for subject</p></li>
             <li><p><c>age</c> = 14, 15, or 16</p></li>
-            <li><p><c>coa</c> = 1 if the teen is a child of an alcoholic parent; 0
-            otherwise</p></li>
+            <li><p><c>coa</c> = 1 if the teen is a child of an alcoholic parent; 0 otherwise</p></li>
             <li><p><c>male</c> = 1 if male; 0 if female</p></li>
-            <li><p><c>peer</c> = a measure of peer alcohol use, taken when each subject was 14.
-            This is the square root of the sum of two 6-point items about the proportion of
-            friends who drink occasionally or regularly.</p></li>
-            <li><p><c>alcuse</c> = the primary response. Four items — (a) drank beer or wine,
-            (b) drank hard liquor, (c) 5 or more drinks in a row, and (d) got drunk — were each
-            scored on an 8-point scale, from 0 = "not at all" to 7 = "every day". Then
-            <c>alcuse</c> is the square root of the sum of these four items.</p></li>
+            <li><p><c>peer</c> = a measure of peer alcohol use, taken when each subject was 14. This is the square root of the sum of two 6-point items about the proportion of friends who drink occasionally or regularly.</p></li>
+            <li><p><c>alcuse</c> = the primary response. Four items---(a) drank beer or wine, (b) drank hard liquor, (c) 5 or more drinks in a row, and (d) got drunk---were each scored on an 8-point scale, from 0="not at all" to 7="every day". Then <c>alcuse</c> is the square root of the sum of these four items.</p></li>
           </ul>
           <p>
-            Primary research questions: Do trajectories of alcohol use differ by parental
+            Primary research questions included: Do trajectories of alcohol use differ by parental
             alcoholism? Do trajectories of alcohol use differ by peer alcohol use?
           </p>
           <ol marker="a">
             <li><p>Identify Level One and Level Two predictors.</p></li>
-            <li><p>Perform a quick EDA. What can you say about the shape of <c>alcuse</c>, and
-            the relationship between <c>alcuse</c> and <c>coa</c>, <c>male</c>, and
-            <c>peer</c>?</p></li>
-            <li><p>Generate a lattice plot illustrating alcohol use over time for all 82 subjects.
-            Comment.</p></li>
-            <li><p>Generate three spaghetti plots with loess fits (one for <c>coa</c>, one for
-            <c>male</c>, and one after creating a binary variable from <c>peer</c>). Comment on
-            what you can conclude from each plot.</p></li>
-            <li><p>Fit a linear trend to the data from each of the 82 subjects using <c>age</c>
-            as the time variable. Generate histograms showing the results of these 82 linear
-            regression lines, and generate pairs of boxplots for <c>coa</c> and
-            <c>male</c>.</p></li>
-            <li><p>Repeat (e) using centered age (<c>age14 = age - 14</c>) as the time variable.
-            Also generate a pair of scatterplots for peer alcohol use. Comment on trends you
-            observe in these plots.</p></li>
-            <li><p>Discuss similarities and differences between (e) and (f). Why does using
-            <c>age14</c> as the time variable make more sense in this example?</p></li>
-            <li><p>(Model A) Run an unconditional means model. Report and interpret the
-            intraclass correlation coefficient.</p></li>
-            <li><p>(Model B) Run an unconditional growth model with <c>age14</c> as the time
-            variable at Level One. Report and interpret estimated fixed effects, using proper
-            notation. Also report and interpret a pseudo R-squared value.</p></li>
-            <li><p>(Model C) Build upon the unconditional growth model by adding the effects of
-            having an alcoholic parent and peer alcohol use in both Level Two equations. Report
-            and interpret all estimated fixed effects, using proper notation.</p></li>
-            <li><p>(Model D) Remove the child of an alcoholic indicator variable as a predictor
-            of slope in Model C. Write out Model D as both a two-level and a composite model
-            using proper notation (including error distributions); how many parameters must be
-            estimated? Compare Model D to Model C using an appropriate method and state a
-            conclusion.</p></li>
+            <li><p>Perform a quick EDA. What can you say about the shape of <c>alcuse</c>, and the relationship between <c>alcuse</c> and <c>coa</c>, <c>male</c>, and <c>peer</c>? Appeal to plots and summary statistics in making your statements.</p></li>
+            <li><p>Generate a plot as in <xref ref="fig-lon-lat1"/> with alcohol use over time for all 82 subjects. Comment.</p></li>
+            <li><p>Generate three spaghetti plots with loess fits similar to <xref ref="fig-lon-spag3"/> (one for <c>coa</c>, one for <c>male</c>, and one after creating a binary variable from <c>peer</c>). Comment on what you can conclude from each plot.</p></li>
+            <li><p>Fit a linear trend to the data from each of the 82 subjects using <c>age</c> as the time variable. Generate histograms as in <xref ref="fig-lon-histmat1"/> showing the results of these 82 linear regression lines, and generate pairs of boxplots as in <xref ref="fig-lon-box2"/> for <c>coa</c> and <c>male</c>. No commentary necessary.</p></li>
+            <li><p>Repeat (e) using centered age (<c>age14 = age - 14</c>) as the time variable. Also generate a pair of scatterplots as in <xref ref="fig-lon-boxcatmat1"/> for peer alcohol use. Comment on trends you observe in these plots.</p></li>
+            <li><p>Discuss similarities and differences between (e) and (f). Why does using <c>age14</c> as the time variable make more sense in this example?</p></li>
+            <li><p>(Model A) Run an unconditional means model. Report and interpret the intraclass correlation coefficient.</p></li>
+            <li><p>(Model B) Run an unconditional growth model with <c>age14</c> as the time variable at Level One. Report and interpret estimated fixed effects, using proper notation. Also report and interpret a pseudo R-squared value.</p></li>
+            <li><p>(Model C) Build upon the unconditional growth model by adding the effects of having an alcoholic parent and peer alcohol use in both Level Two equations. Report and interpret all estimated fixed effects, using proper notation.</p></li>
+            <li><p>(Model D) Remove the child of an alcoholic indicator variable as a predictor of slope in Model C (it will still be a predictor of intercept). Write out Model D as both a two-level and a composite model using proper notation (including error distributions); how many parameters (fixed effects and variance components) must be estimated? Compare Model D to Model C using an appropriate method and state a conclusion.</p></li>
           </ol>
         </statement>
       </exercise>
@@ -2505,67 +2549,63 @@ model.f2ml  0.6367
         <title>Ambulance diversions</title>
         <statement>
           <p>
-            One response to emergency department overcrowding is "ambulance diversion" — closing
-            its doors and forcing ambulances to bring patients to alternative hospitals.
-            An award-winning student project <xref ref="Radtke2019"/> assembled a data
-            set (<c>ambulance3.csv</c>) containing the following variables from 184 California
-            hospitals over a 3-year period (2013–2015):
+            One response to emergency department overcrowding is "ambulance diversion"---closing
+            its doors and forcing ambulances to bring patients to alternative hospitals. The
+            California Office of Statewide Health Planning and Development collected data on how
+            often hospitals enacted "diversion status", enabling researchers to investigate factors
+            associated with increasing amounts of ambulance diversions. An award-winning student
+            project <xref ref="Radtke2019"/> examined a data set (<c>ambulance3.csv</c>) which contains
+            the following variables from 184 California hospitals over a 3-year period
+            (2013-2015):
           </p>
           <ul>
-            <li><p><c>diverthours</c> = number of hours of diversion status over the year
-            (response)</p></li>
+            <li><p><c>diverthours</c> = number of hours of diversion status over the year (response)</p></li>
             <li><p><c>year2013</c> = year (centered at 2013)</p></li>
-            <li><p><c>totalvisits1</c> = total number of patient visits to the emergency
-            department over the year (in 1000s)</p></li>
-            <li><p><c>ems_basic</c> = 1 if the emergency department can only handle a basic
-            level of severity; 0 if the emergency department can handle higher levels of
-            severity</p></li>
-            <li><p><c>stations</c> = number of emergency department stations available for
-            patients (fixed over 3 years)</p></li>
+            <li><p><c>totalvisits1</c> = total number of patient visits to the emergency department over the year (in 1000s)</p></li>
+            <li><p><c>ems_basic</c> = 1 if the emergency department can only handle a basic level of severity; 0 if the emergency department can handle higher levels of severity</p></li>
+            <li><p><c>stations</c> = number of emergency department stations available for patients (fixed over 3 years)</p></li>
           </ul>
           <ol marker="a">
-            <li><p>State the observational units at Level One and Level Two in this study, then
-            state the explanatory variables at each level from the list above.</p></li>
-            <li><p>Create latticed spaghetti plots that illustrate the relationship between
-            diversion hours and (i) EMS level, and (ii) number of stations (divided into "high"
-            and "low"). Describe terms that might be worth testing in your final model based on
-            these plots.</p></li>
-            <li><p>Write out an unconditional growth model, where <m>Y_{ij}</m> is the number of
-            diversion hours for the <m>i^{th}</m> hospital in the <m>j^{th}</m> year. Interpret
-            both <m>a_i</m> and <m>v_i</m> in the context of this problem.</p></li>
-            <li><p>In Model E (see R code at the end of these problems), focus on the
-            <c>ems_basic:year2013</c> interaction term. Provide a careful interpretation in
-            context. Why are there no p-values for testing significance in the <c>lmer()</c>
-            output? What can we conclude about the significance of the interaction from the
-            CIs?</p></li>
-            <li><p>Write out Model G in terms of its Level 1 and Level 2 equations. Be sure to
-            use proper subscripts everywhere, and provide expressions for any assumptions made
-            about error terms. How many total parameters must be estimated?</p></li>
-            <li><p>In Model G, provide careful interpretations in context for the coefficient
-            estimates of <c>year2013</c> and <c>stations</c>.</p></li>
-            <li><p>We wish to compare Models D and D0. Write out null and alternative hypotheses
-            in terms of model parameters. State a conclusion based on a likelihood ratio test.
-            State a conclusion based on a parametric bootstrap. Generate a plot that compares the
-            null distributions and p-values for the likelihood ratio test and parametric
-            bootstrap. Why might we consider using a parametric bootstrap p-value rather than a
-            likelihood ratio test p-value? Show how you would produce a bootstrapped value for
-            <m>Y_{11}</m>, the first row of <c>ambulance3.csv</c>.</p></li>
+            <li><p>State the observational units at Level One and Level Two in this study, then state the explanatory variables at each level from the list above.</p></li>
+            <li><p>Create latticed spaghetti plots that illustrate the relationship between diversion hours and (i) EMS level, and (ii) number of stations (divided into "high" and "low"). Describe terms that might be worth testing in your final model based on these plots.</p></li>
+            <li><p>Write out an unconditional growth model, where <m>Y_{ij}</m> is the number of diversion hours for the <m>i^{th}</m> hospital in the <m>j^{th}</m> year. Interpret both <m>a_i</m> and <m>v_i</m> in the context of this problem (using words – no numbers necessary).</p></li>
+            <li>
+              <p>In Model E (see R code at the end of these problems), focus on the <c>ems_basic:year2013</c> interaction term.</p>
+              <ul>
+                <li><p>provide a careful interpretation in context.</p></li>
+                <li><p>why are there no p-values for testing significance in the <c>lmer()</c> output?</p></li>
+                <li><p>confidence intervals can be formed for parameters in Model E using two different methods. What can we conclude about the significance of the interaction from the CIs? Be sure to make a statement about significance in context; no need to interpret the CI itself.</p></li>
+              </ul>
+            </li>
+            <li><p>Write out Model G in terms of its Level 1 and Level 2 equations (see R code at the end of these problems). Be sure to use proper subscripts everywhere, and be sure to also provide expressions for any assumptions made about error terms. How many total parameters must be estimated?</p></li>
+            <li><p>In Model G, provide careful interpretations in context for the coefficient estimates of <c>year2013</c> and <c>stations</c>.</p></li>
+            <li>
+              <p>We wish to compare Models D and D0.</p>
+              <ul>
+                <li><p>Write out null and alternative hypotheses in terms of model parameters.</p></li>
+                <li><p>State a conclusion based on a likelihood ratio test.</p></li>
+                <li><p>State a conclusion based on a parametric bootstrap.</p></li>
+                <li><p>Generate a plot that compares the null distributions and p-values for the likelihood ratio test and parametric bootstrap.</p></li>
+                <li><p>Why might we consider using a parametric bootstrap p-value rather than a likelihood ratio test p-value?</p></li>
+                <li><p>Show how you would produce a bootstrapped value for <m>Y_{11}</m>, the first row of <c>ambulance3.csv</c>. Show all calculations with as many specific values filled in as possible. If you need to select a random value from a normal distribution, identify the mean and SD for the normal distribution you'd like to sample from.</p></li>
+              </ul>
+            </li>
           </ol>
 
           <program language="r" xml:id="code-ambulance-models">
             <input>
 modelD &lt;- lmer(diverthours ~ year2013 + ems_basic +
-                (year2013 | id), data = ambulance3)
+  (year2013 | id), data = ambulance3)
 
 modelD0 &lt;- lmer(diverthours ~ year2013 + ems_basic +
-                 (1 | id), data = ambulance3)
+  (1 | id), data = ambulance3)
 
 modelE &lt;- lmer(diverthours ~ year2013 + ems_basic +
-                ems_basic:year2013 + (year2013 | id), data = ambulance3)
+  ems_basic:year2013 + (year2013 | id), data = ambulance3)
 
 modelG &lt;- lmer(diverthours ~ year2013 + totalvisits1 +
-                ems_basic + stations + ems_basic:year2013 +
-                stations:year2013 + (year2013 | id), data = ambulance3)
+  ems_basic + stations + ems_basic:year2013 +
+  stations:year2013 + (year2013 | id), data = ambulance3)
             </input>
           </program>
         </statement>
@@ -2579,25 +2619,53 @@ modelG &lt;- lmer(diverthours ~ year2013 + totalvisits1 +
         <title>UCLA nurse blood pressure study</title>
         <statement>
           <p>
-            A study by <xref ref="Goldstein2000"/> collected information from 203 registered nurses in the Los Angeles area
-            between 24 and 50 years of age on blood pressure (BP) and potential factors that
-            contribute to hypertension. Data from this study (in <c>nursebp.csv</c>, source: <xref ref="Weiss2005"/>) includes
-            observations (40–60 per nurse) repeatedly taken over the course of a single day. The
-            first BP measurement was taken half an hour before the subject's normal start of work,
-            and BP was then measured approximately every 20 minutes for the rest of the day.
-            Variables include: <c>SNUM</c> (subject ID), <c>SYS</c> (systolic BP), <c>DIA</c>
-            (diastolic BP), <c>HRT</c> (heart rate), <c>MNACT5</c> (activity level),
-            <c>PHASE</c> (menstrual phase), <c>DAY</c> (workday or non-workday), <c>POSTURE</c>
-            (sitting/standing/reclining), <c>STR</c>/<c>HAP</c>/<c>TIR</c> (self-ratings of
-            stress, happiness, tiredness), <c>AGE</c>, <c>FH123</c> (family history of
-            hypertension), <c>time</c>, <c>timept</c>, and <c>timepass</c>.
+            A study by <xref ref="Goldstein2000"/> collected information from 203 registered nurses in
+            the Los Angeles area between 24 and 50 years of age on blood pressure (BP) and
+            potential factors that contribute to hypertension. This information includes family
+            history, and whether the subject had one or two hypertensive parents, as well as a
+            wide range of measures of the physical and emotional condition of each nurse
+            throughout the day. Researchers sought to study the links between BP and family
+            history, personality, mood changes, working status, and menstrual phase.
           </p>
           <p>
+            Data from this study provided by <xref ref="Weiss2005"/> includes observations (40-60 per
+            nurse) repeatedly taken on the 203 nurses over the course of a single day. The first BP
+            measurement was taken half an hour before the subject's normal start of work, and BP was
+            then measured approximately every 20 minutes for the rest of the day. At each BP
+            reading, the nurses also rate their mood on several dimensions, including how stressed
+            they feel at the moment the BP is taken. In addition, the activity of each subject
+            during the 10 minutes before each reading was measured using an actigraph worn on the
+            waist. Each of the variables in <c>nursebp.csv</c> is described below:
+          </p>
+          <ul>
+            <li><p><c>SNUM</c>: subject identification number</p></li>
+            <li><p><c>SYS</c>: systolic blood pressure (mmHg)</p></li>
+            <li><p><c>DIA</c>: diastolic blood pressure (mmHg)</p></li>
+            <li><p><c>HRT</c>: heart rate (beats per minute)</p></li>
+            <li><p><c>MNACT5</c>: activity level (frequency of movements in 1-minute intervals, over a 10-minute period )</p></li>
+            <li><p><c>PHASE</c>: menstrual phase (follicular---beginning with the end of menstruation and ending with ovulation, or luteal---beginning with ovulation and ending with pregnancy or menstruation)</p></li>
+            <li><p><c>DAY</c>: workday or non-workday</p></li>
+            <li><p><c>POSTURE</c>: position during BP measurement---either sitting, standing, or reclining</p></li>
+            <li><p><c>STR</c>, <c>HAP</c>, <c>TIR</c>: self-ratings by each nurse of their level of stress, happiness and tiredness at the time of each BP measurement on a 5-point scale, with 5 being the strongest sensation of that feeling and 1 the weakest</p></li>
+            <li><p><c>AGE</c>: age in years</p></li>
+            <li><p><c>FH123</c>: coded as either NO (no family history of hypertension), YES (1 hypertensive parent), or YESYES (both parents hypertensive)</p></li>
+            <li><p><c>time</c>: in minutes from midnight</p></li>
+            <li><p><c>timept</c>: number of the measurement that day (approximately 50 for each subject)</p></li>
+            <li><p><c>timepass</c>: time in minutes beginning with 0 at time point 1</p></li>
+          </ul>
+          <p>
             Using systolic blood pressure as the primary response, write a short report detailing
-            factors that are significantly associated with higher systolic blood pressure. In
-            particular, how are work conditions — activity level, mood, and work status — related
-            to trends in BP levels? Include appropriate exploratory plots and multilevel models,
-            and describe your modeling process as an appendix.
+            factors that are significantly associated with higher systolic blood pressure. Be sure
+            to support your conclusions with appropriate exploratory plots and multilevel models. In
+            particular, how are work conditions---activity level, mood, and work status---related to
+            trends in BP levels? As an appendix to your report, describe your modeling process---how
+            did you arrive at your final model, which covariates are Level One or Level Two, what
+            did you learn from exploratory plots, etc.?
+          </p>
+          <p>
+            Potential alternative directions: consider diastolic blood pressure or heart rate as the
+            primary response variable, or even try modeling emotion rating using a multilevel
+            model.
           </p>
         </statement>
       </exercise>
@@ -2607,15 +2675,34 @@ modelG &lt;- lmer(diverthours ~ year2013 + totalvisits1 +
         <statement>
           <p>
             Education researchers wonder which factors most affect the completion rates at U.S.
-            colleges. Using the IPEDS database <xref ref="IPEDS"/> containing data from 1310 institutions over the
-            years 2002–2009 (in <c>colleges.csv</c>), the following variables were assembled.
-            Response: <c>rate</c> = completion rate (number of degrees awarded per 100 students
-            enrolled). Level 1 predictors: <c>year</c>, <c>instpct</c> = percentage of students
-            who receive an institutional grant, <c>instamt</c> = typical amount of an
-            institutional grant among recipients (in $1000s). Level 2 predictors: <c>faculty</c>
-            = mean number of full-time faculty per 100 students during 2002–2009, <c>tuition</c>
-            = mean yearly tuition during 2002–2009 (in $1000s).
+            colleges. Using the IPEDS database containing data from 1310 institutions over the
+            years 2002-2009 <xref ref="IPEDS"/>, the following variables were assembled in
+            <c>colleges.csv</c>:
           </p>
+          <ul>
+            <li><p><c>id</c> = unique identification number for each college or university</p></li>
+          </ul>
+          <p>
+            Response:
+          </p>
+          <ul>
+            <li><p><c>rate</c> = completion rate (number of degrees awarded per 100 students enrolled)</p></li>
+          </ul>
+          <p>
+            Level 1 predictors:
+          </p>
+          <ul>
+            <li><p><c>year</c></p></li>
+            <li><p><c>instpct</c> = percentage of students who receive an institutional grant</p></li>
+            <li><p><c>instamt</c> = typical amount of an institutional grant among recipients (in $1000s)</p></li>
+          </ul>
+          <p>
+            Level 2 predictors:
+          </p>
+          <ul>
+            <li><p><c>faculty</c> = mean number of full-time faculty per 100 students during 2002-2009</p></li>
+            <li><p><c>tuition</c> = mean yearly tuition during 2002-2009 (in $1000s)</p></li>
+          </ul>
           <p>
             Perform exploratory analyses and run multilevel models to determine significant
             predictors of baseline (2002) completion rates and changes in completion rates between
@@ -2629,28 +2716,56 @@ modelG &lt;- lmer(diverthours ~ year2013 + totalvisits1 +
         <title>Beating the Blues</title>
         <statement>
           <p>
-            <xref ref="Proudfoot2003"/> developed and studied an interactive multimedia program of cognitive
-            behavioral therapy (CBT) called Beating the Blues (BtheB). In their study, 167
-            participants suffering from anxiety and/or depression were randomly allocated to
-            receive BtheB therapy or treatment as usual (TAU). The primary response was the Beck
-            Depression Inventory (BDI), measured prior to treatment, at the end of treatment (2
-            months later), and at 2, 4, and 6 months post-treatment follow-up.
+            Depression is a common mental disorder affecting approximately 121 million people
+            worldwide, making it one of the leading causes of disability. Evidence has shown that
+            cognitive behavioral therapy (CBT) can be an effective treatment, but delivery of the
+            usual face-to-face treatment is expensive and dependent on the availability of trained
+            therapists. As a result, Proudfoot et al. <xref ref="Proudfoot2003"/> developed and studied
+            an interactive multimedia program of CBT called Beating the Blues (BtheB). In their
+            study, 167 participants suffering from anxiety and/or depression were randomly allocated
+            to receive BtheB therapy or treatment as usual (TAU). BtheB consisted of 8, 50-minute
+            computerized weekly sessions with "homework" projects between sessions, while treatment
+            as usual consisted of whatever treatment the patient's general practitioner (GP)
+            prescribed, including drug treatment or referral to a counselor. Subjects in the BtheB
+            group could also receive pharmacotherapy if prescribed by their GP (who reviewed a
+            computer-generated progress report after each subject's session), but they could not
+            receive face-to-face counseling. The primary response was the Beck Depression Inventory
+            (BDI), measured prior to treatment, at the end of treatment (2 months later), and at 2,
+            4, and 6 months post-treatment follow-up. Researchers wished to examine the effect of
+            treatment on depression levels, controlling for potential explanatory variables such as
+            baseline BDI, if the patient took anti-depressant drugs, and the length of the current
+            episode of depression (more or less than 6 months). Was treatment effective in both the
+            active treatment phase and the post-treatment follow-up?
           </p>
           <p>
-            Data from the BtheB study can be found in <c>BtheB.csv</c> <xref ref="Everitt2006"/>. Variables include:
-            <c>drug</c> (prescribed concomitant drug therapy?), <c>length</c> (current episode
-            of depression longer or shorter than 6 months?), <c>treatment</c> (TAU or BtheB),
-            <c>bdi.pre</c> (baseline BDI), <c>bdi.2m</c>, <c>bdi.4m</c>, <c>bdi.6m</c>,
-            <c>bdi.8m</c> (BDI at 2, 4, 6, 8 months).
+            Data from the BtheB study can be found in <c>BtheB.csv</c>; it is also part of the
+            <c>HSAUR</c> package <xref ref="Everitt2006"/> in R. Examination of the data reveals the
+            following variables:
           </p>
+          <ul>
+            <li><p><c>drug</c> = Was the subject prescribed concomitant drug therapy?</p></li>
+            <li><p><c>length</c> = Was the current episode of depression (at study entry) longer or shorter than 6 months?</p></li>
+            <li><p><c>treatment</c> = TAU or BtheB</p></li>
+            <li><p><c>bdi.pre</c> = Baseline BDI at time of study entry (before treatment began)</p></li>
+            <li><p><c>bdi.2m</c> = BDI level after 2 months (at the end of treatment phase)</p></li>
+            <li><p><c>bdi.4m</c> = BDI level after 4 months (or 2 months after treatment ended)</p></li>
+            <li><p><c>bdi.6m</c> = BDI level after 6 months (or 4 months after treatment ended)</p></li>
+            <li><p><c>bdi.8m</c> = BDI level after 8 months (or 6 months after treatment ended)</p></li>
+          </ul>
           <p>
-            Things to consider: examine patterns of missing data; convert to LONG form; exploratory
-            data analyses including lattice, spaghetti, and correlation plots; set time 0 to be 2
-            months into the study; note that treatment is the variable of primary interest.
+            Things to consider when analyzing data from this case study:
           </p>
+          <ul>
+            <li><p>Examine patterns of missing data.</p></li>
+            <li><p>Convert to LONG form (and eliminate subjects with no post-baseline data).</p></li>
+            <li><p>Exploratory data analyses, including lattice, spaghetti, and correlation plots.</p></li>
+            <li><p>Set time 0 to be 2 months into the study (then the intercept represents BDI level at the end of active treatment, while the slope represents change in BDI level over the posttreatment follow-up).</p></li>
+            <li><p>Note that treatment is the variable of primary interest, while baseline BDI, concomitant drug use, and length of previous episode are confounding variables.</p></li>
+          </ul>
         </statement>
       </exercise>
     </subexercises>
   </exercises>
+
 
 </chapter>
