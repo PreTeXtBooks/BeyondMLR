@@ -349,7 +349,7 @@ The number of schools with a particular missing data pattern are listed in the l
       <title>Exploratory Analyses for Longitudinal Data</title>
 
       <p>
-In addition to the initial exploratory analyses above, longitudinal data—multilevel data with time at Level One—calls for further plots and summaries that describe time trends within and across individuals. For example, we can examine trends over time within individual schools. xref ref="fig-lon-lat2"/> provides a lattice plot illustrating trends over time for the first 24 schools in the data set. We note differences among schools in starting point (test scores in 2008), slope (change in test scores over the three-year period), and form of the relationship. These differences among schools are nicely illustrated in so-called spaghetti plots such as xref ref="fig-lon-spag1"/>, which overlays the individual schools’ time trends (for the math test scores) from xref ref="fig-lon-lat2"/> on a single set of axes. In order to illustrate the overall time trend without making global assumptions about the form of the relationship, we overlaid in bold a non-parametric fitted curve through a loess smoother. LOESS comes from “locally estimated scatterplot smoother”, in which a low-degree polynomial is fit to each data point using weighted regression techniques, where nearby points receive greater weight. LOESS is a computationally intensive method which performs especially well with larger sets of data, although ideally there would be a greater diversity of x-values than the three time points we have. In this case, the loess smoother follows very closely to a linear trend, indicating that assuming a linear increase in test scores over the three-year period is probably a reasonable simplifying assumption. To further examine the hypothesis that linearity would provide a reasonable approximation to the form of the individual time trends in most cases, xref ref="fig-lon-lat2"/> shows a lattice plot containing linear fits through ordinary least squares rather than connected time points as in xref ref="fig-lon-lat2"/>.
+In addition to the initial exploratory analyses above, longitudinal data—multilevel data with time at Level One—calls for further plots and summaries that describe time trends within and across individuals. For example, we can examine trends over time within individual schools. <xref ref="fig-lon-lat1"/> provides a lattice plot illustrating trends over time for the first 24 schools in the data set. We note differences among schools in starting point (test scores in 2008), slope (change in test scores over the three-year period), and form of the relationship. These differences among schools are nicely illustrated in so-called spaghetti plots such as <xref ref="fig-lon-spag1"/>, which overlays the individual schools’ time trends (for the math test scores) from <xref ref="fig-lon-lat1"/> on a single set of axes. In order to illustrate the overall time trend without making global assumptions about the form of the relationship, we overlaid in bold a non-parametric fitted curve through a loess smoother. LOESS comes from “locally estimated scatterplot smoother”, in which a low-degree polynomial is fit to each data point using weighted regression techniques, where nearby points receive greater weight. LOESS is a computationally intensive method which performs especially well with larger sets of data, although ideally there would be a greater diversity of x-values than the three time points we have. In this case, the loess smoother follows very closely to a linear trend, indicating that assuming a linear increase in test scores over the three-year period is probably a reasonable simplifying assumption. To further examine the hypothesis that linearity would provide a reasonable approximation to the form of the individual time trends in most cases, <xref ref="fig-lon-lat2"/> shows a lattice plot containing linear fits through ordinary least squares rather than connected time points as in <xref ref="fig-lon-lat1"/>.
       </p>
 
       <figure xml:id="fig-lon-lat1">
@@ -381,6 +381,9 @@ In addition to the initial exploratory analyses above, longitudinal data—multi
       </figure>
 
       <p>
+        Just as we explored the relationship between our response (average math scores) and
+        important covariates in <xref ref="sec-lon-general-eda"/>, we can now examine the
+        relationships between time trends by school and important covariates. For instance,
         <xref ref="fig-lon-spag3"/> shows that charter schools had math scores that were lower on
         average than public non-charter schools and more variable. This type of plot is sometimes
         called a <term>trellis graph</term>,<idx><h>trellis graph</h></idx> since it displays a
@@ -388,16 +391,13 @@ In addition to the initial exploratory analyses above, longitudinal data—multi
         condition — an item in a category. Trends over time by school type are denoted by bold
         loess curves. Public non-charter schools have higher scores across all years; both school
         types show little growth between 2008 and 2009, but greater growth between 2009 and 2010,
-        especially charter schools.
-      </p>
-
-      <p>
-        Exploratory analyses like this can be repeated for other covariates, such as percent free
-        and reduced lunch in <xref ref="fig-lon-spagmat1"/>. The trellis plot automatically divides
-        schools into four groups based on quartiles of their percent free and reduced lunch, and we
-        see that schools with lower percentages of free and reduced lunch students tend to have
-        higher math scores and less variability. Across all levels of free and reduced lunch, we
-        see greater gains between 2009 and 2010 than between 2008 and 2009.
+        especially charter schools. Exploratory analyses like this can be repeated for other
+        covariates, such as percent free and reduced lunch in <xref ref="fig-lon-spagmat1"/>. The
+        trellis plot automatically divides schools into four groups based on quartiles of their
+        percent free and reduced lunch, and we see that schools with lower percentages of free and
+        reduced lunch students tend to have higher math scores and less variability. Across all
+        levels of free and reduced lunch, we see greater gains between 2009 and 2010 than between
+        2008 and 2009.
       </p>
 
       <figure xml:id="fig-lon-spag3">
@@ -647,13 +647,16 @@ In addition to the initial exploratory analyses above, longitudinal data—multi
 
       <p>
         where <m>\hat{Y}_{ij}</m> is the predicted math score of the <m>i^{th}</m> school at
-        time <m>j</m>, where time <m>j</m> is the number of years since 2008. Residuals
-        <m>Y_{ij}-\hat{Y}_{ij}</m> are then calculated. <xref ref="fig-lon-cor1"/> combines
-        three pieces of information: the upper right triangle contains correlation coefficients
-        for residuals between pairs of years, the diagonal contains histograms of residuals at
-        each time point, and the lower left triangle contains scatterplots of residuals from two
-        different years. We see that correlation between residuals from adjacent years is strongly
-        positive (0.81–0.83).
+        time <m>j</m>, where time <m>j</m> is the number of years since 2008. In this model,
+        the predicted math score will be identical for all schools at a given time point
+        <m>j</m>. Residuals <m>Y_{ij}-\hat{Y}_{ij}</m> are then calculated for each
+        observation, measuring the difference between actual math score and the average overall
+        time trend. <xref ref="fig-lon-cor1"/> then combines three pieces of information: the
+        upper right triangle contains correlation coefficients for residuals between pairs of
+        years, the diagonal contains histograms of residuals at each time point, and the lower
+        left triangle contains scatterplots of residuals from two different years. In our case,
+        we see that correlation between residuals from adjacent years is strongly positive
+        (0.81–0.83) and does not drop off greatly as the time interval between years increases.
       </p>
 
       <figure xml:id="fig-lon-cor1">
@@ -705,12 +708,17 @@ In addition to the initial exploratory analyses above, longitudinal data—multi
         there are no predictors at any level. The purpose of the unconditional means model is to
         assess the amount of variation at each level, and to compare variability within school to
         variability between schools. Define <m>Y_{ij}</m> as the MCA-II math score from school
-        <m>i</m> and year <m>j</m>:
+        <m>i</m> and year <m>j</m>. Using the composite model specification from
+        <xref ref="ch-multilevelintro"/>:
       </p>
 
       <me>
         Y_{ij} = \alpha_0 + u_i + \epsilon_{ij} \quad \text{with} \quad u_i \sim N(0, \sigma^2_u) \quad \text{and} \quad \epsilon_{ij} \sim N(0, \sigma^2)
       </me>
+
+      <p>
+        the unconditional means model can be fit to the MCA-II data:
+      </p>
 
       <program language="r" xml:id="code-model-a">
         <input>
@@ -1283,18 +1291,28 @@ model.f0 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
       <p>
         When testing random effects at the boundary (such as <m>\sigma_v^2 = 0</m>) or those with
         restricted ranges (such as <m>\rho_{uv} = 0</m>), using a chi-square distribution to
-        conduct a likelihood ratio test is not appropriate; it can produce a conservative test with
-        p-values that are too large (<xref ref="Bryk2002"/>; <xref ref="Singer2003"/>;
-        <xref ref="Faraway2005"/>). Researchers often use methods like the
+        conduct a likelihood ratio test is not appropriate. In fact, this will produce a
+        conservative test, with p-values that are too large and not rejected enough
+        (<xref ref="Bryk2002"/>; <xref ref="Singer2003"/>;
+        <xref ref="Faraway2005"/>). For example, we should suspect that the p-value (.8447)
+        produced by the likelihood ratio test comparing Models F and F0 is too large, that the
+        real probability of getting a likelihood ratio test statistic of 0.3376 or greater when
+        Model F0 is true is smaller than .8447.
+        Researchers often use methods like the
         <term>parametric bootstrap</term><idx><h>parametric bootstrap</h></idx> to better
-        approximate the distribution of the likelihood test statistic. The basic steps are:
+        approximate the distribution of the likelihood test statistic and produce more accurate
+        p-values by simulating data under the null hypothesis. Here are the basic steps for
+        running a parametric bootstrap procedure to compare Model F0 with Model F (see associated
+        diagram in <xref ref="fig-parabootdiagram"/>):
       </p>
 
       <ol>
         <li><p>Fit Model F0 (the null model) to obtain estimated fixed effects and variance
-        components.</p></li>
-        <li><p>Use the estimated parameters from the null model to regenerate a new set of math
-        test scores with the same sample size and covariates as the original data.</p></li>
+        components (this is the "parametric" part).</p></li>
+        <li><p>Use the estimated fixed effects and variance components from the null model to
+        regenerate a new set of math test scores with the same sample size (<m>n=1733</m>) and
+        associated covariates for each observation as the original data (this is the "bootstrap"
+        part).</p></li>
         <li><p>Fit both Model F0 (the reduced model) and Model F (the full model) to the new
         data.</p></li>
         <li><p>Compute a likelihood ratio statistic comparing Models F0 and F.</p></li>
@@ -1376,9 +1394,12 @@ model.f0 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
       <p><alert>Level One:</alert> We next proceed to Level One, where the scores from Rippleside
       are modeled as a linear function of year (<m>654.2 + 1.60\,\text{Year08}_{ij}</m>) with a
       normally distributed residual <m>\epsilon_{1k}</m> at each time point <m>k</m>. Three
-      residuals are sampled independently from <m>N(0, 2.97^2)</m>. Suppose we obtain
+      residuals (one for each year) are sampled independently from a normal distribution with mean
+      0 and standard deviation 2.97 — the standard deviation again coming from parameter estimates
+      from fitting Model F0 to the actual data. Suppose we obtain residuals of
       <m>\epsilon_{11} = -3.11</m>, <m>\epsilon_{12} = 1.19</m>, and <m>\epsilon_{13} = 2.41</m>.
-      Then the three simulated math scores for Rippleside are:
+      In that case, our parametrically generated data for Rippleside Elementary (School #1) would
+      look like:
       </p>
       <md>
         <mrow>Y_{11} \amp= 654.2 + 1.60(0) - 3.11 = 651.1</mrow>
@@ -1389,10 +1410,11 @@ model.f0 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
       <p>
         We would next turn to School #2 (<m>i=2</m>)—Wrenshall Elementary. Fixed effects would
         remain the same but covariates would change, as Wrenshall has 15.2% special education
-        students and 42.4% free and reduced lunch students. We would sample a new residual
-        <m>u_2</m> at Level Two, producing a different intercept <m>a_2</m>. Three new
-        independent residuals <m>\epsilon_{2k}</m> would also be selected at Level One from the
-        same <m>N(0, 2.97^2)</m> distribution.
+        students and 42.4% free and reduced lunch students. We would, however, sample a new
+        residual <m>u_2</m> at Level Two, producing a different intercept <m>a_2</m> than
+        observed for School #1. Three new independent residuals <m>\epsilon_{2k}</m> would also
+        be selected at Level One, from the same normal distribution as before with mean 0 and
+        standard deviation 2.97.
       </p>
 
       <p>
@@ -1400,9 +1422,11 @@ model.f0 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
         on Model F0, two models are fit to this data:
       </p>
       <ul>
-        <li><p>Model F0 — the correct (null) model actually used to generate the responses</p></li>
-        <li><p>Model F — the full model containing two extra variance components
-        (<m>\sigma_v^2</m> and <m>\sigma_{uv}</m>) not used when generating the responses</p></li>
+        <li><p>Model F0 — the correct (null) model that was actually used to generate the
+        responses</p></li>
+        <li><p>Model F — the incorrect (full) model that contains two extra variance components
+        — <m>\sigma_v^2</m> and <m>\sigma_{uv}</m> — that were not actually used when generating
+        the responses</p></li>
       </ul>
       <p>
         After repeating this 1000 times, the histogram of bootstrapped test statistics under the
@@ -1423,9 +1447,35 @@ drop_in_dev &lt;- anova(m2, m1, test = "Chisq")
       </program>
 
       <p>
-        In this one bootstrap sample, we fit both Model F0 and Model F to the simulated data,
-        compute the likelihood ratio test statistic, and record it. By repeating this process
-        1000 times (Step 5 above), we build an empirical null distribution of the test statistic.
+        A likelihood ratio test statistic is calculated comparing Model F0 to Model F. For
+        example, after continuing as above to generate new <m>Y_{ij}</m> values corresponding to
+        all 1733 score observations, we fit both models to the "bootstrapped" data. Since the
+        data was generated using Model F0, we would expect the two extra terms in Model F
+        (<m>\sigma^2_v</m> and <m>\sigma_{uv}</m>) to contribute very little to the quality of
+        the fit; Model F will have a slightly larger likelihood and loglikelihood since it contains
+        every parameter from Model F0 plus two more, but the difference in the likelihoods should
+        be due to chance. In fact, that is what the output above shows. Model F does have a
+        larger loglikelihood than Model F0 (<m>-4932</m> vs. <m>-4935</m>), but this small
+        difference is not statistically significant based on a chi-square test with 2 degrees of
+        freedom (<m>p=.1012</m>).
+      </p>
+
+      <p>
+        However, we are really only interested in saving the likelihood ratio test statistic from
+        this bootstrapped sample (<m>2(-4932) - (-4935) = 4.581</m>). By generating
+        ("bootstrapping") many sets of responses based on estimated parameters from Model F0 and
+        calculating many likelihood ratio test statistics, we can observe how this test statistic
+        behaves under the null hypothesis of <m>\sigma_v^2 = \sigma_{uv} = 0</m>, rather than
+        making the (dubious) assumption that its behavior is described by a chi-square distribution
+        with 2 degrees of freedom. <xref ref="fig-paraboot9"/> illustrates the null distribution
+        of the likelihood ratio test statistic derived by the parametric bootstrap procedure as
+        compared to a chi-square distribution. A p-value for comparing our full and reduced models
+        can be approximated by finding the proportion of likelihood ratio test statistics generated
+        under the null model which exceed our observed likelihood ratio test (0.3376). The
+        parametric bootstrap provides a more reliable p-value in this case (.578 from table below);
+        a chi-square distribution puts too much mass in the tail and not enough near 0, leading to
+        overestimation of the p-value. Based on this test, we would still choose our simpler
+        Model F0.
       </p>
 
       <program language="r" xml:id="code-paraboot-full">
@@ -1433,14 +1483,6 @@ drop_in_dev &lt;- anova(m2, m1, test = "Chisq")
 bootstrapAnova(mA = model.f2ml, m0 = model.f0ml, B = 1000)
         </input>
       </program>
-
-      <p>
-        The parametric bootstrap provides a more reliable p-value in this case (0.578 from the
-        table); a chi-square distribution puts too much mass in the tail and not enough near 0,
-        leading to overestimation of the p-value. Based on this test, we would choose our simpler
-        Model F0. <xref ref="fig-paraboot9"/> illustrates the null distribution of the likelihood
-        ratio test statistic derived by the parametric bootstrap.
-      </p>
 
       <figure xml:id="fig-paraboot9">
         <caption>Null distribution of likelihood ratio test statistic derived using parametric
@@ -1455,25 +1497,23 @@ bootstrapAnova(mA = model.f2ml, m0 = model.f0ml, B = 1000)
       </figure>
 
       <p>
-        Parametric bootstrap methods can also be used to construct confidence intervals for
-        fixed effects. For instance, the <c>confint</c> function in R with
-        <c>method = "boot"</c> will generate bootstrap confidence intervals for all model
-        parameters:
+        Another way of examining whether or not we should stick with the reduced model or reject
+        it in favor of the larger model is by generating parametric bootstrap samples, and then
+        using those samples to produce 95% confidence intervals for both <m>\rho_{uv}</m> and
+        <m>\sigma_v</m>.
       </p>
 
       <program language="r" xml:id="code-paraboot-ci">
         <input>
-# Bootstrap confidence intervals for Model F0
-confint(model.f0, method = "boot", nsim = 1000, oldNames = FALSE)
+bootciF = confint(model.f2, method = "boot", oldNames = FALSE)
+bootciF
         </input>
       </program>
 
       <p>
-        Bootstrap confidence intervals offer an alternative to Wald-based intervals and can be
-        especially useful for variance components, which are often non-normally distributed.
-        From the bootstrap output, the 95% bootstrapped confidence interval for <m>\rho_{uv}</m>
-        contains 0, and the interval for <m>\sigma_v</m> nearly contains 0, providing further
-        evidence that the larger model is not needed.
+        From the output above, the 95% bootstrapped confidence interval for <m>\rho_{uv}</m>
+        (<m>-1, 1</m>) contains 0, and the interval for <m>\sigma_v</m> nearly contains 0,
+        providing further evidence that the larger model is not needed.
       </p>
 
       <p>
@@ -1529,10 +1569,32 @@ confint(model.f0, method = "boot", nsim = 1000, oldNames = FALSE)
 
       <p>
         We will use Model C (uncontrolled effects of school type) to illustrate covariance
-        structure within subjects. Our two-level model, through error terms on both Level One and
-        Level Two variables, actually implies a specific within-school covariance structure among
-        observations. For School <m>i</m>, the covariance structure for the three time points has
-        general form:
+        structure within subjects. Recall that, in composite form, Model C is:
+      </p>
+
+      <md>
+        <mrow>Y_{ij} \amp= a_i + b_i\;\text{Year08}_{ij} + \epsilon_{ij}</mrow>
+        <mrow>\amp= (\alpha_0 + \alpha_1\text{Charter}_i + u_i)
+             + (\beta_0 + \beta_1\text{Charter}_i + v_i)\text{Year08}_{ij} + \epsilon_{ij}</mrow>
+        <mrow>\amp= [\alpha_0 + \alpha_1\text{Charter}_i + \beta_0\text{Year08}_{ij}
+             + \beta_1\text{Charter}_i\text{Year08}_{ij}]</mrow>
+        <mrow>\amp\quad + [u_i + v_i\text{Year08}_{ij} + \epsilon_{ij}]</mrow>
+      </md>
+
+      <p>
+        where <m>\epsilon_{ij} \sim N(0, \sigma^2)</m> and
+      </p>
+
+      <me>
+        \begin{bmatrix} u_i \\ v_i \end{bmatrix}
+        \sim N\!\left(
+          \begin{bmatrix} 0 \\ 0 \end{bmatrix},
+          \begin{bmatrix} \sigma_u^2 \\ \sigma_{uv} \amp \sigma_v^2 \end{bmatrix}
+        \right).
+      </me>
+
+      <p>
+        For School <m>i</m>, the covariance structure for the three time points has general form:
       </p>
 
       <me>
@@ -1545,7 +1607,45 @@ confint(model.f0, method = "boot", nsim = 1000, oldNames = FALSE)
       </me>
 
       <p>
-        Using results from probability theory, we can show that:
+        where, for instance, <m>\text{Var}(Y_{i1})</m> is the variability in 2008 test scores
+        (time <m>j=1</m>), <m>\text{Cov}(Y_{i1},Y_{i2})</m> is the covariance between 2008 and
+        2009 test scores (times <m>j=1</m> and <m>j=2</m>), etc. Since covariance measures the
+        tendency of two variables to move together, we expect positive values for all three
+        covariance terms in <m>\text{Cov}(\mathbf{Y}_i)</m>, since schools with relatively high
+        test scores in 2008 are likely to also have relatively high test scores in 2009 or 2010.
+        The correlation between two variables then scales covariance terms to values between
+        <m>-1</m> and <m>1</m>, so by the same rationale, we expect correlation coefficients
+        between two years to be near 1. If observations within school were independent — that is,
+        knowing a school had relatively high scores in 2008 tells nothing about whether that school
+        will have relatively high scores in 2009 or 2010 — then we would expect covariance and
+        correlation values near 0.
+      </p>
+
+      <p>
+        It is important to notice that the error structure at Level Two is <em>not</em> the same
+        as the within-school covariance structure among observations. That is, the relationship
+        between <m>u_i</m> and <m>v_i</m> from the Level Two equations is not the same as the
+        relationship between test scores from different years at the same school (e.g., the
+        relationship between <m>Y_{i1}</m> and <m>Y_{i2}</m>). In other words,
+      </p>
+
+      <me>
+        \text{Cov}(\mathbf{Y}_i) \neq
+        \begin{bmatrix} u_i \\ v_i \end{bmatrix}
+        \sim N\!\left(
+          \begin{bmatrix} 0 \\ 0 \end{bmatrix},
+          \begin{bmatrix} \sigma_u^2 \\ \sigma_{uv} \amp \sigma_v^2 \end{bmatrix}
+        \right).
+      </me>
+
+      <p>
+        Yet, the error structure and the covariance structure <em>are</em> connected to each
+        other, as we will now explore.
+      </p>
+
+      <p>
+        Using results from probability theory (see <xref ref="sec-lon-opt-cov"/>), we can show
+        that:
       </p>
 
       <md>
@@ -1554,19 +1654,56 @@ confint(model.f0, method = "boot", nsim = 1000, oldNames = FALSE)
       </md>
 
       <p>
-        It is important to notice that the error structure at Level Two is <em>not</em> the same
-        as the within-school covariance structure among observations. The Level Two errors
-        (<m>u_i, v_i</m>) represent school-level deviations, whereas the within-school covariance
-        structure captures how observations from the same school are related to each other,
-        incorporating both the Level Two and Level One random effects.
+        for all <m>i</m>, where our time variable (<c>year08</c>) has values <m>t_{i1} = 0</m>,
+        <m>t_{i2} = 1</m>, and <m>t_{i3} = 2</m> for every School <m>i</m>. Intuitively, these
+        formulas are sensible. For instance, <m>\text{Var}(Y_{i1})</m>, the uncertainty
+        (variability) around a school's score in 2008, increases as the uncertainty in intercepts
+        and slopes increases, as the uncertainty around that school's linear time trend increases,
+        and as the covariance between intercept and slope residuals increases (since if one is off,
+        the other one is likely off as well). Also, <m>\text{Cov}(Y_{i1},Y_{i2})</m>, the
+        covariance between 2008 and 2009 scores, does not depend on Level One error. Thus, in the
+        3-by-3 within-school covariance structure of the charter schools case study, our standard
+        two-level model determines all 6 covariance matrix elements through the estimation of four
+        parameters (<m>\sigma_u^2, \sigma_{uv}, \sigma_v^2, \sigma^2</m>) and the imposition of a
+        specific structure related to time.
       </p>
 
       <p>
-        where our time variable (<c>year08</c>) has values <m>t_{i1} = 0</m>, <m>t_{i2} = 1</m>,
-        and <m>t_{i3} = 2</m> for every School <m>i</m>. Using estimated variance components from
-        Model C (<m>\hat{\sigma}^2 = 8.784</m>, <m>\hat{\sigma}^2_u = 35.832</m>,
-        <m>\hat{\sigma}^2_v = 0.131</m>, <m>\hat{\sigma}_{uv} = 1.907</m>), our two-level model
-        implicitly imposes this estimated covariance structure:
+        To obtain estimated variances for individual observations and covariances between two time
+        points from the same school, we can simply plug estimated variance components from our
+        two-level model along with time points from our data collection into the equations above.
+        For instance, in <xref ref="sec-lon-model-c"/>, we obtained the following estimates of
+        variance components: <m>\hat{\sigma}^2 = 8.784</m>, <m>\hat{\sigma}^2_u = 35.832</m>,
+        <m>\hat{\sigma}^2_v = 0.131</m>, and
+        <m>\hat{\sigma}_{uv} = \hat{\rho}\hat{\sigma}_u\hat{\sigma}_v = 1.907</m>. Therefore,
+        our estimated within-school variances for the three time points would be:
+      </p>
+
+      <md>
+        <mrow>\hat{\text{Var}}(Y_{i1}) \amp= 35.832 + 0^2(0.131) + 8.784 + 2(0)(1.907) = 44.62</mrow>
+        <mrow>\hat{\text{Var}}(Y_{i2}) \amp= 35.832 + 1^2(0.131) + 8.784 + 2(1)(1.907) = 48.56</mrow>
+        <mrow>\hat{\text{Var}}(Y_{i3}) \amp= 35.832 + 2^2(0.131) + 8.784 + 2(2)(1.907) = 52.77</mrow>
+      </md>
+
+      <p>
+        and our estimated within-school covariances between different time points would be:
+      </p>
+
+      <md>
+        <mrow>\hat{\text{Cov}}(Y_{i1},Y_{i2}) \amp= 35.832 + (0)(1)(0.131) + (0+1)(1.907) = 37.74</mrow>
+        <mrow>\hat{\text{Cov}}(Y_{i1},Y_{i3}) \amp= 35.832 + (0)(2)(0.131) + (0+2)(1.907) = 39.65</mrow>
+        <mrow>\hat{\text{Cov}}(Y_{i2},Y_{i3}) \amp= 35.832 + (1)(2)(0.131) + (1+2)(1.907) = 41.81</mrow>
+      </md>
+
+      <p>
+        In fact, these values will be identical for every School <m>i</m>, since scores were
+        assessed at the same three time points. Thus, we will drop the subscript <m>i</m> moving
+        forward.
+      </p>
+
+      <p>
+        Written in matrix form, our two-level model implicitly imposes this estimated covariance
+        structure on within-school observations for any specific School <m>i</m>:
       </p>
 
       <me>
@@ -1579,7 +1716,9 @@ confint(model.f0, method = "boot", nsim = 1000, oldNames = FALSE)
       </me>
 
       <p>
-        This can be converted into an estimated within-school correlation matrix:
+        and this estimated covariance matrix can be converted into an estimated within-school
+        correlation matrix using the identity
+        <m>\text{Corr}(Y_1, Y_2) = \frac{\text{Cov}(Y_1, Y_2)}{\sqrt{\text{Var}(Y_1)\text{Var}(Y_2)}}</m>:
       </p>
 
       <me>
@@ -1592,27 +1731,33 @@ confint(model.f0, method = "boot", nsim = 1000, oldNames = FALSE)
       </me>
 
       <p>
-        Note that correlation between test scores separated by two years (0.817) is approximately
-        the same as the correlation between test scores separated by a single year (0.811 and
-        0.826), and the variability in 2010 (52.77) is about 18% greater than the variability
-        in 2008 (44.62).
-      </p>
-
-      <p>
-        Some key features of the estimated covariance and correlation matrices are worth noting:
+        A couple of features of these two matrices can be highlighted that offer insights into
+        implications of our standard two-level model on the covariance structure among
+        observations at Level One from the same school:
       </p>
 
       <ul>
-        <li><p>Correlation is consistent (approximately 0.81–0.83) between all pairs of time
-        points, regardless of whether the measurements are one or two years apart.</p></li>
-        <li><p>Variability in 2010 test scores (<m>\hat{\sigma}^2_{Y_3} = 52.77</m>) is
-        approximately 18% greater than the variability in 2008
-        (<m>\hat{\sigma}^2_{Y_1} = 44.62</m>).</p></li>
-        <li><p>There is a quadratic (non-monotone) structure in the variance over time: variance
-        increases from 2008 to 2010, but the middle year (2009) has variance between the two
-        endpoint years.</p></li>
-        <li><p>The standard covariance structure does not require evenly spaced time points —
-        it only requires that the time values be specified correctly in the model.</p></li>
+        <li><p>Many longitudinal data sets show higher correlation for observations that are
+        closer in time. In this case, we see that correlation is very consistent between all
+        pairs of observations from the same school; the correlation between test scores separated
+        by two years (.817) is approximately the same as the correlation between test scores
+        separated by a single year (.811 for 2008 and 2009 scores; .826 for 2009 and 2010
+        scores).</p></li>
+        <li><p>Many longitudinal data sets show similar variability at all time points. In this
+        case, the variability in 2010 (52.77) is about 18% greater than the variability in 2008
+        (44.62), while the variability in 2009 is in between (48.56).</p></li>
+        <li><p>Our two-level model actually imposes a quadratic structure on the relationship
+        between variance and time; note that the equation for <m>\text{Var}(Y_j)</m> contains
+        both <m>t_j^2</m> and <m>t_j</m>. The variance is therefore minimized at
+        <m>t = \frac{-\sigma_{uv}}{\sigma_v^2}</m>. With the charter school data, the variance in
+        test scores is minimized when <m>t = \frac{-\sigma_{uv}}{\sigma_v^2} = \frac{-1.907}{0.131} = -14.6</m>;
+        that is, the smallest within-school variance in test scores is expected 14.6 years prior
+        to 2008 (i.e., about 1994), and the variance increases parabolically from there. In
+        general, cases in which <m>\sigma_v^2</m> and <m>\sigma_{uv}</m> are relatively small
+        have little curvature and fairly consistent variability over time.</p></li>
+        <li><p>There is no requirement that time points within school need to be evenly spaced or
+        even that each school has an equal number of measurements over time, which makes the
+        two-level model structure nicely flexible.</p></li>
       </ul>
     </subsection>
 
@@ -1620,110 +1765,101 @@ confint(model.f0, method = "boot", nsim = 1000, oldNames = FALSE)
       <title>Alternative Covariance Structures</title>
 
       <p>
-        The standard covariance structure derived from a two-level multilevel model is useful in
-        many situations and has the advantage of being directly interpretable in terms of the
-        model's variance components. However, in some settings — particularly with many time
-        points or when the correlation structure among observations is more complex — alternative
-        covariance structures may be worth considering.
-      </p>
-
-      <p>
-        Here is an outline of a few alternative error structures:
+        The standard covariance structure that's implied by our multilevel modeling structure
+        provides a useful model in a wide variety of situations — it provides a reasonable model
+        for Level One variability with a relatively small number of parameters, and it has
+        sufficient flexibility to accommodate irregular time intervals as well as subjects with a
+        different number of observations over time. However, there may be cases in which a better
+        fitting model requires additional parameters, or when a simpler model with fewer parameters
+        still provides a good fit to the data. Here is an outline of a few alternative error
+        structures:
       </p>
 
       <ul>
         <li><p><em>Unstructured</em> — Every variance and covariance term for observations within
-        a school is a separate parameter and is therefore estimated uniquely. This structure
-        offers maximum flexibility but is most costly in terms of parameters estimated.</p></li>
+        a school is a separate parameter and is therefore estimated uniquely; no patterns among
+        variances or correlations are assumed. This structure offers maximum flexibility but is
+        most costly in terms of parameters estimated.</p></li>
         <li><p><em>Compound symmetry</em> — Assume variance is constant across all time points
         and correlation is constant across all pairs of time points. This structure is highly
         restrictive but least costly in terms of parameters estimated.</p></li>
         <li><p><em>Autoregressive</em> — Assume variance is constant across all time points, but
-        correlation drops off in a systematic fashion as the gap in time increases.</p></li>
+        correlation drops off in a systematic fashion as the gap in time increases. Autoregressive
+        models expand compound symmetry by allowing for a common structure where points closest
+        in time are most highly correlated.</p></li>
         <li><p><em>Toeplitz</em> — Similar to the autoregressive model, except that it does not
         impose any structure on the decline in correlation as time gaps increase. Thus, it
-        requires more parameters to be estimated than the autoregressive model.</p></li>
+        requires more parameters to be estimated than the autoregressive model while providing
+        additional flexibility.</p></li>
         <li><p><em>Heterogeneous variances</em> — The assumption that variances are equal across
-        time points can be relaxed by introducing additional parameters to allow unequal
-        (heterogeneous) variances.</p></li>
+        time points found in the compound symmetry, autoregressive, and Toeplitz models can be
+        relaxed by introducing additional parameters to allow unequal (heterogeneous)
+        variances.</p></li>
       </ul>
 
       <p>
-        Models with the same fixed effects but different covariance structures can be compared with
-        AIC and BIC measures when models are not nested and with likelihood ratio tests when models
-        are nested. However, using a chi-square distribution to conduct a likelihood ratio test for
-        random effects can produce a conservative test with p-values that are too large
-        (<xref ref="Bryk2002"/>; <xref ref="Singer2003"/>; <xref ref="Faraway2005"/>). In the
-        charter school example, the choice of covariance matrix does not greatly affect estimates
-        of fixed effects.
+        When the focus of an analysis is on stochastic parameters (variance components) rather
+        than fixed effects, parameter estimates are typically based on restricted maximum
+        likelihood (<term>REML</term><idx><h>REML</h></idx>) methods; model performance
+        statistics then reflect only the stochastic portion of the model. Models with the same
+        fixed effects but different covariance structures can be compared as usual — with AIC and
+        BIC measures when models are not nested and with likelihood ratio tests when models are
+        nested. However, using a chi-square distribution to conduct a likelihood ratio test in
+        these cases can often produce a conservative test, with p-values that are too large and
+        not rejected enough (<xref ref="Bryk2002"/>; <xref ref="Singer2003"/>;
+        <xref ref="Faraway2005"/>). In <xref ref="sec-lon-paraboot"/>, we introduced the
+        parametric bootstrap as a potentially better way of testing models nested in their random
+        effects.
       </p>
-
-      <p>
-        Note that when comparing models that differ only in their covariance structure (with the
-        same fixed effects), the models should be fit using <term>REML</term>
-        <idx><h>REML</h></idx> (restricted maximum likelihood) rather than full maximum likelihood.
-        REML estimates of variance components are generally less biased than full ML estimates, and
-        comparisons of covariance structures should use REML-based likelihood values.
-      </p>
-    </subsection>
-
-    <subsection xml:id="sec-lon-opt-cov" xml:base="">
-      <title>Details of Covariance Structures (optional)</title>
-
-      <p>
-        Using Model C, we can derive the covariance terms by applying probability theory results.
-        If <m>Y_1 = a_1 X_1 + a_2 X_2 + a_3</m> and <m>Y_2 = b_1 X_1 + b_2 X_2 + b_3</m> where
-        <m>X_1</m> and <m>X_2</m> are random variables and <m>a_i</m> and <m>b_i</m> are
-        constants, then:
-      </p>
-
-      <md>
-        <mrow>\text{Var}(Y_1) \amp= a_1^2 \text{Var}(X_1) + a_2^2 \text{Var}(X_2) + 2a_1 a_2 \text{Cov}(X_1, X_2)</mrow>
-        <mrow>\text{Cov}(Y_1, Y_2) \amp= a_1 b_1 \text{Var}(X_1) + a_2 b_2 \text{Var}(X_2) + (a_1 b_2 + a_2 b_1) \text{Cov}(X_1, X_2)</mrow>
-      </md>
-
-      <p>
-        Applying these identities to Model C, we ignore all fixed effects since they do not
-        contribute to the variability:
-      </p>
-
-      <md>
-        <mrow>\text{Var}(Y_{ij}) \amp= \text{Var}(u_i + v_i\;\text{Year08}_{ij} + \epsilon_{ij})</mrow>
-        <mrow> \amp= \sigma_u^2 + t_j^2 \sigma_v^2 + \sigma^2 + 2t_j \sigma_{uv}</mrow>
-      </md>
-
-      <md>
-        <mrow>\text{Cov}(Y_{ij}, Y_{ik}) \amp= \text{Cov}(u_i + v_i\;\text{Year08}_{ij} + \epsilon_{ij},\; u_i + v_i\;\text{Year08}_{ik} + \epsilon_{ik})</mrow>
-        <mrow> \amp= \sigma_u^2 + t_j t_k \sigma_v^2 + (t_j + t_k) \sigma_{uv}</mrow>
-      </md>
     </subsection>
 
     <subsection xml:id="sec-lon-nonlongitudinal">
       <title>Non-longitudinal Multilevel Models</title>
 
       <p>
-        The covariance structure described above also applies to non-longitudinal multilevel
-        models. For example, in a two-level model for students within schools where there is
-        only one observation per student per school, the within-school covariance structure
-        depends on the Level Two random effects only. Consider the Music Performance Anxiety
-        case study from <xref ref="ch-multilevelintro"/>, where performance anxiety scores
-        are modeled for musicians across multiple performance settings. In that model, the Level
-        One predictor is Large (an indicator for large ensembles), so the within-subject
-        covariance between two observations <m>j</m> and <m>k</m> for subject <m>i</m> is:
+        Careful modeling and estimation of the Level One covariance matrix is especially important
+        and valuable for longitudinal data (with time at Level One) and as we've seen, our
+        standard two-level model has several nice properties for this purpose. The standard model
+        is also often appropriate for non-longitudinal multilevel models as discussed in
+        <xref ref="ch-multilevelintro"/>, although we must remain aware of the covariance
+        structure implicitly imposed. In other words, the ideas in this section generalize even if
+        time isn't a Level One covariate.
       </p>
 
-      <me>
-        \text{Var}(Y_{ij}) = \sigma_u^2 + L_j^2 \sigma_v^2 + \sigma^2 + 2L_j \sigma_{uv}
-      </me>
+      <p>
+        As an example, in the Music Performance Anxiety case study from
+        <xref ref="ch-multilevelintro"/> where Level One observational units are musical
+        performances rather than time points, the standard model implies the following covariance
+        structure for Musician <m>i</m> in Model C, which uses an indicator for large ensembles
+        as a Level One predictor:
+      </p>
 
-      <me>
-        \text{Cov}(Y_{ij}, Y_{ik}) = \sigma_u^2 + L_j L_k \sigma_v^2 + (L_j + L_k) \sigma_{uv}
-      </me>
+      <md>
+        <mrow>\text{Var}(Y_{ij}) \amp= \sigma_u^2 + \text{Large}_{ij}^2 \sigma_v^2 + \sigma^2 + 2\text{Large}_{ij} \sigma_{uv}</mrow>
+        <mrow>\amp= \begin{cases}
+          \sigma^2 + \sigma_u^2 \amp \text{if } \text{Large}_{ij} = 0 \\
+          \sigma^2 + \sigma_u^2 + \sigma_v^2 + 2\sigma_{uv} \amp \text{if } \text{Large}_{ij} = 1
+        \end{cases}</mrow>
+      </md>
 
       <p>
-        where <m>L_j</m> and <m>L_k</m> are the values of Large for observations <m>j</m> and
-        <m>k</m>. Just as with longitudinal models, these covariance expressions reflect the
-        shared random effects at the subject level.
+        and
+      </p>
+
+      <md>
+        <mrow>\text{Cov}(Y_{ij},Y_{ik}) \amp= \sigma_u^2 + \text{Large}_{ij}\text{Large}_{ik} \sigma_v^2 + (\text{Large}_{ij} + \text{Large}_{ik}) \sigma_{uv}</mrow>
+        <mrow>\amp= \begin{cases}
+          \sigma_u^2 \amp \text{if } \text{Large}_{ij} = \text{Large}_{ik} = 0 \\
+          \sigma_u^2 + \sigma_{uv} \amp \text{if } \text{Large}_{ij} = 0, \text{Large}_{ik} = 1 \text{ or vice versa} \\
+          \sigma_u^2 + \sigma_v^2 + 2\sigma_{uv} \amp \text{if } \text{Large}_{ij} = \text{Large}_{ik} = 1
+        \end{cases}</mrow>
+      </md>
+
+      <p>
+        Note that, in the Music Performance Anxiety case study, each subject will have a unique
+        Level One variance-covariance structure, since each subject has a different number of
+        performances and a different mix of large ensemble and small ensemble or solo
+        performances.
       </p>
     </subsection>
 
@@ -1745,6 +1881,89 @@ confint(model.f0, method = "boot", nsim = 1000, oldNames = FALSE)
         interested in drawing conclusions about particular schools rather than charter schools in
         general, they may more carefully model the covariance structure in this study.
       </p>
+    </subsection>
+
+    <subsection xml:id="sec-lon-opt-cov" xml:base="">
+      <title>Details of Covariance Structures (optional)</title>
+
+      <p>
+        Using Model C as specified in <xref ref="sec-lon-standard-cov"/>, we specified the
+        general covariance structure for School <m>i</m> as:
+      </p>
+
+      <me>
+        \text{Cov}(\mathbf{Y}_i) =
+        \begin{bmatrix}
+          \text{Var}(Y_{i1}) \amp \text{Cov}(Y_{i1},Y_{i2}) \amp \text{Cov}(Y_{i1},Y_{i3}) \\
+          \text{Cov}(Y_{i1},Y_{i2}) \amp \text{Var}(Y_{i2}) \amp \text{Cov}(Y_{i2},Y_{i3}) \\
+          \text{Cov}(Y_{i1},Y_{i3}) \amp \text{Cov}(Y_{i2},Y_{i3}) \amp \text{Var}(Y_{i3})
+        \end{bmatrix}
+      </me>
+
+      <p>
+        If <m>Y_1 = a_1 X_1 + a_2 X_2 + a_3</m> and <m>Y_2 = b_1 X_1 + b_2 X_2 + b_3</m> where
+        <m>X_1</m> and <m>X_2</m> are random variables and <m>a_i</m> and <m>b_i</m> are
+        constants for <m>i=1,2,3</m>, then we know from probability theory that:
+      </p>
+
+      <md>
+        <mrow>\text{Var}(Y_1) \amp= a_1^2 \text{Var}(X_1) + a_2^2 \text{Var}(X_2) + 2a_1 a_2 \text{Cov}(X_1, X_2)</mrow>
+        <mrow>\text{Cov}(Y_1, Y_2) \amp= a_1 b_1 \text{Var}(X_1) + a_2 b_2 \text{Var}(X_2) + (a_1 b_2 + a_2 b_1) \text{Cov}(X_1, X_2)</mrow>
+      </md>
+
+      <p>
+        Applying these identities to Model C, we first see that we can ignore all fixed effects,
+        since they do not contribute to the variability. Thus,
+      </p>
+
+      <md>
+        <mrow>\text{Var}(Y_{ij}) \amp= \text{Var}(u_i + v_i\;\text{Year08}_{ij} + \epsilon_{ij})</mrow>
+        <mrow>\amp= \text{Var}(u_i) + \text{Year08}_{ij}^2 \text{Var}(v_i) + \text{Var}(\epsilon_{ij}) + 2\text{Year08}_{ij} \text{Cov}(u_i, v_i)</mrow>
+        <mrow>\amp= \sigma_u^2 + \text{Year08}_{ij}^2 \sigma_v^2 + \sigma^2 + 2\text{Year08}_{ij}\sigma_{uv}</mrow>
+        <mrow>\amp= \sigma_u^2 + t_j^2 \sigma_v^2 + \sigma^2 + 2t_j \sigma_{uv}</mrow>
+      </md>
+
+      <p>
+        where the last line reflects the fact that observations were taken at the same time points
+        for all schools. We can derive the covariance terms in a similar fashion:
+      </p>
+
+      <md>
+        <mrow>\text{Cov}(Y_{ij}, Y_{ik}) \amp= \text{Cov}(u_i + v_i\;\text{Year08}_{ij} + \epsilon_{ij},\; u_i + v_i\;\text{Year08}_{ik} + \epsilon_{ik})</mrow>
+        <mrow>\amp= \text{Var}(u_i) + \text{Year08}_{ij}\text{Year08}_{ik} \text{Var}(v_i) + (\text{Year08}_{ij} + \text{Year08}_{ik}) \text{Cov}(u_i, v_i)</mrow>
+        <mrow>\amp= \sigma_u^2 + t_j t_k \sigma_v^2 + (t_j + t_k) \sigma_{uv}</mrow>
+      </md>
+
+      <p>
+        In Model C, we obtained the following estimates of variance components:
+        <m>\hat{\sigma}^2 = 8.784</m>, <m>\hat{\sigma}^2_u = 35.832</m>,
+        <m>\hat{\sigma}^2_v = 0.131</m>, and
+        <m>\hat{\sigma}_{uv} = \hat{\rho}\hat{\sigma}_u\hat{\sigma}_v = 1.907</m>. Therefore,
+        our two-level model implicitly imposes this covariance structure on within-subject
+        observations:
+      </p>
+
+      <me>
+        \text{Cov}(\mathbf{Y}_i) =
+        \begin{bmatrix}
+          44.62 \amp \amp \\
+          37.74 \amp 48.56 \amp \\
+          39.65 \amp 41.81 \amp 52.77
+        \end{bmatrix}
+      </me>
+
+      <p>
+        and this covariance matrix can be converted into a within-subject correlation matrix:
+      </p>
+
+      <me>
+        \text{Corr}(\mathbf{Y}_i) =
+        \begin{bmatrix}
+          1 \amp \amp \\
+          .811 \amp 1 \amp \\
+          .817 \amp .826 \amp 1
+        \end{bmatrix}
+      </me>
     </subsection>
   </section>
 
