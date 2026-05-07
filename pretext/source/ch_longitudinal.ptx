@@ -750,9 +750,9 @@ model.a &lt;- lmer(MathAvgScore ~ 1 + (1|schoolid),
         <li><p><m>\hat{\alpha}_0 = 652.7</m> = the mean math score across all schools and all
         years</p></li>
         <li><p><m>\hat{\sigma}^2 = 10.6</m> = the variance in within-school deviations between
-        individual yearly scores and the school mean</p></li>
+        individual yearly scores and the school mean across all years</p></li>
         <li><p><m>\hat{\sigma}^2_u = 41.9</m> = the variance in between-school deviations between
-        school means and the overall mean</p></li>
+        school means and the overall mean across all schools and all years</p></li>
       </ul>
 
       <p>
@@ -927,13 +927,13 @@ model.b &lt;- lmer(MathAvgScore ~ year08 + (year08|schoolid),
       <ul>
         <li><p><m>\hat{\alpha}_0 = 651.4</m> = the mean math score for the population of schools
         in 2008.</p></li>
-        <li><p><m>\hat{\beta}_0 = 1.26</m> = the mean yearly change in math test scores during
-        the three-year observation period.</p></li>
+        <li><p><m>\hat{\beta}_0 = 1.26</m> = the mean yearly change in math test scores for the
+        population during the three-year observation period.</p></li>
         <li><p><m>\hat{\sigma}^2 = 8.82</m> = the variance in within-school deviations.</p></li>
         <li><p><m>\hat{\sigma}^2_u = 39.4</m> = the variance between schools in 2008 scores.
         </p></li>
         <li><p><m>\hat{\sigma}^2_v = 0.11</m> = the variance between schools in rates of change
-        in math test scores.</p></li>
+        in math test scores during the three-year observation period.</p></li>
         <li><p><m>\hat{\rho}_{uv} = 0.72</m> = the correlation in schools' 2008 math score and
         their rate of change in scores between 2008 and 2010.</p></li>
       </ul>
@@ -962,21 +962,69 @@ model.b &lt;- lmer(MathAvgScore ~ year08 + (year08|schoolid),
       <title>Modeling Other Trends over Time</title>
 
       <p>
-        While modeling linear trends over time is often a good approximation, it is by no means
-        the only way to model the effect of time. One alternative is to model the quadratic effect
-        of time, adding terms for both time and the square of time. Modifying Model B to produce
-        an <term>unconditional quadratic growth model</term> would take the following Level One
-        form:
+        While modeling linear trends over time is often a good approximation of reality, it is by
+        no means the only way to model the effect of time. One alternative is to model the
+        quadratic effect of time, which implies adding terms for both time and the square of time.
+        Typically, to reduce the correlation between the linear and quadratic components of the
+        time effect, the time variable is often centered first; we have already "centered" on
+        2008. Modifying Model B to produce an <term>unconditional quadratic growth model</term>
+        would take the following form:
       </p>
 
-      <me>
-        Y_{ij} = a_i + b_i\;\text{Year08}_{ij} + c_i\;\text{Year08}^2_{ij} + \epsilon_{ij}
-      </me>
+      <ul>
+        <li>
+          <p>Level One:</p>
+          <me>
+            Y_{ij}=a_{i}+b_{i}\textrm{Year08}_{ij}+c_{i}\textrm{Year08}^{2}_{ij} + \epsilon_{ij}
+          </me>
+        </li>
+        <li>
+          <p>Level Two:</p>
+          <md>
+            <mrow>a_{i} \amp = \alpha_{0} + u_{i}</mrow>
+            <mrow>b_{i} \amp = \beta_{0} + v_{i}</mrow>
+            <mrow>c_{i} \amp = \gamma_{0} + w_{i}</mrow>
+          </md>
+          <p>where <m>\epsilon_{ij}\sim N(0,\sigma^2)</m> and</p>
+          <me>
+            \left[ \begin{array}{c}
+                        u_{i} \\ v_{i} \\ w_{i}
+                      \end{array}  \right] \sim N \left( \left[
+                      \begin{array}{c}
+                        0 \\ 0 \\ 0
+                      \end{array} \right], \left[
+                      \begin{array}{ccc}
+                        \sigma_{u}^{2} \amp \amp \\
+                        \sigma_{uv} \amp \sigma_{v}^{2} \amp \\
+                        \sigma_{uw} \amp \sigma_{vw} \amp \sigma_{w}^{2}
+                      \end{array} \right] \right) .
+          </me>
+        </li>
+      </ul>
 
       <p>
-        With only a maximum of 3 observations per school, we lack the data for fitting 3 equations
-        with error terms at Level Two. Instead, we can model the quadratic time effect with fewer
-        variance components by only using an error term on the intercept at Level Two:
+        With the extra term at Level One for the quadratic effect, we now have 3 equations at
+        Level Two, and 6 variance components at Level Two (3 variance terms and 3 covariance
+        terms). However, with only a maximum of 3 observations per school, we lack the data for
+        fitting 3 equations with error terms at Level Two. Instead, we could model the quadratic
+        time effect with fewer variance components---for instance, by only using an error term on
+        the intercept at Level Two:
+      </p>
+
+      <md>
+        <mrow>a_{i} \amp = \alpha_{0} + u_{i}</mrow>
+        <mrow>b_{i} \amp = \beta_{0}</mrow>
+        <mrow>c_{i} \amp = \gamma_{0}</mrow>
+      </md>
+
+      <p>
+        where <m>u_{i}\sim N(0,\sigma^2_u)</m>. Models like this are frequently used in
+        practice---they allow for a separate overall effect on test scores for each school, while
+        minimizing parameters that must be estimated. The tradeoff is that this model does not
+        allow linear and quadratic effects to differ by school, but we have little choice here
+        without more observations per school. Thus, using the composite model specification, the
+        unconditional quadratic growth model with random intercept for each school can be fit to
+        the MCA-II test data:
       </p>
 
       <program language="r" xml:id="code-model-b2">
@@ -1013,12 +1061,29 @@ model.b2 &lt;- lmer(MathAvgScore ~ yearc + yearc2 + (1|schoolid),
       </p>
 
       <p>
-        Another frequently used approach is the <term>piecewise linear model</term>, in which the
-        complete time span is divided into two or more segments with a separate slope in each
-        segment. With only 3 time points, the piecewise option fits separate slopes in 2008–09
-        and 2009–10. Despite the good performances of the quadratic growth and piecewise linear
-        models, we will continue to use linear growth assumptions in the remainder of this chapter
-        for ease of interpretation.
+        Another frequently used approach to modeling time effects is the
+        <term>piecewise linear model</term>. In this model, the complete time span of the study is
+        divided into two or more segments, with a separate slope relating time to the response in
+        each segment. In our case study there is only one piecewise option---fitting separate
+        slopes in 2008-09 and 2009-10. With only 3 time points, creating a piecewise linear model
+        is a bit simplified, but this idea can be generalized to segments with more than two years
+        each.
+      </p>
+
+      <p>
+        The performance of this model is very similar to the quadratic growth model by AIC and BIC
+        measures, and the story told by fixed effects estimates is also very similar. While the
+        mean yearly increase in math scores was 0.2 points between 2008 and 2009, it was 2.3
+        points between 2009 and 2010.
+      </p>
+
+      <p>
+        Despite the good performances of the quadratic growth and piecewise linear models on our
+        three-year window of data, we will continue to use linear growth assumptions in the
+        remainder of this chapter. Not only is a linear model easier to interpret and explain, but
+        it's probably a more reasonable assumption in years beyond 2010. Predicting future
+        performance is more risky by assuming a steep one-year rise or a non-linear rise will
+        continue, rather than by using the average increase over two years.
       </p>
     </subsection>
   </section>
@@ -1042,14 +1107,49 @@ model.b2 &lt;- lmer(MathAvgScore ~ yearc + yearc2 + (1|schoolid),
 
       <p>
         where <m>\text{Charter}_i = 1</m> if School <m>i</m> is a charter school, and
-        <m>\text{Charter}_i = 0</m> if School <m>i</m> is a non-charter public school. Writing
-        the Level Two model in this manner helps us interpret the model parameters. For public
-        non-charter schools (<m>\text{Charter}_i = 0</m>): <m>a_i = \alpha_0 + u_i</m> and
-        <m>b_i = \beta_0 + v_i</m>. For charter schools (<m>\text{Charter}_i = 1</m>):
-        <m>a_i = \alpha_0 + \alpha_1 + u_i</m> and <m>b_i = \beta_0 + \beta_1 + v_i</m>. Thus,
-        <m>\alpha_1</m> represents the difference in mean 2008 math scores between charter and
-        non-charter schools, while <m>\beta_1</m> represents the difference in mean yearly
-        improvement between charter and non-charter schools.
+        <m>\text{Charter}_i = 0</m> if School <m>i</m> is a non-charter public school. In
+        addition, the error terms at Level Two are assumed to follow a multivariate normal
+        distribution:
+      </p>
+
+      <me>
+        \left[ \begin{array}{c}
+                    u_{i} \\ v_{i}
+                  \end{array}  \right] \sim N \left( \left[
+                  \begin{array}{c}
+                    0 \\ 0
+                  \end{array} \right], \left[
+                  \begin{array}{cc}
+                    \sigma_{u}^{2} \amp \\
+                    \sigma_{uv} \amp \sigma_{v}^{2}
+                  \end{array} \right] \right) .
+      </me>
+
+      <p>
+        With a binary predictor at Level Two such as school type, we can write out what our Level
+        Two model looks like for public non-charter schools and charter schools.
+      </p>
+
+      <ul>
+        <li>
+          <p>Public schools</p>
+          <md>
+            <mrow>a_{i} \amp = \alpha_{0} + u_{i}</mrow>
+            <mrow>b_{i} \amp = \beta_{0} + v_{i},</mrow>
+          </md>
+        </li>
+        <li>
+          <p>Charter schools</p>
+          <md>
+            <mrow>a_{i} \amp = (\alpha_{0} + \alpha_{1}) + u_{i}</mrow>
+            <mrow>b_{i} \amp = (\beta_{0}+ \beta_{1}) + v_{i}</mrow>
+          </md>
+        </li>
+      </ul>
+
+      <p>
+        Writing the Level Two model in this manner helps us interpret the model parameters from
+        our two-level model.
       </p>
 
       <p>
@@ -1122,8 +1222,8 @@ model.c &lt;- lmer(MathAvgScore ~ charter + year08 +
         <li><p><m>\hat{\beta}_0 = 1.20.</m> Public non-charter schools have an estimated mean
         increase in test scores of 1.20 points per year.</p></li>
         <li><p><m>\hat{\beta}_1 = 0.86.</m> Charter schools have an estimated mean increase in
-        test scores of 2.06 points per year, 0.86 points higher than the mean yearly increase
-        among public non-charter schools.</p></li>
+        test scores of 2.06 points per year over the three-year observation period, 0.86 points
+        higher than the mean yearly increase among public non-charter schools.</p></li>
       </ul>
 
       <p><alert>Variance components:</alert></p>
@@ -1131,7 +1231,8 @@ model.c &lt;- lmer(MathAvgScore ~ charter + year08 +
         <li><p><m>\hat{\sigma}_u = 5.99.</m> The estimated standard deviation of 2008 test scores
         is 5.99 points, after controlling for school type.</p></li>
         <li><p><m>\hat{\sigma}_v = 0.36.</m> The estimated standard deviation of yearly changes
-        in test scores is 0.36 points, after controlling for school type.</p></li>
+        in test scores during the three-year observation period is 0.36 points, after controlling
+        for school type.</p></li>
         <li><p><m>\hat{\rho}_{uv} = 0.88.</m> The estimated correlation between 2008 test scores
         and yearly changes in test scores is 0.88, after controlling for school type.</p></li>
         <li><p><m>\hat{\sigma} = 2.96.</m> The estimated standard deviation in residuals for the
@@ -1293,9 +1394,7 @@ model.d2 7.158e-75
         We now begin iterating toward a "final model" for these data, on which we will base
         conclusions. Being cognizant of typical features of a "final model" as outlined in
         <xref ref="ch-multilevelintro"/>, we offer one possible final model for this data —
-        Model F. The two Level Two equations for the intercept and slope capture the combined
-        effects of school type, urban location, percent special education, and percent free and
-        reduced lunch on both 2008 test scores and rates of improvement over time:
+        Model F.
       </p>
 
       <p><alert>Level One:</alert></p>
@@ -1312,8 +1411,14 @@ model.d2 7.158e-75
       </md>
 
       <p>
-        By both AIC and BIC criteria, Model F is significantly better than Model D: AIC of 9885
-        vs. 9988, and BIC of 9956 vs. 10043.
+        where we find the effect of charter schools on 2008 test scores after adjusting for urban
+        or rural location, percentage of special education students, and percentage of students
+        that receive free or reduced lunch, and the effect of charter schools on yearly change
+        between 2008 and 2010 after adjusting for urban or rural location and percentage of
+        special education students. We can use AIC and BIC criteria to compare Model F with Model
+        D, since the two models are not nested. By both criteria, Model F is significantly better
+        than Model D: AIC of 9885 vs. 9988, and BIC of 9956 vs. 10043. Based on the R output
+        below, we offer interpretations for estimates of model fixed effects:
       </p>
 
       <program language="r" xml:id="code-model-f2">
@@ -1511,12 +1616,14 @@ model.f2   13 9857 9928  -4916 9831 0.3376  2 0.8447
       </figure>
 
       <p>
-        To illustrate the bootstrap process for our data, consider Rippleside Elementary School
-        (<xref ref="tab-rippleside9"/>), which has complete data for all three years.
+        Let's see how new test scores are generated under the parametric bootstrap. Consider, for
+        instance, <m>i=1</m> and <m>j=1,2,3</m>; that is, consider test scores for School #1
+        (Rippleside Elementary) across all three years (2008, 2009, and 2010).
+        <xref ref="tab-rippleside9"/> shows the original data for Rippleside Elementary.
       </p>
 
       <table xml:id="tab-rippleside9">
-        <title>Data for Rippleside Elementary School.</title>
+        <title>Original data for Rippleside Elementary (School 1).</title>
         <tabular>
           <row header="yes" bottom="medium">
             <cell>schoolName</cell><cell>urban</cell><cell>charter</cell>
@@ -1528,11 +1635,6 @@ model.f2   13 9857 9928  -4916 9831 0.3376  2 0.8447
           <row><cell>RIPPLESIDE ELEMENTARY</cell><cell>0</cell><cell>0</cell><cell>0.1176</cell><cell>0.3627</cell><cell>2</cell><cell>652.6</cell></row>
         </tabular>
       </table>
-
-      <p>
-        Using parameter estimates from Model F0, a new set of math scores for Rippleside would
-        be generated as follows.
-      </p>
 
       <p><alert>Level Two:</alert> One way to see the data generation process under the null
       model (Model F0) is to start with Level Two and work backwards to Level One. Recall that
@@ -1546,27 +1648,44 @@ model.f2   13 9857 9928  -4916 9831 0.3376  2 0.8447
           + \beta_3\text{schpctsped}_i</mrow>
       </md>
       <p>
-        All the <m>\alpha</m> and <m>\beta</m> terms will be fixed at their estimated values,
-        so the one term that will change for each bootstrapped data set is <m>u_i</m>. According
-        to Model F0, each <m>u_i</m> is sampled from a normal distribution with mean 0 and
-        standard deviation 4.18; say, for instance, <m>u_1 = -5.92</m>. Then we can produce a
-        model-based intercept and slope for School #1 (Rippleside):
+        All the <m>\alpha</m> and <m>\beta</m> terms will be fixed at their estimated values, so
+        the one term that will change for each bootstrapped data set is <m>u_i</m>. As we obtain
+        a numeric value for <m>u_i</m> for each school, we will fix the subscript. For example,
+        if <m>u_i</m> is set to -5.92 for School #1, then we would denote this by
+        <m>u_1=-5.92</m>. Similarly, in the context of Model F0, <m>a_1</m> represents the 2008
+        math test score for School #1, where <m>u_1</m> quantifies how School #1's 2008 score
+        differs from the average 2008 score across all schools with the same attributes: charter
+        status, urban or rural location, percent of special education students, and percent of
+        free and reduced lunch students.
+      </p>
+
+      <p>
+        According to Model F0, each <m>u_i</m> is sampled from a normal distribution with mean 0
+        and standard deviation 4.18. That is, a random component to the intercept for School #1
+        (<m>u_1</m>) would be sampled from a normal distribution with mean 0 and SD 4.18; say,
+        for instance, <m>u_1=-5.92</m>. We would sample <m>u_2,...,u_{618}</m> in a similar
+        manner for all 618 schools. Then we can produce a model-based intercept and slope for
+        School #1:
       </p>
       <md>
         <mrow>a_1 \amp= 661.03 - 3.22(0) - 1.12(0) - 0.12(11.8) - 0.15(36.3) - 5.92 = 648.2</mrow>
         <mrow>b_1 \amp= 2.14 + 1.03(0) - 0.52(0) - 0.046(11.8) = 1.60</mrow>
       </md>
       <p>
-        Notice a couple of features. First, all coefficients come from the estimated fixed
-        effects from Model F0. Second, <q>public non-charter</q> is the reference level for
-        <c>charter</c> and <q>rural</q> is the reference level for <c>urban</c>, so both are 0
-        for Rippleside. Third, the mean intercept for schools like Rippleside (rural,
-        non-charter, 11.8% special education, 36.3% free/reduced lunch) is
-        <m>661.03 - 0.12(11.8) - 0.15(36.3) = 654.2</m>. The mean yearly improvement for such
-        schools is 1.60 points per year <m>(2.14 - 0.046 \times 11.8)</m>. School #1 (Rippleside)
-        has a 2008 score that is 5.92 points below the mean for all similar schools, but every
-        such school is assumed to have the same improvement rate of 1.60 points per year because
-        there is no school-to-school variability in slope (i.e., <m>v_i = 0</m>).
+        Notice a couple of features of the above derivations. First, all of the coefficients from
+        the above equations (<m>\alpha_{0}=661.03</m>, <m>\alpha_{1}=-3.22</m>, etc.) come from
+        the estimated fixed effects from Model F0. Second, <q>public non-charter</q> is the
+        reference level for <c>charter</c> and <q>rural</q> is the reference level for
+        <c>urban</c>, so both of those predictors are 0 for Rippleside Elementary. Third, the
+        mean intercept (2008 test scores) for schools like Rippleside that are rural and public
+        non-charter, with 11.8% special education students and 36.3% free and reduced lunch
+        students, is <m>661.03 - 0.12(11.8) - 0.15(36.3) = 654.2</m>. The mean yearly improvement
+        in test scores for rural, public non-charter schools with 11.8% special education
+        students is then 1.60 points per year <m>(2.14 - 0.046 \times 11.8)</m>. School #1
+        (Rippleside) therefore has a 2008 test score that is 5.92 points below the mean for all
+        similar schools, but every such school is assumed to have the same improvement rate in
+        test scores of 1.60 points per year because of our assumption that there is no
+        school-to-school variability in yearly rate of change (i.e., <m>v_i = 0</m>).
       </p>
 
       <p><alert>Level One:</alert> We next proceed to Level One, where the scores from Rippleside
@@ -2534,8 +2653,8 @@ model.f2ml  0.6367
             <li><p>Perform a quick EDA. What can you say about the shape of <c>alcuse</c>, and the relationship between <c>alcuse</c> and <c>coa</c>, <c>male</c>, and <c>peer</c>? Appeal to plots and summary statistics in making your statements.</p></li>
             <li><p>Generate a plot as in <xref ref="fig-lon-lat1"/> with alcohol use over time for all 82 subjects. Comment.</p></li>
             <li><p>Generate three spaghetti plots with loess fits similar to <xref ref="fig-lon-spag3"/> (one for <c>coa</c>, one for <c>male</c>, and one after creating a binary variable from <c>peer</c>). Comment on what you can conclude from each plot.</p></li>
-            <li><p>Fit a linear trend to the data from each of the 82 subjects using <c>age</c> as the time variable. Generate histograms as in <xref ref="fig-lon-histmat1"/> showing the results of these 82 linear regression lines, and generate pairs of boxplots as in <xref ref="fig-lon-box2"/> for <c>coa</c> and <c>male</c>. No commentary necessary.</p></li>
-            <li><p>Repeat (e) using centered age (<c>age14 = age - 14</c>) as the time variable. Also generate a pair of scatterplots as in <xref ref="fig-lon-boxcatmat1"/> for peer alcohol use. Comment on trends you observe in these plots.</p></li>
+            <li><p>Fit a linear trend to the data from each of the 82 subjects using <c>age</c> as the time variable. Generate histograms as in <xref ref="fig-lon-histmat1"/> showing the results of these 82 linear regression lines, and generate pairs of boxplots as in <xref ref="fig-lon-box2"/> for <c>coa</c> and <c>male</c>. No commentary necessary. [Hint: to produce <xref ref="fig-lon-box2"/>, you will need a data frame with one observation per subject.]</p></li>
+            <li><p>Repeat (e) using centered age (<c>age14 = age - 14</c>) as the time variable. Also generate a pair of scatterplots as in <xref ref="fig-lon-boxcatmat1"/> for peer alcohol use. Comment on trends you observe in these plots. [Hint: after forming <c>age14</c>, append it to your current data frame.]</p></li>
             <li><p>Discuss similarities and differences between (e) and (f). Why does using <c>age14</c> as the time variable make more sense in this example?</p></li>
             <li><p>(Model A) Run an unconditional means model. Report and interpret the intraclass correlation coefficient.</p></li>
             <li><p>(Model B) Run an unconditional growth model with <c>age14</c> as the time variable at Level One. Report and interpret estimated fixed effects, using proper notation. Also report and interpret a pseudo R-squared value.</p></li>
