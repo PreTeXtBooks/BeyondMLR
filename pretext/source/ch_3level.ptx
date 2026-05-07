@@ -1236,36 +1236,13 @@ modelcl    15 583.6 643.9 -276.8 553.6 2.089  2 0.3519
 
     <program language="r" xml:id="code-paraboot-function-3level">
       <input>
-# Parametric bootstrap code for lme4-models
-bootstrapAnova &lt;- function(mA, m0, B=1000){
-  oneBootstrap &lt;- function(m0, mA){
-    d &lt;- drop(simulate(m0))
-    m2 &lt;- refit(mA, newresp=d)
-    m1 &lt;- refit(m0, newresp=d)
-    return(anova(m2,m1)$Chisq[2])
-  }
-  nulldist &lt;- replicate(B, oneBootstrap(m0, mA))
-  ret &lt;- anova(mA, m0)
-  ret$"Pr(&gt;Chisq)"[2] &lt;- mean(ret$Chisq[2] &lt; nulldist)
-  names(ret)[8] &lt;- "Pr_boot(&gt;Chisq)"
-  attr(ret, "heading") &lt;- c(attr(ret, "heading")[1],
-    paste("Parametric bootstrap with", B,"samples."),
-    attr(ret, "heading")[-1])
-  attr(ret, "nulldist") &lt;- nulldist
-  return(ret)
-}
-
-# Run with ML estimation (faster for LRT refitting)
-modelcl0.ml &lt;- lmer(hgt ~ time13 + strl + cult + rem +
-  time13:strl + time13:cult + time13:rem + (time13|plant) +
-  (1|pot), REML=F, data=leaddata)
-
-modelcl.ml = lmer(hgt ~ time13 + strl + cult + rem +
-  time13:strl + time13:cult + time13:rem + (time13|plant) +
-  (time13|pot), REML=F, data=leaddata)
-
-# Run bootstrap (takes approximately 15 minutes with B=1000)
-# bootstrapAnova(mA=modelcl.ml, m0=modelcl0.ml, B=1000)
+# Generate 1 set of bootstrapped data and run chi-square test
+#  (will also work if use REML models, but may take longer)
+set.seed(3333)
+d &lt;- drop(simulate(modelcl0.ml))
+m2 &lt;- refit(modelcl.ml, newresp=d)
+m1 &lt;- refit(modelcl0.ml, newresp=d)
+drop_in_dev &lt;- anova(m2, m1, test = "Chisq")
       </input>
     </program>
 
@@ -1276,6 +1253,48 @@ m1   13 588.5 640.8 -281.2 562.5    NA NA     NA
 m2   15 591.1 651.4 -280.5 561.1 1.405  2 0.4953
       </output>
     </console>
+
+<p>
+  A likelihood ratio test statistic is calculated comparing Model C.1 to Model C.
+  For example, after continuing as above to generate new <m>Y_{ijk}</m> values 
+  corresponding to all 413 leadplant height measurements, we fit both models to 
+  the <q>bootstrapped</q> data. Since the data was generated using Model C.1, we 
+  would expect the two extra terms in Model C (<m>\sigma^2_{\tilde{v}}</m> and 
+  <m>\sigma_{\tilde{u}\tilde{v}}</m>) to contribute very little to the quality of 
+  the fit; Model C will have a slightly larger likelihood and loglikelihood since it 
+  contains every parameter from Model C.1 plus two more, but the difference in the 
+  likelihoods should be due to chance. In fact, that is what the output above shows. 
+  Model C does have a larger loglikelihood than Model C.1 
+  (<m>-280.54</m> vs. <m>-281.24</m>), but this small difference is not statistically 
+  significant based on a chi-square test with 2 degrees of freedom (<m>p = .4953</m>).
+</p>
+
+<p>
+  However, we are really only interested in saving the likelihood ratio test statistic 
+  from this bootstrapped sample 
+  (<m>2 \times (-280.54 - (-281.24)) = 1.40</m>). 
+  By generating (<q>bootstrapping</q>) many sets of responses based on estimated 
+  parameters from Model C.1 and calculating many likelihood ratio test statistics, 
+  we can observe how this test statistic behaves under the null hypothesis of 
+  <m>\sigma^2_{\tilde{v}} = \sigma_{\tilde{u}\tilde{v}} = 0</m>, rather than making 
+  the (dubious) assumption that its behavior is described by a chi-square distribution 
+  with 2 degrees of freedom. Figure 10.15 illustrates the null distribution of the 
+  likelihood ratio test statistic derived by the parametric bootstrap procedure as 
+  compared to a chi-square distribution. A p-value for comparing our full and reduced 
+  models can be approximated by finding the proportion of likelihood ratio test 
+  statistics generated under the null model which exceed our observed likelihood ratio 
+  test (2.089). The parametric bootstrap provides a more reliable p-value in this case 
+  (<m>p = .088</m> from table below); a chi-square distribution puts too much mass in 
+  the tail and not enough near 0, leading to overestimation of the p-value. Based on 
+  this test, we would still choose our simpler Model C.1, but we nearly had enough 
+  evidence to favor the more complex model.
+</p>
+
+    <program language="r" xml:id="code-paraboot-function-3level">
+      <input>
+bootstrapAnova(mA=modelcl.ml, m0=modelcl0.ml, B=1000)
+      </input>
+    </program>
 
     <console>
       <output>
