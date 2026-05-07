@@ -385,19 +385,25 @@ seedlg &lt;- seedwd %&gt;%
         Fitted lines by plant and pot are modeled using a centered time variable (<c>time13</c>),
         adjusted so that the first day of height measurements (13 days after planting) corresponds
         to <c>time13</c>=0. This centering has two primary advantages. First, the estimated intercept
-        becomes more interpretable — it now represents height on Day 13 rather than an extrapolation
-        to Day 0. Second, the intercept and slope are much less correlated (r=−0.16) than when
-        uncentered time is used, which improves the stability of future models.
+        becomes more interpretable. Rather than representing height on the day of planting (which
+        should be 0 mm, but which represents a hefty extrapolation from our observed range of days
+        13 to 28), the intercept now represents height on Day 13. Second, the intercept and slope
+        are much less correlated (r=−0.16) than when uncentered time is used, which improves the
+        stability of future models.
       </p>
 
       <p>
         Fitted intercepts and slopes by plant can be used for an additional exploratory examination
-        of factor effects. Figure <xref ref="fig-irboxbyspec"/> shows that coneflowers tend to start
-        smaller and have slower growth rates. Returning to our focus on leadplants, Figure
-        <xref ref="fig-irboxbysoil"/> shows that plants grown in soil from cultivated fields tend to
-        be taller at Day 13, and plants grown in soil from remnant prairies tend to grow more slowly.
+        of factor effects to complement those from the earlier spaghetti plots. Figure
+        <xref ref="fig-irboxbyspec"/> complements Figure <xref ref="fig-spagbyspec"/>, again
+        showing differences between species — coneflowers tend to start smaller and have slower
+        growth rates, although they have much more variability in growth patterns than leadplants.
+        Returning to our focus on leadplants, Figure <xref ref="fig-irboxbysoil"/> shows that
+        plants grown in soil from cultivated fields tend to be taller at Day 13, and plants grown in
+        soil from remnant prairies tend to grow more slowly than plants grown in other soil types.
         Figure <xref ref="fig-irboxbyster"/> shows the strong tendency for plants grown in sterilized
-        soil to grow faster than those in non-sterilized soil.
+        soil to grow faster than plants grown in non-sterilized soil. We will soon see if our fitted
+        multilevel models support these observed trends.
       </p>
 
       <figure xml:id="fig-irboxbyspec">
@@ -419,12 +425,13 @@ seedlg &lt;- seedwd %&gt;%
       </figure>
 
       <p>
-        Since we have time at Level One, any exploratory analysis should contain an investigation of
-        the variance-covariance structure within plant. Figure <xref ref="fig-corrstruct"/> shows the
-        potential for an autocorrelation structure in which the correlation between observations from
-        the same plant diminishes as the time between measurements increases. Residuals five days
-        apart have correlations ranging from .77 to .91, while measurements ten days apart have
-        correlations of .62 and .70, and measurements fifteen days apart have a correlation of .58.
+        Since we have time at Level One, any exploratory analysis of <xref ref="cs-seeds"/> should
+        contain an investigation of the variance-covariance structure within plant. Figure
+        <xref ref="fig-corrstruct"/> shows the potential for an autocorrelation structure in which
+        the correlation between observations from the same plant diminishes as the time between
+        measurements increases. Residuals five days apart have correlations ranging from .77 to .91,
+        while measurements ten days apart have correlations of .62 and .70, and measurements fifteen
+        days apart have a correlation of .58.
       </p>
 
       <figure xml:id="fig-corrstruct">
