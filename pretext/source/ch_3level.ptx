@@ -520,10 +520,18 @@ summary(modelal)
 ##  plant    (Intercept) 0.2782   0.527
 ##  pot      (Intercept) 0.0487   0.221
 ##  Residual             0.7278   0.853
+        </output>
+      </console>
 
+      <console>
+        <output>
 ##  Number of Level Two groups =  107
 ##  Number of Level Three groups =  32
+        </output>
+      </console>
 
+      <console>
+        <output>
 ##             Estimate Std. Error t value
 ## (Intercept)    2.388    0.07887   30.28
         </output>
@@ -1022,8 +1030,8 @@ anova(modelcl0, modelcl, test = "Chisq")
     </p>
 
     <ul>
-      <li><p>Model C.1 — the correct (null) model that was actually used to generate the responses</p></li>
-      <li><p>Model C — the incorrect (full) model that contains two extra variance components,
+      <li><p>Model C.1 -- the correct (null) model that was actually used to generate the responses</p></li>
+      <li><p>Model C -- the incorrect (full) model that contains two extra variance components,
       <m>\sigma_{\tilde{v}}^{2}</m> and <m>\sigma_{\tilde{u}\tilde{v}}</m>, that were not actually
       used when generating the responses</p></li>
     </ul>
