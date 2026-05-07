@@ -514,6 +514,21 @@ summary(modelal)
         </input>
       </program>
 
+      <console>
+        <output>
+##  Groups   Name        Variance Std.Dev.
+##  plant    (Intercept) 0.2782   0.527
+##  pot      (Intercept) 0.0487   0.221
+##  Residual             0.7278   0.853
+
+##  Number of Level Two groups =  107
+##  Number of Level Three groups =  32
+
+##             Estimate Std. Error t value
+## (Intercept)    2.388    0.07887   30.28
+        </output>
+      </console>
+
       <p>From this output, we obtain estimates of our four model parameters:</p>
 
       <ul>
