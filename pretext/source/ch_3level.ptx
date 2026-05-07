@@ -84,13 +84,15 @@ library(tidyverse)
     </p>
 
     <p>
-      The data was collected through an experiment run using a 3×2×2 factorial design, with 3 levels
-      of soil type (remnant, cultivated, and restored), 2 levels of sterilization (yes or no), and 2
-      levels of species (leadplant and coneflower). Each of the 12 treatments (unique combinations of
-      factor levels) was replicated in 6 pots, for a total of 72 pots. Six seeds were planted in each
-      pot (although a few pots had 7 or 8 seeds), and initially student researchers recorded days to
-      germination (defined as when two leaves are visible), if germination occurred. In addition, the
-      height of each germinated plant (in mm) was measured at 13, 18, 23, and 28 days after planting.
+      The data we'll examine was collected through an experiment run using a 3×2×2 factorial
+      design, with 3 levels of soil type (remnant, cultivated, and restored), 2 levels of
+      sterilization (yes or no), and 2 levels of species (leadplant and coneflower). Each of the
+      12 treatments (unique combinations of factor levels) was replicated in 6 pots, for a total
+      of 72 pots. Six seeds were planted in each pot (although a few pots had 7 or 8 seeds), and
+      initially student researchers recorded days to germination (defined as when two leaves are
+      visible), if germination occurred. In addition, the height of each germinated plant (in mm)
+      was measured at 13, 18, 23, and 28 days after planting. The study design is illustrated in
+      Figure <xref ref="fig-seedstudy"/>.
     </p>
 
     <figure xml:id="fig-seedstudy">
@@ -247,7 +249,8 @@ seedlg &lt;- seedwd %&gt;%
         Because we suspect that height measurements over time for a single plant are highly
         correlated, while height measurements from different plants from the same pot are less
         correlated, we calculate mean height per plant (over all available time points) before
-        generating exploratory plots. Figure <xref ref="fig-boxbyspec"/> then examines the effects of
+        generating exploratory plots investigating Level Three factors. Figure
+        <xref ref="fig-boxbyspec"/> then examines the effects of
         soil type and sterilization separately by species. Sterilization seems to have a bigger
         benefit for coneflowers, while soil from remnant prairies seems to lead to smaller leadplants
         and taller coneflowers.
@@ -649,9 +652,8 @@ summary(modelbl)
     </p>
 
     <p>
-      Our Level One and Level Two models will look identical to those from Model B. Our Level Three
-      models will contain new covariates for soil type (<c>cult</c> for cultivated lands and
-      <c>rem</c> for remnant prairies, using reconstructed prairies as the reference level) and
+      Our Level One and Level Two models will look identical to those from Model B; our Level Three
+      models will contain the new covariates for soil type (<c>cult</c> and <c>rem</c>) and
       sterilization (<c>strl</c>):
       <md>
         <mrow>a_{i} \amp = \alpha_{0}+\alpha_{1}\textrm{strl}_{i}+\alpha_{2}\textrm{cult}_{i}+\alpha_{3}\textrm{rem}_{i}+\tilde{u}_{i}</mrow>
@@ -676,7 +678,8 @@ summary(modelbl)
     </p>
 
     <p>
-      From the output below, the addition of Level Three covariates in Model C appears to provide a
+      From the output below, the addition of Level Three covariates in Model C (<c>cult</c>,
+      <c>rem</c>, <c>strl</c>, and their interactions with <c>time</c>) appears to provide a
       significant improvement (likelihood ratio test statistic = 32.2 on 6 df, <m>p\lt.001</m>) to
       the unconditional growth model (Model B).
     </p>
@@ -1341,10 +1344,16 @@ anova(modelfl0, modeldl0, test = "Chisq")
     </program>
 
     <p>
-      A likelihood ratio test shows no significant difference between Models D and F (chi-square
-      test statistic = 11.15 on 7 df, p=.1323), supporting the use of simplified Model F. A
-      parametric bootstrap comparing Models D and F (Figure <xref ref="fig-parabootDF"/>) provides
-      a p-value of .201 (see code below), confirming that Model F is the better choice.
+      We mentioned in <xref ref="sec-threelevel-paraboot"/> that we could also compare Model F and
+      Model D, which differ only in their fixed effects terms, using the parametric bootstrap
+      approach. In fact, in <xref ref="sec-threelevel-paraboot"/> we suggested that the p-value
+      using the chi-square approximation (.1323) may be a slight under-estimate of the true p-value,
+      but probably in the ballpark. In fact, when we generated 1000 bootstrapped samples of plant
+      heights under Model F, and produced 1000 simulated likelihood ratios comparing Models D and F,
+      we produced a p-value of .201. In Figure <xref ref="fig-parabootDF"/>, we see that the
+      chi-square distribution has too much area in the peak and too little area in the tails,
+      although in general it approximates the parametric bootstrap distribution of the likelihood
+      ratio pretty nicely.
     </p>
 
     <figure xml:id="fig-parabootDF">
@@ -1362,7 +1371,7 @@ anova(modelfl0, modeldl0, test = "Chisq")
       Model F as our "Final Model" for generating inference.
     </p>
 
-    <p>Estimates of model parameters can be interpreted as follows:</p>
+    <p>Estimates of model parameters can be interpreted in the following manner:</p>
 
     <ul>
       <li><p><m>\hat{\sigma}=.287=</m> the standard deviation in within-plant residuals after accounting for time.</p></li>
@@ -1846,12 +1855,44 @@ anova(modelfl0, modeldl0, test = "Chisq")
         </statement>
       </exercise>
 
+      <table xml:id="tab-table4chp10">
+        <title>Correlates of collective efficacy from Table 3 of Sampson et al. (1997).</title>
+        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+          <row header="yes" bottom="medium">
+            <cell>Variable</cell><cell>Coefficient</cell><cell>SE</cell><cell>t ratio</cell>
+          </row>
+          <row><cell>Intercept</cell><cell>3.523</cell><cell>0.013</cell><cell>263.20</cell></row>
+          <row bottom="medium" header="yes"><cell colspan="4">Person-level predictors</cell></row>
+          <row><cell>Female</cell><cell>−0.012</cell><cell>0.015</cell><cell>−0.76</cell></row>
+          <row><cell>Married</cell><cell>−0.005</cell><cell>0.021</cell><cell>−0.25</cell></row>
+          <row><cell>Separated or divorced</cell><cell>−0.045</cell><cell>0.026</cell><cell>−1.72</cell></row>
+          <row><cell>Single</cell><cell>−0.026</cell><cell>0.024</cell><cell>−1.05</cell></row>
+          <row><cell>Homeowner</cell><cell><alert>0.122</alert></cell><cell>0.020</cell><cell>6.04</cell></row>
+          <row><cell>Latino</cell><cell>0.042</cell><cell>0.028</cell><cell>1.52</cell></row>
+          <row><cell>Black</cell><cell>−0.029</cell><cell>0.030</cell><cell>−0.98</cell></row>
+          <row><cell>Mobility</cell><cell>−0.025</cell><cell>0.007</cell><cell>−3.71</cell></row>
+          <row><cell>Age</cell><cell><alert>0.0021</alert></cell><cell>0.0006</cell><cell>3.47</cell></row>
+          <row><cell>Years in neighborhood</cell><cell>0.0006</cell><cell>0.0008</cell><cell>0.78</cell></row>
+          <row><cell>SES</cell><cell><alert>0.035</alert></cell><cell>0.008</cell><cell>4.64</cell></row>
+          <row bottom="medium" header="yes"><cell colspan="4">Neighborhood-level predictors</cell></row>
+          <row><cell>Concentrated disadvantage</cell><cell><alert>−0.172</alert></cell><cell>0.016</cell><cell>−10.74</cell></row>
+          <row><cell>Immigrant concentration</cell><cell><alert>−0.037</alert></cell><cell>0.014</cell><cell>−2.66</cell></row>
+          <row><cell>Residential stability</cell><cell><alert>0.074</alert></cell><cell>0.013</cell><cell>5.61</cell></row>
+          <row bottom="medium" header="yes"><cell colspan="4">Variance components</cell></row>
+          <row><cell>Within neighborhoods</cell><cell>0.320</cell><cell></cell><cell></cell></row>
+          <row><cell>Between neighborhoods</cell><cell>0.026</cell><cell></cell><cell></cell></row>
+          <row bottom="medium" header="yes"><cell colspan="4">Percent of variance explained</cell></row>
+          <row><cell>Within neighborhoods</cell><cell>3.2</cell><cell></cell><cell></cell></row>
+          <row><cell>Between neighborhoods</cell><cell>70.3</cell><cell></cell><cell></cell></row>
+        </tabular>
+      </table>
+
       <exercise xml:id="exer-collective-efficacy-interp">
         <statement>
           <p>
-            Using Table 3 from <xref ref="Sampson1997"/>, provide interpretations of the following
-            coefficients in context: homeowner, age, SES, immigrant concentration, and residential
-            stability.
+            <xref ref="tab-table4chp10"/> shows Table 3 from <xref ref="Sampson1997"/>. Provide
+            interpretations of the following coefficients in context: homeowner, age, SES, immigrant
+            concentration, and residential stability.
           </p>
         </statement>
       </exercise>
@@ -1859,28 +1900,29 @@ anova(modelfl0, modeldl0, test = "Chisq")
       <exercise xml:id="exer-collective-efficacy-model">
         <statement>
           <p>
-            Let <m>Y_{ijk}</m> be the response of person <m>j</m> from neighborhood <m>i</m> to
-            item <m>k</m> regarding collective efficacy. Then (a) write out the three-level model
-            that likely produced Table 3 of <xref ref="Sampson1997"/>, and (b) write out the
-            corresponding composite model. Assume there was also an unreported variance component
-            estimating item-to-item variability within person.
+            Based on <xref ref="tab-table4chp10"/>, let <m>Y_{ijk}</m> be the response of person
+            <m>j</m> from neighborhood <m>i</m> to item <m>k</m> regarding collective efficacy;
+            these are (difficulty-adjusted) responses to 10 items per person about collective
+            efficacy. Then (a) write out the three-level model that likely produced this table, and
+            (b) write out the corresponding composite model. Assume there was also an unreported
+            variance component estimating item-to-item variability within person.
           </p>
         </statement>
       </exercise>
 
       <exercise xml:id="exer-collective-efficacy-eda">
         <statement>
-          <p>Suggest valuable exploratory data analysis plots to complement Table 3 of <xref ref="Sampson1997"/>.</p>
+          <p>Suggest valuable exploratory data analysis plots to complement <xref ref="tab-table4chp10"/>.</p>
         </statement>
       </exercise>
 
       <exercise xml:id="exer-collective-efficacy-params">
         <statement>
           <p>
-            If the model from <xref ref="Sampson1997"/> were expanded to include all potential variance
-            components, how many total parameters would need to be estimated? If it were expanded
-            further to include the 3 neighborhood-level covariates as predictors in all Level Three
-            equations, how many total parameters would need to be estimated?
+            If the model suggested by <xref ref="tab-table4chp10"/> were expanded to include all
+            potential variance components, how many total parameters would need to be estimated? If
+            it were expanded further to include the 3 neighborhood-level covariates as predictors in
+            all Level Three equations, how many total parameters would need to be estimated?
           </p>
         </statement>
       </exercise>
@@ -1888,23 +1930,47 @@ anova(modelfl0, modeldl0, test = "Chisq")
       <exercise xml:id="exer-collective-efficacy-pctvar">
         <statement>
           <p>
-            At the bottom of Table 3 from <xref ref="Sampson1997"/>, the percent of variance explained
-            is given within and between neighborhoods. Explain what these values likely represent
-            and how they were calculated.
+            At the bottom of <xref ref="tab-table4chp10"/>, the percent of variance explained is
+            given within and between neighborhoods. Explain what these values likely represent and
+            how they were calculated.
           </p>
         </statement>
       </exercise>
 
+      <table xml:id="tab-table5chp10">
+        <title>Neighborhood correlates of perceived neighborhood violence from a portion of Table 4 from Sampson et al. (1997).</title>
+        <tabular halign="center" top="minor" bottom="minor" left="minor" right="minor">
+          <row header="yes" bottom="none">
+            <cell></cell><cell colspan="3">Model 1</cell><cell colspan="3">Model 2</cell>
+          </row>
+          <row header="yes" bottom="medium">
+            <cell></cell>
+            <cell colspan="3">Social composition</cell>
+            <cell colspan="3">Social comp and collective efficacy</cell>
+          </row>
+          <row header="yes" bottom="medium">
+            <cell>Variable</cell>
+            <cell>Coefficient</cell><cell>SE</cell><cell>t</cell>
+            <cell>Coefficient</cell><cell>SE</cell><cell>t</cell>
+          </row>
+          <row><cell>Concentrated disadvantage</cell><cell>0.277</cell><cell>0.021</cell><cell>13.30</cell><cell>0.171</cell><cell>0.024</cell><cell>7.24</cell></row>
+          <row><cell>Immigrant concentration</cell><cell>0.041</cell><cell>0.017</cell><cell>2.44</cell><cell>0.018</cell><cell>0.016</cell><cell>1.12</cell></row>
+          <row><cell>Residential stability</cell><cell>−0.102</cell><cell>0.015</cell><cell>−6.95</cell><cell>−0.056</cell><cell>0.016</cell><cell>−3.49</cell></row>
+          <row><cell>Collective efficacy</cell><cell></cell><cell></cell><cell></cell><cell>−0.618</cell><cell>0.104</cell><cell>−5.95</cell></row>
+        </tabular>
+      </table>
+
       <exercise xml:id="exer-collective-efficacy-model4">
         <statement>
           <p>
-            <xref ref="Sampson1997"/> Table 4 shows neighborhood correlates of perceived neighborhood
-            violence in two models (with and without collective efficacy as a neighborhood-level
-            predictor). Describe the multilevel model that likely produced this table. State the
-            primary result from this table in context. [Note that collective efficacy is a Level
-            Three covariate in this table, summarized over an entire neighborhood.] Model 1 accounts
-            for 70.5% of the variation between neighborhoods in perceived violence, whereas Model 2
-            accounts for 77.8% of the variation.
+            <xref ref="tab-table5chp10"/> shows a portion of Table 4 from <xref ref="Sampson1997"/>.
+            Describe the multilevel model that likely produced this table. State the primary result
+            from this table in context. [Note that collective efficacy is a Level Three covariate in
+            this table, summarized over an entire neighborhood.] Estimates of neighborhood-level
+            coefficients control for gender, marital status, homeownership, ethnicity, mobility,
+            age, years in neighborhood, and SES of those interviewed. Model 1 accounts for 70.5% of
+            the variation between neighborhoods in perceived violence, whereas Model 2 accounts for
+            77.8% of the variation.
           </p>
         </statement>
       </exercise>
