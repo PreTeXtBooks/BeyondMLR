@@ -728,6 +728,20 @@ model.a &lt;- lmer(MathAvgScore ~ 1 + (1|schoolid),
         </input>
       </program>
 
+      <console>
+        <output>
+##  Groups   Name        Variance Std.Dev.
+##  schoolid (Intercept) 41.9     6.47    
+##  Residual             10.6     3.25
+
+##  Number of Level Two groups =  618
+
+##             Estimate Std. Error t value
+## (Intercept)    652.7     0.2726    2395
+        </output>
+      </console>
+
+
       <p>
         From this output, we obtain estimates of our three model parameters:
       </p>
@@ -862,6 +876,24 @@ model.b &lt;- lmer(MathAvgScore ~ year08 + (year08|schoolid),
         </input>
       </program>
 
+      <console>
+        <output>
+##  Groups   Name        Variance Std.Dev. Corr
+##  schoolid (Intercept) 39.441   6.280        
+##           year08       0.111   0.332    0.72
+##  Residual              8.820   2.970
+
+##  Number of Level Two groups =  618
+
+##             Estimate Std. Error t value
+## (Intercept)  651.408    0.27934 2331.96
+## year08         1.265    0.08997   14.06
+
+##  AIC =  10352 ;  BIC =  10384
+        </output>
+      </console>
+
+
       <p>
         From this output, we obtain estimates of our six model parameters:
       </p>
@@ -928,6 +960,24 @@ model.b2 &lt;- lmer(MathAvgScore ~ yearc + yearc2 + (1|schoolid),
                   REML = T, data = chart.long)
         </input>
       </program>
+
+      <console>
+        <output>
+##  Groups   Name        Variance Std.Dev.
+##  schoolid (Intercept) 43.05    6.56    
+##  Residual              8.52    2.92
+
+##  Number of Level Two groups =  618
+
+##             Estimate Std. Error  t value
+## (Intercept)  651.942    0.29229 2230.448
+## yearc          1.270    0.08758   14.501
+## yearc2         1.068    0.15046    7.101
+
+##  AIC =  10308 ;  BIC =  10335
+        </output>
+      </console>
+
 
       <p>
         The quadratic effect is positive and significant (<m>t = 7.1</m>), indicating that
@@ -1012,6 +1062,26 @@ model.c &lt;- lmer(MathAvgScore ~ charter + year08 +
                 REML = T, data = chart.long)
         </input>
       </program>
+
+      <console>
+        <output>
+##  Groups   Name        Variance Std.Dev. Corr
+##  schoolid (Intercept) 35.832   5.986        
+##           year08       0.131   0.362    0.88
+##  Residual              8.784   2.964
+
+##  Number of Level Two groups =  618
+
+##                Estimate Std. Error  t value
+## (Intercept)    652.0584    0.28449 2291.996
+## charter         -6.0184    0.86562   -6.953
+## year08           1.1971    0.09427   12.698
+## charter:year08   0.8557    0.31430    2.723
+
+##  AIC =  10308 ;  BIC =  10351
+        </output>
+      </console>
+
 
       <p>
         Armed with our parameter estimates, we can offer concrete interpretations:
@@ -1122,6 +1192,35 @@ model.d2 &lt;- lmer(MathAvgScore ~ charter + SchPctFree + year08 +
         </input>
       </program>
 
+      <console>
+        <output>
+##  Groups   Name        Variance Std.Dev. Corr
+##  schoolid (Intercept) 19.13    4.37         
+##           year08       0.16    0.40     0.51
+##  Residual              8.80    2.97
+
+##  Number of Level Two groups =  618
+
+##                    Estimate Std. Error  t value
+## (Intercept)       659.27848   0.444690 1482.558
+## charter            -3.43994   0.712836   -4.826
+## SchPctFree         -0.16654   0.008907  -18.697
+## year08              1.64137   0.189499    8.662
+## charter:year08      0.98076   0.318583    3.078
+## SchPctFree:year08  -0.01041   0.003839   -2.711
+
+##  AIC =  9988 ;  BIC =  10043
+
+         npar   AIC   BIC logLik   dev Chisq Df
+model.c     8 10305 10348  -5144 10289    NA NA
+model.d2   10  9967 10022  -4974  9947 341.5  2
+              pval
+model.c         NA
+model.d2 7.158e-75
+        </output>
+      </console>
+
+
       <p>
         Compared to Model C, the introduction of school-level poverty based on percentage of
         students receiving free and reduced lunch in Model D leads to similar conclusions about
@@ -1199,6 +1298,31 @@ model.f2 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
                    (year08|schoolid), REML = T, data = chart.long)
         </input>
       </program>
+
+      <console>
+        <output>
+##  Groups   Name        Variance Std.Dev. Corr
+##  schoolid (Intercept) 16.94756 4.1167       
+##           year08       0.00475 0.0689   0.85
+##  Residual              8.82197 2.9702
+
+##  Number of Level Two groups =  618
+
+##                    Estimate Std. Error  t value
+## (Intercept)       661.01042   0.512888 1288.800
+## charter            -3.22286   0.698547   -4.614
+## urban              -1.11383   0.427566   -2.605
+## SchPctFree         -0.15281   0.008096  -18.874
+## SchPctSped         -0.11770   0.020612   -5.710
+## year08              2.14430   0.200867   10.675
+## charter:year08      1.03087   0.315159    3.271
+## urban:year08       -0.52749   0.186480   -2.829
+## SchPctSped:year08  -0.04674   0.010166   -4.598
+
+##  AIC =  9885 ;  BIC =  9956
+        </output>
+      </console>
+
 
       <ul>
         <li><p><m>\hat{\alpha}_0 = 661.0.</m> The estimated mean math test score for 2008 is
@@ -1287,6 +1411,34 @@ model.f0 &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
                    (1|schoolid), REML = T, data = chart.long)
         </input>
       </program>
+
+      <console>
+        <output>
+##  Groups   Name        Variance Std.Dev.
+##  schoolid (Intercept) 17.46    4.18    
+##  Residual              8.83    2.97
+
+##  Number of Level Two groups =  618
+
+##                    Estimate Std. Error  t value
+## (Intercept)       661.02599    0.51691 1278.813
+## charter            -3.21918    0.70543   -4.563
+## urban              -1.11852    0.43204   -2.589
+## SchPctFree         -0.15302    0.00810  -18.892
+## SchPctSped         -0.11813    0.02080   -5.680
+## year08              2.13924    0.20097   10.644
+## charter:year08      1.03157    0.31551    3.270
+## urban:year08       -0.52330    0.18651   -2.806
+## SchPctSped:year08  -0.04645    0.01017   -4.568
+
+##  AIC =  9881 ;  BIC =  9941
+
+         npar  AIC  BIC logLik  dev  Chisq Df   pval
+model.f0   11 9854 9914  -4916 9832     NA NA     NA
+model.f2   13 9857 9928  -4916 9831 0.3376  2 0.8447
+        </output>
+      </console>
+
 
       <p>
         When testing random effects at the boundary (such as <m>\sigma_v^2 = 0</m>) or those with
@@ -1446,6 +1598,15 @@ drop_in_dev &lt;- anova(m2, m1, test = "Chisq")
         </input>
       </program>
 
+      <console>
+        <output>
+   npar  AIC  BIC logLik  dev Chisq Df   pval
+m1   11 9891 9951  -4935 9869    NA NA     NA
+m2   13 9891 9962  -4932 9865 4.581  2 0.1012
+        </output>
+      </console>
+
+
       <p>
         A likelihood ratio test statistic is calculated comparing Model F0 to Model F. For
         example, after continuing as above to generate new <m>Y_{ij}</m> values corresponding to
@@ -1484,6 +1645,15 @@ bootstrapAnova(mA = model.f2ml, m0 = model.f0ml, B = 1000)
         </input>
       </program>
 
+      <console>
+        <output>
+   npar logLik  dev  Chisq Df pval_boot
+m0   11  -4916 9832     NA NA        NA
+mA   13  -4916 9831 0.3376  2     0.578
+        </output>
+      </console>
+
+
       <figure xml:id="fig-paraboot9">
         <caption>Null distribution of likelihood ratio test statistic derived using parametric
         bootstrap (histogram) compared to a chi-square distribution with 2 degrees of freedom
@@ -1509,6 +1679,26 @@ bootciF = confint(model.f2, method = "boot", oldNames = FALSE)
 bootciF
         </input>
       </program>
+
+      <console>
+        <output>
+##                                      2.5 %    97.5 %
+## sd_(Intercept)|schoolid           3.801826   4.50866
+## cor_year08.(Intercept)|schoolid  -1.000000   1.00000
+## sd_year08|schoolid                0.009203   0.91060
+## sigma                             2.779393   3.07776
+## (Intercept)                     660.071996 662.04728
+## charter                          -4.588611  -2.07372
+## urban                            -2.031600  -0.29152
+## SchPctFree                       -0.169426  -0.13738
+## SchPctSped                       -0.156065  -0.07548
+## year08                            1.722458   2.56106
+## charter:year08                    0.449139   1.65928
+## urban:year08                     -0.905941  -0.17156
+## SchPctSped:year08                -0.066985  -0.02617
+        </output>
+      </console>
+
 
       <p>
         From the output above, the 95% bootstrapped confidence interval for <m>\rho_{uv}</m>
@@ -1996,6 +2186,38 @@ model.f2a &lt;- lmer(MathAvgScore ~ charter + urban + SchPctFree +
                   REML = T, data = chart.long)
       </input>
     </program>
+
+    <console>
+      <output>
+##  Groups     Name        Variance Std.Dev.
+##  schoolid   (Intercept) 17.355   4.166   
+##  schoolid.1 year08       0.114   0.337   
+##  Residual                8.716   2.952
+
+##  Number of Level Two groups =  618
+
+##                    Estimate Std. Error  t value
+## (Intercept)       661.01770   0.515461 1282.381
+## charter            -3.22468   0.703174   -4.586
+## urban              -1.11663   0.430422   -2.594
+## SchPctFree         -0.15295   0.008096  -18.890
+## SchPctSped         -0.11777   0.020739   -5.679
+## year08              2.14271   0.202090   10.603
+## charter:year08      1.03341   0.317174    3.258
+## urban:year08       -0.52442   0.187678   -2.794
+## SchPctSped:year08  -0.04672   0.010219   -4.572
+
+##  AIC =  9883 ;  BIC =  9948
+
+            npar  AIC  BIC logLik  dev  Chisq Df
+model.f2aml   12 9855 9921  -4916 9831     NA NA
+model.f2ml    13 9857 9928  -4916 9831 0.2231  1
+              pval
+model.f2aml     NA
+model.f2ml  0.6367
+      </output>
+    </console>
+
   </section>
 
   <exercises xml:id="exercises-ch-lon">
